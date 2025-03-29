@@ -1,4 +1,5 @@
 import axios from "axios"
+import { baseURL } from "./apiHub";
 
 interface Orderinfo{
     
@@ -22,7 +23,7 @@ interface page{
 
 class order{
     orderRequest(Orderinfo:Orderinfo,token:string){
-        return axios.post("https://260d-141-11-250-179.ngrok-free.app/v1/installation/request",Orderinfo, {
+        return axios.post(`${baseURL}/v1/installation/request`,Orderinfo, {
             headers: {
               Authorization: `Bearer ${token}`,
               "ngrok-skip-browser-warning":"69420"
@@ -31,7 +32,7 @@ class order{
     }
 
     orderHistory(pageinfo: page, token: string) {
-      return axios.get("https://260d-141-11-250-179.ngrok-free.app/v1/installation/request", {
+      return axios.get(`${baseURL}/v1/installation/request`, {
           headers: {
               Authorization: `Bearer ${token}`,
               "ngrok-skip-browser-warning":"69420"

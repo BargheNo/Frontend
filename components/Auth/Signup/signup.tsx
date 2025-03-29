@@ -88,11 +88,12 @@ function Signup() {
 	) => {
 		registerService
 			.createUser({
-				firstName: name,
-				lastName: Lname,
-				phone: phone,
-				password: password,
-				isAcceptTerms: isAcceptTerms,
+				FirstName: name,
+				LastName: Lname,
+				Phone: phone,
+				Password: password,
+				ConfirmPassword: confirmPassword,
+				acceptedTerms: isAcceptTerms,
 			})
 			.then((res) => {
 				setOpen(true);
@@ -357,7 +358,7 @@ function Signup() {
 						)}
 						{!customer && (
 							<div className="w-full items-center text-center">
-								<h1 className={styles.topic}>ثبت نام شرکت 2</h1>
+								<h1 className={styles.topic}>ثبت نام شرکت</h1>
 								<Formik
 									initialValues={{
 										corpname: "",

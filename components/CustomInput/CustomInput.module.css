@@ -1,76 +1,72 @@
 .Conter {
-    @apply flex flex-col;
-    /* width: 90%; */
-    position: relative; 
-    text-align: right;
-    margin-top: 25px;
-    font-size: clamp(10px,3.5vw,15px);
+	@apply flex flex-col;
+	/* width: 90%; */
+	width: 100%;
+	position: relative;
+	text-align: right;
+	margin-top: 25px;
+	font-size: clamp(10px, 3.5vw, 15px);
 }
 
-
 .CustomInput {
-    box-shadow: inset 1px 2px 5px rgba(0, 0, 0, 0.2);
-    border-radius: 9px;
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    text-align: right;
-    background-color: #F1F4FC;
+	box-shadow: inset 1px 2px 5px rgba(0, 0, 0, 0.2);
+	border-radius: 9px;
+	width: 100%;
+	padding: 10px;
+	box-sizing: border-box;
+	text-align: right;
+	background-color: #f1f4fc;
 }
 
 .text {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: clamp(10px,3.5vw,15px);
-    color: gray;
-    pointer-events: none;
+	position: absolute;
+	right: 12px;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: clamp(10px, 3.5vw, 15px);
+	color: gray;
+	pointer-events: none;
 }
-
 
 .numberInput {
-    -webkit-appearance: none; 
-    -moz-appearance: textfield;
-    appearance: textfield; 
-  }
-  
-.numberInput::-webkit-outer-spin-button,
-.numberInput::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  
-
-
-
-  .icon {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 16px;
-    color: #FA682D;
-    cursor: pointer;    
+	-webkit-appearance: none;
+	-moz-appearance: textfield;
+	appearance: textfield;
 }
 
-@media (max-width:600px) {
-    .icon{
-        width: 5.5vw;
-    }
+.numberInput::-webkit-outer-spin-button,
+.numberInput::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+.icon {
+	position: absolute;
+	left: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 16px;
+	color: #fa682d;
+	cursor: pointer;
+}
+
+@media (max-width: 600px) {
+	.icon {
+		width: 5.5vw;
+	}
 }
 
 .errorMessage {
-    font-size: 12px;
-    color: red;
-    position: absolute;
-    bottom: -18px; 
-    text-align: right;
-    width: 100%;
-    white-space: nowrap;
+	font-size: 12px;
+	color: red;
+	position: absolute;
+	bottom: -18px;
+	text-align: right;
+	width: 100%;
+	white-space: nowrap;
 }
 
 .inputWrapper {
-    position: relative;
-    width: 100%;
+	position: relative;
+	width: 100%;
 }

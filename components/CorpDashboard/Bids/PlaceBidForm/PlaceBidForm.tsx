@@ -4,7 +4,7 @@ import { vazir } from "@/lib/fonts";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
-import { baseURL, postData } from "@/src/services/apiHub";
+import { accessToken, baseURL, postData } from "@/src/services/apiHub";
 import {
 	Battery,
 	Calendar,
@@ -53,7 +53,7 @@ export default function PlaceBidForm({
 	requestId,
 	panelDetails,
 }: BidFormProps) {
-	const accessToken = localStorage.getItem("accessToken");
+	// const accessToken = localStorage.getItem("accessToken");
 	const validateSchema = Yup.object({
 		time: Yup.string().required("زمان تخمینی خود را وارد کنید."),
 		price: Yup.string().required("قیمت پیشنهادی خود را وارد کنید."),
@@ -65,8 +65,7 @@ export default function PlaceBidForm({
 		time: string,
 		message: string
 	) => {
-		console.log(accessToken);
-		fetch(`${baseURL}/v1/bids/set`, {
+		  fetch(`${baseURL}/v1/bids/set`, {
 			method: "POST", 
 			headers: {
 				"Content-Type": "application/json",
@@ -87,32 +86,13 @@ export default function PlaceBidForm({
 			.catch((error) => {
 				console.error("Error:", error); // Handle errors
 			});
-		// fetch(`${baseURL}/v1/bids/set`, {
-		// 	headers: {
-		// 		Authorization: `Bearer ${accessToken}`,
-		// 		"ngrok-skip-browser-warning": "69420",
-		// 	},
-		// }).then((res) => {
-		// 	console.log(res);
-		// 	toast(res?.data?.message);
-		// })
-		// .catch((err) => {
-		// 	console.log(err);
-		// 	toast(err?.response?.data?.message);
-		// });
-
-		// const data = await response.json();
 		// postData({
 		// 	endPoint: `${baseURL}/v1/bids/set`,
 		// 	data: {
 		// 		installationRequestId: requestId,
 		// 		cost: price,
 		// 		description: message,
-		// 		installationTime: time,
-		// 	},
-		// 	headers: {
-		// 		Authorization: `Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU0MzA3MjQsImlhdCI6MTc0MjgzODcyNCwic3ViIjoxfQ.XKdrNpLbjZYcKaSdBHI0iEr_iDRDB04HjvbNQj14SjA5X6Gqo30cREK-r8bmThufCamumywT5azE81-FFI7pvd_qeXy4ups8AqZvdjiCXegGct_bnjXUqk0s0Qr8UuGqzLAnxwzwmXRf8pX_aS47yGiKstUeGmhZ6PcIQC8Rz5Q`,
-		// 		"ngrok-skip-browser-warning": "69420",
+		// 		installationDate: "2025-04-15T00:00:00Z",
 		// 	},
 		// })
 		// 	.then((res) => {

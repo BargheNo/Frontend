@@ -1,10 +1,31 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import RequestCard from "./RequestCard/RequestCard";
-import { baseURL } from "@/src/services/apiHub";
+import { accessToken, baseURL } from "@/src/services/apiHub";
+
+interface address {
+	province: string;
+	city: string;
+	streetAddress: string;
+}
+
+interface Customer {
+	firstName: string;
+	lastName: string;
+}
+
+interface Request {
+	id: number;
+	name: string;
+	customer: Customer;
+	address: address;
+	powerRequest: number;
+	status: string;
+	maxCost: number;
+}
 
 export default function Requests() {
-	const accessToken = localStorage.getItem("accessToken");
+	// const accessToken = localStorage.getItem("accessToken");
 	const [requestData, setRequestData] = useState<Request[] | null>(null);
 	const [error, setError] = useState<string | null>(null);
 
@@ -14,11 +35,10 @@ export default function Requests() {
 			try {
 				console.log("Fetching Requests...");
 				const response = await fetch(
-					`${baseURL}/v1/bids/set`,
+					`${baseURL}/v1/bids/list`,
 					{
 						headers: {
-							Authorization: `Bearer ${accessToken}`,
-							"ngrok-skip-browser-warning": "69420",
+							Authorization: `Bearer ${accessToken}`
 						},
 					}
 				);

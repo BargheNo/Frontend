@@ -6,7 +6,12 @@ import { getParams, postParams } from "../types/apiHubType";
 
 // export const baseURL = "https://bombfundingbackend.liara.run";
 // export const baseURL = "http://104.168.46.4:8000";
-export const baseURL = "https://260d-141-11-250-179.ngrok-free.app";
+// export const baseURL = "https://260d-141-11-250-179.ngrok-free.app";
+export const baseURL = "http://185.110.189.68:8080";
+
+// export const accessToken = localStorage.getItem("accessToken");
+export const accessToken = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU0MDcwMzcsImlhdCI6MTc0MjgxNTAzNywic3ViIjoxfQ.U245pmQco3hU0VATsXU8hovIl75FCpvcPGHDef0BVtRqPny5A9LBMMHRNcD4hQk9OciVS8v-kMYQvyuGsq6ido2ebNVFhIR0Vja023B48S5tW3yzSOyySEvcLEt3pWxTRQo45mK9GLBRtdpQu18qoKqreHOzr98K2mTd4E7lVE8";
+
 
 const apiClient = axios.create({
   baseURL: baseURL,
@@ -345,7 +350,7 @@ export const phonenumberVerification = async (phone: string, otp: string) => {
 
 export const handleResetPassword = async (confirmPassword: string, password: string) => {
   try {
-    const accessToken = localStorage.getItem('accessToken');
+    // const accessToken = localStorage.getItem('accessToken');
 
     if (!accessToken) {
       return {

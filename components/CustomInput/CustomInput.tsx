@@ -8,11 +8,11 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 	children: React.ReactNode;
 	icon?: LucideIcon;
 	onIconClick?: () => void;
-  autoFocus?: boolean;
-  iconClassName?: string;
-  errorClassName?: string;
-  inputClassName?: string;
-  containerClassName?: string;
+	autoFocus?: boolean;
+	iconClassName?: string;
+	errorClassName?: string;
+	inputClassName?: string;
+	containerClassName?: string;
 }
 
 const isRTL = (text: string | undefined): boolean => {
@@ -28,11 +28,11 @@ export default function CustomInput({
 	children,
 	icon: Icon,
 	onIconClick,
-  autoFocus = false,
-  iconClassName,
-  errorClassName,
-  inputClassName,
-  containerClassName,
+	autoFocus = false,
+	iconClassName,
+	errorClassName,
+	inputClassName,
+	containerClassName,
 	...props
 }: Props) {
 	// const [isTextRTL, setTextRTL] = useState(true);
@@ -42,19 +42,28 @@ export default function CustomInput({
 	return (
 		<div className={`${style.Conter} ${containerClassName}`}>
 			<div className={style.inputWrapper}>
-				{Icon && <Icon onClick={onIconClick} className={`${style.icon} ${iconClassName}`} />}
+				{Icon && (
+					<Icon
+						onClick={onIconClick}
+						className={`${style.icon} ${iconClassName}`}
+					/>
+				)}
 				{field.value === "" && (
-					<label className={`${style.text} ${errorClassName}`}>{children}</label>
+					<label className={`${style.text} ${errorClassName}`}>
+						{children}
+					</label>
 				)}
 				<input
 					dir={isRTL(field.value) ? "rtl" : "ltr"}
 					{...field}
 					{...props}
-          autoFocus={autoFocus}
-					className={`${style.CustomInput} ${style.numberInput} ${inputClassName} ${
+					autoFocus={autoFocus}
+					className={`${style.CustomInput} ${
+						style.numberInput
+					} ${inputClassName} ${
 						isRTL(field.value) ? "text-right" : "text-left"
 					}`}
-					style={{ paddingLeft: Icon ? "42px" : "12px"}}
+					style={{ paddingLeft: Icon ? "42px" : "12px" }}
 				/>
 				{hasError && (
 					<div className={style.errorMessage}>{meta.error}</div>
