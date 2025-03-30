@@ -81,6 +81,7 @@
   --radius-xl: calc(var(--radius) + 4px);
   --color-cloud-white: #f1f4fc;
   --color-mist-white: #e8ebf2;
+  --color-warm-white: #f4f1f3;
   --color-sky-blue: #8ecae6;
   --color-sea-blue: #219ebc;
   --color-vivid-blue: #2979ff;
@@ -91,6 +92,8 @@
   --color-golden-yellow: #fdc30b;
   --color-sunset-orange: #fb8500;
   --color-fire-orange: #f24f09;
+  --color-gradient-orange-purple: linear-gradient(to right, #A55FDA, #F37240);
+  --color-gradient-soft-blue: linear-gradient(to right, #2979ff, #1b6cf5);
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -186,4 +189,59 @@ body {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
+
+  .inset-input {
+    @apply rounded-lg focus:outline-none focus:ring focus:ring-blue-300 shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)] duration-200
+  }
+
+  .cta-neu-button {
+    @apply items-center text-orange-500 text-xl font-semibold gap-2 p-3 w-full justify-self-center rounded-full cursor-pointer shadow-[-4px_-4px_10px_rgba(255,255,255,1),2px_2px_5px_rgba(0,0,0,0.3)]
+    duration-300 hover:shadow-[-8px_-8px_20px_rgba(255,255,255,1),4px_4px_10px_rgba(0,0,0,0.3)]
+    active:shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)]
+  }
+
+  .neu-container {
+    @apply text-gray-800 rounded-2xl overflow-hidden bg-warm-white shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]
+  }
+
+  .green-status {
+    @apply bg-gradient-to-br from-green-400 to-green-500 border-1 border-gray-100/50 shadow-sm shadow-green-500
+  }
+
+  .yellow-status {
+    @apply bg-gradient-to-br from-yellow-400 to-yellow-500 border-1 border-gray-100/50 shadow-sm shadow-yellow-500
+  }
+
+  .red-status {
+    @apply bg-gradient-to-br from-red-400 to-red-500 border-1 border-gray-100/50 shadow-sm shadow-red-500
+  }
+
+  .inset-neu-container {
+    @apply rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)] w-24
+  }
+
+  .red-circle-button {
+    @apply bg-gradient-to-b from-[#EE4334] to-[#D73628] rounded-full w-16 h-16 flex items-center place-content-center text-white cursor-pointer shadow-md hover:shadow-lg transition duration-300 hover:scale-105
+  }
+
+  .neu-shadow {
+    @apply shadow-[-4px_-4px_10px_rgba(255,255,255,1),2px_2px_5px_rgba(0,0,0,0.3)]
+  }
+
+  .neu-shadow-inset {
+    @apply shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.3),inset_1px_1px_3px_rgba(0,0,0,0.3)]
+  }
+
+  .neu-shadow-inset-2 {
+    @apply shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)]
+  }
+
+  .gradient-orange-purple {
+    background: var(--color-gradient-orange-purple);
+  }
+
+  .gradient-soft-blue {
+    background: var(--color-gradient-soft-blue);
+  }
+
 }
