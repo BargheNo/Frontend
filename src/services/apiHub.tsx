@@ -3,8 +3,9 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { getParams, postParams } from "../types/apiHubType";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/types";
+import { toast } from "sonner";
+import generateErrorMessage from "../functions/handleAPIErrors";
 
-// export const baseURL = "https://260d-141-11-250-179.ngrok-free.app";
 export const baseURL = "https://86c4-212-64-199-253.ngrok-free.app";
 // export const baseURL = "http://185.110.189.68:8080";
 
@@ -158,7 +159,7 @@ export const postData = async ({
 		const response = await apiClient.post(endPoint, data, {
 			headers: {
 				Authorization: `Bearer ${accessToken}`,
-				...headers
+				...headers,
 			},
 		});
 		return response.data;
@@ -239,7 +240,7 @@ export const handleLogin = async (phoneNumber: string, password: string) => {
 				},
 			}
 		);
-
+		console.log(response);
 		if (response.status === 200) {
 			return {
 				success: true,
@@ -249,20 +250,22 @@ export const handleLogin = async (phoneNumber: string, password: string) => {
 
 		return {
 			success: false,
-			message: response.data?.message || "An unknown error occurred",
+			message: response?.data?.message || "مشکلی رخ داده",
 		};
-	} catch (error: unknown) {
-		if (axios.isAxiosError(error)) {
-			return {
-				success: false,
-				message: error.response?.data?.message || "Network error",
-			};
-		}
+	} catch (error: any) {
+		console.log("error", error);
+		toast(generateErrorMessage(error));
+		// if (axios.isAxiosError(error)) {
+		// 	return {
+		// 		success: false,
+		// 		message: error?.response?.data?.message || "Network error",
+		// 	};
+		// }
 
-		return {
-			success: false,
-			message: "An unexpected error occurred",
-		};
+		// return {
+		// 	success: false,
+		// 	message: "An unexpected error occurred",
+		// };
 	}
 };
 

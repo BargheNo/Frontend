@@ -43,6 +43,7 @@ import orderService from "@/src/services/orderService";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/types";
+import generateErrorMessage from "@/src/functions/handleAPIErrors";
 export default function Neworder() {
 	const [disable, Setdisable] = useState(true);
 	const [provinceid, Setprovinceid] = useState<number>();
@@ -50,7 +51,7 @@ export default function Neworder() {
 	const [cities, Setcities] = useState<City[]>([]);
 	const [building, Setbuilding] = useState("");
 	const [cityid, Setcityid] = useState<number>();
-    const accessToken = useSelector(
+	const accessToken = useSelector(
 		(state: RootState) => state.user.accessToken
 	);
 	const Getprovinces = () => {
@@ -93,9 +94,12 @@ export default function Neworder() {
 		orderService
 			.orderRequest(orderinfo, token)
 			.then((res) => {
-				toast(res.data.message);
+				toast(res?.data?.message);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => {
+                console.log(err);
+				toast(generateErrorMessage<order>(err));
+			});
 	};
 	return (
 		<Dialog>

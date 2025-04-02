@@ -97,10 +97,10 @@ function Signup() {
 			})
 			.then((res) => {
 				setOpen(true);
-				toast(res.data.message);
+				toast(res?.data?.message);
 			})
 			.catch((err) => {
-				toast(err.response.data.messages.phone["alreadyRegistered"]);
+				toast(err?.response?.data?.messages?.phone["alreadyRegistered"]);
 			});
 	};
 	// const handleCorpRegister = (
