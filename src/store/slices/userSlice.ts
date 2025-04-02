@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const initialState: userData = {
   userName: "",
   accessToken: "",
+  phoneNumber: "",
   refreshToken: "",
   isAuth: false,
 };
@@ -18,12 +19,14 @@ export const userSlice = createSlice({
       state.isAuth = true;
       state.userName = action.payload.userName;
       state.accessToken = action.payload.accessToken;
+      state.phoneNumber = action.payload.phoneNumber;
       state.refreshToken = action.payload.refreshToken;
     },
     resetUser: (state: userData) => {
       state.isAuth = false;
       state.userName = "";
       state.accessToken = "";
+      state.phoneNumber = "";
       state.refreshToken = "";
     },
   },
