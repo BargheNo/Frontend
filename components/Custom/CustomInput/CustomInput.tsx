@@ -61,7 +61,7 @@ export default function CustomInput({
 					className={`${style.CustomInput} ${
 						style.numberInput
 					} ${inputClassName} ${
-						isRTL(field.value) ? "text-right" : "text-left"
+						isRTL(field.value) ? "text-right rtl" : "text-left ltr"
 					}`}
 					style={{ paddingLeft: Icon ? "42px" : "12px" }}
 				/>

@@ -61,7 +61,7 @@ export default function CustomTextArea({
 					className={`${style.CustomInput} ${
 						style.numberInput
 					} ${inputClassName} min-h-12 w-full ${
-						isRTL(field.value) ? "text-right" : "text-left"
+						isRTL(field.value) ? "text-right rtl" : "text-left ltr"
 					}`}
 					style={{ paddingLeft: Icon ? "42px" : "12px" }}
 				/>

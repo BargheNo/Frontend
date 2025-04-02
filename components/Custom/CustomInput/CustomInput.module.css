@@ -3,7 +3,7 @@
 	/* width: 90%; */
 	width: 100%;
 	position: relative;
-	text-align: right;
+	/* text-align: right; */
 	margin-top: 25px;
 	font-size: clamp(10px, 3.5vw, 15px);
 }
@@ -14,7 +14,7 @@
 	width: 100%;
 	padding: 10px;
 	box-sizing: border-box;
-	text-align: right;
+	/* text-align: right; */
 	background-color: #f1f4fc;
 }
 

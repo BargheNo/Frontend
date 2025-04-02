@@ -46,6 +46,7 @@ import { RootState } from "@/src/store/types";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
 export default function Neworder() {
+	const [open, setOpen] = useState(false);
 	const [disable, Setdisable] = useState(true);
 	const [provinceid, Setprovinceid] = useState<number>();
 	const [provinces, Setprovinces] = useState<Province[]>([]);
@@ -91,19 +92,22 @@ export default function Neworder() {
 	// console.log("city is",cityid," ",provinceid)
 
 	const handelOrderrequest = (orderinfo: order, token: string) => {
+		setOpen(false);
 		console.log("hello", token);
 		orderService
 			.orderRequest(orderinfo, token)
 			.then((res) => {
 				toast(res?.data?.message);
+				setOpen(false);
 			})
 			.catch((err) => {
 				console.log(err);
 				toast(generateErrorMessage(err));
+				// setOpen(false);
 			});
 	};
 	return (
-		<Dialog>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
 				<SignupButton type="button">
 					<Plus className={style.icon} />
@@ -111,13 +115,12 @@ export default function Neworder() {
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}
-				className="min-w-[57vw] "
+				className="min-w-[57vw] overflow-auto"
 			>
 				<DialogHeader>
 					<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
 						ثبت سفارش پنل جدید
 					</DialogTitle>
-					<DialogDescription></DialogDescription>
 				</DialogHeader>
 				<Formik
 					initialValues={{
@@ -151,6 +154,7 @@ export default function Neworder() {
 						city: Yup.string().required("این فیلد الزامی است"),
 					})}
 					onSubmit={(values) => {
+                        // setOpen(false);
 						handelOrderrequest(
 							{
 								name: values.name,
@@ -345,7 +349,7 @@ export default function Neworder() {
 									<ShieldAlert />
 									<p>مساحت محل نصب پنل (متر مربع)</p>
 								</div>
-                                <CustomInput
+								<CustomInput
 									type="number"
 									dir="rtl"
 									// style={{ width: "25vw" }}
@@ -359,17 +363,17 @@ export default function Neworder() {
 									<ShieldAlert />
 									<p className="">میزان برق مورد نیاز </p>
 								</div>
-                                <CustomInput
-										type="number"
-										dir="rtl"
-										// style={{ width: "25vw" }}
-										placeholder="سقف هزینه"
-										icon={CircleDollarSign}
-										name="cost"
-									>
-										{" "}
-									</CustomInput>
-                                {/* <div className="mb-6 w-full">
+								<CustomInput
+									type="number"
+									dir="rtl"
+									// style={{ width: "25vw" }}
+									placeholder="سقف هزینه"
+									icon={CircleDollarSign}
+									name="cost"
+								>
+									{" "}
+								</CustomInput>
+								{/* <div className="mb-6 w-full">
 									<CustomInput
 										type="number"
 										dir="rtl"
