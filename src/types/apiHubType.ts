@@ -2,7 +2,7 @@ export interface getParams {
 	endPoint: string;
 	headers?: any;
 	accessToken?: string;
-	params?: Record<string, string>;
+	params?: any;
 }
 
 export interface postParams {

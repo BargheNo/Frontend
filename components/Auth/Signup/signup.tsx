@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import CustomInput from "@/components/CustomInput/CustomInput";
+import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import SignupButton from "@/components/SignupButton/SignupButton";
 import PhoneVerification from "@/components/phoneVerification/phoneVerification";
@@ -83,7 +83,7 @@ function Signup() {
 		Lname: string,
 		phone: string,
 		password: string,
-		confirmPassword : string,
+		confirmPassword: string,
 		isAcceptTerms: boolean
 	) => {
 		registerService
@@ -100,7 +100,9 @@ function Signup() {
 				toast(res?.data?.message);
 			})
 			.catch((err) => {
-				toast(err?.response?.data?.messages?.phone["alreadyRegistered"]);
+				toast(
+					err?.response?.data?.messages?.phone["alreadyRegistered"]
+				);
 			});
 	};
 	// const handleCorpRegister = (
@@ -109,7 +111,7 @@ function Signup() {
 	// 	password: string,
 	// 	isAcceptTerms: boolean
 	// ) => {
-    //     console.log(`Form: ${corpname}, ${cin}, ${password}, ${isAcceptTerms}`)
+	//     console.log(`Form: ${corpname}, ${cin}, ${password}, ${isAcceptTerms}`)
 	// 	registerService
 	// 		.createCorp({
 	// 			name: corpname,
@@ -248,44 +250,50 @@ function Signup() {
 												</CustomInput>
 											</div>
 											<div className="w-3/4">
-											<CustomInput
-												name="phonenumber"
-												placeholder="شماره تلفن همراه"
-												type="number"
-											>
-												{" "}
-											</CustomInput>
+												<CustomInput
+													name="phonenumber"
+													placeholder="شماره تلفن همراه"
+													type="number"
+												>
+													{" "}
+												</CustomInput>
 											</div>
 										</div>
 										<div className="w-9/10">
-										<CustomInput
-											name="password"
-											placeholder="رمز عبور"
-											onIconClick={() =>
-												Sethidepass((prev) => !prev)
-											}
-											icon={hidepass ? Lock : Unlock}
-											type={
-												hidepass ? "password" : "text"
-											}
-										>
-											{" "}
-										</CustomInput>
-										<CustomInput
-											name="confirmpassword"
-											onIconClick={() =>
-												Sethideconfpass((prev) => !prev)
-											}
-											icon={hideconfpass ? Lock : Unlock}
-											type={
-												hideconfpass
-													? "password"
-													: "text"
-											}
-											placeholder="تایید رمز عبور"
-										>
-											{" "}
-										</CustomInput>
+											<CustomInput
+												name="password"
+												placeholder="رمز عبور"
+												onIconClick={() =>
+													Sethidepass((prev) => !prev)
+												}
+												icon={hidepass ? Lock : Unlock}
+												type={
+													hidepass
+														? "password"
+														: "text"
+												}
+											>
+												{" "}
+											</CustomInput>
+											<CustomInput
+												name="confirmpassword"
+												onIconClick={() =>
+													Sethideconfpass(
+														(prev) => !prev
+													)
+												}
+												icon={
+													hideconfpass ? Lock : Unlock
+												}
+												type={
+													hideconfpass
+														? "password"
+														: "text"
+												}
+												placeholder="تایید رمز عبور"
+											>
+												{" "}
+											</CustomInput>
 										</div>
 										<div className={styles.ruleText}>
 											<label

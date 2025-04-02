@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import BidCard from "./BidCard";
-import { accessToken, baseURL, getData } from "@/src/services/apiHub";
+import { baseURL } from "@/src/services/apiHub";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/store/types";
 
 interface address {
 	province: string;
@@ -26,6 +28,9 @@ interface Bid {
 }
 
 export default function Bids() {
+	const accessToken = useSelector(
+		(state: RootState) => state.user.accessToken
+	);
 	// const accessToken =
 	// 	"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU0MDcwMzcsImlhdCI6MTc0MjgxNTAzNywic3ViIjoxfQ.U245pmQco3hU0VATsXU8hovIl75FCpvcPGHDef0BVtRqPny5A9LBMMHRNcD4hQk9OciVS8v-kMYQvyuGsq6ido2ebNVFhIR0Vja023B48S5tW3yzSOyySEvcLEt3pWxTRQo45mK9GLBRtdpQu18qoKqreHOzr98K2mTd4E7lVE8";
 	const [bidData, setBidData] = useState<Bid[] | null>(null);

@@ -18,6 +18,7 @@ export default function Page() {
     dispatch(
       setUser({
         userName: "test",
+        phoneNumber: "test",
         accessToken: "test",
         refreshToken: "test",
       })

@@ -26,7 +26,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import CustomInput from "@/components/CustomInput/CustomInput";
+import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { Form, Formik } from "formik";
 import {
 	Select,

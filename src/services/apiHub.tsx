@@ -244,7 +244,7 @@ export const handleLogin = async (phoneNumber: string, password: string) => {
 		if (response.status === 200) {
 			return {
 				success: true,
-				data: response.data,
+				data: response?.data,
 			};
 		}
 
@@ -253,7 +253,7 @@ export const handleLogin = async (phoneNumber: string, password: string) => {
 			message: response?.data?.message || "مشکلی رخ داده",
 		};
 	} catch (error: any) {
-		console.log("error", error);
+		// console.log("error", error);
 		toast(generateErrorMessage(error));
 		// if (axios.isAxiosError(error)) {
 		// 	return {
@@ -392,7 +392,8 @@ export const phonenumberVerification = async (phone: string, otp: string) => {
 
 export const handleResetPassword = async (
 	confirmPassword: string,
-	password: string
+	password: string, 
+	accessToken: string
 ) => {
 	try {
 		// const accessToken = localStorage.getItem('accessToken');

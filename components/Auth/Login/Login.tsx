@@ -5,7 +5,7 @@ import Link from "next/link";
 import styles from "./login.module.css";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import CustomInput from "../../CustomInput/CustomInput";
+import CustomInput from "../../Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import LoginButton from "./LoginButton";
 import { handleLogin } from "../../../src/services/apiHub";
@@ -73,8 +73,8 @@ const Login = () => {
 		const { phoneNumber, password } = values;
 		const response = await handleLogin(phoneNumber, password);
 
-		if (response.success) {
-			toast.success(response.data.message);
+		if (response?.success) {
+			toast.success(response?.data?.message);
 			dispatch(
 				setUser({
 					userName: "",
@@ -90,7 +90,7 @@ const Login = () => {
 			);
 			window.location.href = "/";
 		} else {
-			toast.error(response.message || "هنگام ورود مشکلی پیش آمد.");
+			toast.error(response?.message || "هنگام ورود مشکلی پیش آمد.");
 		}
 	};
 
