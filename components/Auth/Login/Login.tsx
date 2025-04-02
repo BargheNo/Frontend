@@ -11,6 +11,7 @@ import LoginButton from "./LoginButton";
 import { handleLogin } from "../../../src/services/apiHub";
 import { toast } from "sonner";
 import { setUser } from "@/src/store/slices/userSlice";
+import { useDispatch } from "react-redux";
 
 const validationSchema = Yup.object({
 	phoneNumber: Yup.string()
@@ -38,6 +39,7 @@ const Login = () => {
 		setShowPassword(!showPassword);
 	};
 
+	const dispatch = useDispatch();
 	const handleFormSubmit = async (values: {
 		phoneNumber: string;
 		password: string;
@@ -47,12 +49,14 @@ const Login = () => {
 
 		if (response.success) {
 			toast.success(response.data.message);
-			setUser({
-				userName: "",
-				accessToken: response.data.data.accessToken,
-        phoneNumber: phoneNumber,
-				refreshToken: response.data.data.accessToken,
-			});
+			dispatch(
+				setUser({
+					userName: "",
+					accessToken: response.data.data.accessToken,
+					phoneNumber: phoneNumber,
+					refreshToken: response.data.data.accessToken,
+				})
+			);
 			localStorage.setItem("accessToken", response.data.data.accessToken);
 			localStorage.setItem(
 				"refreshToken",
