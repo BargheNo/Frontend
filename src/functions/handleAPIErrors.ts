@@ -19,6 +19,7 @@ const Errors = {
 };
 
 interface ErrorResponse {
+	message?: string;
 	messages?: {
 		[key: string]: string;
 	};
@@ -28,7 +29,7 @@ export default function generateErrorMessage(
 	err: ErrorResponse,
 	fields: string[]
 ) {
-	let errorMessage = "";
+	let errorMessage = err?.message ? err?.message : "";
 
 	fields.forEach((field) => {
 		if (err.messages?.[field]) {
