@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getParams, postParams } from "../types/apiHubType";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/types";
 
-// export const baseURL = "https://bombfundingbackend.liara.run";
-// export const baseURL = "http://104.168.46.4:8000";
 // export const baseURL = "https://260d-141-11-250-179.ngrok-free.app";
 export const baseURL = "http://185.110.189.68:8080";
 
@@ -27,7 +27,7 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
 	(config) => {
 		// Modify the config before the request is sent, e.g., attach token
-		let token = localStorage.getItem("token");
+		let token = useSelector((state: RootState) => state.user.accessToken);
 		token =
 			"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU0MDcwMzcsImlhdCI6MTc0MjgxNTAzNywic3ViIjoxfQ.U245pmQco3hU0VATsXU8hovIl75FCpvcPGHDef0BVtRqPny5A9LBMMHRNcD4hQk9OciVS8v-kMYQvyuGsq6ido2ebNVFhIR0Vja023B48S5tW3yzSOyySEvcLEt3pWxTRQo45mK9GLBRtdpQu18qoKqreHOzr98K2mTd4E7lVE8";
 		if (token) config.headers.Authorization = `Bearer ${token}`;
