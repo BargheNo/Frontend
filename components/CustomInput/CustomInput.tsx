@@ -40,7 +40,7 @@ export default function CustomInput({
 	const hasError = meta.touched && meta.error;
 
 	return (
-		<div className={`${style.Conter} ${containerClassName}`}>
+		<div className={`${containerClassName} ${style.Conter}`}>
 			<div className={style.inputWrapper}>
 				{Icon && (
 					<Icon

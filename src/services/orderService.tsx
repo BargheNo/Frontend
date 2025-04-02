@@ -22,7 +22,7 @@ interface page {
 
 class order {
 	orderRequest(Orderinfo: Orderinfo, token: string) {
-		console.log("token", token);
+		// console.log("token", token);
 		return postData({
 			endPoint: `${baseURL}/v1/user/installation/request`,
 			data: Orderinfo,

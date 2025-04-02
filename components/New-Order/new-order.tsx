@@ -97,8 +97,8 @@ export default function Neworder() {
 				toast(res?.data?.message);
 			})
 			.catch((err) => {
-                console.log(err);
-				toast(generateErrorMessage<order>(err));
+				console.log(err);
+				toast(generateErrorMessage(err));
 			});
 	};
 	return (
@@ -170,69 +170,33 @@ export default function Neworder() {
 					}}
 				>
 					{({ setFieldValue, values }) => (
-						<Form className="flex flex-col items-end w-full h-auto gap-4">
+						<Form className="flex flex-col items-end w-full h-auto gap-4 rtl">
 							<div
 								className="flex justify-end w-full items-center"
 								style={{ gap: "1vw" }}
 							>
-								<div className="flex flex-row justify-center mt-5 gap-x-1 text-gray-500">
-									<p>
-										.پنل شما با این نام در بخش پنل‌ها ثبت
-										خواهد شد
-									</p>
-									<ShieldAlert />
-								</div>
 								<CustomInput
 									dir="rtl"
-									style={{ width: "25vw" }}
+									// style={{ width: "25vw" }}
 									placeholder="نام پنل"
 									icon={SquareMenu}
 									name="name"
 								>
 									{" "}
 								</CustomInput>
+								<div className="flex flex-row justify-center mt-5 gap-x-1 text-gray-500">
+									<ShieldAlert />
+									<p className="rtl">
+										پنل شما با این نام در بخش پنل‌ها ثبت
+										خواهد شد.
+									</p>
+								</div>
 							</div>
 
 							<div
-								className="flex justify-end mt-2"
+								className="flex justify-between w-full mt-2"
 								style={{ gap: "1vw" }}
 							>
-								<Select
-									name="city"
-									disabled={disable}
-									onValueChange={(value) => {
-										const iD = FindCityid(cities, value);
-										Setcityid(iD ?? 1);
-										setFieldValue("city", value);
-									}}
-								>
-									<SelectTrigger
-										disabled={disable}
-										className={style.CustomInput}
-										style={{ width: "25vw" }}
-									>
-										<SelectValue placeholder="شهر" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectGroup>
-											<SelectLabel>شهر</SelectLabel>
-											{cities?.length > 0 ? (
-												cities.map((city, index) => (
-													<SelectItem
-														key={index}
-														value={city.name}
-													>
-														{Object.values(
-															city.name
-														)}
-													</SelectItem>
-												))
-											) : (
-												<p>هیچ شهری یافت نشد</p>
-											)}
-										</SelectGroup>
-									</SelectContent>
-								</Select>
 								<Select
 									name="province"
 									onValueChange={(value) => {
@@ -249,7 +213,7 @@ export default function Neworder() {
 								>
 									<SelectTrigger
 										className={style.CustomInput}
-										style={{ width: "25vw" }}
+										// style={{ width: "25vw" }}
 									>
 										<SelectValue placeholder="استان" />
 									</SelectTrigger>
@@ -275,14 +239,51 @@ export default function Neworder() {
 										</SelectGroup>
 									</SelectContent>
 								</Select>
+								<Select
+									name="city"
+									disabled={disable}
+									onValueChange={(value) => {
+										const iD = FindCityid(cities, value);
+										Setcityid(iD ?? 1);
+										setFieldValue("city", value);
+									}}
+								>
+									<SelectTrigger
+										disabled={disable}
+										className={style.CustomInput}
+										// style={{ width: "25vw" }}
+									>
+										<SelectValue placeholder="شهر" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectGroup>
+											<SelectLabel>شهر</SelectLabel>
+											{cities?.length > 0 ? (
+												cities.map((city, index) => (
+													<SelectItem
+														key={index}
+														value={city.name}
+													>
+														{Object.values(
+															city.name
+														)}
+													</SelectItem>
+												))
+											) : (
+												<p>هیچ شهری یافت نشد</p>
+											)}
+										</SelectGroup>
+									</SelectContent>
+								</Select>
 							</div>
-							<div className="-mt-5">
+							<div className="-mt-5 w-full">
 								<CustomInput
 									dir="rtl"
 									style={{ width: "51vw" }}
 									placeholder="آدرس"
 									icon={MapPinHouse}
 									name="address"
+									containerClassName="w-full"
 								>
 									{" "}
 								</CustomInput>
@@ -293,21 +294,11 @@ export default function Neworder() {
 							>
 								<CustomInput
 									type="number"
-									style={{ width: "25vw" }}
+									// style={{ width: "25vw" }}
 									dir="rtl"
 									icon={Mailbox}
 									name="code"
 									placeholder="کد پستی"
-								>
-									{" "}
-								</CustomInput>
-								<CustomInput
-									type="number"
-									style={{ width: "12vw" }}
-									dir="rtl"
-									icon={BellRing}
-									placeholder="واحد"
-									name="unit"
 								>
 									{" "}
 								</CustomInput>
@@ -321,57 +312,79 @@ export default function Neworder() {
 								>
 									{" "}
 								</CustomInput>
+								<CustomInput
+									type="number"
+									style={{ width: "12vw" }}
+									dir="rtl"
+									icon={BellRing}
+									placeholder="واحد"
+									name="unit"
+								>
+									{" "}
+								</CustomInput>
 							</div>
 
-							<div className="flex justify-end w-full gap-x-1 text-gray-500 -mb-6 mt-2">
-								<p>.مکانی که برای نصب پنل در نظر دارید</p>
+							<div className="flex w-full gap-x-1 text-gray-500 -mb-6 mt-2">
 								<ShieldAlert />
+								<p>مکانی که برای نصب پنل در نظر دارید.</p>
 							</div>
 
 							<div
 								className="flex justify-end w-full items-center -mt-2"
 								style={{ gap: "1vw" }}
 							>
-								<div className="flex flex-row justify-center gap-x-1 text-gray-500 mt-6">
-									<p>(متر مربع)مساحت محل نصب پنل </p>
-									<ShieldAlert />
-								</div>
 								<CustomInput
 									type="number"
 									dir="rtl"
-									style={{ width: "25vw" }}
+									// style={{ width: "25vw" }}
 									placeholder="مساحت"
 									icon={LandPlot}
 									name="area"
 								>
 									{" "}
 								</CustomInput>
+								<div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
+									<ShieldAlert />
+									<p>مساحت محل نصب پنل (متر مربع)</p>
+								</div>
 							</div>
 
 							<div
 								className="flex justify-end w-full items-center -mt-4"
 								style={{ gap: "1vw" }}
 							>
-								<div className="flex flex-row justify-center gap-x-1 text-gray-500 mt-6">
-									<p>میزان برق مورد نیاز </p>
-									<ShieldAlert />
-								</div>
 								<CustomInput
 									type="number"
 									dir="rtl"
-									style={{ width: "25vw" }}
+									// style={{ width: "25vw" }}
 									placeholder="میزان برق مورد نیاز"
 									icon={Gauge}
 									name="electricity"
 								>
 									{" "}
 								</CustomInput>
+								<div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
+									<ShieldAlert />
+									<p className="">میزان برق مورد نیاز </p>
+								</div>
 							</div>
 
 							<div
-								className="flex justify-end w-full items-center -mt-4"
+								className="flex gap-x-2 w-full items-center -mt-4"
 								style={{ gap: "1vw" }}
 							>
+								<div className="mb-6.5 w-full">
+									<CustomInput
+										type="number"
+										dir="rtl"
+										// style={{ width: "25vw" }}
+										placeholder="سقف هزینه"
+										icon={CircleDollarSign}
+										name="cost"
+									>
+										{" "}
+									</CustomInput>
+								</div>
 								<Select
 									name="building"
 									onValueChange={(value) =>
@@ -379,8 +392,8 @@ export default function Neworder() {
 									}
 								>
 									<SelectTrigger
-										className={style.CustomInput}
-										style={{ width: "25vw" }}
+										className={`${style.CustomInput} w-[90%]`}
+										// style={{ width: "25vw" }}
 									>
 										<SelectValue placeholder="نوع ساختمان" />
 									</SelectTrigger>
@@ -407,18 +420,6 @@ export default function Neworder() {
 										</SelectGroup>
 									</SelectContent>
 								</Select>
-								<div className="mb-6.5">
-									<CustomInput
-										type="number"
-										dir="rtl"
-										style={{ width: "25vw" }}
-										placeholder="سقف هزینه"
-										icon={CircleDollarSign}
-										name="cost"
-									>
-										{" "}
-									</CustomInput>
-								</div>
 							</div>
 							<div className="flex flex-row justify-center items-center self-center">
 								<SignupButton
