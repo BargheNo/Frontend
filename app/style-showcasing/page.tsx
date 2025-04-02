@@ -1,6 +1,7 @@
 import { ArrowLeft } from 'lucide-react';
 import React from 'react';
 import BidCard from '@/components/CorpDashboard/Bids/BidCard';
+import LoadingSpinner from '@/components/LoadingSpinner/LoadingSpinner';
 
 /**
  * Style Showcase Page
@@ -139,6 +140,13 @@ const StyleShowcase = () => {
           <div className="gradient-soft-blue rounded-2xl p-4 neu-shadow">
             Content with gradient-soft-blue style
           </div>
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="text-xl font-bold">Loading Spinner</h2>
+        <div className="flex items-center justify-center">
+          <LoadingSpinner />
         </div>
       </section>
     </div>
