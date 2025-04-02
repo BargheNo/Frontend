@@ -44,6 +44,7 @@ import { toast } from "sonner";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/types";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
+import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
 export default function Neworder() {
 	const [disable, Setdisable] = useState(true);
 	const [provinceid, Setprovinceid] = useState<number>();
@@ -184,7 +185,7 @@ export default function Neworder() {
 								>
 									{" "}
 								</CustomInput>
-								<div className="flex flex-row justify-center mt-5 gap-x-1 text-gray-500">
+								<div className="flex flex-row justify-center mt-5 gap-x-1 text-gray-500 w-full">
 									<ShieldAlert />
 									<p className="rtl">
 										پنل شما با این نام در بخش پنل‌ها ثبت
@@ -277,19 +278,16 @@ export default function Neworder() {
 								</Select>
 							</div>
 							<div className="-mt-5 w-full">
-								<CustomInput
-									dir="rtl"
-									style={{ width: "51vw" }}
-									placeholder="آدرس"
+								<CustomTextArea
 									icon={MapPinHouse}
 									name="address"
-									containerClassName="w-full"
+									placeholder="آدرس"
 								>
 									{" "}
-								</CustomInput>
+								</CustomTextArea>
 							</div>
 							<div
-								className="flex justify-end -mt-4"
+								className="flex justify-end w-full -mt-4"
 								style={{ gap: "1vw" }}
 							>
 								<CustomInput
@@ -330,8 +328,8 @@ export default function Neworder() {
 							</div>
 
 							<div
-								className="flex justify-end w-full items-center -mt-2"
-								style={{ gap: "1vw" }}
+								className="grid grid-cols-2 grid-rows-3 h-52 gap-x-3 w-full items-center -mt-2"
+								// style={{ gap: "1vw" }}
 							>
 								<CustomInput
 									type="number"
@@ -347,9 +345,80 @@ export default function Neworder() {
 									<ShieldAlert />
 									<p>مساحت محل نصب پنل (متر مربع)</p>
 								</div>
+                                <CustomInput
+									type="number"
+									dir="rtl"
+									// style={{ width: "25vw" }}
+									placeholder="میزان برق مورد نیاز"
+									icon={Gauge}
+									name="electricity"
+								>
+									{" "}
+								</CustomInput>
+								<div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
+									<ShieldAlert />
+									<p className="">میزان برق مورد نیاز </p>
+								</div>
+                                <CustomInput
+										type="number"
+										dir="rtl"
+										// style={{ width: "25vw" }}
+										placeholder="سقف هزینه"
+										icon={CircleDollarSign}
+										name="cost"
+									>
+										{" "}
+									</CustomInput>
+                                {/* <div className="mb-6 w-full">
+									<CustomInput
+										type="number"
+										dir="rtl"
+										// style={{ width: "25vw" }}
+										placeholder="سقف هزینه"
+										icon={CircleDollarSign}
+										name="cost"
+									>
+										{" "}
+									</CustomInput>
+								</div> */}
+								<Select
+									name="building"
+									onValueChange={(value) =>
+										Setbuilding(value)
+									}
+								>
+									<SelectTrigger
+										className={`${style.CustomInput} mt-[27px] min-h-[43px]`}
+										// style={{ width: "25vw" }}
+									>
+										<SelectValue placeholder="نوع ساختمان" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectGroup>
+											<SelectLabel>
+												نوع ساختمان
+											</SelectLabel>
+											<SelectItem value="residential">
+												مسکونی
+											</SelectItem>
+											<SelectItem value="commercial">
+												تجاری
+											</SelectItem>
+											<SelectItem value="industrial">
+												صنعتی
+											</SelectItem>
+											<SelectItem value="argiculture">
+												کشاورزی
+											</SelectItem>
+											<SelectItem value="more">
+												سایر
+											</SelectItem>
+										</SelectGroup>
+									</SelectContent>
+								</Select>
 							</div>
 
-							<div
+							{/* <div
 								className="flex justify-end w-full items-center -mt-4"
 								style={{ gap: "1vw" }}
 							>
@@ -367,9 +436,9 @@ export default function Neworder() {
 									<ShieldAlert />
 									<p className="">میزان برق مورد نیاز </p>
 								</div>
-							</div>
+							</div> */}
 
-							<div
+							{/* <div
 								className="flex gap-x-2 w-full items-center -mt-4"
 								style={{ gap: "1vw" }}
 							>
@@ -420,12 +489,12 @@ export default function Neworder() {
 										</SelectGroup>
 									</SelectContent>
 								</Select>
-							</div>
+							</div> */}
 							<div className="flex flex-row justify-center items-center self-center">
 								<SignupButton
 									type="submit"
 									style={{
-										marginTop: "-15px",
+										marginTop: "10px",
 										width: "25vw",
 									}}
 								>

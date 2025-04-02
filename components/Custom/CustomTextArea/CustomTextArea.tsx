@@ -3,7 +3,7 @@ import style from "./CustomTextArea.module.css";
 import { LucideIcon } from "lucide-react";
 import { useField } from "formik";
 
-interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
+interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
 	name: string;
 	children: React.ReactNode;
 	icon?: LucideIcon;
@@ -23,7 +23,7 @@ const isRTL = (text: string | undefined): boolean => {
 	return true;
 };
 
-export default function CustomInput({
+export default function CustomTextArea({
 	name,
 	children,
 	icon: Icon,
@@ -33,7 +33,7 @@ export default function CustomInput({
 	errorClassName,
 	inputClassName,
 	containerClassName,
-	// ...props
+	...props
 }: Props) {
 	// const [isTextRTL, setTextRTL] = useState(true);
 	const [field, meta] = useField(name);
@@ -45,7 +45,7 @@ export default function CustomInput({
 				{Icon && (
 					<Icon
 						onClick={onIconClick}
-						className={`${style.icon} ${iconClassName}`}
+						className={`${style.icon} top-3 ${iconClassName}`}
 					/>
 				)}
 				{field.value === "" && (
@@ -54,16 +54,16 @@ export default function CustomInput({
 					</label>
 				)}
 				<textarea
+                    {...field}
+                    {...props}
 					dir={isRTL(field.value) ? "rtl" : "ltr"}
 					autoFocus={autoFocus}
 					className={`${style.CustomInput} ${
 						style.numberInput
-					} ${inputClassName} ${
+					} ${inputClassName} min-h-12 w-full ${
 						isRTL(field.value) ? "text-right" : "text-left"
 					}`}
 					style={{ paddingLeft: Icon ? "42px" : "12px" }}
-					{...field}
-					// {...props}
 				/>
 				{hasError && (
 					<div className={style.errorMessage}>{meta.error}</div>
