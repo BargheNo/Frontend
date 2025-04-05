@@ -154,6 +154,9 @@ body {
   .rtl {
     direction: rtl;
   }
+  .ltr {
+    direction: ltr;
+  }
   .vazir-bold {
     font-family: "vazirBold";
     font-weight: 700;

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import CustomInput from "@/components/CustomInput/CustomInput";
+import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import SignupButton from "@/components/SignupButton/SignupButton";
 import PhoneVerification from "@/components/phoneVerification/phoneVerification";
@@ -83,7 +83,7 @@ function Signup() {
 		Lname: string,
 		phone: string,
 		password: string,
-		confirmPassword : string,
+		confirmPassword: string,
 		isAcceptTerms: boolean
 	) => {
 		registerService
@@ -97,36 +97,38 @@ function Signup() {
 			})
 			.then((res) => {
 				setOpen(true);
-				toast(res.data.message);
+				toast(res?.data?.message);
 			})
 			.catch((err) => {
-				toast(err.response.data.messages.phone["alreadyRegistered"]);
+				toast(
+					err?.response?.data?.messages?.phone["alreadyRegistered"]
+				);
 			});
 	};
-	const handleCorpRegister = (
-		corpname: string,
-		cin: string,
-		password: string,
-		isAcceptTerms: boolean
-	) => {
-        console.log(`Form: ${corpname}, ${cin}, ${password}, ${isAcceptTerms}`)
-		registerService
-			.createCorp({
-				name: corpname,
-				cin: String(cin),
-				password: password,
-				acceptedTerms: isAcceptTerms
-			})
-			.then((res) => {
-				console.log(res);
-				toast(res?.message);
-				route.push("/");
-			})
-			.catch((err) => {
-				console.log(err?.response?.data?.message);
-				toast(`${err.messages?.name ?? ""}\n${err.messages?.cin?.alreadyRegistered ?? ""}\n${err.messages?.password ?? ""}\n${err.messages?.acceptedTerms ?? ""}`);
-			});
-	};
+	// const handleCorpRegister = (
+	// 	corpname: string,
+	// 	cin: string,
+	// 	password: string,
+	// 	isAcceptTerms: boolean
+	// ) => {
+	//     console.log(`Form: ${corpname}, ${cin}, ${password}, ${isAcceptTerms}`)
+	// 	registerService
+	// 		.createCorp({
+	// 			name: corpname,
+	// 			cin: String(cin),
+	// 			password: password,
+	// 			acceptedTerms: isAcceptTerms
+	// 		})
+	// 		.then((res) => {
+	// 			console.log(res);
+	// 			toast(res?.message);
+	// 			route.push("/");
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log(err?.response?.data?.message);
+	// 			toast(`${err.messages?.name ?? ""}\n${err.messages?.cin?.alreadyRegistered ?? ""}\n${err.messages?.password ?? ""}\n${err.messages?.acceptedTerms ?? ""}`);
+	// 		});
+	// };
 
 	const handleVerification = (phone: string, otp: string) => {
 		registerService
@@ -150,7 +152,7 @@ function Signup() {
 			{/* Customer */}
 			<div className={`${vazir.className}`}>
 				<div className={`${styles.wholePage} overflow-hidden`}>
-					<div
+					{/* <div
 						className={`absolute overflow-hidden -translate-x-[50vw] hover:cursor-pointer w-48 h-48 justify-center grid grid-cols-2 grid-rows-2 text-center items-center bg-gradient-to-r from-[#EB4132] to-[#DD392B] rounded-full p-6`}
 						onClick={() => setCustomer(!customer)}
 					>
@@ -186,7 +188,7 @@ function Signup() {
 						>
 							ثبت نام شرکت
 						</span>
-					</div>
+					</div> */}
 					<div className={styles.card}>
 						{customer && (
 							<div className="w-full items-center text-center">
@@ -248,44 +250,50 @@ function Signup() {
 												</CustomInput>
 											</div>
 											<div className="w-3/4">
-											<CustomInput
-												name="phonenumber"
-												placeholder="شماره تلفن همراه"
-												type="number"
-											>
-												{" "}
-											</CustomInput>
+												<CustomInput
+													name="phonenumber"
+													placeholder="شماره تلفن همراه"
+													type="number"
+												>
+													{" "}
+												</CustomInput>
 											</div>
 										</div>
 										<div className="w-9/10">
-										<CustomInput
-											name="password"
-											placeholder="رمز عبور"
-											onIconClick={() =>
-												Sethidepass((prev) => !prev)
-											}
-											icon={hidepass ? Lock : Unlock}
-											type={
-												hidepass ? "password" : "text"
-											}
-										>
-											{" "}
-										</CustomInput>
-										<CustomInput
-											name="confirmpassword"
-											onIconClick={() =>
-												Sethideconfpass((prev) => !prev)
-											}
-											icon={hideconfpass ? Lock : Unlock}
-											type={
-												hideconfpass
-													? "password"
-													: "text"
-											}
-											placeholder="تایید رمز عبور"
-										>
-											{" "}
-										</CustomInput>
+											<CustomInput
+												name="password"
+												placeholder="رمز عبور"
+												onIconClick={() =>
+													Sethidepass((prev) => !prev)
+												}
+												icon={hidepass ? Lock : Unlock}
+												type={
+													hidepass
+														? "password"
+														: "text"
+												}
+											>
+												{" "}
+											</CustomInput>
+											<CustomInput
+												name="confirmpassword"
+												onIconClick={() =>
+													Sethideconfpass(
+														(prev) => !prev
+													)
+												}
+												icon={
+													hideconfpass ? Lock : Unlock
+												}
+												type={
+													hideconfpass
+														? "password"
+														: "text"
+												}
+												placeholder="تایید رمز عبور"
+											>
+												{" "}
+											</CustomInput>
 										</div>
 										<div className={styles.ruleText}>
 											<label
@@ -356,7 +364,7 @@ function Signup() {
 								</Formik>
 							</div>
 						)}
-						{!customer && (
+						{/* {!customer && (
 							<div className="w-full items-center text-center">
 								<h1 className={styles.topic}>ثبت نام شرکت</h1>
 								<Formik
@@ -491,7 +499,7 @@ function Signup() {
 									</Form>
 								</Formik>
 							</div>
-						)}
+						)} */}
 					</div>
 				</div>
 			</div>

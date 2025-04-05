@@ -1,16 +1,18 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MoveLeft, Lock, Unlock, Smartphone } from "lucide-react";
 import Link from "next/link";
 import styles from "./login.module.css";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import CustomInput from "../../CustomInput/CustomInput";
+import CustomInput from "../../Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import LoginButton from "./LoginButton";
 import { handleLogin } from "../../../src/services/apiHub";
 import { toast } from "sonner";
 import { setUser } from "@/src/store/slices/userSlice";
+import { useDispatch } from "react-redux";
+import generateErrorMessage from "@/src/functions/handleAPIErrors";
 
 const validationSchema = Yup.object({
 	phoneNumber: Yup.string()
@@ -37,7 +39,33 @@ const Login = () => {
 	const togglePasswordVisibility = () => {
 		setShowPassword(!showPassword);
 	};
-
+	// useEffect(() => {
+	// 	console.log(
+	// 		generateErrorMessage<{
+	// 			phoneNumber: string;
+	// 			password: string;
+	// 		}>(
+	// 			{
+	// 				response: {
+	// 					data: {
+	// 						message: "er1",
+	// 						messages: {
+	// 							password: { minimumLength: "باید 8 باشد",
+	// 								Expired: "خسته نباشید"
+	// 							 },
+	// 						},
+	// 					},
+	// 				},
+	// 			},
+	// 			{} as {
+	// 				phoneNumber: string;
+	// 				password: string;
+	// 			},
+	// 			["password", "phoneNumber"]
+	// 		)
+	// 	);
+	// });
+	const dispatch = useDispatch();
 	const handleFormSubmit = async (values: {
 		phoneNumber: string;
 		password: string;
@@ -45,14 +73,16 @@ const Login = () => {
 		const { phoneNumber, password } = values;
 		const response = await handleLogin(phoneNumber, password);
 
-		if (response.success) {
-			toast.success(response.data.message);
-			setUser({
-				userName: "",
-				accessToken: response.data.data.accessToken,
-        phoneNumber: phoneNumber,
-				refreshToken: response.data.data.accessToken,
-			});
+		if (response?.success) {
+			toast.success(response?.data?.message);
+			dispatch(
+				setUser({
+					userName: "",
+					accessToken: response.data.data.accessToken,
+					phoneNumber: phoneNumber,
+					refreshToken: response.data.data.accessToken,
+				})
+			);
 			localStorage.setItem("accessToken", response.data.data.accessToken);
 			localStorage.setItem(
 				"refreshToken",
@@ -60,7 +90,7 @@ const Login = () => {
 			);
 			window.location.href = "/";
 		} else {
-			toast.error(response.message || "هنگام ورود مشکلی پیش آمد.");
+			toast.error(response?.message || "هنگام ورود مشکلی پیش آمد.");
 		}
 	};
 

@@ -6,7 +6,7 @@ import useClientCheck from "@/src/hooks/useClientCheck";
 import { vazir } from "@/lib/fonts";
 import { toast } from "sonner";
 
-export default function page() {
+export default function Page() {
   const dispatch = useDispatch();
   const user = useSelector((state: any) => state.user);
 
@@ -18,6 +18,7 @@ export default function page() {
     dispatch(
       setUser({
         userName: "test",
+        phoneNumber: "test",
         accessToken: "test",
         refreshToken: "test",
       })

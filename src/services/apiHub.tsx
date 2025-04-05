@@ -3,21 +3,21 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { getParams, postParams } from "../types/apiHubType";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/types";
+import { toast } from "sonner";
+import generateErrorMessage from "../functions/handleAPIErrors";
 
-// export const baseURL = "https://260d-141-11-250-179.ngrok-free.app";
-// export const baseURL = "https://86c4-212-64-199-253.ngrok-free.app";
-export const baseURL = "http://185.110.189.68:8080";
+export const baseURL = "https://86c4-212-64-199-253.ngrok-free.app";
+// export const baseURL = "http://185.110.189.68:8080";
 
 // export const accessToken = localStorage.getItem("accessToken");
-export const accessToken =
-	"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU0MDcwMzcsImlhdCI6MTc0MjgxNTAzNywic3ViIjoxfQ.U245pmQco3hU0VATsXU8hovIl75FCpvcPGHDef0BVtRqPny5A9LBMMHRNcD4hQk9OciVS8v-kMYQvyuGsq6ido2ebNVFhIR0Vja023B48S5tW3yzSOyySEvcLEt3pWxTRQo45mK9GLBRtdpQu18qoKqreHOzr98K2mTd4E7lVE8";
+// export const accessToken =
+// 	"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU0MDcwMzcsImlhdCI6MTc0MjgxNTAzNywic3ViIjoxfQ.U245pmQco3hU0VATsXU8hovIl75FCpvcPGHDef0BVtRqPny5A9LBMMHRNcD4hQk9OciVS8v-kMYQvyuGsq6ido2ebNVFhIR0Vja023B48S5tW3yzSOyySEvcLEt3pWxTRQo45mK9GLBRtdpQu18qoKqreHOzr98K2mTd4E7lVE8";
 
 const apiClient = axios.create({
 	baseURL: baseURL,
 	timeout: 20000,
 	headers: {
 		"Content-Type": "application/json",
-		// Authorization: `${accessToken}`,
 	},
 });
 
@@ -28,10 +28,11 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
 	(config) => {
 		// Modify the config before the request is sent, e.g., attach token
-		let token = useSelector((state: RootState) => state.user.accessToken);
-		token =
-			"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU0MDcwMzcsImlhdCI6MTc0MjgxNTAzNywic3ViIjoxfQ.U245pmQco3hU0VATsXU8hovIl75FCpvcPGHDef0BVtRqPny5A9LBMMHRNcD4hQk9OciVS8v-kMYQvyuGsq6ido2ebNVFhIR0Vja023B48S5tW3yzSOyySEvcLEt3pWxTRQo45mK9GLBRtdpQu18qoKqreHOzr98K2mTd4E7lVE8";
-		if (token) config.headers.Authorization = `Bearer ${token}`;
+		// let token;
+		// token =
+		// 	"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU0MDcwMzcsImlhdCI6MTc0MjgxNTAzNywic3ViIjoxfQ.U245pmQco3hU0VATsXU8hovIl75FCpvcPGHDef0BVtRqPny5A9LBMMHRNcD4hQk9OciVS8v-kMYQvyuGsq6ido2ebNVFhIR0Vja023B48S5tW3yzSOyySEvcLEt3pWxTRQo45mK9GLBRtdpQu18qoKqreHOzr98K2mTd4E7lVE8";
+		// token = useSelector((state: RootState) => state.user.accessToken);
+		// if (token) config.headers.Authorization = `Bearer ${token}`;
 		return config;
 	},
 	(error) => {
@@ -117,9 +118,18 @@ export function useDeleteData(options = {}) {
 // }
 
 // Keep existing API functions as they are
-export const getData = async ({ endPoint, headers }: getParams) => {
+export const getData = async ({
+	endPoint,
+	headers,
+	accessToken,
+	params,
+}: getParams) => {
 	try {
-		const response = await apiClient.get(endPoint, headers);
+		const response = await apiClient.get(endPoint, {
+			Authorization: `Bearer ${accessToken}`,
+			params: params,
+			...headers,
+		});
 		return response.data;
 	} catch (error) {
 		throw error;
@@ -139,9 +149,19 @@ export const getData = async ({ endPoint, headers }: getParams) => {
 //   }
 // };
 
-export const postData = async ({ endPoint, data, headers }: postParams) => {
+export const postData = async ({
+	endPoint,
+	data,
+	headers,
+	accessToken,
+}: postParams) => {
 	try {
-		const response = await apiClient.post(endPoint, data, headers);
+		const response = await apiClient.post(endPoint, data, {
+			headers: {
+				Authorization: `Bearer ${accessToken}`,
+				...headers,
+			},
+		});
 		return response.data;
 	} catch (error: any) {
 		// Log the error details for better debugging
@@ -155,28 +175,51 @@ export const postData = async ({ endPoint, data, headers }: postParams) => {
 	}
 };
 
-export const patchData = async ({ endPoint, data, headers }: postParams) => {
+export const patchData = async ({
+	endPoint,
+	data,
+	headers,
+	accessToken,
+}: postParams) => {
 	//   await RefreshToken();
 	try {
-		const response = await apiClient.patch(endPoint, data, headers);
+		const response = await apiClient.patch(endPoint, data, {
+			Authorization: `Bearer ${accessToken}`,
+			...headers,
+		});
 		return response.data;
 	} catch (error) {
 		throw error;
 	}
 };
-export const putData = async ({ endPoint, data, headers }: postParams) => {
+export const putData = async ({
+	endPoint,
+	data,
+	headers,
+	accessToken,
+}: postParams) => {
 	//   await RefreshToken();
 	try {
-		const response = await apiClient.put(endPoint, data, headers);
+		const response = await apiClient.put(endPoint, data, {
+			Authorization: `Bearer ${accessToken}`,
+			...headers,
+		});
 		return response.data;
 	} catch (error) {
 		throw error;
 	}
 };
-export const deleteData = async ({ endPoint, headers }: getParams) => {
+export const deleteData = async ({
+	endPoint,
+	headers,
+	accessToken,
+}: getParams) => {
 	//   await RefreshToken();
 	try {
-		const response = await apiClient.delete(endPoint, headers);
+		const response = await apiClient.delete(endPoint, {
+			Authorization: `Bearer ${accessToken}`,
+			...headers,
+		});
 		return response.data;
 	} catch (error) {
 		throw error;
@@ -197,30 +240,32 @@ export const handleLogin = async (phoneNumber: string, password: string) => {
 				},
 			}
 		);
-
+		console.log(response);
 		if (response.status === 200) {
 			return {
 				success: true,
-				data: response.data,
+				data: response?.data,
 			};
 		}
 
 		return {
 			success: false,
-			message: response.data?.message || "An unknown error occurred",
+			message: response?.data?.message || "مشکلی رخ داده",
 		};
-	} catch (error: unknown) {
-		if (axios.isAxiosError(error)) {
-			return {
-				success: false,
-				message: error.response?.data?.message || "Network error",
-			};
-		}
+	} catch (error: any) {
+		// console.log("error", error);
+		toast(generateErrorMessage(error));
+		// if (axios.isAxiosError(error)) {
+		// 	return {
+		// 		success: false,
+		// 		message: error?.response?.data?.message || "Network error",
+		// 	};
+		// }
 
-		return {
-			success: false,
-			message: "An unexpected error occurred",
-		};
+		// return {
+		// 	success: false,
+		// 	message: "An unexpected error occurred",
+		// };
 	}
 };
 
@@ -347,7 +392,8 @@ export const phonenumberVerification = async (phone: string, otp: string) => {
 
 export const handleResetPassword = async (
 	confirmPassword: string,
-	password: string
+	password: string, 
+	accessToken: string
 ) => {
 	try {
 		// const accessToken = localStorage.getItem('accessToken');
