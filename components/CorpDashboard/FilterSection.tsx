@@ -23,7 +23,10 @@ const validationSchema = Yup.object({
 		.oneOf(["most-recent", "by-status"], "مقدار ترتیب بندی صحیح نیست"),
 	resultPerPage: Yup.string()
 		.required()
-		.oneOf(["10", "20", "50", "100"], "مقدار تعداد نتایج در هر صفحه درست نیست"),
+		.oneOf(
+			["10", "20", "50", "100"],
+			"مقدار تعداد نتایج در هر صفحه درست نیست"
+		),
 });
 export default function FilterSection() {
 	const [sorting, setSorting] = useState("most-recent");
@@ -49,9 +52,17 @@ export default function FilterSection() {
 			>
 				<div className="p-5 items-center flex gap-6">
 					<div className="w-4/5">
-						<CustomInput placeholder="جستجو" name="search" icon={Search} type="text" containerClassName="-translate-y-[11px]" > </CustomInput>
+						<CustomInput
+							placeholder="جستجو"
+							name="search"
+							icon={Search}
+							type="text"
+							containerClassName="-translate-y-[11px]"
+						>
+							{" "}
+						</CustomInput>
 					</div>
-					<div className="flex justify-between w-1/5">
+					<div className="flex gap-4 items-center">
 						<Select
 							defaultValue="most-recent"
 							value={sorting}
@@ -59,7 +70,7 @@ export default function FilterSection() {
 								setSorting(value);
 							}}
 						>
-							<SelectTrigger dir="rtl" className="bg-white">
+							<SelectTrigger dir="rtl" className="bg-[#F4F1F3] w-40">
 								<SelectValue placeholder="جدیدترین" />
 							</SelectTrigger>
 							<SelectContent dir="rtl">
@@ -82,10 +93,10 @@ export default function FilterSection() {
 							defaultValue={"20"}
 							value={String(resultPerPage)}
 							onValueChange={(value) => {
-								setResultPerPage(Number(value));
+								setResultPerPage(value);
 							}}
 						>
-							<SelectTrigger dir="rtl" className="bg-white">
+							<SelectTrigger dir="rtl" className="bg-[#F4F1F3] w-18">
 								<SelectValue placeholder="20" />
 							</SelectTrigger>
 							<SelectContent dir="rtl">
