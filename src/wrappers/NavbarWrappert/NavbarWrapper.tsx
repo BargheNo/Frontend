@@ -10,7 +10,7 @@ export default function NavbarWrapper() {
   const noNavbarPaths = noNavbarPath();
 
   const shouldShowNavbar = !noNavbarPaths.some((path) =>
-    pathname.startsWith(path)
+    pathname?.startsWith(path)
   );
 
   return shouldShowNavbar ? <Navbar /> : null;

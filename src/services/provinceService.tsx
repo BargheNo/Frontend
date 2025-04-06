@@ -1,14 +1,15 @@
 import axios from "axios"
+import { baseURL } from "./apiHub";
 
 class provinceService{
     GetProvinces(){
-        return axios.get("https://260d-141-11-250-179.ngrok-free.app/v1/address/province", {
+        return axios.get(`${baseURL}/v1/address/province`, {
             headers: {
                 "ngrok-skip-browser-warning":"69420"
             }})
     }
     GetCities(provinceId:number){
-        return axios.get(`https://260d-141-11-250-179.ngrok-free.app/v1/address/province/${provinceId}/city`, {
+        return axios.get(`${baseURL}/v1/address/province/${provinceId}/city`, {
             headers: {
                 "ngrok-skip-browser-warning":"69420"
             }})
