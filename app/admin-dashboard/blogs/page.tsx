@@ -12,7 +12,7 @@ export default function page() {
 				<div className="w-full">
 					<NewBlog />
 
-					<div className="mr-2 mt-3 text-navy-blue font-bold">
+					<div className="mt-3 text-navy-blue font-bold text-center">
 						<p>ثبت مطلب جدید</p>
 					</div>
 				</div>
