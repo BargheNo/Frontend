@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./Users.module.css";
-import { CalendarCheck2, Fingerprint, Settings, User } from "lucide-react";
+import { CalendarCheck2, Fingerprint, Settings, User} from "lucide-react";
 const CustomIcon = ({ icon: Icon }: { icon: React.ElementType }) => {
 	return (
 		<div className={`${styles.icon} bg-[#F4F1F3] text-[#FA682D]`}>
@@ -9,7 +9,7 @@ const CustomIcon = ({ icon: Icon }: { icon: React.ElementType }) => {
 	);
 };
 
-const User = ({
+const UserItem = ({
 	name,
 	id,
 	date,
@@ -47,7 +47,7 @@ const User = ({
 export default function Users() {
 	return (
 		<div className="flex flex-col w-full text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
-			<User name="یاسر تیموری" id="781836189" date="1404/2/7" />
+			<UserItem name="یاسر تیموری" id="781836189" date="1404/2/7" />
 		</div>
 	);
 }
