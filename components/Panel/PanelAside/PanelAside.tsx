@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import localFont from "next/font/local";
 
 import { PanelAsideProps, NavItem } from "@/src/types/PanelAsideTypes";
-
+import styles from "./PanelAside.module.css";
 // const myFont = localFont({ src: '../public/fonts/vazir/Vazir.ttf' })
 const myFont = localFont({ src: "../../../public/fonts/vazir/Vazir.ttf" });
 
