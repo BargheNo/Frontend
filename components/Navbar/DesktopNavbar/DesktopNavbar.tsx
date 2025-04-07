@@ -24,7 +24,8 @@ export default function DesktopNavbar() {
             >
               داشبورد
             </Link>
-            <Link className={"vazir-bold rtl"} href={"/landing/corp-introduction"}>
+            <Link className={"vazir-bold rtl bg"} href={"/landing/corp-introduction"}
+            >
               در برق نو بفروشید!
             </Link>
             <Link className={["", vazirBold.className].join(" ")} href={"/"}>
