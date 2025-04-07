@@ -91,11 +91,9 @@ export default function AddPanel() {
         UpdateCityList(provinceid ?? 1);
     }, [provinceid]);
 
-    const handelAddPanelrequest = (panel: InitPanel, token: string) => {
+    const handelAddPanelrequest = (panel: InitPanel) => {
         setOpen(false);
-        console.log("hello", token);
-        addpanelService.AddPanel
-            (panel, token)
+        addpanelService.AddPanel(panel)
             .then((res) => {
                 toast(res?.data?.message);
                 setOpen(false);
@@ -180,7 +178,6 @@ export default function AddPanel() {
                                 houseNumber: String(values.number),
                                 unit: Number(values.unit),
                             },
-                            "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDY0OTgzOTcsImlhdCI6MTc0MzkwNjM5Nywic3ViIjoxfQ.Pg3qDBshC2Uo92zWr6Fq1WOc-Ovgpy0PePBPl1UfHZHPicKIEISAPvSerP7WcZtbppfcTl_1X_cheDdstueYjgAOHBPsDJe7thdYgsH-IwrLelUU9bJ9-2b0RkrTby41K2cnRb-MvTGTXOfHvnAbtdLHe7pt73xnLwohOzOwVf8"
                         );
                     }}
                 >
