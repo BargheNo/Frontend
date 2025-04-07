@@ -1,17 +1,10 @@
 "use client";
 import React, { useState } from "react";
-<<<<<<< HEAD
-
-import { Search } from "lucide-react";
-import CustomInput from "@/components/Custom/CustomInput/CustomInput";
-
-=======
 const initialValues = {
 	search: "",
 	resultPerPage: "10",
 	sorting: "most-recent",
 };
->>>>>>> eb8346a07f18e623a1c668432dc7883bed1bfffb
 import {
 	Select,
 	SelectContent,
