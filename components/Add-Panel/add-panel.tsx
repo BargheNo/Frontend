@@ -9,12 +9,15 @@ import {
     MapPinHouse,
     SquareMenu,
     IdCard,
-    Plus
+    Plus,
+    BellRing,
+    House,
+    Mailbox
 } from "lucide-react";
 import style from "./style.module.css";
 import SignupButton from "@/components/SignupButton/SignupButton";
 import * as Yup from "yup";
-import { order } from "@/src/types/OrderrequestType";
+import { InitPanel } from "@/src/types/addPanelType";
 import {
     Dialog,
     DialogClose,
@@ -37,12 +40,12 @@ import {
 } from "@/components/ui/select";
 import { City, Province } from "@/src/types/provinceType";
 import provinceService from "@/src/services/provinceService";
-import orderService from "@/src/services/orderService";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/types";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
+import addpanelService from "@/src/services/addpanelService";
 export default function AddPanel() {
     const [open, setOpen] = useState(false);
     const [disable, Setdisable] = useState(true);
@@ -88,20 +91,20 @@ export default function AddPanel() {
         UpdateCityList(provinceid ?? 1);
     }, [provinceid]);
 
-    // const handelOrderrequest = (orderinfo: order, token: string) => {
-    //     setOpen(false);
-    //     console.log("hello", token);
-    //     orderService
-    //         .orderRequest(orderinfo, token)
-    //         .then((res) => {
-    //             toast(res?.data?.message);
-    //             setOpen(false);
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //             toast(generateErrorMessage(err));
-    //         });
-    // };
+    const handelAddPanelrequest = (panel: InitPanel, token: string) => {
+        setOpen(false);
+        console.log("hello", token);
+        addpanelService.AddPanel
+            (panel, token)
+            .then((res) => {
+                toast(res?.data?.message);
+                setOpen(false);
+            })
+            .catch((err) => {
+                console.log(err);
+                toast(generateErrorMessage(err));
+            });
+    };
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -131,6 +134,9 @@ export default function AddPanel() {
                         province: "",
                         city: "",
                         building:"",
+                        code: "",
+						unit: "",
+						number: "",
                     }}
                     validationSchema={Yup.object({
                         phonenumber: Yup.string()
@@ -140,6 +146,7 @@ export default function AddPanel() {
                             .required("این فیلد الزامی است")
                             .max(50, "نام پنل نمی تواند بیش از 50 کارکتر باشد"),
                         address: Yup.string().required("این فیلد الزامی است"),
+                        building: Yup.string().required("این فیلد الزامی است"),
                         area: Yup.number().required("این فیلد الزامی است"),
                         power: Yup.number().required(
                             "این فیلد الزامی است"
@@ -149,26 +156,32 @@ export default function AddPanel() {
                         direction: Yup.number().required("این فیلد الزامی است"),
                         province: Yup.string().required("این فیلد الزامی است"),
                         city: Yup.string().required("این فیلد الزامی است"),
+                        number: Yup.string().required("این فیلد الزامی است"),
+                        code: Yup.string().required("این فیلد الزامی است").length(10, "کد پستی وارد شده اشتباه است"),
+                        unit: Yup.number().required("این فیلد الزامی است"),
                     })}
                     onSubmit={(values) => {
-                        // setOpen(false);
-                        // handelOrderrequest(
-                        //     {
-                        //         name: values.name,
-                        //         area: Number(values.area),
-                        //         power: Number(values.electricity),
-                        //         maxCost: Number(values.cost),
-                        //         buildingType: building,
-                        //         description: "",
-                        //         provinceID: provinceid ?? 1,
-                        //         cityID: cityid ?? 1,
-                        //         streetAddress: values.address,
-                        //         postalCode: String(values.code),
-                        //         houseNumber: String(values.number),
-                        //         unit: Number(values.unit),
-                        //     },
-                        //     accessToken
-                        // );
+                        setOpen(false);
+                        handelAddPanelrequest
+                        (
+                            {
+                                panelName: values.name,
+                                customerPhone:"+98"+values.phonenumber,
+                                power: Number(values.power),
+                                area: Number(values.area),
+                                buildingType: building,
+                                tilt: Number(values.angel),
+                                azimuth:Number(values.direction),
+                                totalNumberOfModules:Number(values.modulecount),
+                                provinceID: provinceid ?? 1,
+                                cityID: cityid ?? 1,
+                                streetAddress: values.address,
+                                postalCode: String(values.code),
+                                houseNumber: String(values.number),
+                                unit: Number(values.unit),
+                            },
+                            "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDY0OTgzOTcsImlhdCI6MTc0MzkwNjM5Nywic3ViIjoxfQ.Pg3qDBshC2Uo92zWr6Fq1WOc-Ovgpy0PePBPl1UfHZHPicKIEISAPvSerP7WcZtbppfcTl_1X_cheDdstueYjgAOHBPsDJe7thdYgsH-IwrLelUU9bJ9-2b0RkrTby41K2cnRb-MvTGTXOfHvnAbtdLHe7pt73xnLwohOzOwVf8"
+                        );
                     }}
                 >
                     {({ setFieldValue, values }) => (
@@ -239,8 +252,10 @@ export default function AddPanel() {
                                 </CustomInput>
                                 <Select
                                     name="building"
-                                    onValueChange={(value) =>
-                                        Setbuilding(value)
+                                    onValueChange={(value) =>{
+                                        Setbuilding(value);
+                                        setFieldValue("building", value);
+                                    }
                                     }
                                 >
                                     <SelectTrigger
@@ -398,7 +413,41 @@ export default function AddPanel() {
                                     {" "}
                                 </CustomTextArea>
                             </div>
-                            
+                            <div
+								className="flex justify-end w-full -mt-4"
+								style={{ gap: "1vw" }}
+							>
+								<CustomInput
+									type="number"
+									// style={{ width: "25vw" }}
+									dir="rtl"
+									icon={Mailbox}
+									name="code"
+									placeholder="کد پستی"
+								>
+									{" "}
+								</CustomInput>
+								<CustomInput
+									type="number"
+									style={{ width: "12vw" }}
+									dir="rtl"
+									icon={House}
+									placeholder="پلاک"
+									name="number"
+								>
+									{" "}
+								</CustomInput>
+								<CustomInput
+									type="number"
+									style={{ width: "12vw" }}
+									dir="rtl"
+									icon={BellRing}
+									placeholder="واحد"
+									name="unit"
+								>
+									{" "}
+								</CustomInput>
+							</div>
 
                             <div className="flex flex-row justify-center items-center self-center">
                                 <SignupButton
