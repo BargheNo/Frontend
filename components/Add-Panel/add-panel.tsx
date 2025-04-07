@@ -1,16 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import {
-    Plus,
-    ShieldAlert,
-    Mailbox,
-    SquareMenu,
-    MapPinHouse,
+    Tally5,
+    DatabaseZap,
+    TriangleRight,
+    Compass,
     LandPlot,
-    CircleDollarSign,
-    Gauge,
-    BellRing,
-    House,
+    MapPinHouse,
+    SquareMenu,
+    IdCard,
+    Plus
 } from "lucide-react";
 import style from "./style.module.css";
 import SignupButton from "@/components/SignupButton/SignupButton";
@@ -181,7 +180,7 @@ export default function AddPanel() {
                                 <CustomInput
                                     dir="rtl"
                                     placeholder="شماره مشتری"
-                                    icon={SquareMenu}
+                                    icon={IdCard}
                                     name="phonenumber"
                                     type="number"
                                 >
@@ -222,7 +221,7 @@ export default function AddPanel() {
                                 <CustomInput
                                     type="number"
                                     dir="rtl"
-                                    icon={Mailbox}
+                                    icon={Tally5}
                                     name="modulecount"
                                     placeholder="تعداد ماژول ها"
         
@@ -232,7 +231,7 @@ export default function AddPanel() {
                                 <CustomInput
                                     type="number"
                                     dir="rtl"
-                                    icon={House}
+                                    icon={DatabaseZap}
                                     placeholder="مجموع توان تولید شده"
                                     name="power"
                                 >
@@ -280,7 +279,7 @@ export default function AddPanel() {
                                 <CustomInput
                                     type="number"
                                     dir="rtl"
-                                    icon={Mailbox}
+                                    icon={TriangleRight}
                                     name="angel"
                                     placeholder="زاویه نصب"
                                 >
@@ -290,7 +289,7 @@ export default function AddPanel() {
                                     type="number"
                                     style={{ width: "12vw" }}
                                     dir="rtl"
-                                    icon={House}
+                                    icon={Compass}
                                     placeholder="جهت نصب"
                                     name="direction"
                                 >
@@ -300,7 +299,7 @@ export default function AddPanel() {
                                     type="number"
                                     style={{ width: "12vw" }}
                                     dir="rtl"
-                                    icon={BellRing}
+                                    icon={LandPlot}
                                     placeholder="مساحت"
                                     name="area"
                                 >
@@ -410,7 +409,7 @@ export default function AddPanel() {
                                     }}
                                 >
                                     {" "}
-                                    ثبت سفارش
+                                    ثبت پنل
                                 </SignupButton>
                             </div>
                             <DialogFooter>
