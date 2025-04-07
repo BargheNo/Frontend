@@ -20,7 +20,6 @@ import {
 	Dialog,
 	DialogClose,
 	DialogContent,
-	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
@@ -97,7 +96,7 @@ export default function Neworder() {
 		orderService
 			.orderRequest(orderinfo, token)
 			.then((res) => {
-				toast(res?.data?.message);
+				toast(res?.message);
 				setOpen(false);
 			})
 			.catch((err) => {

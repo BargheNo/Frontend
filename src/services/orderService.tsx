@@ -27,10 +27,8 @@ class order {
 			endPoint: `${baseURL}/v1/user/installation/request`,
 			data: Orderinfo,
 			headers: {
-				Authorization: `Bearer ${token}`,
 				"ngrok-skip-browser-warning": "69420",
 			},
-			accessToken: token,
 		});
 		// return axios.post(
 		// 	`${baseURL}/v1/user/installation/request`,
@@ -47,7 +45,6 @@ class order {
 	orderHistory(pageinfo: page, token: string) {
 		return getData({
 			endPoint: `${baseURL}/v1/user/installation/request`,
-			accessToken: token,
 			headers: {
 				"ngrok-skip-browser-warning": "69420",
 			},
