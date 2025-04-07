@@ -6,8 +6,9 @@ import { RootState } from "../store/types";
 import { toast } from "sonner";
 import generateErrorMessage from "../functions/handleAPIErrors";
 
-export const baseURL = "https://86c4-212-64-199-253.ngrok-free.app";
+// export const baseURL = "https://86c4-212-64-199-253.ngrok-free.app";
 // export const baseURL = "http://185.110.189.68:8080";
+export const baseURL = "http://46.249.99.69:8080";
 
 // export const accessToken = localStorage.getItem("accessToken");
 // export const accessToken =

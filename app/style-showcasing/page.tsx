@@ -40,7 +40,7 @@ const StyleShowcase = () => {
 						type="submit"
 						className="flex justify-center cta-neu-button"
 					>
-						{"ورود"}
+						ورود
 					</button>
 				</div>
 			</section>
