@@ -102,7 +102,7 @@ const CorpRepairDialog = ({ isOpen, onClose, repairItem }: CorpRepairDialogProps
                     </div>
 
                     <div className=''>
-                    <Formik
+                        <Formik
                             initialValues={{
                                 date: '',
                                 title: '',
