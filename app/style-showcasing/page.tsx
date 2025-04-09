@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import React from "react";
 import BidCard from "@/components/CorpDashboard/Bids/BidCard";
 import { toast } from "sonner";
+import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 
 /**
  * Style Showcase Page
@@ -128,6 +129,17 @@ const StyleShowcase = () => {
 					<div className="red-circle-button">
 						<ArrowLeft />
 					</div>
+				</div>
+			</section>
+
+			<section className="space-y-4">
+				<h2 className="text-xl font-bold">Button Variations</h2>
+
+				<div className="space-y-2">
+					<label className="block text-sm font-medium">
+						loading-spinner style:
+					</label>
+					<LoadingSpinner fullScreen={true} />
 				</div>
 			</section>
 
