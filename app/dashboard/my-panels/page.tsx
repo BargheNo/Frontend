@@ -1,13 +1,10 @@
-// import Layout from "../../layout"
-
+import Header from "@/components/Header/Header";
 import PanelCard from "@/components/Panel/PanelCard/PanelCard";
 
 const Settings = () => {
 	return (
 		<div className="min-h-full flex flex-col text-white py-8 px-14 bg-transparent">
-			<h1 className="text-[#003a8b] text-3xl mb-6 font-black">
-				پنل‌های من
-			</h1>
+			<Header header="پنل‌های من" />
 			<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
 				<PanelCard
 					panelName="پنل باغ 1"
@@ -39,14 +36,6 @@ const Settings = () => {
 					address="باغ تالش"
 				/>
 			</div>
-			{/* <div className="flex w-full gap-2">
-        <div className="w-full rounded-lg p-3 text-gray-800 shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)]">
-          زیربخش ها با سایه های inset
-        </div>
-        <div className="w-full rounded-lg p-3 text-gray-800 shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)]">
-          زیربخش ها با سایه های inset
-        </div>
-      </div> */}
 		</div>
 	);
 };

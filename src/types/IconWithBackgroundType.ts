@@ -4,4 +4,5 @@ export interface IconWithBackgroundProps {
 	iconClassName?: string;
 	className?: string;
 	iconSize?: number;
+	backgroundColor?: string;
 }

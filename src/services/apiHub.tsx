@@ -1,24 +1,25 @@
 import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getParams, postParams } from "../types/apiHubType";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/types";
+import { toast } from "sonner";
+import generateErrorMessage from "../functions/handleAPIErrors";
 
 
+export const baseURL = "http://46.249.99.69:8080";
+// export const baseURL = "https://86c4-212-64-199-253.ngrok-free.app";
 
-// export const baseURL = "https://bombfundingbackend.liara.run";
-// export const baseURL = "http://104.168.46.4:8000";
-// export const baseURL = "https://260d-141-11-250-179.ngrok-free.app";
-export const baseURL = "http://185.110.189.68:8080";
 
-// export const accessToken = localStorage.getItem("accessToken");
-export const accessToken = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU0MDcwMzcsImlhdCI6MTc0MjgxNTAzNywic3ViIjoxfQ.U245pmQco3hU0VATsXU8hovIl75FCpvcPGHDef0BVtRqPny5A9LBMMHRNcD4hQk9OciVS8v-kMYQvyuGsq6ido2ebNVFhIR0Vja023B48S5tW3yzSOyySEvcLEt3pWxTRQo45mK9GLBRtdpQu18qoKqreHOzr98K2mTd4E7lVE8";
-
+// const {accessToken} = localStorage.getItem("user");
+// export const accessToken =
+// 	"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU0MDcwMzcsImlhdCI6MTc0MjgxNTAzNywic3ViIjoxfQ.U245pmQco3hU0VATsXU8hovIl75FCpvcPGHDef0BVtRqPny5A9LBMMHRNcD4hQk9OciVS8v-kMYQvyuGsq6ido2ebNVFhIR0Vja023B48S5tW3yzSOyySEvcLEt3pWxTRQo45mK9GLBRtdpQu18qoKqreHOzr98K2mTd4E7lVE8";
 
 const apiClient = axios.create({
   baseURL: baseURL,
   timeout: 20000,
   headers: {
     "Content-Type": "application/json",
-    // Authorization:""
   },
 });
 
@@ -29,10 +30,13 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     // Modify the config before the request is sent, e.g., attach token
-    //  const token = localStorage.getItem('token');
-    // const token =
-    //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMyMzY3NDc1LCJpYXQiOjE3MzIzNjM4NzUsImp0aSI6IjI2NjU0YzMzMzIwMzQyYjhiOTVlZDhiNjkxZDBhOTg5IiwidXNlcl9pZCI6M30.53XrPqzf9jmSdZBnZwZP8_Ggk8GfN4HbSgPYe4-Hux4";
-    // if (token) config.headers.Authorization = `Bearer ${token}`;
+    // let token;
+    // token =
+    // 	"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU0MDcwMzcsImlhdCI6MTc0MjgxNTAzNywic3ViIjoxfQ.U245pmQco3hU0VATsXU8hovIl75FCpvcPGHDef0BVtRqPny5A9LBMMHRNcD4hQk9OciVS8v-kMYQvyuGsq6ido2ebNVFhIR0Vja023B48S5tW3yzSOyySEvcLEt3pWxTRQo45mK9GLBRtdpQu18qoKqreHOzr98K2mTd4E7lVE8";
+    // token = useSelector((state: RootState) => state.user.accessToken);
+    const accessToken: string | null =
+      JSON.parse(localStorage.getItem("user") ?? "")?.accessToken || null;
+    if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`;
     return config;
   },
   (error) => {
@@ -114,9 +118,12 @@ export function useDeleteData(options = {}) {
 // }
 
 // Keep existing API functions as they are
-export const getData = async ({ endPoint, headers }: getParams) => {
+export const getData = async ({ endPoint, headers, params }: getParams) => {
   try {
-    const response = await apiClient.get(endPoint, headers);
+    const response = await apiClient.get(endPoint, {
+      params: params,
+      ...headers,
+    });
     return response.data;
   } catch (error) {
     throw error;
@@ -138,7 +145,11 @@ export const getData = async ({ endPoint, headers }: getParams) => {
 
 export const postData = async ({ endPoint, data, headers }: postParams) => {
   try {
-    const response = await apiClient.post(endPoint, data, headers);
+    const response = await apiClient.post(endPoint, data, {
+      headers: {
+        ...headers,
+      },
+    });
     return response.data;
   } catch (error: any) {
     // Log the error details for better debugging
@@ -155,7 +166,9 @@ export const postData = async ({ endPoint, data, headers }: postParams) => {
 export const patchData = async ({ endPoint, data, headers }: postParams) => {
   //   await RefreshToken();
   try {
-    const response = await apiClient.patch(endPoint, data, headers);
+    const response = await apiClient.patch(endPoint, data, {
+      ...headers,
+    });
     return response.data;
   } catch (error) {
     throw error;
@@ -164,7 +177,9 @@ export const patchData = async ({ endPoint, data, headers }: postParams) => {
 export const putData = async ({ endPoint, data, headers }: postParams) => {
   //   await RefreshToken();
   try {
-    const response = await apiClient.put(endPoint, data, headers);
+    const response = await apiClient.put(endPoint, data, {
+      ...headers,
+    });
     return response.data;
   } catch (error) {
     throw error;
@@ -173,17 +188,14 @@ export const putData = async ({ endPoint, data, headers }: postParams) => {
 export const deleteData = async ({ endPoint, headers }: getParams) => {
   //   await RefreshToken();
   try {
-    const response = await apiClient.delete(endPoint, headers);
+    const response = await apiClient.delete(endPoint, {
+      ...headers,
+    });
     return response.data;
   } catch (error) {
     throw error;
   }
 };
-
-
-
-
-
 
 export const handleLogin = async (phoneNumber: string, password: string) => {
   try {
@@ -199,30 +211,32 @@ export const handleLogin = async (phoneNumber: string, password: string) => {
         },
       }
     );
-
+    console.log(response);
     if (response.status === 200) {
       return {
         success: true,
-        data: response.data,
+        data: response?.data,
       };
     }
 
     return {
       success: false,
-      message: response.data?.message || "An unknown error occurred",
+      message: response?.data?.message || "مشکلی رخ داده",
     };
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      return {
-        success: false,
-        message: error.response?.data?.message || "Network error",
-      };
-    }
+  } catch (error: any) {
+    // console.log("error", error);
+    toast(generateErrorMessage(error));
+    // if (axios.isAxiosError(error)) {
+    // 	return {
+    // 		success: false,
+    // 		message: error?.response?.data?.message || "Network error",
+    // 	};
+    // }
 
-    return {
-      success: false,
-      message: "An unexpected error occurred",
-    };
+    // return {
+    // 	success: false,
+    // 	message: "An unexpected error occurred",
+    // };
   }
 };
 
@@ -267,7 +281,6 @@ export const handleCorpLogin = async (cin: string, password: string) => {
   }
 };
 
-
 export const handleForgetPassword = async (phoneNumber: string) => {
   try {
     const response = await axios.post(
@@ -311,10 +324,10 @@ export const handleForgetPassword = async (phoneNumber: string) => {
 export const phonenumberVerification = async (phone: string, otp: string) => {
   try {
     const response = await axios.post(
-      `${baseURL}/v1/auth/confirm-otp`, 
+      `${baseURL}/v1/auth/confirm-otp`,
       {
         phone: "+98" + phone,
-        otp: otp
+        otp: otp,
       },
       {
         headers: {
@@ -322,7 +335,7 @@ export const phonenumberVerification = async (phone: string, otp: string) => {
         },
       }
     );
-     if (response.status === 200) {
+    if (response.status === 200) {
       return {
         success: true,
         data: response.data,
@@ -332,7 +345,7 @@ export const phonenumberVerification = async (phone: string, otp: string) => {
     return {
       success: false,
       message: response.data?.message || "Verification failed",
-      };
+    };
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       return {
@@ -348,7 +361,11 @@ export const phonenumberVerification = async (phone: string, otp: string) => {
   }
 };
 
-export const handleResetPassword = async (confirmPassword: string, password: string) => {
+export const handleResetPassword = async (
+  confirmPassword: string,
+  password: string,
+  accessToken: string
+) => {
   try {
     // const accessToken = localStorage.getItem('accessToken');
 
@@ -359,15 +376,19 @@ export const handleResetPassword = async (confirmPassword: string, password: str
       };
     }
 
-    const response = await axios.post(`${baseURL}/v1/auth/reset-password`, {
-      confirmPassword: confirmPassword,
-      password: password,
-    }, {
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${accessToken}`,
+    const response = await axios.post(
+      `${baseURL}/v1/auth/reset-password`,
+      {
+        confirmPassword: confirmPassword,
+        password: password,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
       }
-    });
+    );
     if (response.status === 200) {
       return {
         success: true,
@@ -378,7 +399,7 @@ export const handleResetPassword = async (confirmPassword: string, password: str
     return {
       success: false,
       message: response.data?.message || "An unknown error occurred",
-      };
+    };
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       return {
@@ -393,12 +414,3 @@ export const handleResetPassword = async (confirmPassword: string, password: str
     };
   }
 };
-
-
-   
-
-      
-
-      
-
-    

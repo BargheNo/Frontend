@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: userData = {
-  userName: "",
+  firstName: "",
+  lastName: "",
   accessToken: "",
   refreshToken: "",
   isAuth: false,
@@ -16,13 +17,15 @@ export const userSlice = createSlice({
       action: PayloadAction<Omit<userData, "isAuth">>
     ) => {
       state.isAuth = true;
-      state.userName = action.payload.userName;
+      state.firstName = action.payload.firstName;
+      state.lastName = action.payload.lastName;
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
     },
     resetUser: (state: userData) => {
       state.isAuth = false;
-      state.userName = "";
+      state.firstName = "";
+      state.lastName = "";
       state.accessToken = "";
       state.refreshToken = "";
     },

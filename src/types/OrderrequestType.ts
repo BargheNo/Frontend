@@ -1,5 +1,4 @@
 interface order{
-    
     name: string,
     area:number,
     power: number,
