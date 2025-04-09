@@ -1,15 +1,18 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MoveLeft, Lock, Unlock, Smartphone } from "lucide-react";
 import Link from "next/link";
 import styles from "./login.module.css";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import CustomInput from "../../CustomInput/CustomInput";
+import CustomInput from "../../Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import LoginButton from "./LoginButton";
-import { handleLogin } from "../../../src/services/apiHub";
+import { postData } from "../../../src/services/apiHub";
 import { toast } from "sonner";
+import { setUser } from "@/src/store/slices/userSlice";
+import { useDispatch } from "react-redux";
+import generateErrorMessage from "@/src/functions/handleAPIErrors";
 
 const validationSchema = Yup.object({
   phoneNumber: Yup.string()
@@ -37,20 +40,36 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
+  const dispatch = useDispatch();
   const handleFormSubmit = async (values: {
     phoneNumber: string;
     password: string;
   }) => {
     const { phoneNumber, password } = values;
-    const response = await handleLogin(phoneNumber, password);
 
-    if (response.success) {
-      toast.success(response.data.message);
-      localStorage.setItem("accessToken", response.data.data.accessToken);
-      localStorage.setItem("refreshToken", response.data.data.accessToken);
-      window.location.href = "/dashboard";
-    } else {
-      toast.error(response.message || "Login failed");
+    try {
+      const response = await postData({
+        endPoint: "/v1/auth/login",
+        data: {
+          phone: "+98" + phoneNumber,
+          password: password,
+        },
+      });
+
+      if (response?.statusCode === 200) {
+        toast.success(response?.message);
+        dispatch(
+          setUser({
+            firstName: response.data.firstName,
+            lastName: response.data.lastName,
+            accessToken: response.data.accessToken,
+            refreshToken: response.data.accessToken,
+          })
+        );
+        window.location.href = "/";
+      }
+    } catch (error: any) {
+      toast.error(generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد.");
     }
   };
 

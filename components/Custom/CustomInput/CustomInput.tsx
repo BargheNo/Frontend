@@ -16,11 +16,11 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 const isRTL = (text: string | undefined): boolean => {
-	if (text) {
-		const rtlChars = /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/;
-		return rtlChars.test(text);
-	}
-	return true;
+  if (text) {
+    const rtlChars = /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/;
+    return rtlChars.test(text);
+  }
+  return true;
 };
 
 export default function CustomInput({
@@ -35,12 +35,12 @@ export default function CustomInput({
 	containerClassName,
 	...props
 }: Props) {
-	// const [isTextRTL, setTextRTL] = useState(true);
-	const [field, meta] = useField(name);
-	const hasError = meta.touched && meta.error;
+  // const [isTextRTL, setTextRTL] = useState(true);
+  const [field, meta] = useField(name);
+  const hasError = meta.touched && meta.error;
 
 	return (
-		<div className={`${style.Conter} ${containerClassName}`}>
+		<div className={`${containerClassName} ${style.Conter}`}>
 			<div className={style.inputWrapper}>
 				{Icon && (
 					<Icon
@@ -61,7 +61,7 @@ export default function CustomInput({
 					className={`${style.CustomInput} ${
 						style.numberInput
 					} ${inputClassName} ${
-						isRTL(field.value) ? "text-right" : "text-left"
+						isRTL(field.value) ? "text-right rtl" : "text-left ltr"
 					}`}
 					style={{ paddingLeft: Icon ? "42px" : "12px" }}
 				/>

@@ -1,10 +1,10 @@
-import CustomInput from "@/components/CustomInput/CustomInput";
+import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { DialogFooter, DialogHeader } from "@/components/ui/dialog";
 import { vazir } from "@/lib/fonts";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
-import { accessToken, baseURL, postData } from "@/src/services/apiHub";
+import { baseURL } from "@/src/services/apiHub";
 import {
 	Battery,
 	Calendar,
@@ -19,6 +19,8 @@ import styles from "./PlaceBidForm.module.css";
 import React from "react";
 import { BidFormProps } from "@/src/types/RequestCardTypes";
 import wordExpression from "@/src/functions/Calculations";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/store/types";
 
 const Item = ({
 	icon: Icon,
@@ -53,6 +55,9 @@ export default function PlaceBidForm({
 	requestId,
 	panelDetails,
 }: BidFormProps) {
+	const accessToken = useSelector(
+		(state: RootState) => state.user.accessToken
+	);
 	// const accessToken = localStorage.getItem("accessToken");
 	const validateSchema = Yup.object({
 		time: Yup.string().required("زمان تخمینی خود را وارد کنید."),
@@ -65,8 +70,8 @@ export default function PlaceBidForm({
 		time: string,
 		message: string
 	) => {
-		  fetch(`${baseURL}/v1/bids/set`, {
-			method: "POST", 
+		fetch(`${baseURL}/v1/bids/set`, {
+			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${accessToken}`,

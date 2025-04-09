@@ -1,6 +1,7 @@
 interface userData {
-  userName: string;
-  accessToken: string;
-  refreshToken: string;
-  isAuth: boolean;
+  firstName: string;
+  lastName: string;
+	accessToken: string;
+	refreshToken: string;
+	isAuth: boolean;
 }

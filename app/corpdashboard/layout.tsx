@@ -24,7 +24,7 @@ export default function Layout({ children }: Readonly<{ children: React.ReactNod
 
 
   return (
-    <PanelAside navItems={navItems as NavItem[]} corp={true} >
+    <PanelAside navItems={navItems as NavItem[]} mode="corp">
       {children}
     </PanelAside>
   );

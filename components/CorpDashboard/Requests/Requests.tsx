@@ -1,7 +1,9 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import RequestCard from "./RequestCard/RequestCard";
-import { accessToken, baseURL } from "@/src/services/apiHub";
+import { baseURL } from "@/src/services/apiHub";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/store/types";
 
 interface address {
 	province: string;
@@ -25,7 +27,9 @@ interface Request {
 }
 
 export default function Requests() {
-	// const accessToken = localStorage.getItem("accessToken");
+	const accessToken = useSelector(
+		(state: RootState) => state.user.accessToken
+	);
 	const [requestData, setRequestData] = useState<Request[] | null>(null);
 	const [error, setError] = useState<string | null>(null);
 
@@ -34,14 +38,11 @@ export default function Requests() {
 		const fetchRequests = async () => {
 			try {
 				console.log("Fetching Requests...");
-				const response = await fetch(
-					`${baseURL}/v1/bids/list`,
-					{
-						headers: {
-							Authorization: `Bearer ${accessToken}`
-						},
-					}
-				);
+				const response = await fetch(`${baseURL}/v1/bids/list`, {
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+					},
+				});
 
 				const data = await response.json();
 				console.log("Raw response:", data.data);

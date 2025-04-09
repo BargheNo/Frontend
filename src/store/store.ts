@@ -8,7 +8,7 @@ import { preloadedState } from "./preLoader";
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer, // Add your reducers here
+    counter: counterReducer,
     user: userReducer,
   },
   preloadedState,
