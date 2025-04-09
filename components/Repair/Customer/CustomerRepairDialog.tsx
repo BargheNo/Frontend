@@ -9,7 +9,7 @@ import {
 import { AlertCircle, Wrench, Eclipse, Calendar } from 'lucide-react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { CustomTextArea } from '@/components/CustomInput/CustomTextArea';
+import CustomTextArea from '@/components/Custom/CustomTextArea/CustomTextArea';
 
 interface RepairHistoryItem {
     title: string;

@@ -9,8 +9,8 @@ import {
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Calendar as CalendarIcon, NotebookPen, NotepadText, Captions } from 'lucide-react';
-import CustomInput from '@/components/CustomInput/CustomInput';
-import { CustomTextArea } from '@/components/CustomInput/CustomTextArea';
+import CustomInput from '@/components/Custom/CustomInput/CustomInput';
+import CustomTextArea from '@/components/Custom/CustomTextArea/CustomTextArea';
 import { Datepicker } from '@ijavad805/react-datepicker';
 import moment from 'moment';
 

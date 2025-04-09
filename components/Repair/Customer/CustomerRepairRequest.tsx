@@ -9,8 +9,8 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import * as Yup from 'yup';
-import CustomInput from '@/components/CustomInput/CustomInput';
-import { CustomTextArea } from '@/components/CustomInput/CustomTextArea';
+import CustomInput from '@/components/Custom/CustomInput/CustomInput';
+import CustomTextArea from '@/components/Custom/CustomTextArea/CustomTextArea';
 import { Formik } from 'formik'
 
 const companies = [
