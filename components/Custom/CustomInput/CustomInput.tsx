@@ -5,7 +5,7 @@ import { useField } from "formik";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 	name: string;
-	children: React.ReactNode;
+	children?: React.ReactNode;
 	icon?: LucideIcon;
 	onIconClick?: () => void;
 	autoFocus?: boolean;
@@ -35,9 +35,11 @@ export default function CustomInput({
 	containerClassName,
 	...props
 }: Props) {
-	// const [isTextRTL, setTextRTL] = useState(true);
 	const [field, meta] = useField(name);
 	const hasError = meta.touched && meta.error;
+
+	// Ensure field.value is never undefined
+	const value = field.value || "";
 
 	return (
 		<div className={`${containerClassName} ${style.Conter}`}>
@@ -48,20 +50,21 @@ export default function CustomInput({
 						className={`${style.icon} ${iconClassName}`}
 					/>
 				)}
-				{field.value === "" && (
+				{value === "" && (
 					<label className={`${style.text} ${errorClassName}`}>
 						{children}
 					</label>
 				)}
 				<input
-					dir={isRTL(field.value) ? "rtl" : "ltr"}
+					dir={isRTL(value) ? "rtl" : "ltr"}
 					{...field}
 					{...props}
+					value={value} // Controlled value
 					autoFocus={autoFocus}
 					className={`${style.CustomInput} ${
 						style.numberInput
 					} ${inputClassName} ${
-						isRTL(field.value) ? "text-right rtl" : "text-left ltr"
+						isRTL(value) ? "text-right rtl" : "text-left ltr"
 					}`}
 					style={{ paddingLeft: Icon ? "42px" : "12px" }}
 				/>

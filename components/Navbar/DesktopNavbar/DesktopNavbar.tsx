@@ -19,12 +19,12 @@ export default function DesktopNavbar() {
               خانه
             </Link>
             <Link
-              className={[pathname==="/dashboard/my-panels"? "text-[#FA682D]" : "", vazirBold.className].join(" ")}
+              className={[pathname?.startsWith("/dashboard") ? "text-[#FA682D]" : "", vazirBold.className].join(" ")}
               href={"/dashboard/my-panels"}
             >
               داشبورد
             </Link>
-            <Link className={"vazir-bold rtl bg"} href={"/landing/corp-introduction"}
+            <Link className={`vazir-bold rtl ${pathname === "/landing/corp-introduction" ? "text-[#FA682D]" : ""}`} href={"/landing/corp-introduction"}
             >
               در برق نو بفروشید!
             </Link>
