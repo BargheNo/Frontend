@@ -13,6 +13,7 @@ interface CorpRepairCard {
     date: string,
     owner: string,
     className: string,
+    onDetailsClick?: () => void,
 };
 
 const CorpRepairCard = ({
@@ -23,6 +24,7 @@ const CorpRepairCard = ({
         date,
         owner,
         className,
+        onDetailsClick,
     }: CorpRepairCard) => {
     // TODO: Set types for this shit
     const [isExpanded, setIsExpanded] = useState(false);
@@ -137,7 +139,10 @@ const CorpRepairCard = ({
                     <div className="w-full">
                         {/* <Link href={`my-panels/123`}> */}
                         <div className="flex flex-col gap-2 items-center">
-                            <button className="flex items-center justify-center red-circle-button">
+                            <button 
+                                className="flex items-center justify-center red-circle-button"
+                                onClick={onDetailsClick}
+                            >
                                 <MoveLeft size={32} strokeWidth={1.5} />
                             </button>
                             <span className="text-sm">مشاهدۀ جزئیات</span>

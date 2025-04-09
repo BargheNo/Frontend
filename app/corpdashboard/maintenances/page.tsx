@@ -70,8 +70,7 @@ export default function Page() {
 					{repairItems.map((item) => (
 						<div 
 							key={item.id} 
-							onClick={() => handleOpenDialog(item)}
-							className="cursor-pointer"
+							className=""
 						>
 							<CorpRepairCard
 								panelName={item.panelName}
@@ -80,6 +79,7 @@ export default function Page() {
 								date={item.date}
 								address={item.address}
 								className="w-full"
+								onDetailsClick={() => handleOpenDialog(item)}
 							/>
 						</div>
 					))}

@@ -4,6 +4,8 @@ import { Plus, Calendar, NotebookPen, ChevronDown, Check } from 'lucide-react'
 import {
     Dialog,
     DialogContent,
+    DialogHeader,
+    DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
 import * as Yup from 'yup';
@@ -117,163 +119,178 @@ const CustomerRepairRequest = () => {
           <span className='text-navy-blue'>درخواست تعمیرات فوری</span>
         </div>
       </DialogTrigger>
-      <DialogContent style={{backgroundColor:"#F1F4FC"}} className='min-w-[57vw]'>
-        <Formik
-          initialValues={{
-            title: '',
-            note: '',
-          }}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
-          {(formik) => (
-            <form onSubmit={formik.handleSubmit} className="space-y-4">
-              {/* Panel Selection */}
-              <div className="relative" dir='rtl'>
-                <label className="block text-sm font-medium text-gray-700 mt-8">
-                  انتخاب پنل
-                </label>
-                <button
-                  type="button"
-                  className="w-full px-4 py-2 text-left bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex justify-between items-center"
-                  onClick={() => setIsPanelOpen(!isPanelOpen)}
-                >
-                  {selectedPanel ? panels.find(p => p.id === selectedPanel)?.name : 'انتخاب پنل'}
-                  <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${isPanelOpen ? 'transform rotate-180' : ''}`} />
-                </button>
-                
-                {isPanelOpen && (
-                  <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    {panels.map(panel => (
-                      <div
-                        key={panel.id}
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center justify-between"
-                        onClick={() => {
-                          handlePanelSelection(panel.id);
-                          setIsPanelOpen(false);
-                        }}
+      <DialogContent style={{backgroundColor:"#FEFEFE"}} className='min-w-[57vw]'>
+        <DialogHeader>
+            <DialogTitle className='flex justify-center items-end font-bold mt-3.5'>
+                ثبت درخواست تعمیر
+            </DialogTitle>
+        </DialogHeader>
+        
+        <div className="overflow-y-auto max-h-[calc(80vh-100px)] pr-2">
+          <div dir="rtl" className='flex flex-col gap-5'>
+            <Formik
+              initialValues={{
+                title: '',
+                note: '',
+              }}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+            >
+              {(formik) => (
+                <form onSubmit={formik.handleSubmit} className="space-y-4">
+                  {/* Panel Selection */}
+                  <div className="relative" dir='rtl'>
+                    <label className="block text-sm font-medium text-gray-700 mt-8">
+                      انتخاب پنل
+                    </label>
+                    <button
+                      type="button"
+                      className="w-full px-4 py-3 flex justify-between items-center inset-neu-container !bg-[#FEFEFE] focus:outline-2"
+                      onClick={() => setIsPanelOpen(!isPanelOpen)}
+                    >
+                      {selectedPanel ? panels.find(p => p.id === selectedPanel)?.name : 'انتخاب پنل'}
+                      <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${isPanelOpen ? 'transform rotate-180' : ''}`} />
+                    </button>
+                    
+                    {isPanelOpen && (
+                      <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        {panels.map(panel => (
+                          <div
+                            key={panel.id}
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center justify-between"
+                            onClick={() => {
+                              handlePanelSelection(panel.id);
+                              setIsPanelOpen(false);
+                            }}
+                          >
+                            <span>{panel.name}</span>
+                            {selectedPanel === panel.id && <Check className="w-5 h-5 text-blue-500" />}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Title */}
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1">
+                      <CustomInput
+                        name="title"
+                        icon={Calendar}
+                        type="text"
+                        inputClassName='!bg-[#FEFEFE]'
                       >
-                        <span>{panel.name}</span>
-                        {selectedPanel === panel.id && <Check className="w-5 h-5 text-blue-500" />}
-                      </div>
-                    ))}
+                        عنوان
+                      </CustomInput>
+                    </div>
                   </div>
-                )}
-              </div>
 
-              {/* Title */}
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1">
-                  <CustomInput
-                    name="title"
-                    icon={Calendar}
-                    type="text"
-                  >
-                    عنوان
-                  </CustomInput>
-                </div>
-              </div>
+                  {/* Note */}
+                  <div>
+                    <CustomTextArea
+                      name="note"
+                      icon={NotebookPen}
+                      textareaClassName="!bg-[#FEFEFE]"
 
-              {/* Note */}
-              <div>
-                <CustomTextArea
-                  name="note"
-                  icon={NotebookPen}
-                  textareaClassName="additional-classes-if-needed"
-                >
-                  شرح مشکل
-                </CustomTextArea>
-              </div>
-
-              {/* Company Selection */}
-              <div className="space-y-2 mt-10 mb-10" dir="rtl">
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="repairByManufacturer"
-                    checked={repairByManufacturer}
-                    onChange={() => {
-                      setRepairByManufacturer(!repairByManufacturer);
-                      if (!repairByManufacturer) {
-                        const panel = panels.find(p => p.id === selectedPanel);
-                        if (panel) {
-                          setSelectedCompany(panel.corpId);
-                        }
-                      }
-                    }}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <label htmlFor="repairByManufacturer" className="mr-2 block text-sm text-gray-700">
-                    مایلم درخواست تعمیر برای شرکت تامین کنندۀ آن ارسال شود.
-                  </label>
-                </div>
-
-                {!repairByManufacturer && (
-                  <div className="ml-6 space-y-2 h-28 p-5 inset-neu-container overflow-y-scroll w-full bg-gradient-to-br from-[#FAFAFB] to-[#E9EBEF]">
-                    {companies.map(company => (
-                      <div key={company.id} className="flex items-center">
-                        <input
-                          type="radio"
-                          id={`company-${company.id}`}
-                          name="company-selection"
-                          checked={selectedCompany === company.id}
-                          onChange={() => handleCompanySelection(company.id)}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-                        />
-                        <label htmlFor={`company-${company.id}`} className="mr-2 block text-sm text-gray-700">
-                          {company.name}
-                        </label>
-                      </div>
-                    ))}
+                    >
+                      شرح مشکل
+                    </CustomTextArea>
                   </div>
-                )}
-              </div>
 
-              {/* Urgency Level */}
-              <div className="relative" dir='rtl'>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  سطح اهمیت
-                </label>
-                <button
-                  type="button"
-                  className="w-full px-4 py-2 text-left bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex justify-between items-center"
-                  onClick={() => setIsUrgencyOpen(!isUrgencyOpen)}
-                >
-                  {urgencyOptions.find(opt => opt.value === urgency)?.label}
-                  <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${isUrgencyOpen ? 'transform rotate-180' : ''}`} />
-                </button>
-                
-                {isUrgencyOpen && (
-                  <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    {urgencyOptions.map(option => (
-                      <div
-                        key={option.value}
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center justify-between"
-                        onClick={() => {
-                          setUrgency(option.value);
-                          setIsUrgencyOpen(false);
+                  {/* Urgency Level */}
+                  <div className="relative mt-10" dir='rtl'>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      سطح اهمیت
+                    </label>
+                    <button
+                      type="button"
+                      className="w-full px-4 py-3 flex justify-between items-center inset-neu-container !bg-[#FEFEFE] focus:outline-2"
+                      onClick={() => setIsUrgencyOpen(!isUrgencyOpen)}
+                    >
+                      {urgencyOptions.find(opt => opt.value === urgency)?.label}
+                      <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${isUrgencyOpen ? 'transform rotate-180' : ''}`} />
+                    </button>
+                    
+                    {isUrgencyOpen && (
+                      <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        {urgencyOptions.map(option => (
+                          <div
+                            key={option.value}
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center justify-between"
+                            onClick={() => {
+                              setUrgency(option.value);
+                              setIsUrgencyOpen(false);
+                            }}
+                          >
+                            <span>{option.label}</span>
+                            {urgency === option.value && <Check className="w-5 h-5 text-blue-500" />}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Company Selection */}
+                  <div className="space-y-2 mt-10 mb-10" dir="rtl">
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="repairByManufacturer"
+                        checked={repairByManufacturer}
+                        onChange={() => {
+                          setRepairByManufacturer(!repairByManufacturer);
+                          if (!repairByManufacturer) {
+                            const panel = panels.find(p => p.id === selectedPanel);
+                            if (panel) {
+                              setSelectedCompany(panel.corpId);
+                            }
+                          }
                         }}
-                      >
-                        <span>{option.label}</span>
-                        {urgency === option.value && <Check className="w-5 h-5 text-blue-500" />}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <label htmlFor="repairByManufacturer" className="mr-2 block text-sm text-gray-700">
+                        مایلم درخواست تعمیر برای شرکت تامین کنندۀ پنل ارسال شود.
+                      </label>
+                    </div>
 
-              {/* Submit Button */}
-              <div>
-                <button
-                  type="submit"
-                  className="w-full bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm font-semibold"
-                >
-                  Submit
-                </button>
-              </div>
-            </form>
-          )}
-        </Formik>
+                    {!repairByManufacturer && (
+                      <div className="ml-6 space-y-2 h-28 p-5 inset-neu-container overflow-y-scroll w-full !bg-[#FEFEFE]">
+                        {companies.map(company => (
+                          <div key={company.id} className="flex items-center">
+                            <input
+                              type="radio"
+                              id={`company-${company.id}`}
+                              name="company-selection"
+                              checked={selectedCompany === company.id}
+                              onChange={() => handleCompanySelection(company.id)}
+                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                            />
+                            <label htmlFor={`company-${company.id}`} className="mr-2 block text-sm text-gray-700">
+                              {company.name}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className='flex justify-end'>
+                    <button
+                      type="submit"
+                      className="bg-gradient-to-br from-[#34C759] to-[#00A92B]
+                                hover:from-[#2AAE4F] hover:to-[#008C25]
+                                active:from-[#008C25] active:to-[#2AAE4F]
+                                text-white py-2 px-4 rounded-md transition-all duration-300"
+                    >
+                      ثبت درخواست تعمیر
+                    </button>
+                  </div>
+                </form>
+              )}
+            </Formik>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   )

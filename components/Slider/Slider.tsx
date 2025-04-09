@@ -28,15 +28,19 @@ const Carousel = ({ items, onItemClick }: CarouselProps) => {
   const nextSlide = () => {
     if (isTransitioning) return;
     setIsTransitioning(true);
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
-    setTimeout(() => setIsTransitioning(false), 500);
+    setTimeout(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
+      setTimeout(() => setIsTransitioning(false), 200);
+    }, 400);
   };
 
   const prevSlide = () => {
     if (isTransitioning) return;
     setIsTransitioning(true);
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + items.length) % items.length);
-    setTimeout(() => setIsTransitioning(false), 500);
+    setTimeout(() => {
+      setCurrentIndex((prevIndex) => (prevIndex - 1 + items.length) % items.length);
+      setTimeout(() => setIsTransitioning(false), 200);
+    }, 400);
   };
 
   const handleItemClick = () => {
