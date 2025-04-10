@@ -51,19 +51,23 @@ export default function InstalledPanelPagination() {
 			) : (
 				<p className="text-center mt-6">هیچ پنلی یافت نشد</p>
 			)}
-			<Pagination className="mt-3">
+			{history?.length>0&&
+			<Pagination className="mt-4">
 				<PaginationContent>
 					<PaginationItem>
+						{Number(currpage)>1&&
 						<PaginationPrevious
 							href="#"
 							onClick={() =>
 								Setcurrpage((prev) => String(Math.max(Number(prev) - 1, 1)))
 							}
 						/>
+                        }
 					</PaginationItem>
 					{["1", "2", "3"].map((page) => (
-						<PaginationItem key={page}>
+						<PaginationItem key={page} >
 							<PaginationLink
+							   isActive={page===currpage}
 								href="#"
 								onClick={() => Setcurrpage(page)}
 							>
@@ -77,11 +81,12 @@ export default function InstalledPanelPagination() {
 					<PaginationItem>
 						<PaginationNext
 							href="#"
-							onClick={() => Setcurrpage((prev) => prev + 1)}
+							onClick={() => Setcurrpage((prev) => String(Number(prev) + 1))}
 						/>
 					</PaginationItem>
 				</PaginationContent>
 			</Pagination>
+            }
 		</>
 	);
 }
