@@ -2,8 +2,6 @@ import React from 'react'
 import IconWithBackground from '../IconWithBackground/IconWithBackground'
 import { Eclipse, User, Battery, MoveLeft,MapPin } from 'lucide-react'
 import Link from 'next/link'
-import SignupButton from '../SignupButton/SignupButton'
-import { Orderhistory } from '@/src/types/OrderhistoryType'
 import { installedpanel } from '@/src/types/installedpanelType'
 
 const InstalledPanel=  ({
@@ -14,12 +12,13 @@ const InstalledPanel=  ({
 }: installedpanel) => {
   return (
     <>
+	
     <div
 			className={` w-95/100 m-auto ${
 				0 ? "h-64" : ""
 			} border-gray-300 border-b-3`}
 		>
-			<div className="flex flex-row justify-between w-full h-full bg-[#F0EDEF] p-5 overflow-hidden relative">
+			<div className="flex flex-row justify-between w-full h-full bg-[#F0EDEF] p-5 overflow-hidden relative shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] ">
 				<div className="flex flex-col justify-between w-full z-10">
 					<div className="space-y-3 w-full">
 						<h2 className="text-2xl font-bold text-gray-800">
