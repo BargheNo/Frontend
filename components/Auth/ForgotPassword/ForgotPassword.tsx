@@ -42,7 +42,7 @@ const handleFormSubmit = async (values: { phoneNumber: string }) => {
 
 	try {
 		const response = await postData({
-			endPoint: "/v1/auth/forget-password",
+			endPoint: "/v1/auth/forgot-password",
 			data: { phone: fullPhone },
 		});
 
