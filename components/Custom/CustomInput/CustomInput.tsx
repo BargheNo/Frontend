@@ -16,11 +16,11 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 const isRTL = (text: string | undefined): boolean => {
-	if (text) {
-		const rtlChars = /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/;
-		return rtlChars.test(text);
-	}
-	return true;
+  if (text) {
+    const rtlChars = /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/;
+    return rtlChars.test(text);
+  }
+  return true;
 };
 
 export default function CustomInput({

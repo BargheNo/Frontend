@@ -13,7 +13,7 @@ export default function Page() {
 				<div>
 					<Neworder />
 
-					<div className="mr-2 mt-3 text-navy-blue">
+					<div className="text-center mt-3 text-navy-blue">
 						<p>ثبت سفارش جدید</p>
 					</div>
 				</div>
