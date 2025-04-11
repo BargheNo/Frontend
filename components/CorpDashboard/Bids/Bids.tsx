@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import BidCard from "./BidCard";
 import { baseURL } from "@/src/services/apiHub";
 import { useSelector } from "react-redux";
-import { RootState } from "@/src/store/types";
+// import { RootState } from "@/src/store/types";
 
 interface address {
 	province: string;

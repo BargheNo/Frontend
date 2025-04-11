@@ -1,0 +1,5 @@
+.container {
+	box-shadow: 3px 4px 4px 0px #00000040 inset, -4px -3px 4px 0px #ffffff36 inset;
+	border-radius: 10px;
+    /* background: linear-gradient(90deg, #E41DF2 0%, #CF1DF2 100%); */
+}

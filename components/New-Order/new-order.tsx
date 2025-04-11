@@ -41,7 +41,7 @@ import provinceService from "@/src/services/provinceService";
 import orderService from "@/src/services/orderService";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
-import { RootState } from "@/src/store/types";
+// import { RootState } from "@/src/store/types";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
 export default function Neworder() {
