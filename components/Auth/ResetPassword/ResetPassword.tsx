@@ -1,17 +1,17 @@
 "use client";
 import { useState } from "react";
 import { MoveLeft, Lock, Unlock, Smartphone } from "lucide-react";
-import Link from "next/link";
 import styles from "./ResetPassword.module.css";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import CustomInput from "../../Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import LoginButton from "../Login/LoginButton";
-import { handleResetPassword } from "../../../src/services/apiHub";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/types";
+import generateErrorMessage from "@/src/functions/handleAPIErrors";
+import { postData } from "@/src/services/apiHub";
 
 const validationSchema = Yup.object({
 	password: Yup.string()
@@ -42,25 +42,39 @@ const ResetPassword = () => {
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-	const handleFormSubmit = async (values: {
-		password: string;
-		confirmPassword: string;
-	}) => {
-		const { confirmPassword, password } = values;
-		const response = await handleResetPassword(confirmPassword, password, accessToken);
+	
 
-		if (response.success) {
-			// window.location.href = "/dashboard";
-			toast.success(response.data.message);
-		} else {
-			toast.error(
-				response.message || "تغییر رمز ناموفق بود دوباره تلاش کنید"
-			);
+const handleFormSubmit = async (values: {
+	password: string;
+	confirmPassword: string;
+}) => {
+	const { confirmPassword, password } = values;
+
+	try {
+		const response = await postData({
+			endPoint: "/v1/auth/reset-password",
+			data: {
+				password,
+				confirmPassword,
+			},
+			accessToken: accessToken,
+		});
+
+		if (response?.statusCode === 200) {
+			toast.success(response?.message);
+			window.location.href = "/dashboard";
 		}
-	};
+	} catch (error: any) {
+		const errMsg =
+			generateErrorMessage(error) || "هنگام تغییر رمز عبور مشکلی پیش آمد.";
+		toast.error(errMsg);
+		setErrorMessage(errMsg);
+	}
+};
+
 
 	return (
-		<div className={vazir.className}>
+		<div className={`${vazir.className} min-h-screen w-full`}>
 			<div dir="rtl" className={styles.mainbg}>
 				<div className="w-full max-w-md p-6 space-y-4 shadow-2xl rounded-2xl bg-[#f1f4fc]">
 					<h2 className="text-3xl text-black text-center">
