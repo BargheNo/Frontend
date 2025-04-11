@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Search } from "lucide-react";
-import CustomInput from "@/components/CustomInput/CustomInput";
+import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import {
 	Select,
 	SelectContent,

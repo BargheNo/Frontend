@@ -112,7 +112,7 @@ const CorpRepairDialog = ({ isOpen, onClose, repairItem }: CorpRepairDialogProps
                                                         format="YYYY-MM-DD"
                                                         closeWhenSelectADay={true}
                                                         defaultValue={formik.values.date ? moment(formik.values.date) : undefined}
-                                                        onChange={(val: moment.Moment) => {
+                                                        onChange={(val: moment.Moment | undefined) => {
                                                             formik.setFieldValue('date', val?.format('YYYY-MM-DD'));
                                                         }}
                                                         adjustPosition="auto"

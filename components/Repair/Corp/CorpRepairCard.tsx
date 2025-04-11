@@ -7,7 +7,7 @@ import { User, Calendar, MapPin, MoveLeft, TextSearch, Move } from "lucide-react
 
 interface CorpRepairCard {
     panelName: string,
-    technicalDetails: object,
+    technicalDetails: {efficiency: number},
     // requestDetails,
     address: string,
     date: string,
