@@ -9,25 +9,25 @@ import {
 	PaginationNext,
 	PaginationPrevious,
 } from "@/components/ui/pagination";
-import orderService from "@/src/services/orderService";
+import InstalledpanelService from "@/src/services/getInstalledPanelsService";
 import { useEffect, useState } from "react";
-import { Orderhistory } from "@/src/types/OrderhistoryType";
-import OrderHistory from "@/components/OrderHistory/OrderHistory";
+import { installedpanel } from "@/src/types/installedpanelType";
+import InstalledPanel from "@/components/InstalledPanels/InstalledPanels";
 import { useSelector } from "react-redux";
 // import { RootState } from "@/src/store/types";
 
-export default function OrderHistoryPagination() {
-	const [history, sethistory] = useState<Orderhistory[]>([]);
+export default function InstalledPanelPagination() {
+	const [history, sethistory] = useState<installedpanel[]>([]);
 	const [currpage, Setcurrpage] = useState<string>("1");
 	const accessToken = useSelector(
 		(state: RootState) => state.user.accessToken
 	);
 	const handelHistory = (page: string, pageSize: string) => {
-		orderService
-			.orderHistory({ page: page, pageSize: pageSize }, accessToken)
+		InstalledpanelService
+			.GetInstalledPanels({ page: page, pageSize: pageSize }, "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDY4MzAxMjYsImlhdCI6MTc0NDIzODEyNiwic3ViIjoxOH0.BydUQtEtMNHdaNUnBiY5IYzAvrccOaIVrL5_JKDNzkqPRVI903PsTJWKGDHfK-boiY_vrh-OBy5Bb7n-MNF8uFD0bEXgiioKb3n9mnnhXDY9nmUkFnyHcUt3Fw1xsvyX4mnKCr7EDMtYP3_PzAMXtfs9hogSOs2JG6PFAWf5oFg")
 			.then((res) => {
-				// console.log(res.data);
-				sethistory(res.data);
+				sethistory(res.data.data);
+				console.log(res)
 			})
 			.catch((err) => console.log(err));
 	};
@@ -38,21 +38,21 @@ export default function OrderHistoryPagination() {
 	return (
 		<>
 			{history?.length > 0 ? (
-				history.map((order: Orderhistory, index) => (
-					<OrderHistory
+				history.map((order: installedpanel, index) => (
+					<InstalledPanel
 						key={index}
-						id={index}
-						name={order.name}
+						customerName={order.customerName}
+						panelName={order.panelName}
+						power={order.power}
 						address={order.address}
-						status={order.status}
-						createdTime={order.createdTime}
 					/>
+					
 				))
 			) : (
-				<p className="text-center mt-6">هیچ سفارشی یافت نشد</p>
+				<p className="text-center mt-6">هیچ پنلی یافت نشد</p>
 			)}
 			{history?.length>0&&
-			<Pagination className="mt-3">
+			<Pagination className="mt-4">
 				<PaginationContent>
 					<PaginationItem>
 						{Number(currpage)>1&&
@@ -61,14 +61,15 @@ export default function OrderHistoryPagination() {
 							onClick={() =>
 								Setcurrpage((prev) => String(Math.max(Number(prev) - 1, 1)))
 							}
-						/>}
+						/>
+                        }
 					</PaginationItem>
 					{["1", "2", "3"].map((page) => (
-						<PaginationItem key={page}>
+						<PaginationItem key={page} >
 							<PaginationLink
+							   isActive={page===currpage}
 								href="#"
 								onClick={() => Setcurrpage(page)}
-								isActive={page===currpage}
 							>
 								{page}
 							</PaginationLink>
@@ -85,7 +86,7 @@ export default function OrderHistoryPagination() {
 					</PaginationItem>
 				</PaginationContent>
 			</Pagination>
-}
+            }
 		</>
 	);
 }

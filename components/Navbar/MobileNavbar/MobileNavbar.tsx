@@ -27,7 +27,7 @@ const MobileNavItems = [
   // { name: "داشبورد", path: "/dashboard/dashboard", icon: <Gauge /> },
   { name: "خانه", path: "/", icon: <House /> },
   { name: "داشبورد", path: "/dashboard/my-panels", icon: <LayoutDashboard /> },
-  { name: "جستجو", path: "", icon: <Search /> },
+  { name: "در برق نو بفروشید!", path: "/landing/corp-introduction", icon: <Search /> },
   { name: "بیشتر", path: "", icon: <EllipsisVertical /> },
 ];
 

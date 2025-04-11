@@ -5,7 +5,7 @@ import { useField } from "formik";
 
 interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
 	name: string;
-	children: React.ReactNode;
+	children?: React.ReactNode;
 	icon?: LucideIcon;
 	onIconClick?: () => void;
 	autoFocus?: boolean;

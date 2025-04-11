@@ -42,7 +42,6 @@ import { City, Province } from "@/src/types/provinceType";
 import provinceService from "@/src/services/provinceService";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
-import { RootState } from "@/src/store/types";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
 import addpanelService from "@/src/services/addpanelService";
@@ -54,9 +53,6 @@ export default function AddPanel() {
     const [cities, Setcities] = useState<City[]>([]);
     const [building, Setbuilding] = useState("");
     const [cityid, Setcityid] = useState<number>();
-    const accessToken = useSelector(
-        (state: RootState) => state.user.accessToken
-    );
     const Getprovinces = () => {
         provinceService
             .GetProvinces()
