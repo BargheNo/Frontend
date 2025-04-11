@@ -20,7 +20,7 @@ import React from "react";
 import { BidFormProps } from "@/src/types/RequestCardTypes";
 import wordExpression from "@/src/functions/Calculations";
 import { useSelector } from "react-redux";
-import { RootState } from "@/src/store/types";
+// import { RootState } from "@/src/store/types";
 
 const Item = ({
 	icon: Icon,

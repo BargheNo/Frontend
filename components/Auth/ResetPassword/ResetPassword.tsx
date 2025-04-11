@@ -9,7 +9,7 @@ import { vazir } from "@/lib/fonts";
 import LoginButton from "../Login/LoginButton";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
-import { RootState } from "@/src/store/types";
+// import { RootState } from "@/src/store/types";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { postData } from "@/src/services/apiHub";
 

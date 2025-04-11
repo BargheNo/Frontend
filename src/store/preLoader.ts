@@ -11,5 +11,5 @@ const loadUserState = () => {
 };
 
 export const preloadedState = {
-  user: loadUserState(), // Load the persisted auth state
+  user: loadUserState(),
 };
