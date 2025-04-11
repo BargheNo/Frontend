@@ -2,7 +2,7 @@ import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getParams, postParams } from "../types/apiHubType";
 import { useSelector } from "react-redux";
-import { RootState } from "../store/types";
+// import { RootState } from "../store/types";
 import { toast } from "sonner";
 import generateErrorMessage from "../functions/handleAPIErrors";
 

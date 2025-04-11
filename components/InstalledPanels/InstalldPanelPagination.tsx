@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { installedpanel } from "@/src/types/installedpanelType";
 import InstalledPanel from "@/components/InstalledPanels/InstalledPanels";
 import { useSelector } from "react-redux";
-import { RootState } from "@/src/store/types";
+// import { RootState } from "@/src/store/types";
 
 export default function InstalledPanelPagination() {
 	const [history, sethistory] = useState<installedpanel[]>([]);

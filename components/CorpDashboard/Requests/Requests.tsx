@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import RequestCard from "./RequestCard/RequestCard";
 import { baseURL } from "@/src/services/apiHub";
 import { useSelector } from "react-redux";
-import { RootState } from "@/src/store/types";
+// import { RootState } from "@/src/store/types";
 
 interface address {
 	province: string;
