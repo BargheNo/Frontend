@@ -1,7 +1,21 @@
 "use client";
-import React, { useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { v4 as uuidv4 } from "uuid";
+
+import React, { useEffect, useState } from "react";
+import { Formik } from "formik";
+import * as Yup from "yup";
+
+// import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+// import CustomInput from "@/components/Custom/CustomInput/CustomInput";
+// import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
+import provinceService from "@/src/services/provinceService";
+import { City, Province } from "@/src/types/provinceType";
+import CorpInfoForm from "@/components/Auth/RegisterCorp/CorpInfoForm/CorpInfoForm";
+import ContactInfoForm from "@/components/Auth/RegisterCorp/ContactInfoForm/ContactInfoForm";
+import { useSelector } from "react-redux";
+import { setCorp } from "@/src/store/slices/corpSlice";
+import { useDispatch } from "react-redux";
 import {
 	Card,
 	CardContent,
@@ -10,8 +24,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Building2, FileText, Phone } from "lucide-react";
 
 const steps = ["اطلاعات شرکت", "اطلاعات تماس", "مدارک"];
 const icons = [
@@ -19,44 +32,20 @@ const icons = [
 	<Phone className="w-5" key="اطلاعات تمایس" />,
 	<FileText className="w-5" key="مدارک" />,
 ];
-const initialValues = {};
+const initialValuesForm = {
+	corpName: "",
+	registrationNumber: "",
+	nationalID: "",
+	iban: "",
+	signatories: [],
+	addresses: [],
+};
 
-export default function Page() {
-	return (
-		<div className="w-screen min-h-screen h-fit place-items-center flex place-content-center items-center bg-[#F0EDEF] transition-all duration-300 ease-in-out">
-			<GeneratedForm />
-		</div>
-	);
-}
-
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
-import {
-	Building2,
-	CircleUserRound,
-	CreditCard,
-	FileText,
-	Fingerprint,
-	IdCard,
-	Phone,
-	UserRound,
-	UsersRound,
-	XIcon,
-} from "lucide-react";
-import CustomInput from "@/components/Custom/CustomInput/CustomInput";
-import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
-
-const validationSchema = Yup.object({
+const validationSchemaForm = Yup.object({
 	corpName: Yup.string().required("نام شرکت الزامی است"),
-	registerationNumber: Yup.string().required("شماره ثبت الزامی است"),
+	registrationNumber: Yup.string().required("شماره ثبت الزامی است"),
 	nationalID: Yup.string().required("شناسه ملی الزامی است"),
 	iban: Yup.string().required("شماره شبا الزامی است"),
-	// signatories: Yup.string().required("صاحبان امضا الزامی است"),
 	signatories: Yup.array().of(
 		Yup.object().shape({
 			signatoryName: Yup.string().required("نام صاحب امضا الزامی است"),
@@ -66,203 +55,202 @@ const validationSchema = Yup.object({
 			position: Yup.string(),
 		})
 	),
+	addresses: Yup.array().of(
+		Yup.object().shape({
+			province: Yup.string().required("این فیلد الزامی است"),
+			city: Yup.string().required("این فیلد الزامی است"),
+			streetAddress: Yup.string().required("این فیلد الزامی است"),
+			postalCode: Yup.string()
+				.required("کد پستی الزامی است")
+				.length(10, "کد پستی باید 10 رقم باشد"),
+			houseNumber: Yup.string().optional(),
+			unit: Yup.number().optional(),
+		})
+	),
 });
 
-// const Signatories = ({ }: { signatories: Array<number> }) => {
-const Signatories = () => {
-	const [signatories, setSignatories] = useState<Array<string>>([]);
+export default function Page() {
+	const dispatch = useDispatch();
 
-	// Add a new signatory
-	const addSignatory = () => {
-		setSignatories((prev) => [...prev, uuidv4()]);
-	};
+	// const [cities, setCities] = useState<City[]>([]);
+	// const [provinces, setProvinces] = useState<Province[]>([]);
+	// const [provinceId, setProvinceId] = useState<number>();
+	// const [disable, setDisable] = useState(true);
+	// const [cityId, setCityId] = useState<number>();
+	const [step, setStep] = useState<number>(0);
 
-	// Remove a signatory by ID
-	const removeSignatory = (id: string) => {
-		setSignatories((prev) => prev.filter((item) => item !== id));
-	};
+	// const [addresses, setAddresses] = useState<string[]>([]);
+	// const [signatories, setSignatories] = useState<string[]>([]);
 
-	return (
-		<>
-			{signatories.map((id) => (
-				<div
-					key={id} // Use the UUID as the key for the entire row
-					className="flex gap-3 items-end w-full"
-				>
-					<div className="flex w-[95%] gap-3">
-						<CustomInput
-							name={`signatories.${id}.signatoryName`}
-							placeholder="نام"
-							icon={UserRound}
-							key={`name-${id}`} // Unique key for each input
-						/>
-						<CustomInput
-							name={`signatories.${id}.nationalID`}
-							placeholder="کد ملی"
-							icon={IdCard}
-							key={`national-${id}`}
-						/>
-						<CustomInput
-							name={`signatories.${id}.position`}
-							placeholder="موقعیت"
-							icon={CircleUserRound}
-							key={`position-${id}`}
-						/>
-					</div>
-					<XIcon
-						className="text-fire-orange rounded-sm hover:cursor-pointer flex mb-3 w-fit"
-						onClick={() => removeSignatory(id)}
-					/>
-				</div>
-			))}
-
-			<button
-				className="place-self-start cta-neu-button w-1/3 mt-4"
-				onClick={addSignatory}
-			>
-				افزودن صاحب امضا
-			</button>
-		</>
-	);
-};
-const GeneratedForm = () => {
-	const [step, setStep] = useState(0);
-	// const [signatories, setSignatories] = useState([]);
-
-	const form = useForm();
-
-	const { handleSubmit, control, reset } = form;
-
-	const onSubmit = async () => {
+	// const getProvinces = () => {
+	// 	provinceService
+	// 		.GetProvinces()
+	// 		.then((res) => {
+	// 			Setprovinces(res.data.data);
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log(err.message);
+	// 		});
+	// };
+	// const UpdateCityList = (provinceId: number) => {
+	// 	provinceService
+	// 		.GetCities(provinceId)
+	// 		.then((res) => setCities(res.data.data))
+	// 		.catch((err) => console.log(err.message));
+	// };
+	// const Findprovinceid = (provinces: Province[], name: string) => {
+	// 	const province = provinces.find((p) => p.name === name);
+	// 	return province?.ID ?? null;
+	// };
+	// const FindCityid = (cities: City[], name: string) => {
+	// 	const city = cities.find((p) => p.name === name);
+	// 	return city?.ID ?? null;
+	// };
+	// useEffect(() => {
+	// 	UpdateCityList(provinceid ?? 1);
+	// }, [provinceId]);
+	// useEffect(() => {
+	// 	Getprovinces();
+	// }, []);
+	const corp = useSelector((state: RootState) => state).corp;
+	const onSubmit = async (values: corpData) => {
+		await handleFormSubmit(values);
+		// console.log("signatories", values.signatories);
+		console.log("values", values);
 		if (step < steps.length - 1) {
 			setStep(step + 1);
 		} else {
-			setStep(0);
-			reset();
-
-			toast.success("Form successfully submitted");
+			// submit form
 		}
 	};
-
-	const handleBack = () => {
+	const handleFormSubmit = async (values: corpData) => {
+		// console.log(values);
+		dispatch(
+			setCorp({
+				...corp,
+				corpName: values.corpName,
+				registrationNumber: values.registrationNumber,
+				nationalID: values.nationalID,
+				iban: values.iban,
+				signatories: values.signatories,
+				addresses: values.addresses,
+			})
+		);
+	};
+	const handleBack = (values: corpData) => {
+		dispatch(
+			setCorp({
+				...corp,
+				corpName: values.corpName,
+				registrationNumber: values.registrationNumber,
+				nationalID: values.nationalID,
+				iban: values.iban,
+				signatories: values.signatories,
+				addresses: values.addresses,
+			})
+		);
 		if (step > 0) {
 			setStep(step - 1);
 		}
 	};
 
-	const handleFormSubmit = () => {};
-
 	return (
-		<div className="space-y-4 rtl vazir m-auto h-2/3 w-1/2 my-20">
-			<div className="flex items-center justify-center">
-				{Array.from({ length: steps.length }).map((_, index) => (
-					<div key={index} className="flex items-center">
-						<Badge
-							className={cn(
-								"rounded-full w-44 transition-all duration-300 ease-in-out text-md neu-shadow gap-2 p-2 bg-gradient-to-r ",
-								index <= step
-									? "from-[#A55FDA] to-[#F37240] text-black/80"
-									: "from-[#A55FDA]/30 to-[#F37240]/30 text-black",
-								index < step &&
-									"from-[#A55FDA] to-[#F37240] text-white"
-							)}
-							key={index}
-						>
-							{steps[index]}
-							{/* {icons[index]} */}
-							<div className="">{icons[index]}</div>
-						</Badge>
-						{index < steps.length - 1 && (
-							<div
+		<div className="w-screen min-h-screen h-fit place-items-center flex place-content-center items-center bg-[#F0EDEF]">
+			<div className="space-y-4 rtl vazir m-auto h-2/3 w-1/2 my-20">
+				<div className="flex items-center justify-center">
+					{Array.from({ length: steps.length }).map((_, index) => (
+						<div key={index} className="flex items-center">
+							<Badge
 								className={cn(
-									"w-8 h-0.5 transition-all duration-500 ease-in-out",
-									index < step
-										? "bg-primary"
-										: "bg-primary/30"
+									"rounded-full w-44 transition-all duration-300 ease-in-out text-md neu-shadow gap-2 p-2 bg-gradient-to-r ",
+									index <= step
+										? "from-[#A55FDA] to-[#F37240] text-black/80"
+										: "from-[#A55FDA]/30 to-[#F37240]/30 text-black",
+									index < step &&
+										"from-[#A55FDA] to-[#F37240] text-white"
 								)}
-							/>
-						)}
-					</div>
-				))}
-			</div>
-			<Card className="justify-between neu-shadow border-0">
-				<CardHeader>
-					<CardTitle className="text-lg">
-						لطفا اطلاعات شرکت خود را وارد کنید
-					</CardTitle>
-					<CardDescription>مرحله فعلی: {steps[step]}</CardDescription>
-				</CardHeader>
-				<CardContent className="">
-					<Formik
-						initialValues={initialValues}
-						validationSchema={validationSchema}
-						onSubmit={handleFormSubmit}
-					>
-						{step === 0 && (
-							<Form className="flex flex-col w-full">
-								<div className="flex w-full justify-between gap-3">
-									<CustomInput
-										name="corpName"
-										placeholder="نام شرکت"
-										icon={Building2}
-										containerClassName="w-2/3 mx-auto"
-									/>
-									<CustomInput
-										name="registerationNumber"
-										placeholder="شماره ثبت"
-										icon={Fingerprint}
-										type="number"
-									/>
+								key={index}
+							>
+								{steps[index]}
+								<div className="">{icons[index]}</div>
+							</Badge>
+							{index < steps.length - 1 && (
+								<div
+									className={cn(
+										"w-8 h-0.5 transition-all duration-500 ease-in-out",
+										index < step
+											? "bg-primary"
+											: "bg-primary/30"
+									)}
+								/>
+							)}
+						</div>
+					))}
+				</div>
+				<Formik
+					initialValues={initialValuesForm}
+					validationSchema={validationSchemaForm}
+					onSubmit={onSubmit}
+				>
+					{({ setFieldValue, values }) => (
+						<Card className="justify-between neu-shadow border-0">
+							<CardHeader>
+								<CardTitle className="text-lg">
+									لطفا اطلاعات شرکت خود را وارد کنید
+								</CardTitle>
+								<CardDescription>
+									مرحله فعلی: {steps[step]}
+								</CardDescription>
+							</CardHeader>
+							<CardContent>
+								<div>
+									{step === 0 && (
+										<CorpInfoForm
+											// step={step}
+											// setStep={setStep}
+											// steps={steps}
+											// signatories={signatories}
+											// setSignatories={setSignatories}
+											values={values}
+										/>
+									)}
+									{step === 1 && (
+										<ContactInfoForm
+											// step={step}
+											// setStep={setStep}
+											// steps={steps}
+											// addresses={addresses}
+											// setAddresses={setAddresses}
+											values={values}
+											setFieldValue={setFieldValue}
+										/>
+									)}
 								</div>
-								<div className="flex w-full justify-between gap-3">
-									<CustomInput
-										name="nationalID"
-										placeholder="شناسه ملی"
-										icon={IdCard}
-										type="number"
-									/>
-									<CustomInput
-										name="iban"
-										placeholder="شماره شبا"
-										icon={CreditCard}
-										type="number"
-									/>
-								</div>
-								{/* <CustomTextArea name="signatories" placeholder="صاحبان امضا" icon={UsersRound} /> */}
-								<h2 className="mt-8 text-xl">صاحبان امضا</h2>
-								<Signatories />
-								{/* {signatories.map((signatory, index) => (
-									<Signatories
-									signatories={signatories}
-									/>
-								))} */}
-
-								{/* {Array.from({ length: signatories }, (_, i) => (
-									<Signatory key={i + 1} index={i + 1} />
-								))} */}
-							</Form>
-						)}
-					</Formik>
-				</CardContent>
-				<CardFooter className="flex justify-between align-bottom ltr">
-					<button
-						type="submit"
-						className="hover:cursor-pointer cta-neu-button w-1/4"
-						onClick={() => onSubmit()}
-					>
-						{step === steps.length - 1 ? "تایید" : "بعدی"}
-					</button>
-					{step > 0 && (
-						<button
-							type="button"
-							className="hover:cursor-pointer cta-neu-button w-1/4"
-							onClick={handleBack}
-						>
-							قبلی
-						</button>
+							</CardContent>
+							<CardFooter className="flex justify-between align-bottom ltr">
+								<button
+									type="submit"
+									className="hover:cursor-pointer cta-neu-button w-1/4"
+									onClick={() => onSubmit(values)}
+								>
+									{step === steps.length - 1
+										? "تایید"
+										: "بعدی"}
+								</button>
+								{step > 0 && (
+									<button
+										type="button"
+										className="hover:cursor-pointer cta-neu-button w-1/4"
+										onClick={() => handleBack(values)}
+									>
+										قبلی
+									</button>
+								)}
+							</CardFooter>
+						</Card>
 					)}
-				</CardFooter>
-			</Card>
+				</Formik>
+			</div>
 		</div>
 	);
-};
+}
