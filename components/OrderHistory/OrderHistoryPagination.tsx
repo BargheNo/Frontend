@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { Orderhistory } from "@/src/types/OrderhistoryType";
 import OrderHistory from "@/components/OrderHistory/OrderHistory";
 import { useSelector } from "react-redux";
-import { RootState } from "@/src/store/types";
+// import { RootState } from "@/src/store/types";
 
 export default function OrderHistoryPagination() {
 	const [history, sethistory] = useState<Orderhistory[]>([]);

@@ -11,7 +11,7 @@ import LoginButton from "../Login/LoginButton";
 import { handleResetPassword } from "../../../src/services/apiHub";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
-import { RootState } from "@/src/store/types";
+// import { RootState } from "@/src/store/types";
 
 const validationSchema = Yup.object({
 	password: Yup.string()
