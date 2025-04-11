@@ -4,6 +4,7 @@ import React from "react";
 import BidCard from "@/components/CorpDashboard/Bids/BidCard";
 import { toast } from "sonner";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
 
 /**
  * Style Showcase Page
@@ -139,7 +140,7 @@ const StyleShowcase = () => {
 					<label className="block text-sm font-medium">
 						loading-spinner style:
 					</label>
-					<LoadingSpinner fullScreen={true} />
+					<LoadingSpinner scale={30} />
 				</div>
 			</section>
 
@@ -178,6 +179,16 @@ const StyleShowcase = () => {
 				<button onClick={notif} className="block">
 					click to notif
 				</button>
+			</section>
+
+
+			<section>
+				<div className="relative inline-block rounded-2xl">
+					<button className="bg-red-500 p-4 neu-shadow rounded-2xl">
+						Click me
+					</button>
+					<TransparentLoading size="sm" />
+				</div>
 			</section>
 		</div>
 	);
