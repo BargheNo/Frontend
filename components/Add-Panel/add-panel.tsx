@@ -179,46 +179,30 @@ export default function AddPanel() {
                 >
                     {({ setFieldValue, values }) => (
                         <Form className="flex flex-col items-end w-full h-auto gap-4 rtl">
-                            <div
-                                className="flex justify-end w-full items-center"
+                             <div
+                                className="flex justify-between w-full mt-2"
                                 style={{ gap: "1vw" }}
                             >
-                                <CustomInput
-                                    dir="rtl"
-                                    placeholder="شماره مشتری"
-                                    icon={IdCard}
-                                    name="phonenumber"
-                                    type="number"
-                                >
-                                    {" "}
-                                </CustomInput>
-                                <div className="flex flex-row justify-center mt-5 gap-x-1 text-gray-500 w-full">
-                                    {/* <ShieldAlert />
-                                    <p className="rtl">
-                                        پنل شما با این نام در بخش پنل‌ها ثبت
-                                        خواهد شد.
-                                    </p> */}
-                                </div>
-                            </div>
-                            <div
-                                className="flex justify-end w-full items-center"
-                                style={{ gap: "1vw" }}
-                            >
-                                <CustomInput
-                                    dir="rtl"
-                                    placeholder="نام پنل"
-                                    icon={SquareMenu}
-                                    name="name"
-                                >
-                                    {" "}
-                                </CustomInput>
-                                <div className="flex flex-row justify-center mt-5 gap-x-1 text-gray-500 w-full">
-                                    {/* <ShieldAlert />
-                                    <p className="rtl">
-                                        پنل شما با این نام در بخش پنل‌ها ثبت
-                                        خواهد شد.
-                                    </p> */}
-                                </div>
+                            
+                                    <CustomInput
+                                        dir="rtl"
+                                        placeholder="شماره مشتری"
+                                        icon={IdCard}
+                                        name="phonenumber"
+                                        type="number"
+                                    >
+                                        {" "}
+                                    </CustomInput>
+
+                                    <CustomInput
+                                        dir="rtl"
+                                        placeholder="نام پنل"
+                                        icon={SquareMenu}
+                                        name="name"
+                                    >
+                                        {" "}
+                                    </CustomInput>
+                               
                             </div>
                             <div
                                 className="flex justify-end w-full -mt-4"
