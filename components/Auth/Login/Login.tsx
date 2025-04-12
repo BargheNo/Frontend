@@ -34,7 +34,7 @@ const initialValues = {
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -46,6 +46,8 @@ const Login = () => {
     password: string;
   }) => {
     const { phoneNumber, password } = values;
+
+    setLoading(true);
 
     try {
       const response = await postData({
@@ -66,10 +68,12 @@ const Login = () => {
             refreshToken: response.data.accessToken,
           })
         );
-        window.location.href = "/";
+        window.location.href = "/dashboard";
       }
     } catch (error: any) {
       toast.error(generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -113,11 +117,8 @@ const Login = () => {
                   رمز عبور
                 </CustomInput>
               </div>
-              {errorMessage && (
-                <p className="text-red-600 text-sm">{errorMessage}</p>
-              )}
-              <LoginButton>
-                {"ورود"}
+              <LoginButton loading={loading}>
+                ورود
                 <MoveLeft />
               </LoginButton>
             </Form>
