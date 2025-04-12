@@ -40,7 +40,6 @@ const ResetPassword = () => {
 	);
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-	const [loading, setLoading] = useState(false);
 
 	
 
@@ -49,7 +48,7 @@ const handleFormSubmit = async (values: {
 	confirmPassword: string;
 }) => {
 	const { confirmPassword, password } = values;
-	setLoading(true);
+	
 	try {
 		const response = await postData({
 			endPoint: "/v1/user/auth/reset-password",
@@ -68,8 +67,6 @@ const handleFormSubmit = async (values: {
 		const errMsg =
 			generateErrorMessage(error) || "هنگام تغییر رمز عبور مشکلی پیش آمد.";
 		toast.error(errMsg);
-	} finally{
-		setLoading(false);
 	}
 };
 
@@ -114,7 +111,7 @@ const handleFormSubmit = async (values: {
 									تایید رمز عبور جدید
 								</CustomInput>
 							</div>
-							<LoginButton loading={loading}>
+							<LoginButton>
 								{"تغییر رمز عبور"}
 								<MoveLeft />
 							</LoginButton>

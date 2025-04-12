@@ -47,8 +47,6 @@ const Login = () => {
   }) => {
     const { phoneNumber, password } = values;
 
-    setLoading(true);
-
     try {
       const response = await postData({
         endPoint: "/v1/auth/login",
@@ -72,8 +70,6 @@ const Login = () => {
       }
     } catch (error: any) {
       toast.error(generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -117,7 +113,7 @@ const Login = () => {
                   رمز عبور
                 </CustomInput>
               </div>
-              <LoginButton loading={loading}>
+              <LoginButton>
                 ورود
                 <MoveLeft />
               </LoginButton>

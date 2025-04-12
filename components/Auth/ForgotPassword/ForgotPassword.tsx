@@ -123,7 +123,7 @@ const ForgotPassword = () => {
                 </div>
               </div>
 
-              <LoginButton loading={loading}>
+              <LoginButton>
                 {"بازیابی رمز عبور"}
                 <MoveLeft />
               </LoginButton>
