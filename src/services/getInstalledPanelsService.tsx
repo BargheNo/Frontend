@@ -10,7 +10,7 @@ interface page {
 class InstalledPanel {
     GetInstalledPanels(pageinfo: page) {
         return getData({
-            endPoint:`${baseURL}/v1/corp/3/panels/list`,
+            endPoint:`${baseURL}/v1/corp/1/panels/list`,
             params: pageinfo,
 		});
 
