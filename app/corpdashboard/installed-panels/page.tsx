@@ -8,7 +8,7 @@ export default function page() {
 	// const address={ID: 1,province: "مازندران",city: "آمل",streetAddress: "خیابان هراز کوچه ی بی نام",postalCode: "1234564321",houseNumber: "12",unit: 1}
 	return <>
 				<div
-					className={`${"flex justify-center items-center mt-15"} ${
+					className={`${"flex justify-center items-center mt-9"} ${
 						vazir.className
 					}`}
 				>

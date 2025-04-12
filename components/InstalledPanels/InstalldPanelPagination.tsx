@@ -1,5 +1,6 @@
 "use client";
-
+import panelNotFound from "../../public/images/panelNotFound/panelNotFound.png";
+import Image from "next/image";
 import {
 	Pagination,
 	PaginationContent,
@@ -49,9 +50,15 @@ export default function InstalledPanelPagination() {
 					
 				))
 			) : (
-				<p className="text-center mt-6">هیچ پنلی یافت نشد</p>
+				<div className="text-center place-items-center mt-6">
+					<Image className="w-1/3" src={panelNotFound} alt="orderNotFound"/>
+					<div className="-mt-8">
+						<p className=" mt-6 text-navy-blue font-bold rtl" style={{fontSize:"1.1rem"}}>هیچ پنلی یافت نشد.</p>
+					</div>
+				</div>
 			)}
 			{history?.length>0&&
+			<div className="p-5">
 			<Pagination className="mt-4">
 				<PaginationContent>
 					<PaginationItem>
@@ -86,6 +93,7 @@ export default function InstalledPanelPagination() {
 					</PaginationItem>
 				</PaginationContent>
 			</Pagination>
+			</div>
             }
 		</>
 	);

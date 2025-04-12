@@ -1,5 +1,5 @@
 "use client";
-
+import Image from "next/image";
 import {
 	Pagination,
 	PaginationContent,
@@ -14,6 +14,8 @@ import { useEffect, useState } from "react";
 import { Orderhistory } from "@/src/types/OrderhistoryType";
 import OrderHistory from "@/components/OrderHistory/OrderHistory";
 import { useSelector } from "react-redux";
+import panelNotFound from "../../public/images/panelNotFound/panelNotFound.png";
+
 // import { RootState } from "@/src/store/types";
 
 export default function OrderHistoryPagination() {
@@ -49,43 +51,50 @@ export default function OrderHistoryPagination() {
 					/>
 				))
 			) : (
-				<p className="text-center mt-6">هیچ سفارشی یافت نشد</p>
+				<div className="text-center place-items-center mt-6">
+					<Image className="w-1/3" src={panelNotFound} alt="orderNotFound"/>
+					<div className="-mt-8">
+						<p className=" mt-6 text-navy-blue font-bold rtl" style={{fontSize:"1.1rem"}}>هیچ سفارشی یافت نشد.</p>
+					</div>
+				</div>
 			)}
 			{history?.length>0&&
-			<Pagination className="mt-3">
-				<PaginationContent>
-					<PaginationItem>
-						{Number(currpage)>1&&
-						<PaginationPrevious
-							href="#"
-							onClick={() =>
-								Setcurrpage((prev) => String(Math.max(Number(prev) - 1, 1)))
-							}
-						/>}
-					</PaginationItem>
-					{["1", "2", "3"].map((page) => (
-						<PaginationItem key={page}>
-							<PaginationLink
+			<div className="p-5">
+				<Pagination className="mt-3">
+					<PaginationContent>
+						<PaginationItem>
+							{Number(currpage)>1&&
+							<PaginationPrevious
 								href="#"
-								onClick={() => Setcurrpage(page)}
-								isActive={page===currpage}
-							>
-								{page}
-							</PaginationLink>
+								onClick={() =>
+									Setcurrpage((prev) => String(Math.max(Number(prev) - 1, 1)))
+								}
+							/>}
 						</PaginationItem>
-					))}
-					<PaginationItem>
-						<PaginationEllipsis />
-					</PaginationItem>
-					<PaginationItem>
-						<PaginationNext
-							href="#"
-							onClick={() => Setcurrpage((prev) => String(Number(prev) + 1))}
-						/>
-					</PaginationItem>
-				</PaginationContent>
-			</Pagination>
-}
+						{["1", "2", "3"].map((page) => (
+							<PaginationItem key={page}>
+								<PaginationLink
+									href="#"
+									onClick={() => Setcurrpage(page)}
+									isActive={page===currpage}
+								>
+									{page}
+								</PaginationLink>
+							</PaginationItem>
+						))}
+						<PaginationItem>
+							<PaginationEllipsis />
+						</PaginationItem>
+						<PaginationItem>
+							<PaginationNext
+								href="#"
+								onClick={() => Setcurrpage((prev) => String(Number(prev) + 1))}
+							/>
+						</PaginationItem>
+					</PaginationContent>
+				</Pagination>
+			</div>
+}  
 		</>
 	);
 }
