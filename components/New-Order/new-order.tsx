@@ -114,7 +114,7 @@ export default function Neworder() {
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}
-				className="min-w-[57vw] overflow-auto"
+				className="min-w-[57vw] overflow-auto py-4"
 			>
 				<DialogHeader>
 					<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
@@ -136,21 +136,21 @@ export default function Neworder() {
 					}}
 					validationSchema={Yup.object({
 						name: Yup.string()
-							.required("این فیلد الزامی است")
-							.max(50, "نام پنل نمی تواند بیش از 50 کارکتر باشد"),
-						address: Yup.string().required("این فیلد الزامی است"),
-						area: Yup.number().required("این فیلد الزامی است"),
+							.required("این فیلد الزامی است.")
+							.max(50, "نام پنل نمی تواند بیش از 50 کارکتر باشد."),
+						address: Yup.string().required("این فیلد الزامی است."),
+						area: Yup.number().required("این فیلد الزامی است."),
 						electricity: Yup.number().required(
-							"این فیلد الزامی است"
+							"این فیلد الزامی است."
 						),
-						cost: Yup.number().required("این فیلد الزامی است"),
-						number: Yup.string().required("این فیلد الزامی است"),
+						cost: Yup.number().required("این فیلد الزامی است."),
+						number: Yup.string().required("این فیلد الزامی است."),
 						code: Yup.string()
-							.required("این فیلد الزامی است")
-							.length(10, "کد پستی وارد شده اشتباه است"),
-						unit: Yup.number().required("این فیلد الزامی است"),
-						province: Yup.string().required("این فیلد الزامی است"),
-						city: Yup.string().required("این فیلد الزامی است"),
+							.required("این فیلد الزامی است.")
+							.length(10, "کد پستی وارد شده اشتباه است."),
+						unit: Yup.number().required("این فیلد الزامی است."),
+						province: Yup.string().required("این فیلد الزامی است."),
+						city: Yup.string().required("این فیلد الزامی است."),
 					})}
 					onSubmit={(values) => {
                         // setOpen(false);
@@ -338,7 +338,7 @@ export default function Neworder() {
 									type="number"
 									dir="rtl"
 									// style={{ width: "25vw" }}
-									placeholder="مساحت"
+									placeholder="مساحت(مترمربع)"
 									icon={LandPlot}
 									name="area"
 								>
@@ -352,7 +352,7 @@ export default function Neworder() {
 									type="number"
 									dir="rtl"
 									// style={{ width: "25vw" }}
-									placeholder="میزان برق مورد نیاز"
+									placeholder="میزان برق مورد نیاز(کیلووات)"
 									icon={Gauge}
 									name="electricity"
 								>
@@ -366,7 +366,7 @@ export default function Neworder() {
 									type="number"
 									dir="rtl"
 									// style={{ width: "25vw" }}
-									placeholder="سقف هزینه"
+									placeholder="سقف هزینه(ریال)"
 									icon={CircleDollarSign}
 									name="cost"
 								>
@@ -421,78 +421,6 @@ export default function Neworder() {
 								</Select>
 							</div>
 
-							{/* <div
-								className="flex justify-end w-full items-center -mt-4"
-								style={{ gap: "1vw" }}
-							>
-								<CustomInput
-									type="number"
-									dir="rtl"
-									// style={{ width: "25vw" }}
-									placeholder="میزان برق مورد نیاز"
-									icon={Gauge}
-									name="electricity"
-								>
-									{" "}
-								</CustomInput>
-								<div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
-									<ShieldAlert />
-									<p className="">میزان برق مورد نیاز </p>
-								</div>
-							</div> */}
-
-							{/* <div
-								className="flex gap-x-2 w-full items-center -mt-4"
-								style={{ gap: "1vw" }}
-							>
-								<div className="mb-6.5 w-full">
-									<CustomInput
-										type="number"
-										dir="rtl"
-										// style={{ width: "25vw" }}
-										placeholder="سقف هزینه"
-										icon={CircleDollarSign}
-										name="cost"
-									>
-										{" "}
-									</CustomInput>
-								</div>
-								<Select
-									name="building"
-									onValueChange={(value) =>
-										Setbuilding(value)
-									}
-								>
-									<SelectTrigger
-										className={`${style.CustomInput} w-[90%]`}
-										// style={{ width: "25vw" }}
-									>
-										<SelectValue placeholder="نوع ساختمان" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectGroup>
-											<SelectLabel>
-												نوع ساختمان
-											</SelectLabel>
-											<SelectItem value="residential">
-												مسکونی
-											</SelectItem>
-											<SelectItem value="commercial">
-												تجاری
-											</SelectItem>
-											<SelectItem value="industrial">
-												صنعتی
-											</SelectItem>
-											<SelectItem value="argiculture">
-												کشاورزی
-											</SelectItem>
-											<SelectItem value="more">
-												سایر
-											</SelectItem>
-										</SelectGroup>
-									</SelectContent>
-								</Select>
-							</div> */}
 							<div className="flex flex-row justify-center items-center self-center">
 								<SignupButton
 									type="submit"

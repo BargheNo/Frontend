@@ -1,5 +1,6 @@
 "use client";
-
+import panelNotFound from "../../public/images/panelNotFound/panelNotFound.png";
+import Image from "next/image";
 import {
 	Pagination,
 	PaginationContent,
@@ -14,20 +15,19 @@ import { useEffect, useState } from "react";
 import { installedpanel } from "@/src/types/installedpanelType";
 import InstalledPanel from "@/components/InstalledPanels/InstalledPanels";
 import { useSelector } from "react-redux";
-// import { RootState } from "@/src/store/types";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 export default function InstalledPanelPagination() {
 	const [history, sethistory] = useState<installedpanel[]>([]);
 	const [currpage, Setcurrpage] = useState<string>("1");
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
+	const[isLoading,setIsLoading]=useState(true);
 	const handelHistory = (page: string, pageSize: string) => {
 		InstalledpanelService
-			.GetInstalledPanels({ page: page, pageSize: pageSize }, "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDY4MzAxMjYsImlhdCI6MTc0NDIzODEyNiwic3ViIjoxOH0.BydUQtEtMNHdaNUnBiY5IYzAvrccOaIVrL5_JKDNzkqPRVI903PsTJWKGDHfK-boiY_vrh-OBy5Bb7n-MNF8uFD0bEXgiioKb3n9mnnhXDY9nmUkFnyHcUt3Fw1xsvyX4mnKCr7EDMtYP3_PzAMXtfs9hogSOs2JG6PFAWf5oFg")
+			.GetInstalledPanels({ page: page, pageSize: pageSize })
 			.then((res) => {
-				sethistory(res.data.data);
-				console.log(res)
+				sethistory(res.data);
+				// console.log(res)
+				setIsLoading(false);
 			})
 			.catch((err) => console.log(err));
 	};
@@ -37,21 +37,34 @@ export default function InstalledPanelPagination() {
 
 	return (
 		<>
-			{history?.length > 0 ? (
-				history.map((order: installedpanel, index) => (
+			{isLoading ? (
+        <LoadingSpinner />
+      ) : history?.length > 0 ? (
+        <>
+          <div className="min-h-full flex flex-col text-white px-14 bg-transparent">
+            	<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+             
+				{history.map((order: installedpanel, index) => (
 					<InstalledPanel
 						key={index}
 						customerName={order.customerName}
 						panelName={order.panelName}
 						power={order.power}
 						address={order.address}
-					/>
-					
-				))
-			) : (
-				<p className="text-center mt-6">هیچ پنلی یافت نشد</p>
+					/>))}
+			    </div>
+          </div>
+        </>
+			): (
+				<div className="text-center place-items-center mt-6">
+					<Image className="w-1/3" src={panelNotFound} alt="orderNotFound"/>
+					<div className="-mt-8">
+						<p className=" mt-6 text-navy-blue font-bold rtl" style={{fontSize:"1.1rem"}}>هیچ پنلی یافت نشد.</p>
+					</div>
+				</div>
 			)}
-			{history?.length>0&&
+		    {history?.length>0&&
+			<div className="p-5">
 			<Pagination className="mt-4">
 				<PaginationContent>
 					<PaginationItem>
@@ -64,7 +77,7 @@ export default function InstalledPanelPagination() {
 						/>
                         }
 					</PaginationItem>
-					{["1", "2", "3"].map((page) => (
+					{["1", "2", "3","4","5"].map((page) => (
 						<PaginationItem key={page} >
 							<PaginationLink
 							   isActive={page===currpage}
@@ -76,16 +89,19 @@ export default function InstalledPanelPagination() {
 						</PaginationItem>
 					))}
 					<PaginationItem>
-						<PaginationEllipsis />
+					{currpage!="5"&&
+						<PaginationEllipsis />}
 					</PaginationItem>
 					<PaginationItem>
+						{currpage!="5"&&
 						<PaginationNext
 							href="#"
 							onClick={() => Setcurrpage((prev) => String(Number(prev) + 1))}
-						/>
+						/>}
 					</PaginationItem>
 				</PaginationContent>
 			</Pagination>
+			</div>
             }
 		</>
 	);
