@@ -238,7 +238,7 @@ export default function AddPanel() {
                                     type="number"
                                     dir="rtl"
                                     icon={DatabaseZap}
-                                    placeholder="مجموع توان تولید شده"
+                                    placeholder="مجموع توان تولید شده(کیلووات)"
                                     name="power"
                                 >
                                     {" "}
@@ -289,7 +289,7 @@ export default function AddPanel() {
                                     dir="rtl"
                                     icon={TriangleRight}
                                     name="angel"
-                                    placeholder="زاویه نصب"
+                                    placeholder="زاویه نصب(درجه)"
                                 >
                                     {" "}
                                 </CustomInput>
@@ -298,7 +298,7 @@ export default function AddPanel() {
                                     style={{ width: "12vw" }}
                                     dir="rtl"
                                     icon={Compass}
-                                    placeholder="جهت نصب"
+                                    placeholder="جهت نصب(درجه)"
                                     name="direction"
                                 >
                                     {" "}
@@ -308,7 +308,7 @@ export default function AddPanel() {
                                     style={{ width: "12vw" }}
                                     dir="rtl"
                                     icon={LandPlot}
-                                    placeholder="مساحت"
+                                    placeholder="مساحت(مترمربع)"
                                     name="area"
                                 >
                                     {" "}
