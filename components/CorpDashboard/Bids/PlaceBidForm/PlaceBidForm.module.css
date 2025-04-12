@@ -1,0 +1,10 @@
+.Box {
+	@apply bg-gradient-to-br from-[#FAFAFB] to-[#F3F4F6];
+	box-shadow: inset 1px 2px 5px rgba(0, 0, 0, 0.2);
+	border-radius: 9px;
+	width: 100%;
+	padding: 0px 10px;
+	box-sizing: border-box;
+	text-align: right;
+	background-color: white;
+}

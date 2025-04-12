@@ -1,0 +1,38 @@
+name: Branch Protection
+
+on:
+  pull_request:
+    branches:
+      - main  # Only trigger on PRs targeting main branch
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check source branch
+        if: github.base_ref == 'main' && github.head_ref != 'develop'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { owner, repo, number } = context.issue;
+            
+            const errorMessage = `❌ Invalid Pull Request!\n\n` +
+              `Pull requests to \`main\` branch are only allowed from \`develop\` branch.\n` +
+              `Your PR is from \`${process.env.GITHUB_HEAD_REF}\` to \`main\`.\n\n` +
+              `Please create a new PR from \`develop\` to \`main\`.`;
+            
+            // Add comment to PR
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: number,
+              body: errorMessage
+            });
+            
+            // Close PR
+            await github.rest.pulls.update({
+              owner,
+              repo,
+              pull_number: number,
+              state: 'closed'
+            }); 

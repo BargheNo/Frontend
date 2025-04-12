@@ -1,0 +1,60 @@
+import { Calendar, FilePenLine } from "lucide-react";
+import React from "react";
+
+const BlogItem = ({
+	title,
+	author,
+	date,
+}: {
+	title: string;
+	author: string;
+	date: string;
+}) => {
+	return (
+		<div className="flex flex-row justify-between w-full h-full bg-white py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0">
+			<div className="flex flex-col gap-5">
+				{/* Right section */}
+				<p className="text-start content-start w-full text-2xl font-bold">
+					{title}
+				</p>
+				<div className="flex flex-row items-center gap-2 text-[#FA682D]">
+					<Calendar />
+					<span className="text-[#636363] font-bold flex place-self-center">{date}</span>
+				</div>
+				<div className="flex gap-1">
+					<span>نویسنده:</span>
+					<span className="font-bold">{author}</span>
+				</div>
+			</div>
+			{/* Left section */}
+			<div className="flex items-center">
+                <button className="font-bold text-[#FA682D] cta-neu-button flex gap-2">
+                    <span>ویرایش</span>
+                    <FilePenLine className="font-bold" />
+                </button>
+            </div>
+		</div>
+	);
+};
+
+export default function BlogsList() {
+	return (
+		<div className="list">
+			<BlogItem
+				title="مطلب خیلی مهم"
+				author="مرتضی مرتضوی"
+				date="1404/2/23"
+			/>
+			<BlogItem
+				title="مطلب خیلی مهم"
+				author="مرتضی مرتضوی"
+				date="1404/2/23"
+			/>
+			<BlogItem
+				title="مطلب خیلی مهم"
+				author="مرتضی مرتضوی"
+				date="1404/2/23"
+			/>
+		</div>
+	);
+}

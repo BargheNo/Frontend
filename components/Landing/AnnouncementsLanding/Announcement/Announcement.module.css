@@ -1,0 +1,5 @@
+.Box {
+	background: #f4f7f9;
+	box-shadow: 5px 6px 10.6px 0px #00000040, -6px -5px 4px 0px #ffffff;
+	border-radius: 10px;
+}

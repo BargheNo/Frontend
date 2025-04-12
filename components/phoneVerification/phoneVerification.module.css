@@ -1,0 +1,57 @@
+.card{
+    @apply m-auto h-auto flex flex-col justify-center items-center;
+    background-color:#F1F4FC;
+    border-radius:15px; 
+}
+
+
+
+  .CustomInput {
+    box-shadow: inset 1px 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 9px;
+    box-sizing: border-box;
+    text-align: center;
+    background-color: #F1F4FC;
+    height: 85px;
+    font-size: clamp(10px,4vw,18px);
+    width: 3.8vw;
+}
+
+
+.link{
+    @apply hover:underline;
+    color:#2979FF;
+    cursor:pointer;
+}
+
+
+
+@media (max-width: 1200px) {
+    .card {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .CustomInput{
+        width: 3.5rem;
+    }
+
+    .button{
+        width: 40%;
+    }
+}
+
+@media (max-width:950px){
+      .CustomInput{
+        width: 60px;
+    }
+
+}
+
+@media (max-width:762px){
+
+      .CustomInput{
+        width: 45px;
+    }
+
+}
