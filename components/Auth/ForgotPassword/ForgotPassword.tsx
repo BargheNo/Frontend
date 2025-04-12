@@ -25,11 +25,11 @@ const initialValues = {
 };
 
 const ForgotPassword = () => {
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [otpCode, setOtpCode] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const route = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleOtpChange = (otp: string) => {
     setOtpCode(otp);
@@ -38,7 +38,7 @@ const ForgotPassword = () => {
   const handleFormSubmit = async (values: { phoneNumber: string }) => {
     const { phoneNumber } = values;
     const fullPhone = "+98" + phoneNumber;
-
+    setLoading(true);
     try {
       const response = await postData({
         endPoint: "/v1/auth/forgot-password",
@@ -54,7 +54,8 @@ const ForgotPassword = () => {
       const errMsg =
         generateErrorMessage(error) || "هنگام باز یابی رمز عبور مشکلی پیش آمد.";
       toast.error(errMsg);
-      setErrorMessage(errMsg);
+    } finally{
+      setLoading(false);
     }
   };
 
@@ -80,7 +81,6 @@ const ForgotPassword = () => {
       const errMsg =
         generateErrorMessage(error) || "هنگام احراز هویت مشکلی پیش آمد.";
       toast.error(errMsg);
-      setErrorMessage(errMsg);
     }
   };
 
@@ -122,10 +122,6 @@ const ForgotPassword = () => {
                   </CustomInput>
                 </div>
               </div>
-
-              {errorMessage && (
-                <p className="text-red-600 text-sm">{errorMessage}</p>
-              )}
 
               <LoginButton>
                 {"بازیابی رمز عبور"}
