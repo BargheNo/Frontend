@@ -1,4 +1,5 @@
 import AddPanel from "@/components/Add-Panel/add-panel";
+import Header from "@/components/Header/Header";
 import InstalledPanelPagination from "@/components/InstalledPanels/InstalldPanelPagination";
 import InstalledPanel from "@/components/InstalledPanels/InstalledPanels";
 import { vazir } from "@/lib/fonts";
@@ -20,8 +21,8 @@ export default function page() {
 						</div>
 					</div>
 				</div>
-				<div className=" flex flex-row font-bold text-navy-blue text-2xl mr-8 mt-6 mb-3 justify-start ">
-					<p> پنل های نصب شده</p>
+				<div className=" flex flex-row font-bold text-navy-blue text-2xl px-14 mt-5 justify-start ">	
+						<Header header="پنل های نصب شده"/>
 				</div>
 				<InstalledPanelPagination></InstalledPanelPagination>
 				{/* <InstalledPanel address={address} customerName="تینا محمدپور" panelName="super power" power={12000}></InstalledPanel> */}
