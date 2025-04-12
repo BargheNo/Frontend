@@ -13,6 +13,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({ children }) => {
       duration-300 hover:shadow-[-8px_-8px_20px_rgba(255,255,255,1),4px_4px_10px_rgba(0,0,0,0.3)]
       active:shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)]`}
     >
+      {children}
     </button>
     
   );
