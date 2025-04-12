@@ -52,7 +52,7 @@ const handleFormSubmit = async (values: {
 
 	try {
 		const response = await postData({
-			endPoint: "/v1/auth/reset-password",
+			endPoint: "/v1/user/auth/reset-password",
 			data: {
 				password,
 				confirmPassword,

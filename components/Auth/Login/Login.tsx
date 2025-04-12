@@ -66,7 +66,7 @@ const Login = () => {
             refreshToken: response.data.accessToken,
           })
         );
-        window.location.href = "/";
+        window.location.href = "/dashboard";
       }
     } catch (error: any) {
       toast.error(generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد.");
