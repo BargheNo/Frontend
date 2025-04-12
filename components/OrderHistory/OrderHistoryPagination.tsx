@@ -41,7 +41,7 @@ export default function OrderHistoryPagination() {
 
 	return (
 		<>
-			{history?.length > 0 ? (
+			{isLoading ? <LoadingSpinner /> : history?.length > 0 ? (
 				history.map((order: Orderhistory, index) => (
 					<OrderHistory
 						key={index}

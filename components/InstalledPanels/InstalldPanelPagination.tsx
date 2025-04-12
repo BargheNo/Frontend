@@ -15,19 +15,19 @@ import { useEffect, useState } from "react";
 import { installedpanel } from "@/src/types/installedpanelType";
 import InstalledPanel from "@/components/InstalledPanels/InstalledPanels";
 import { useSelector } from "react-redux";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 export default function InstalledPanelPagination() {
 	const [history, sethistory] = useState<installedpanel[]>([]);
 	const [currpage, Setcurrpage] = useState<string>("1");
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
+	const[isLoading,setIsLoading]=useState(true);
 	const handelHistory = (page: string, pageSize: string) => {
 		InstalledpanelService
 			.GetInstalledPanels({ page: page, pageSize: pageSize })
 			.then((res) => {
 				sethistory(res.data);
-				console.log(res)
+				// console.log(res)
+				setIsLoading(false);
 			})
 			.catch((err) => console.log(err));
 	};
@@ -37,7 +37,7 @@ export default function InstalledPanelPagination() {
 
 	return (
 		<>
-			{history?.length > 0 ? (
+			{isLoading ? <LoadingSpinner /> :history?.length > 0 ? (
 				history.map((order: installedpanel, index) => (
 					<InstalledPanel
 						key={index}
