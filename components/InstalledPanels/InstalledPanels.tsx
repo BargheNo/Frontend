@@ -14,7 +14,7 @@ const InstalledPanel=  ({
     <>
 	
     <div
-			className={` w-95/100 m-auto ${
+			className={` w-full m-auto ${
 				0 ? "h-64" : ""
 			} border-gray-300 border-b-3`}
 		>

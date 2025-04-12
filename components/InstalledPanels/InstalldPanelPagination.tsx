@@ -37,18 +37,25 @@ export default function InstalledPanelPagination() {
 
 	return (
 		<>
-			{isLoading ? <LoadingSpinner /> :history?.length > 0 ? (
-				history.map((order: installedpanel, index) => (
+			{isLoading ? (
+        <LoadingSpinner />
+      ) : history?.length > 0 ? (
+        <>
+          <div className="min-h-full flex flex-col text-white py-8 px-14 bg-transparent">
+            	<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+             
+				{history.map((order: installedpanel, index) => (
 					<InstalledPanel
 						key={index}
 						customerName={order.customerName}
 						panelName={order.panelName}
 						power={order.power}
 						address={order.address}
-					/>
-					
-				))
-			) : (
+					/>))}
+			    </div>
+          </div>
+        </>
+			): (
 				<div className="text-center place-items-center mt-6">
 					<Image className="w-1/3" src={panelNotFound} alt="orderNotFound"/>
 					<div className="-mt-8">
@@ -56,7 +63,7 @@ export default function InstalledPanelPagination() {
 					</div>
 				</div>
 			)}
-			{history?.length>0&&
+		    {history?.length>0&&
 			<div className="p-5">
 			<Pagination className="mt-4">
 				<PaginationContent>
