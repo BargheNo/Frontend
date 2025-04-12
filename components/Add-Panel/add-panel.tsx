@@ -134,25 +134,25 @@ export default function AddPanel() {
                     }}
                     validationSchema={Yup.object({
                         phonenumber: Yup.string()
-                                    .matches(/^(9\d{9})$/, ".شماره تلفن وارد شده اشتباه است")
-                                    .required(".شماره تلفن الزامی است"),
+                                    .matches(/^(9\d{9})$/, "شماره تلفن وارد شده اشتباه است.")
+                                    .required("این فیلد الزامی است."),
                         name: Yup.string()
-                            .required("این فیلد الزامی است")
-                            .max(50, "نام پنل نمی تواند بیش از 50 کارکتر باشد"),
-                        address: Yup.string().required("این فیلد الزامی است"),
-                        building: Yup.string().required("این فیلد الزامی است"),
-                        area: Yup.number().required("این فیلد الزامی است"),
+                            .required("این فیلد الزامی است.")
+                            .max(50, ".نام پنل نمی تواند بیش از 50 کارکتر باشد"),
+                        address: Yup.string().required("این فیلد الزامی است."),
+                        building: Yup.string().required("این فیلد الزامی است."),
+                        area: Yup.number().required("این فیلد الزامی است."),
                         power: Yup.number().required(
-                            "این فیلد الزامی است"
+                            "این فیلد الزامی است."
                         ),
-                        modulecount: Yup.number().required("این فیلد الزامی است"),
-                        angel: Yup.number().required("این فیلد الزامی است"),
-                        direction: Yup.number().required("این فیلد الزامی است"),
-                        province: Yup.string().required("این فیلد الزامی است"),
-                        city: Yup.string().required("این فیلد الزامی است"),
-                        number: Yup.string().required("این فیلد الزامی است"),
-                        code: Yup.string().required("این فیلد الزامی است").length(10, "کد پستی وارد شده اشتباه است"),
-                        unit: Yup.number().required("این فیلد الزامی است"),
+                        modulecount: Yup.number().required("این فیلد الزامی است."),
+                        angel: Yup.number().required("این فیلد الزامی است."),
+                        direction: Yup.number().required("این فیلد الزامی است."),
+                        province: Yup.string().required("این فیلد الزامی است."),
+                        city: Yup.string().required("این فیلد الزامی است."),
+                        number: Yup.string().required("این فیلد الزامی است."),
+                        code: Yup.string().required("این فیلد الزامی است.").length(10, "کد پستی وارد شده اشتباه است."),
+                        unit: Yup.number().required("این فیلد الزامی است."),
                     })}
                     onSubmit={(values) => {
                         setOpen(false);

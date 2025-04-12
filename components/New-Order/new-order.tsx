@@ -136,21 +136,21 @@ export default function Neworder() {
 					}}
 					validationSchema={Yup.object({
 						name: Yup.string()
-							.required("این فیلد الزامی است")
-							.max(50, "نام پنل نمی تواند بیش از 50 کارکتر باشد"),
-						address: Yup.string().required("این فیلد الزامی است"),
-						area: Yup.number().required("این فیلد الزامی است"),
+							.required("این فیلد الزامی است.")
+							.max(50, "نام پنل نمی تواند بیش از 50 کارکتر باشد."),
+						address: Yup.string().required("این فیلد الزامی است."),
+						area: Yup.number().required("این فیلد الزامی است."),
 						electricity: Yup.number().required(
-							"این فیلد الزامی است"
+							"این فیلد الزامی است."
 						),
-						cost: Yup.number().required("این فیلد الزامی است"),
-						number: Yup.string().required("این فیلد الزامی است"),
+						cost: Yup.number().required("این فیلد الزامی است."),
+						number: Yup.string().required("این فیلد الزامی است."),
 						code: Yup.string()
-							.required("این فیلد الزامی است")
-							.length(10, "کد پستی وارد شده اشتباه است"),
-						unit: Yup.number().required("این فیلد الزامی است"),
-						province: Yup.string().required("این فیلد الزامی است"),
-						city: Yup.string().required("این فیلد الزامی است"),
+							.required("این فیلد الزامی است.")
+							.length(10, "کد پستی وارد شده اشتباه است."),
+						unit: Yup.number().required("این فیلد الزامی است."),
+						province: Yup.string().required("این فیلد الزامی است."),
+						city: Yup.string().required("این فیلد الزامی است."),
 					})}
 					onSubmit={(values) => {
                         // setOpen(false);
