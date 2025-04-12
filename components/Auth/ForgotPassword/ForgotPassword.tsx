@@ -35,55 +35,54 @@ const ForgotPassword = () => {
     setOtpCode(otp);
   };
 
+  const handleFormSubmit = async (values: { phoneNumber: string }) => {
+    const { phoneNumber } = values;
+    const fullPhone = "+98" + phoneNumber;
 
-const handleFormSubmit = async (values: { phoneNumber: string }) => {
-	const { phoneNumber } = values;
-	const fullPhone = "+98" + phoneNumber;
+    try {
+      const response = await postData({
+        endPoint: "/v1/auth/forgot-password",
+        data: { phone: fullPhone },
+      });
 
-	try {
-		const response = await postData({
-			endPoint: "/v1/auth/forgot-password",
-			data: { phone: fullPhone },
-		});
+      if (response?.statusCode === 200) {
+        toast.success(response?.message);
+        setPhone(phoneNumber);
+        setOpen(true);
+      }
+    } catch (error: any) {
+      const errMsg =
+        generateErrorMessage(error) || "هنگام باز یابی رمز عبور مشکلی پیش آمد.";
+      toast.error(errMsg);
+      setErrorMessage(errMsg);
+    }
+  };
 
-		if (response?.statusCode === 200) {
-			toast.success(response?.message);
-			setPhone(phoneNumber);
-			setOpen(true);
-		}
-	} catch (error: any) {
-		const errMsg =
-			generateErrorMessage(error) || "هنگام باز یابی رمز عبور مشکلی پیش آمد.";
-		toast.error(errMsg);
-		setErrorMessage(errMsg);
-	}
-};
+  const handleVerification = async (phone: string, otp: string) => {
+    const fullPhone = "+98" + phone;
 
-const handleVerification = async (phone: string, otp: string) => {
-	const fullPhone = "+98" + phone;
+    try {
+      const response = await postData({
+        endPoint: "/v1/auth/confirm-otp",
+        data: {
+          phone: fullPhone,
+          otp: otp,
+        },
+      });
 
-	try {
-		const response = await postData({
-			endPoint: "/v1/auth/verify-phonenumber",
-			data: {
-				phone: fullPhone,
-				otp: otp,
-			},
-		});
-
-		if (response?.statusCode === 200) {
-			toast.success(response?.message);
-			route.push("/reset-password");
-		} else {
-			toast.error(response.message || "Verification failed");
-		}
-	} catch (error: any) {
-		const errMsg =
-			generateErrorMessage(error) || "هنگام احراز هویت مشکلی پیش آمد.";
-		toast.error(errMsg);
-		setErrorMessage(errMsg);
-	}
-};
+      if (response?.statusCode === 200) {
+        toast.success(response?.message);
+        route.push("/reset-password");
+      } else {
+        toast.error(response.message || "Verification failed");
+      }
+    } catch (error: any) {
+      const errMsg =
+        generateErrorMessage(error) || "هنگام احراز هویت مشکلی پیش آمد.";
+      toast.error(errMsg);
+      setErrorMessage(errMsg);
+    }
+  };
 
   useEffect(() => {
     if (otpCode.length === 6) {
