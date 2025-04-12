@@ -2,13 +2,18 @@
 // import { ArrowLeft } from "lucide-react";
 // import panel from "@/public/images/Landing/panel.png";
 // import Link from "next/link";
-
+"use client";
 import Landing from "@/components/Landing/Landing";
+import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import useClientCheck from "@/src/hooks/useClientCheck";
 
 // import Image from "next/image";
 export default function Page() {
+	if (!useClientCheck()) {
+		return <LoadingSpinner />;
+	}
 	return (
-    <Landing />
+		<Landing />
 		// <div className="text-center items-center" dir="rtl">
 		// 	{/*
 		// 	 * برق نو
