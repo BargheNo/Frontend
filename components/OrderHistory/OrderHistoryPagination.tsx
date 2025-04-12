@@ -15,12 +15,14 @@ import { Orderhistory } from "@/src/types/OrderhistoryType";
 import OrderHistory from "@/components/OrderHistory/OrderHistory";
 import { useSelector } from "react-redux";
 import panelNotFound from "../../public/images/panelNotFound/panelNotFound.png";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 // import { RootState } from "@/src/store/types";
 
 export default function OrderHistoryPagination() {
 	const [history, sethistory] = useState<Orderhistory[]>([]);
 	const [currpage, Setcurrpage] = useState<string>("1");
+	const[isLoading,setIsLoading]=useState(true);
 	const accessToken = useSelector(
 		(state: RootState) => state.user.accessToken
 	);
@@ -28,8 +30,8 @@ export default function OrderHistoryPagination() {
 		orderService
 			.orderHistory({ page: page, pageSize: pageSize }, accessToken)
 			.then((res) => {
-				// console.log(res.data);
 				sethistory(res.data);
+				setIsLoading(false);
 			})
 			.catch((err) => console.log(err));
 	};
@@ -52,6 +54,7 @@ export default function OrderHistoryPagination() {
 				))
 			) : (
 				<div className="text-center place-items-center mt-6">
+					
 					<Image className="w-1/3" src={panelNotFound} alt="orderNotFound"/>
 					<div className="-mt-8">
 						<p className=" mt-6 text-navy-blue font-bold rtl" style={{fontSize:"1.1rem"}}>هیچ سفارشی یافت نشد.</p>
@@ -90,6 +93,7 @@ export default function OrderHistoryPagination() {
 								href="#"
 								onClick={() => Setcurrpage((prev) => String(Number(prev) + 1))}
 							/>
+						
 						</PaginationItem>
 					</PaginationContent>
 				</Pagination>

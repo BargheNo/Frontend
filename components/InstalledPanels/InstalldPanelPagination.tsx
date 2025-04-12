@@ -15,7 +15,6 @@ import { useEffect, useState } from "react";
 import { installedpanel } from "@/src/types/installedpanelType";
 import InstalledPanel from "@/components/InstalledPanels/InstalledPanels";
 import { useSelector } from "react-redux";
-// import { RootState } from "@/src/store/types";
 
 export default function InstalledPanelPagination() {
 	const [history, sethistory] = useState<installedpanel[]>([]);
@@ -25,9 +24,9 @@ export default function InstalledPanelPagination() {
 	);
 	const handelHistory = (page: string, pageSize: string) => {
 		InstalledpanelService
-			.GetInstalledPanels({ page: page, pageSize: pageSize }, "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDY4MzAxMjYsImlhdCI6MTc0NDIzODEyNiwic3ViIjoxOH0.BydUQtEtMNHdaNUnBiY5IYzAvrccOaIVrL5_JKDNzkqPRVI903PsTJWKGDHfK-boiY_vrh-OBy5Bb7n-MNF8uFD0bEXgiioKb3n9mnnhXDY9nmUkFnyHcUt3Fw1xsvyX4mnKCr7EDMtYP3_PzAMXtfs9hogSOs2JG6PFAWf5oFg")
+			.GetInstalledPanels({ page: page, pageSize: pageSize })
 			.then((res) => {
-				sethistory(res.data.data);
+				sethistory(res.data);
 				console.log(res)
 			})
 			.catch((err) => console.log(err));
@@ -71,7 +70,7 @@ export default function InstalledPanelPagination() {
 						/>
                         }
 					</PaginationItem>
-					{["1", "2", "3"].map((page) => (
+					{["1", "2", "3","4","5"].map((page) => (
 						<PaginationItem key={page} >
 							<PaginationLink
 							   isActive={page===currpage}
@@ -83,13 +82,15 @@ export default function InstalledPanelPagination() {
 						</PaginationItem>
 					))}
 					<PaginationItem>
-						<PaginationEllipsis />
+					{currpage!="5"&&
+						<PaginationEllipsis />}
 					</PaginationItem>
 					<PaginationItem>
+						{currpage!="5"&&
 						<PaginationNext
 							href="#"
 							onClick={() => Setcurrpage((prev) => String(Number(prev) + 1))}
-						/>
+						/>}
 					</PaginationItem>
 				</PaginationContent>
 			</Pagination>

@@ -41,7 +41,6 @@ import {
 import { City, Province } from "@/src/types/provinceType";
 import provinceService from "@/src/services/provinceService";
 import { toast } from "sonner";
-import { useSelector } from "react-redux";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
 import addpanelService from "@/src/services/addpanelService";
@@ -91,7 +90,8 @@ export default function AddPanel() {
         setOpen(false);
         addpanelService.AddPanel(panel)
             .then((res) => {
-                toast(res?.data?.message);
+                toast(res?.message);
+                console.log(res)
                 setOpen(false);
             })
             .catch((err) => {

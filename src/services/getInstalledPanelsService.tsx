@@ -8,13 +8,11 @@ interface page {
 }
 
 class InstalledPanel {
-    GetInstalledPanels(pageinfo: page, token: string) {
-        return axios.get(`${baseURL}/v1/corp/3/panels/list`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },params:pageinfo},
-             
-            );
+    GetInstalledPanels(pageinfo: page) {
+        return getData({
+            endPoint:`${baseURL}/v1/corp/3/panels/list`,
+            params: pageinfo,
+		});
 
     }
 }
