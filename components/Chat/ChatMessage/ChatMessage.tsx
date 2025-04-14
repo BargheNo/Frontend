@@ -19,6 +19,7 @@ interface ChatMessageProps {
   onReply: (messageId: string) => void;
   onEdit: (messageId: string, newContent: string) => void;
   replyTo?: string;
+  ref?: React.RefObject<HTMLDivElement> | null;
 }
 
 export default function ChatMessage({
@@ -30,6 +31,7 @@ export default function ChatMessage({
   onReply,
   onEdit,
   replyTo,
+  ref,
 }: ChatMessageProps) {
   const [messageWidth, setMessageWidth] = useState<number>(0);
   const [isEditing, setIsEditing] = useState(false);
@@ -81,6 +83,7 @@ export default function ChatMessage({
 
   return type === "other" ? (
     <div
+      ref={ref}
       className="flex flex-col items-end gap-2 self-end"
       style={{ width: `${messageWidth}px` }}
     >
@@ -127,6 +130,7 @@ export default function ChatMessage({
     </div>
   ) : (
     <div
+      ref={ref}
       className="flex flex-col items-start gap-2 self-start"
       style={{ width: `${messageWidth}px` }}
     >
