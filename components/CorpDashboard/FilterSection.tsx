@@ -71,7 +71,10 @@ export default function FilterSection() {
 								setSorting(value);
 							}}
 						>
-							<SelectTrigger dir="rtl" className="bg-[#F4F1F3] w-40">
+							<SelectTrigger
+								dir="rtl"
+								className="bg-[#F4F1F3] w-40"
+							>
 								<SelectValue placeholder="جدیدترین" />
 							</SelectTrigger>
 							<SelectContent dir="rtl">
@@ -97,7 +100,10 @@ export default function FilterSection() {
 								setResultPerPage(value);
 							}}
 						>
-							<SelectTrigger dir="rtl" className="bg-[#F4F1F3] w-18">
+							<SelectTrigger
+								dir="rtl"
+								className="bg-[#F4F1F3] w-18"
+							>
 								<SelectValue placeholder="20" />
 							</SelectTrigger>
 							<SelectContent dir="rtl">

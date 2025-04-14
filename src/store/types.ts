@@ -1,7 +1,4 @@
-export interface RootState {
-    user: {
-        accessToken: string;
-        // other user properties
-    };
-    // other slices of state
+interface RootState {
+	user: userData;
+	corp: corpData;
 }

@@ -1,10 +1,15 @@
-
+"use client";
 import NewNews from "@/components/admin-dashboard/News/NewNews/NewNews";
 import NewsList from "@/components/admin-dashboard/News/NewsList/NewsList";
 import Header from "@/components/Header/Header";
+import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import useClientCheck from "@/src/hooks/useClientCheck";
 import React from "react";
 
-export default function page() {
+export default function Page() {
+	if (!useClientCheck()) {
+		return <LoadingSpinner />;
+	}
 	return (
 		<div className="page">
 			<div
