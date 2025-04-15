@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
+import { PanelLeftIcon } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
@@ -253,24 +254,26 @@ function Sidebar({
 function SidebarTrigger({
   className,
   onClick,
-  children,
   ...props
-}: React.ComponentProps<typeof Button> & { children?: React.ReactNode }) {
+}: React.ComponentProps<typeof Button>) {
   const { toggleSidebar } = useSidebar()
 
   return (
-    <button
+    <Button
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
-      className={cn(className)}
+      variant="ghost"
+      size="icon"
+      className={cn("size-7", className)}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
       }}
       {...props}
     >
-      {children}
-    </button>
+      <PanelLeftIcon />
+      <span className="sr-only">Toggle Sidebar</span>
+    </Button>
   )
 }
 
