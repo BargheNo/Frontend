@@ -22,7 +22,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm install tailwindcss postcss autoprefixer
+        run: npm ci --legacy-peer-deps --include=optional
 
       - name: Build app
         run: npm run build
