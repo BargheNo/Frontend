@@ -52,6 +52,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           # Disable auto-installation (we already ran `npm ci`)
-          install: true
+          # install: false
+          install-command: npm install --legacy-peer-deps
           # No need for `build`/`start` since we did it manually
           command: npx cypress run
