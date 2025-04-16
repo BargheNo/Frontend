@@ -23,7 +23,7 @@ jobs:
 
       - name: Install dependencies
         run: npm uninstall tailwindcss --legacy-peer-deps && 
-            rm -rf node_modules package-lock.json &&
+            rm -rf node_modules &&
             npm run update
 
       - name: Build app
@@ -38,5 +38,5 @@ jobs:
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
-          start: npm start
+          start: npm i --legacy-peer-deps && npm start
           wait-on: http://localhost:3000
