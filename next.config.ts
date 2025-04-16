@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
 	},
 	experimental: {
 		serverComponentsExternalPackages: ["@tailwindcss/oxide"],
+		disablePostcssPresetEnv: true
 	},
 	webpack: (config) => {
 		config.ignoreWarnings = [{ module: /@opentelemetry\/instrumentation/ }];

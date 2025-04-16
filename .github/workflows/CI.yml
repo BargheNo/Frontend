@@ -25,13 +25,17 @@ jobs:
         with:
           node-version: 18.x
       - name: Install system dependencies
-        run: sudo apt-get install -y build-essential
-        
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential python3
+
       - name: Install dependencies with legacy peers
         run: |
           npm config set legacy-peer-deps true
           npm run update
           npm ci
+          npm install @tailwindcss/oxide@latest
+          npm install lightningcss@latest
 
       - name: Build app
         run: npm run build
