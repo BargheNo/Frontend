@@ -38,5 +38,8 @@ jobs:
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
+          install: true
           start: npm i --legacy-peer-deps && npm start
+          build: npm run build
           wait-on: http://localhost:3000
+          command: npx cypress run
