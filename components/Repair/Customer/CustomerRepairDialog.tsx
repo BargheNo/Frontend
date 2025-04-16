@@ -10,15 +10,25 @@ import { AlertCircle, Wrench, Eclipse, Calendar } from 'lucide-react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import CustomTextArea from '@/components/Custom/CustomTextArea/CustomTextArea';
+import moment from 'jalali-moment';
 
 interface RepairHistoryItem {
-    title: string;
-    panelName: string;
-    panelId: string;
-    repairMan: string;
-    date: string;
-    notes: string;
-    status: string;
+    ID: number;
+    Subject: string;
+    Description: string;
+    Status: string;
+    UrgencyLevel: string;
+    CreatedAt: string;
+    OwnerID: number;
+    CorporationID: number;
+    PanelID: number;
+    Panel: {
+        id: number;
+        panelName: string;
+        corporationName: string;
+        power: number;
+        area: number;
+    };
 }
 
 interface RepairDetailsDialogProps {
@@ -46,7 +56,7 @@ const RepairDetailsDialog = ({ isOpen, onClose, repairItem }: RepairDetailsDialo
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    panelId: repairItem.panelId,
+                    panelId: repairItem.Panel.id,
                     problem: values.problem,
                 }),
             });
@@ -75,28 +85,32 @@ const RepairDetailsDialog = ({ isOpen, onClose, repairItem }: RepairDetailsDialo
                     <div dir="rtl" className='flex flex-col gap-5'>
                         {/* Repair Info Section */}
                         <div className='inset-neu-container !w-full !p-5 !bg-[#FEFEFE]'>
-                            <h3 className="text-xl font-semibold text-navy-blue mb-4">{repairItem.title}</h3>
+                            <h3 className="text-xl font-semibold text-navy-blue mb-4">{repairItem.Subject}</h3>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="flex flex-col">
                                     <div className='flex items-center gap-1'>
                                         <Eclipse size={14} strokeWidth={2.5} className='text-fire-orange' />
                                         <span className="text-sm text-gray-500">نام پنل</span>
                                     </div>
-                                    <span className="text-lg font-medium">{repairItem.panelName}</span>
+                                    <span className="text-lg font-medium">{repairItem.Panel.panelName}</span>
                                 </div>
                                 <div className="flex flex-col">
                                     <div className='flex items-center gap-1'>
                                         <Wrench size={14} strokeWidth={2.5} className='text-fire-orange' />
-                                        <span className="text-sm text-gray-500">تعمیرکار</span>
+                                        <span className="text-sm text-gray-500">سطح اهمیت</span>
                                     </div>
-                                    <span className="text-lg font-medium">{repairItem.repairMan}</span>
+                                    <span className="text-lg font-medium">
+                                        {repairItem.UrgencyLevel === "low" ? "اولویت پایین" : repairItem.UrgencyLevel === "high" ? "اولویت بالا" : "اولویت متوسط"}
+                                    </span>
                                 </div>
                                 <div className="flex flex-col">
                                     <div className='flex items-center gap-1'>
                                         <Calendar size={14} strokeWidth={2.5} className='text-fire-orange' />
                                         <span className="text-sm text-gray-500">تاریخ</span>
                                     </div>
-                                    <span className="text-lg font-medium">{repairItem.date}</span>
+                                    <span className="text-lg font-medium">
+                                        {moment(repairItem.CreatedAt.slice(0, 10), "YYYY-MM-DD").locale('fa').format('YYYY/MM/DD')}
+                                    </span>
                                 </div>
                                 <div className="flex flex-col">
                                     <div className='flex items-center gap-1'>
@@ -104,8 +118,8 @@ const RepairDetailsDialog = ({ isOpen, onClose, repairItem }: RepairDetailsDialo
                                         <span className="text-sm text-gray-500">وضعیت</span>
                                     </div>
                                     <span className="text-lg font-medium">
-                                        {repairItem.status === "done" ? "تکمیل شده" : 
-                                         repairItem.status === "in_progress" ? "در حال انجام" : "در انتظار"}
+                                        {repairItem.Status === "completed" ? "تکمیل شده" : 
+                                         repairItem.Status === "in_progress" ? "در حال انجام" : "در انتظار"}
                                     </span>
                                 </div>
                             </div>
@@ -114,7 +128,7 @@ const RepairDetailsDialog = ({ isOpen, onClose, repairItem }: RepairDetailsDialo
                         {/* Repair Notes */}
                         <div className='inset-neu-container !w-full !p-5 !bg-[#FEFEFE]'>
                             <h4 className="text-lg font-semibold text-navy-blue mb-3">توضیحات تعمیر</h4>
-                            <p className="text-gray-700">{repairItem.notes}</p>
+                            <p className="text-gray-700">{repairItem.Description}</p>
                         </div>
 
                         {/* Problem Report Form */}

@@ -2,16 +2,26 @@
 
 import React, { useState } from "react";
 import IconWithBackground from "@/components/IconWithBackground/IconWithBackground";
-import { Drill, CalendarCheck, ChevronDown, TextSearch } from "lucide-react";
+import moment from 'jalali-moment'
+import { Eclipse, CalendarCheck, ChevronDown, TextSearch } from "lucide-react";
 
 interface RepairHistoryItem {
-    title: string;
-    panelName: string;
-    panelId: string;
-    repairMan: string;
-    date: string;
-    notes: string;
-    status: string;
+    ID: number;
+    Subject: string;
+    Description: string;
+    Status: string;
+    UrgencyLevel: string;
+    CreatedAt: string;
+    OwnerID: number;
+    CorporationID: number;
+    PanelID: number;
+    Panel: {
+        id: number;
+        panelName: string;
+        corporationName: string;
+        power: number;
+        area: number;
+    };
 }
 
 interface CustomerRepairCardProps {
@@ -28,8 +38,8 @@ const CustomerRepairCard = ({
     const [isExpanded, setIsExpanded] = useState(false);
 
     const getStatusColor = () => {
-        if (repairItem.status === "done") return "green-status";
-        if (repairItem.status === "in_progress") return "yellow-status";
+        if (repairItem.Status === "completed") return "green-status";
+        if (repairItem.Status === "in_progress") return "yellow-status";
         return "red-status";
     };
 
@@ -48,23 +58,23 @@ const CustomerRepairCard = ({
                 <div className="flex flex-col justify-between w-full z-10">
                     <div className="space-y-3 w-full">
                         <h2 className="text-2xl font-bold text-gray-800">
-                            {repairItem.title}
+                            {repairItem.Subject}
                         </h2>
                         <div className="space-y-2 w-full">
                             <div className="flex gap-36">
                                 <div className="flex text-sm text-gray-700 justify-between items-center">
-                                    <div className="flex items-center w-1/2">
+                                    <div className="flex items-center">
                                         <IconWithBackground
-                                            icon={Drill}
+                                            icon={Eclipse}
                                             color="#6B7280"
                                         />
                                         <span className="font-medium mr-2">
-                                            تعمیرکار:
+                                            پنل تعمیر شده:
                                         </span>
                                     </div>
                                     <div className="">
                                         <span className="mr-1">
-                                            {repairItem.repairMan}
+                                            {repairItem.Panel.panelName}
                                         </span>
                                     </div>
                                 </div>
@@ -80,7 +90,8 @@ const CustomerRepairCard = ({
                                     </div>
                                     <div className="">
                                         <span className="mr-1">
-                                            {repairItem.date}
+                                            {/* {convertToPersianDate(repairItem.CreatedAt)} */}
+                                            {moment(repairItem.CreatedAt.slice(0, 10), "YYYY-MM-DD").locale('fa').format('YYYY/MM/DD')}
                                         </span>
                                     </div>
                                 </div>
@@ -89,14 +100,17 @@ const CustomerRepairCard = ({
                     </div>
                     <div className="flex flex-col text-sm text-gray-700 mt-6">
                         <div className={`mt-2 transition-all duration-200 ${isExpanded ? 'opacity-100 max-h-48' : 'opacity-0 max-h-0 overflow-hidden'}`}>
-                            <span className="mr-1">{repairItem.notes}</span>
+                            <span className="mr-1">{repairItem.Description}</span>
                         </div>
                         {!isExpanded && (
                             <div className="mt-2 text-gray-600">
-                                <span className="mr-1">{truncateText(repairItem.notes)}</span>
+                                <span className="mr-1">{truncateText(repairItem.Description)}</span>
                             </div>
                         )}
-                        { repairItem.notes.length > MAXLENGTH && <div className="flex items-center text-gray-400 mt-4 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
+                        { repairItem.Description.length > MAXLENGTH && 
+                        <div 
+                            className="flex items-center text-gray-400 mt-4 cursor-pointer"
+                            onClick={() => setIsExpanded(!isExpanded)}>
                             <span className="font-medium">بیشتر</span>
                             <ChevronDown 
                                 className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
@@ -113,8 +127,8 @@ const CustomerRepairCard = ({
                                 className={`h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
                             ></div>
                             <span className="text-sm font-black text-gray-800">
-                                {repairItem.status === "done" ? "تکمیل شده" : 
-                                 repairItem.status === "in_progress" ? "در حال انجام" : "در انتظار"}
+                                {repairItem.Status === "completed" ? "تکمیل شده" : 
+                                 repairItem.Status === "in_progress" ? "در حال انجام" : "در انتظار"}
                             </span>
                         </div>
                     </div>
