@@ -11,22 +11,17 @@ export default function ChatList({
   className?: string;
   conditionWidth?: number;
 }) {
-  const sepratorClassName = "bg-gray-900";
   return (
     <div
       className={cn(
-        "neo-card bg-[#F0EDEF] flex flex-col items-center rounded-md py-2 w-full px-1",
+        "neo-card bg-[#F0EDEF] flex flex-col items-center rounded-md py-2 w-full px-2",
         className
       )}
     >
       <ChatItem containerWidth={conditionWidth} />
-      <Separator className={sepratorClassName} />
       <ChatItem selected containerWidth={conditionWidth} />
-      <Separator className={sepratorClassName} />
       <ChatItem containerWidth={conditionWidth} />
-      <Separator className={sepratorClassName} />
       <ChatItem containerWidth={conditionWidth} />
-      <Separator className={sepratorClassName} />
     </div>
   );
 }

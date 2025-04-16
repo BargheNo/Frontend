@@ -8,13 +8,17 @@ interface ChatItemProps {
   selected?: boolean;
 }
 
-export default function ChatItem({ containerWidth, selected = false }: ChatItemProps) {
-  const showText = containerWidth ? containerWidth > 25 : false;
+export default function ChatItem({
+  containerWidth,
+  selected = false,
+}: ChatItemProps) {
+  const showText = containerWidth ? containerWidth > 20 : false;
 
   return (
     <div
       className={cn(
-            "flex justify-center items-center gap-3 w-full px-4 py-3",
+        "flex justify-center items-center gap-3 w-full p-2",
+        "neo-card-rev flex px-3 m-2 rounded lg",
         selected && "bg-gray-500 text-white"
       )}
       style={{ justifyContent: showText ? "flex-start" : "center" }}
@@ -30,7 +34,12 @@ export default function ChatItem({ containerWidth, selected = false }: ChatItemP
       {showText && (
         <div className="flex flex-col gap-1 min-w-0">
           <span className="font-medium">Chat Name</span>
-          <span className={cn("text-sm truncate", selected ? "text-white" : "text-gray-500")}>
+          <span
+            className={cn(
+              "text-sm truncate",
+              selected ? "text-white" : "text-gray-500"
+            )}
+          >
             Last message...
           </span>
         </div>

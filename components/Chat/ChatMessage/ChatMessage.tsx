@@ -47,24 +47,24 @@ export default function ChatMessage({
     }
   };
 
-  useEffect(() => {
-    // Set random width only if it hasn't been set yet (messageWidth is 0)
-    if (messageWidth === 0) {
-      const minWidth = Math.min(320, containerWidth * 0.4);
-      const maxWidth = containerWidth * 0.8;
-      setMessageWidth(
-        Math.floor(Math.random() * (maxWidth - minWidth + 1) + minWidth)
-      );
-    }
-    // If message width is larger than container, adjust it
-    else if (messageWidth > containerWidth - 100) {
-      setMessageWidth(containerWidth - 100);
-    }
-    if (log) {
-      console.log("messageWidth", messageWidth);
-      console.log("containerWidth", containerWidth);
-    }
-  }, [containerWidth, messageWidth, log]);
+  // useEffect(() => {
+  //   // Set random width only if it hasn't been set yet (messageWidth is 0)
+  //   if (messageWidth === 0) {
+  //     const minWidth = Math.min(320, containerWidth * 0.4);
+  //     const maxWidth = containerWidth * 0.8;
+  //     setMessageWidth(
+  //       Math.floor(Math.random() * (maxWidth - minWidth + 1) + minWidth)
+  //     );
+  //   }
+  //   // If message width is larger than container, adjust it
+  //   else if (messageWidth > containerWidth - 100) {
+  //     setMessageWidth(containerWidth - 100);
+  //   }
+  //   if (log) {
+  //     console.log("messageWidth", messageWidth);
+  //     console.log("containerWidth", containerWidth);
+  //   }
+  // }, [containerWidth, messageWidth, log]);
 
   const handleReply = () => {
     onReply(messageId);
@@ -84,8 +84,8 @@ export default function ChatMessage({
   return type === "other" ? (
     <div
       ref={ref}
-      className="flex flex-col items-end gap-2 self-end"
-      style={{ width: `${messageWidth}px` }}
+      className="flex flex-col items-end gap-2 self-end max-w-[50%]"
+      // style={{ width: `${messageWidth}px` }}
     >
       <Avatar className="h-12 w-12">
         <AvatarImage
@@ -99,7 +99,7 @@ export default function ChatMessage({
         <ContextMenuTrigger>
           <div
             className="bg-gray-800 text-white rounded-b-xl rounded-tr-xl ml-4 p-4 neo-card"
-            style={{ width: `${messageWidth}px` }}
+            // style={{ width: `${messageWidth}px` }}
           >
             {replyTo && (
               <div className="text-sm text-gray-400 mb-2">
@@ -131,8 +131,8 @@ export default function ChatMessage({
   ) : (
     <div
       ref={ref}
-      className="flex flex-col items-start gap-2 self-start"
-      style={{ width: `${messageWidth}px` }}
+      className="flex flex-col items-start gap-2 self-start max-w-[50%]"
+      // style={{ width: `${messageWidth}px` }}
     >
       <Avatar className="h-12 w-12">
         <AvatarImage
@@ -146,7 +146,7 @@ export default function ChatMessage({
         <ContextMenuTrigger>
           <div
             className="bg-white text-gray-800 rounded-b-xl rounded-tl-xl mr-4 p-4 neo-card"
-            style={{ width: `${messageWidth}px` }}
+            // style={{ width: `${messageWidth}px` }}
           >
             {replyTo && (
               <div className="text-sm text-gray-400 mb-2">

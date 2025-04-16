@@ -55,15 +55,14 @@ export default function ChatBox({ className }: { className?: string }) {
 
   useEffect(() => {
     const loaders = gsap.utils.toArray(".reload-spiner");
-    if (loaders.length !== 0) {
-      console.log("loders");
-      gsap.to(loaders, {
-        rotate: 360,
-        duration: 0.3,
-        ease: "power1.out",
-        repeat: -1,
-      });
-    }
+    // if (loaders.length !== 0) {
+    //   console.log("loders");
+    //   gsap.to(loaders, {
+    //     rotate: 360,
+    //     duration: 0.3,
+    //     ease: "power1.out",
+    //   });
+    // }
     const messageReloader = ScrollTrigger.create({
       trigger: messageReloaderRef.current,
       scroller: "#chat-box",
@@ -73,7 +72,7 @@ export default function ChatBox({ className }: { className?: string }) {
       pin: true,
       // markers: true, // This will show visual markers for debugging
       id: "messageReloader",
-      onEnterBack: (self) => {
+      onEnterBack: () => {
         if (messageReloaderRef.current) {
           gsap.to(messageReloaderRef.current, {
             opacity: 1,
@@ -86,6 +85,17 @@ export default function ChatBox({ className }: { className?: string }) {
             ease: "power1.out",
             delay: 0.7,
           });
+          if (loaders.length !== 0) {
+            console.log("loders");
+            // Reset rotation first
+            gsap.set(loaders, { rotation: 0 });
+            gsap.to(loaders, {
+              rotate: 360,
+              duration: 0.2,
+              repeat: 7,
+              ease: "power1.out",
+            });
+          }
           setTimeout(() => {
             if (messageReloaderRef.current) {
               const chatBox = document.getElementById("chat-box");
@@ -99,22 +109,6 @@ export default function ChatBox({ className }: { className?: string }) {
         }
       },
     });
-
-    // gsap.to(messageReloaderRef.current, {
-    //   opacity: 1,
-    //   duration: 1,
-    //   ease: "power1.out",
-    //   scrollTrigger: {
-    //     trigger: messageReloaderRef.current,
-    //     scroller: "#chat-box",
-    //     start: "center top",
-    //     end: "bottom bottom",
-    //     // scrub: true,
-    //     pin: true,
-    //     markers: true, // This will show visual markers for debugging
-    //     id: "messageReloader",
-    //   },
-    // });
 
     return () => {
       if (messageReloader) {

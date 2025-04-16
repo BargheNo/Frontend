@@ -9,11 +9,15 @@ import {
 import useClientCheck from "@/src/hooks/useClientCheck";
 import React, { useEffect, useState } from "react";
 import { useMediaQuery } from "@/src/hooks/useMediaQuery";
-import { Sidebar, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  Sidebar,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { SidebarContent } from "@/components/ui/sidebar";
 import { Menu } from "lucide-react";
 export default function Page() {
-  const [panelWidth, setPanelWidth] = useState(0.1);
+  const [panelWidth, setPanelWidth] = useState(5);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -52,14 +56,16 @@ export default function Page() {
   return (
     <ResizablePanelGroup className="min-h-full" direction="horizontal">
       <ResizablePanel
-        className="h-full flex justify-center items-center py-2 pl-1 pr-2 rounded-lg bg-transparent"
-        defaultSize={15}
-        minSize={15}
-        maxSize={50}
+        className="h-full flex justify-center items-center py-2 pl-1 pr-2 rounded-lg bg-transparent min-w-24"
+        defaultSize={5}
+        minSize={5}
+        maxSize={35}
         style={{ flexGrow: panelWidth, flexShrink: 1, flexBasis: "0%" }}
         onResize={(size) => {
-          if (size < 30) {
-            setPanelWidth(15);
+          if (size < 20) {
+            if (panelWidth > 5) {
+              setPanelWidth(5);
+            }
             return;
           }
           setPanelWidth(size);

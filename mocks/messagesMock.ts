@@ -2,15 +2,16 @@ import { Message } from "@/types/chat";
 
 export const mockMessages: Message[] = [
   {
-    id: "1", 
+    id: "1",
     content: "سلام! حالت چطوره؟",
     type: "self",
     timestamp: new Date("2024-03-20T10:00:00"),
   },
   {
     id: "2",
-    content: "ممنون، خیلی خوبم!",
-    type: "other", 
+    content:
+      "ممنون، خیلی خوبم! dsmlfkmdslfm sdmflkmfasl lkdmflkmf klasf lsdkmfl amls flsdfam aml;f sd;lf ;asknf kldsmfkla klan lfsmfl ksmf klsnfl ksamf; kmsa;lkf naklf ",
+    type: "other",
     timestamp: new Date("2024-03-20T10:01:00"),
   },
   {
@@ -32,7 +33,7 @@ export const mockMessages: Message[] = [
     timestamp: new Date("2024-03-20T10:04:00"),
   },
   {
-    id: "6", 
+    id: "6",
     content: "ریاضی و فیزیک",
     type: "other",
     timestamp: new Date("2024-03-20T10:05:00"),
