@@ -21,10 +21,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install dependencies with legacy peers
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+
+      - name: Install dependencies
         run: |
           npm config set legacy-peer-deps true
           npm ci
+          npm install @tailwindcss/oxide@latest
 
       - name: Build app
         run: npm run build
@@ -38,7 +44,5 @@ jobs:
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
-          # Disable auto-installation (we already ran `npm ci`)
           install: false
-          # No need for `build`/`start` since we did it manually
           command: npx cypress run
