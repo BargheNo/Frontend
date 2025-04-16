@@ -23,7 +23,7 @@ jobs:
 
       - name: Install dependencies
         run: npm install tailwindcss postcss autoprefixer
-        run: npm ci --legacy-peer-deps --include=optional
+             npm ci --legacy-peer-deps --include=optional
 
       - name: Build app
         run: npm run build
