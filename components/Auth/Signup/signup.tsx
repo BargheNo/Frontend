@@ -362,6 +362,7 @@ function Signup() {
 										></PhoneVerification>
 										<div className={styles.loginText}>
 											<a
+												data-cy="navigate-login"
 												href="./login"
 												className={styles.link}
 											>

@@ -15,4 +15,11 @@ describe("Signup Form", () => {
 
 		cy.get("#sonner-toast").should("exist").and("contain", "موفق");
 	});
+    
+	it("navigate to /login route", () => {
+		cy.visit("/signup");
+		cy.get('[data-cy="navigate-login"]')
+			.click();
+		cy.url().should("include", "/login");
+	});
 });
