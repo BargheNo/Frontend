@@ -31,7 +31,10 @@ jobs:
 
       - name: Install dependencies with legacy peers
         run: |
-          npm run update
+          npm uninstall tailwindcss --legacy-peer-deps && \
+          rm -rf node_modules package-lock.json && \
+          npm install --legacy-peer-deps
+          #npm run update
           #npm ci
           #npm install @tailwindcss/oxide@latest
           #npm install lightningcss@latest
@@ -49,6 +52,6 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           # Disable auto-installation (we already ran `npm ci`)
-          install: false
+          install: true
           # No need for `build`/`start` since we did it manually
           command: npx cypress run
