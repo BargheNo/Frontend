@@ -6,12 +6,13 @@ const nextConfig: NextConfig = {
 		// your project has ESLint errors.
 		ignoreDuringBuilds: true,
 	},
+	experimental: {
+		serverComponentsExternalPackages: ["@tailwindcss/oxide"],
+	},
 	webpack: (config) => {
-		config.ignoreWarnings = [
-			{ module: /@opentelemetry\/instrumentation/ }
-		];
+		config.ignoreWarnings = [{ module: /@opentelemetry\/instrumentation/ }];
 		return config;
-	}
+	},
 };
 
 export default nextConfig;
