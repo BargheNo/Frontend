@@ -31,7 +31,6 @@ jobs:
 
       - name: Install dependencies with legacy peers
         run: |
-          npm config set legacy-peer-deps true
           npm run update
           npm ci
           npm install @tailwindcss/oxide@latest
