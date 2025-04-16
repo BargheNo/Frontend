@@ -23,7 +23,7 @@ jobs:
 
       - name: Install dependencies
         run: npm uninstall tailwindcss --legacy-peer-deps && 
-            rm -rf node_modules &&
+            rm -rf node_modules package-lock.json &&
             npm run update
 
       - name: Build app
