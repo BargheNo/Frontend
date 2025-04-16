@@ -33,8 +33,8 @@ jobs:
         run: |
           npm run update
           npm ci
-          npm install @tailwindcss/oxide@latest
-          npm install lightningcss@latest
+          #npm install @tailwindcss/oxide@latest
+          #npm install lightningcss@latest
 
       - name: Build app
         run: npm run build
