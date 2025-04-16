@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches: 
-        - ops/test 
+      - ops/test 
   pull_request:
     branches:
       - develop
@@ -21,25 +21,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: npm uninstall tailwindcss --legacy-peer-deps && 
-            rm -rf node_modules package-lock.json &&
-            npm run update
+      - name: Install dependencies with legacy peers
+        run: |
+          npm config set legacy-peer-deps true
+          npm ci
 
       - name: Build app
         run: npm run build
 
       - name: Start app in background
         run: npm start &
-      
+
       - name: Wait for app to be ready
         run: npx wait-on http://localhost:3000
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
-          install: true
-          start: npm i --legacy-peer-deps && npm start
-          build: npm run build
-          wait-on: http://localhost:3000
+          # Disable auto-installation (we already ran `npm ci`)
+          install: false
+          # No need for `build`/`start` since we did it manually
           command: npx cypress run
