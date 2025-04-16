@@ -32,7 +32,7 @@ jobs:
       - name: Install dependencies with legacy peers
         run: |
           npm run update
-          npm ci
+          #npm ci
           #npm install @tailwindcss/oxide@latest
           #npm install lightningcss@latest
 
