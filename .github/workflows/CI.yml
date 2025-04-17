@@ -80,7 +80,6 @@ jobs:
             #echo "TestResult=${PERCENTAGE}" >> $GITHUB_ENV
       - name: Run Cypress tests
         id: cypress-tests
-        continue-on-error: true
         run: |
           export TERM=xterm
           touch /tmp/output.txt
@@ -92,7 +91,7 @@ jobs:
           echo "Checking if output.txt exists:"
           cat /tmp/output.txt || echo "File not found"
       - name: Comment Test Results on PR
-        if: always() && github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
