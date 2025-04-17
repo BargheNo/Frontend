@@ -100,7 +100,7 @@ jobs:
             try {
               testOutput = fs.readFileSync('/tmp/TestResult.txt', 'utf8');
             } catch (error) {
-              testOutput = `${error} ${OUTPUT}`
+              testOutput = `Error: ${error} ${OUTPUT}`
               //console.error('Error reading test results:', error);
             }
 
