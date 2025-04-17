@@ -6,7 +6,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import { AlertCircle, Wrench, Eclipse, Calendar } from 'lucide-react';
+import { Siren, AlertCircle, Eclipse, Calendar } from 'lucide-react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import CustomTextArea from '@/components/Custom/CustomTextArea/CustomTextArea';
@@ -96,7 +96,7 @@ const RepairDetailsDialog = ({ isOpen, onClose, repairItem }: RepairDetailsDialo
                                 </div>
                                 <div className="flex flex-col">
                                     <div className='flex items-center gap-1'>
-                                        <Wrench size={14} strokeWidth={2.5} className='text-fire-orange' />
+                                        <Siren size={16} strokeWidth={2.5} className='text-fire-orange' />
                                         <span className="text-sm text-gray-500">سطح اهمیت</span>
                                     </div>
                                     <span className="text-lg font-medium">
