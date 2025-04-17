@@ -81,42 +81,41 @@ jobs:
       - name: Run Cypress tests
         id: cypress-tests
         run: |
-          export TERM=xterm
-          touch /tmp/output.txt
-          npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/output.txt
-          echo "cat /tmp/output.txt" >> $GITHUB_ENV
-          export OUTPUT="$(cat /tmp/output.txt)"
-          cat /tmp/output.txt
-      - name: Debug - Show file content
-        run: |
-          echo "Checking if output.txt exists:"
-          cat /tmp/output.txt || echo "File not found"
-      - name: Comment Test Results on PR
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('fs');
+          # touch /tmp/output.txt
+          npx cypress run | awk '/\(Run Finished\)/{flag=1} flag'
+          # npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/output.txt
+          # export OUTPUT="$(cat /tmp/output.txt)"
+          # cat /tmp/output.txt
+      # - name: Debug - Show file content
+      #   run: |
+      #     echo "Checking if output.txt exists:"
+      #     cat /tmp/output.txt || echo "File not found"
+      # - name: Comment Test Results on PR
+      #   if: github.event_name == 'pull_request'
+      #   uses: actions/github-script@v6
+      #   with:
+      #     script: |
+      #       const fs = require('fs');
             
-            let testOutput = 'No test results found';
-            try {
-              testOutput = fs.readFileSync('/tmp/output.txt', 'utf8');
-            } catch (error) {
-              testOutput = `Error: ${error} ${OUTPUT}`
-              //console.error('Error reading test results:', error);
-            }
+      #       let testOutput = 'No test results found';
+      #       try {
+      #         testOutput = fs.readFileSync('/tmp/output.txt', 'utf8');
+      #       } catch (error) {
+      #         testOutput = `Error: ${error} ${OUTPUT}`
+      #         //console.error('Error reading test results:', error);
+      #       }
 
-            const message = `**Cypress Test Results**\n\n` +
-              `${fs.readFileSync('/tmp/output.txt', 'utf8')}` +
-              `${process.env.OUTPUT}` +
+      #       const message = `**Cypress Test Results**\n\n` +
+      #         `${fs.readFileSync('/tmp/output.txt', 'utf8')}` +
+      #         `${process.env.OUTPUT}` +
 
-              `\`\`\`\n${testOutput}\n\`\`\`\n` +
-              `\`\`\`\n${fs.readFileSync('/tmp/output.txt', 'utf8')}\n\`\`\`\n` +
-              `[View Full Report](${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID})`;
+      #         `\`\`\`\n${testOutput}\n\`\`\`\n` +
+      #         `\`\`\`\n${fs.readFileSync('/tmp/output.txt', 'utf8')}\n\`\`\`\n` +
+      #         `[View Full Report](${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID})`;
 
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: message
-            });
+      #       await github.rest.issues.createComment({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         issue_number: context.issue.number,
+      #         body: message
+      #       });
