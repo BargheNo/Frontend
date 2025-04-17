@@ -69,7 +69,7 @@ export default function CustomInput({
 					style={{ paddingLeft: Icon ? "42px" : "12px" }}
 				/>
 				{hasError && (
-					<div className={style.errorMessage}>{meta.error}</div>
+					<div className={`${style.errorMessage} rtl`}>{meta.error}</div>
 				)}
 			</div>
 		</div>

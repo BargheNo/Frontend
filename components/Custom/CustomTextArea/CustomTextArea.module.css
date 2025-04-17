@@ -21,8 +21,8 @@
 .text {
 	position: absolute;
 	right: 12px;
-	top: 50%;
-	transform: translateY(-50%);
+	top: 10px;
+	transform: none;
 	font-size: clamp(10px, 3.5vw, 15px);
 	color: gray;
 	pointer-events: none;

@@ -12,6 +12,7 @@ interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
 	iconClassName?: string;
 	errorClassName?: string;
 	inputClassName?: string;
+	textareaClassName?: string;
 	containerClassName?: string;
 }
 
@@ -32,6 +33,7 @@ export default function CustomTextArea({
 	iconClassName,
 	errorClassName,
 	inputClassName,
+	textareaClassName,
 	containerClassName,
 	...props
 }: Props) {
@@ -60,7 +62,7 @@ export default function CustomTextArea({
 					autoFocus={autoFocus}
 					className={`${style.CustomInput} ${
 						style.numberInput
-					} ${inputClassName} min-h-12 w-full ${
+					} ${inputClassName} ${textareaClassName} min-h-12 w-full ${
 						isRTL(field.value) ? "text-right rtl" : "text-left ltr"
 					}`}
 					style={{ paddingLeft: Icon ? "42px" : "12px" }}

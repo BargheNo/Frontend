@@ -41,7 +41,6 @@ import {
 import { City, Province } from "@/src/types/provinceType";
 import provinceService from "@/src/services/provinceService";
 import { toast } from "sonner";
-import { useSelector } from "react-redux";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
 import addpanelService from "@/src/services/addpanelService";
@@ -91,7 +90,8 @@ export default function AddPanel() {
         setOpen(false);
         addpanelService.AddPanel(panel)
             .then((res) => {
-                toast(res?.data?.message);
+                toast(res?.message);
+                console.log(res)
                 setOpen(false);
             })
             .catch((err) => {
@@ -134,25 +134,25 @@ export default function AddPanel() {
                     }}
                     validationSchema={Yup.object({
                         phonenumber: Yup.string()
-                                    .matches(/^(9\d{9})$/, ".شماره تلفن وارد شده اشتباه است")
-                                    .required(".شماره تلفن الزامی است"),
+                                    .matches(/^(9\d{9})$/, "شماره تلفن وارد شده اشتباه است.")
+                                    .required("این فیلد الزامی است."),
                         name: Yup.string()
-                            .required("این فیلد الزامی است")
-                            .max(50, "نام پنل نمی تواند بیش از 50 کارکتر باشد"),
-                        address: Yup.string().required("این فیلد الزامی است"),
-                        building: Yup.string().required("این فیلد الزامی است"),
-                        area: Yup.number().required("این فیلد الزامی است"),
+                            .required("این فیلد الزامی است.")
+                            .max(50, ".نام پنل نمی تواند بیش از 50 کارکتر باشد"),
+                        address: Yup.string().required("این فیلد الزامی است."),
+                        building: Yup.string().required("این فیلد الزامی است."),
+                        area: Yup.number().required("این فیلد الزامی است."),
                         power: Yup.number().required(
-                            "این فیلد الزامی است"
+                            "این فیلد الزامی است."
                         ),
-                        modulecount: Yup.number().required("این فیلد الزامی است"),
-                        angel: Yup.number().required("این فیلد الزامی است"),
-                        direction: Yup.number().required("این فیلد الزامی است"),
-                        province: Yup.string().required("این فیلد الزامی است"),
-                        city: Yup.string().required("این فیلد الزامی است"),
-                        number: Yup.string().required("این فیلد الزامی است"),
-                        code: Yup.string().required("این فیلد الزامی است").length(10, "کد پستی وارد شده اشتباه است"),
-                        unit: Yup.number().required("این فیلد الزامی است"),
+                        modulecount: Yup.number().required("این فیلد الزامی است."),
+                        angel: Yup.number().required("این فیلد الزامی است."),
+                        direction: Yup.number().required("این فیلد الزامی است."),
+                        province: Yup.string().required("این فیلد الزامی است."),
+                        city: Yup.string().required("این فیلد الزامی است."),
+                        number: Yup.string().required("این فیلد الزامی است."),
+                        code: Yup.string().required("این فیلد الزامی است.").length(10, "کد پستی وارد شده اشتباه است."),
+                        unit: Yup.number().required("این فیلد الزامی است."),
                     })}
                     onSubmit={(values) => {
                         setOpen(false);
@@ -179,46 +179,30 @@ export default function AddPanel() {
                 >
                     {({ setFieldValue, values }) => (
                         <Form className="flex flex-col items-end w-full h-auto gap-4 rtl">
-                            <div
-                                className="flex justify-end w-full items-center"
+                             <div
+                                className="flex justify-between w-full mt-2"
                                 style={{ gap: "1vw" }}
                             >
-                                <CustomInput
-                                    dir="rtl"
-                                    placeholder="شماره مشتری"
-                                    icon={IdCard}
-                                    name="phonenumber"
-                                    type="number"
-                                >
-                                    {" "}
-                                </CustomInput>
-                                <div className="flex flex-row justify-center mt-5 gap-x-1 text-gray-500 w-full">
-                                    {/* <ShieldAlert />
-                                    <p className="rtl">
-                                        پنل شما با این نام در بخش پنل‌ها ثبت
-                                        خواهد شد.
-                                    </p> */}
-                                </div>
-                            </div>
-                            <div
-                                className="flex justify-end w-full items-center"
-                                style={{ gap: "1vw" }}
-                            >
-                                <CustomInput
-                                    dir="rtl"
-                                    placeholder="نام پنل"
-                                    icon={SquareMenu}
-                                    name="name"
-                                >
-                                    {" "}
-                                </CustomInput>
-                                <div className="flex flex-row justify-center mt-5 gap-x-1 text-gray-500 w-full">
-                                    {/* <ShieldAlert />
-                                    <p className="rtl">
-                                        پنل شما با این نام در بخش پنل‌ها ثبت
-                                        خواهد شد.
-                                    </p> */}
-                                </div>
+                            
+                                    <CustomInput
+                                        dir="rtl"
+                                        placeholder="شماره مشتری"
+                                        icon={IdCard}
+                                        name="phonenumber"
+                                        type="number"
+                                    >
+                                        {" "}
+                                    </CustomInput>
+
+                                    <CustomInput
+                                        dir="rtl"
+                                        placeholder="نام پنل"
+                                        icon={SquareMenu}
+                                        name="name"
+                                    >
+                                        {" "}
+                                    </CustomInput>
+                               
                             </div>
                             <div
                                 className="flex justify-end w-full -mt-4"
@@ -238,7 +222,7 @@ export default function AddPanel() {
                                     type="number"
                                     dir="rtl"
                                     icon={DatabaseZap}
-                                    placeholder="مجموع توان تولید شده"
+                                    placeholder="مجموع توان تولید شده(کیلووات)"
                                     name="power"
                                 >
                                     {" "}
@@ -289,7 +273,7 @@ export default function AddPanel() {
                                     dir="rtl"
                                     icon={TriangleRight}
                                     name="angel"
-                                    placeholder="زاویه نصب"
+                                    placeholder="زاویه نصب(درجه)"
                                 >
                                     {" "}
                                 </CustomInput>
@@ -298,7 +282,7 @@ export default function AddPanel() {
                                     style={{ width: "12vw" }}
                                     dir="rtl"
                                     icon={Compass}
-                                    placeholder="جهت نصب"
+                                    placeholder="جهت نصب(درجه)"
                                     name="direction"
                                 >
                                     {" "}
@@ -308,7 +292,7 @@ export default function AddPanel() {
                                     style={{ width: "12vw" }}
                                     dir="rtl"
                                     icon={LandPlot}
-                                    placeholder="مساحت"
+                                    placeholder="مساحت(مترمربع)"
                                     name="area"
                                 >
                                     {" "}
