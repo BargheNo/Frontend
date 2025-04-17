@@ -80,7 +80,7 @@ jobs:
             #echo "TestResult=${PERCENTAGE}" >> $GITHUB_ENV
       - name: Run Cypress tests
         continue-on-error: true
-        run: npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/TestResult.txt
+        run: touch /tmp/output.txt && npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/TestResult.txt
 
       - name: Comment Test Results on PR
         if: always() && github.event_name == 'pull_request'
