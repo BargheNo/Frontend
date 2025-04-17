@@ -87,6 +87,10 @@ jobs:
           npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/TestResult.txt
           export OUTPUT="$(cat /tmp/TestResult.txt)"
           cat /tmp/TestResult.txt
+      - name: Debug - Show file content
+        run: |
+          echo "Checking if TestResult.txt exists:"
+          cat /tmp/TestResult.txt || echo "File not found"
       - name: Comment Test Results on PR
         if: always() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
@@ -110,35 +114,6 @@ jobs:
               `\`\`\`\n${fs.readFileSync('/tmp/TestResult.txt', 'utf8')}\n\`\`\`\n` +
               `[View Full Report](${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID})`;
 
-            // Delete previous comments
-            /*
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              });
-            */
-            
-            /*
-            const botComments = comments.filter(comment => 
-            comment.user.login === 'github-actions[bot]' && 
-            comment.body.includes('Cypress Test Results')
-            );
-            */
-            /*
-            // Delete all existing bot comments
-            await Promise.all(
-              botComments.map(comment => 
-              github.rest.issues.deleteComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: comment.id,
-                })
-                )
-                );
-                */
-
-            // Create new comment
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
