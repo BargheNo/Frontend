@@ -83,10 +83,10 @@ jobs:
         continue-on-error: true
         run: |
           export TERM=xterm
-          touch /tmp/output.txt
+          touch /tmp/TestResult.txt
           npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/TestResult.txt
           export OUTPUT="$(cat /tmp/TestResult.txt)"
-          cat /tmp/output.txt
+          cat /tmp/TestResult.txt
       - name: Comment Test Results on PR
         if: always() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
