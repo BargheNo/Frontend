@@ -106,8 +106,8 @@ jobs:
             const message = `**Cypress Test Results**\n\n` +
               `\`\`\`\n${testOutput}\n\`\`\`\n` +
               `\`\`\`\n${fs.readFileSync('/tmp/TestResult.txt', 'utf8')}\n\`\`\`\n` +
-              
-              Test
+
+              "Test" +
 
               `[View Full Report](${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID})`;
 
