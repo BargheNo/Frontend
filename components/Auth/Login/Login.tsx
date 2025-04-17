@@ -60,7 +60,8 @@ const Login = () => {
 			});
 
 			if (response?.statusCode === 200) {
-				toast.success(response?.message);
+				toast(<div id="sonner-toast">{response?.message}</div>);
+				// toast.success(response?.message);
 				dispatch(
 					setUser({
 						firstName: response.data.firstName,
@@ -72,8 +73,13 @@ const Login = () => {
 				window.location.href = "/dashboard";
 			}
 		} catch (error: any) {
-			toast.error(
-				generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد."
+			// toast.error(
+			// 	generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد."
+			// );
+			toast(
+				<div id="sonner-toast">
+					{generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد."}
+				</div>
 			);
 		}
 	};

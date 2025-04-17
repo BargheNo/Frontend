@@ -7,11 +7,9 @@ const nextConfig: NextConfig = {
 		ignoreDuringBuilds: true,
 	},
 	webpack: (config) => {
-		config.ignoreWarnings = [
-			{ module: /@opentelemetry\/instrumentation/ }
-		];
+		config.ignoreWarnings = [{ module: /@opentelemetry\/instrumentation/ }];
 		return config;
-	}
+	},
 };
 
 export default nextConfig;
