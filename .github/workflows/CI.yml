@@ -46,15 +46,15 @@ jobs:
       - name: Wait for app to be ready
         run: npx wait-on http://localhost:3000
 
-      - name: Run Cypress tests
-        continue-on-error: true
-        uses: cypress-io/github-action@v6
-        with:
+      #- name: Run Cypress tests
+        #continue-on-error: true
+        #uses: cypress-io/github-action@v6
+        #with:
           # Disable auto-installation (we already ran `npm ci`)
           # install: false
-          install-command: npm install --legacy-peer-deps
+          #install-command: npm install --legacy-peer-deps
           # No need for `build`/`start` since we did it manually
-          command: npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/TestResult.txt
+          #command: npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/TestResult.txt
           # command: npx cypress run | grep -A 9999 "(Run Finished)" | tee /tmp/TestResult.txt
       # - name: Calculate Pass Percentage
       #- name: Store test results
@@ -78,8 +78,11 @@ jobs:
             # Output the result for use in the next step
             #echo "PERCENTAGE=${PERCENTAGE}%" >> $GITHUB_ENV
             #echo "TestResult=${PERCENTAGE}" >> $GITHUB_ENV
-  
-      - name: Comment Pass Percentage on PR
+      - name: Run Cypress tests
+        continue-on-error: true
+        run: npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/TestResult.txt
+
+      - name: Comment Test Results on PR
         if: always() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
