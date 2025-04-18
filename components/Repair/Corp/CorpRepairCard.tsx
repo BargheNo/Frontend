@@ -3,12 +3,15 @@
 import React, { useState } from "react";
 import IconWithBackground from "@/components/IconWithBackground/IconWithBackground";
 import Link from "next/link";
+import moment from "jalali-moment";
 import { User, Calendar, MapPin, MoveLeft, TextSearch, Move } from "lucide-react";
 
 interface CorpRepairCard {
     panelName: string,
-    technicalDetails: {efficiency: number},
+    panelPower: number;
+    // technicalDetails: {efficiency: number},
     // requestDetails,
+    status: string;
     address: string,
     date: string,
     owner: string,
@@ -18,8 +21,9 @@ interface CorpRepairCard {
 
 const CorpRepairCard = ({
         panelName,
-        technicalDetails,
+        panelPower,
         // requestDetails,
+        status,
         address,
         date,
         owner,
@@ -30,7 +34,7 @@ const CorpRepairCard = ({
     const [isExpanded, setIsExpanded] = useState(false);
 
     const getStatusColor = () => {
-        const efficiency = technicalDetails.efficiency;
+        const efficiency = panelPower;
         if (efficiency >= 80) return "green-status";
         if (efficiency >= 60) return "yellow-status";
         return "red-status";
@@ -94,7 +98,7 @@ const CorpRepairCard = ({
                                     <div className="">
                                         <span className="mr-1 font-black">
                                             {
-                                                date
+                                                moment(date.slice(0, 10), "YYYY-MM-DD").locale('fa').format('YYYY/MM/DD')
                                             }
                                         </span>
                                     </div>
@@ -132,7 +136,8 @@ const CorpRepairCard = ({
                             </span>
                             <span className="text-sm font-black text-gray-800">
                                 {/* requestDetails.status */}
-                                سرویس دوره ای
+                                {/* سرویس دوره ای */}
+                                { status }
                             </span>
                         </div>
                     </div>

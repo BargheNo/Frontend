@@ -15,17 +15,44 @@ import { Datepicker } from '@ijavad805/react-datepicker';
 import moment from 'moment';
 
 export interface CorpRepairItem {
-    id: string;
-    text: string;
-    date: string;
-    panelName: string;
-    technicalDetails: {
-        capacity: number;
-        todayProduction: number;
-        efficiency: number;
+    CreatedAt: string;
+    Description: string;
+    ID: number;
+    OwnerPhone: string;
+    Panel: {
+        address: {
+            ID: number;
+            city: string;
+            houseNumber: string;
+            postalCode: string;
+            province: string;
+            streetAddress:string;
+            unit: number;
+        }
+        area: number;
+        azimuth: number;
+        buildingType: string;
+        customerName: string;
+        customerPhone: string;
+        id: number;
+        operatorName: string;
+        panelName: string;
+        power: number;
+        tilt: number;
+        totalNumberOfModules: number;
     };
-    address: string;
-    owner: string;
+    PanelID: number;
+    Subject: string;
+    UrgencyLevel: string;
+
+    // panelName: string;
+    // technicalDetails: {
+    //     capacity: number;
+    //     todayProduction: number;
+    //     efficiency: number;
+    // };
+    // address: string;
+    // owner: string;
 }
 
 interface CorpRepairDialogProps {
