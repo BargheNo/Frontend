@@ -4,15 +4,10 @@ import React, { useEffect, useState } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
-// import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-// import CustomInput from "@/components/Custom/CustomInput/CustomInput";
-// import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
-import provinceService from "@/src/services/provinceService";
-import { City, Province } from "@/src/types/provinceType";
 import CorpInfoForm from "@/components/Auth/RegisterCorp/CorpInfoForm/CorpInfoForm";
-import ContactInfoForm from "@/components/Auth/RegisterCorp/ContactInfoForm/ContactInfoForm";
+import AddressesForm from "@/components/Auth/RegisterCorp/AddressesForm/AddressesForm";
 import { useSelector } from "react-redux";
 import { setCorp } from "@/src/store/slices/corpSlice";
 import { useDispatch } from "react-redux";
@@ -24,12 +19,15 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Building2, FileText, Phone } from "lucide-react";
+import { Building2, FileText, MapPin, Phone } from "lucide-react";
+import ContactInfoForm from "@/components/Auth/RegisterCorp/ContactInfoForm/ContactInfoForm";
+import CertificatesForm from "@/components/Auth/RegisterCorp/CertificatesForm/CertificatesForm";
 
-const steps = ["اطلاعات شرکت", "اطلاعات تماس", "مدارک"];
+const steps = ["اطلاعات شرکت", "اطلاعات تماس", "آدرس", "مدارک"];
 const icons = [
 	<Building2 className="w-5" key="اطلاعات شرکت" />,
 	<Phone className="w-5" key="اطلاعات تمایس" />,
+	<MapPin className="w-5" key="آدرس" />,
 	<FileText className="w-5" key="مدارک" />,
 ];
 const initialValuesForm = {
@@ -71,18 +69,7 @@ const validationSchemaForm = Yup.object({
 
 export default function Page() {
 	const dispatch = useDispatch();
-
-	// const [cities, setCities] = useState<City[]>([]);
-	// const [provinces, setProvinces] = useState<Province[]>([]);
-	// const [provinceId, setProvinceId] = useState<number>();
-	// const [disable, setDisable] = useState(true);
-	// const [cityId, setCityId] = useState<number>();
 	const [step, setStep] = useState<number>(0);
-
-	// const [addresses, setAddresses] = useState<string[]>([]);
-	// const [signatories, setSignatories] = useState<string[]>([]);
-
-	// const getProvinces = () => {
 	// 	provinceService
 	// 		.GetProvinces()
 	// 		.then((res) => {
@@ -115,7 +102,6 @@ export default function Page() {
 	const corp = useSelector((state: RootState) => state).corp;
 	const onSubmit = async (values: corpData) => {
 		await handleFormSubmit(values);
-		// console.log("signatories", values.signatories);
 		console.log("values", values);
 		if (step < steps.length - 1) {
 			setStep(step + 1);
@@ -124,7 +110,6 @@ export default function Page() {
 		}
 	};
 	const handleFormSubmit = async (values: corpData) => {
-		// console.log(values);
 		dispatch(
 			setCorp({
 				...corp,
@@ -162,7 +147,7 @@ export default function Page() {
 						<div key={index} className="flex items-center">
 							<Badge
 								className={cn(
-									"rounded-full w-44 transition-all duration-300 ease-in-out text-md neu-shadow gap-2 p-2 bg-gradient-to-r ",
+									"rounded-full w-42 transition-all duration-300 ease-in-out text-md neu-shadow gap-2 p-2 bg-gradient-to-r ",
 									index <= step
 										? "from-[#A55FDA] to-[#F37240] text-black/80"
 										: "from-[#A55FDA]/30 to-[#F37240]/30 text-black",
@@ -206,21 +191,22 @@ export default function Page() {
 								<div>
 									{step === 0 && (
 										<CorpInfoForm
-											// step={step}
-											// setStep={setStep}
-											// steps={steps}
-											// signatories={signatories}
-											// setSignatories={setSignatories}
 											values={values}
 										/>
 									)}
 									{step === 1 && (
 										<ContactInfoForm
-											// step={step}
-											// setStep={setStep}
-											// steps={steps}
-											// addresses={addresses}
-											// setAddresses={setAddresses}
+											values={values}
+										/>
+									)}
+									{step === 2 && (
+										<AddressesForm
+											values={values}
+											setFieldValue={setFieldValue}
+										/>
+									)}
+									{step === 3 && (
+										<CertificatesForm
 											values={values}
 											setFieldValue={setFieldValue}
 										/>

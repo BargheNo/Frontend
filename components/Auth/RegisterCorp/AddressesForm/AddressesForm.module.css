@@ -1,0 +1,18 @@
+.icon {
+	position: relative;
+	color: #fa682d;
+	cursor: pointer;
+	width: 7rem;
+	height: auto;
+}
+
+.CustomInput {
+	box-shadow: inset 1px 2px 5px rgba(0, 0, 0, 0.2);
+	border-radius: 9px;
+	/* width: 95%; */
+	width: 100%;
+	box-sizing: border-box;
+	text-align: right;
+	background-color: #f1f4fc;
+
+}
