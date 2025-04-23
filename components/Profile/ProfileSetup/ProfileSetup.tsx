@@ -7,9 +7,9 @@ import * as Yup from "yup";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import styles from '../../Auth/Signup/signup.module.css'
-import { ArrowLeft, IdCard, Mail, Plus, User } from "lucide-react";
-import Image from "next/image";
+import { ArrowLeft, IdCard, Mail } from "lucide-react";
 import { toast } from "sonner";
+import ProfilePicPicker from "@/components/Custom/ProfilePicPicker/ProfilePicPicker";
 
 interface FormValues {
   email: string;
@@ -91,35 +91,16 @@ const ProfileSetup = () => {
           {({ setFieldValue }) => (
             <Form className="w-full space-y-4">
               <div className="flex justify-center mb-6">
-                <div className="relative">
-                  <div className="inset-neu-container w-32 h-32 rounded-full flex items-center justify-center overflow-hidden">
-                    {previewImage ? (
-                      <Image
-                        src={previewImage}
-                        alt="Profile"
-                        height={128}
-                        width={128}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <User className="w-16 h-16 text-gray-400" />
-                    )}
-                  </div>
-                  <label
-                    htmlFor="profileImage"
-                    className="!absolute !bottom-0 !right-0 bg-cloud-white cursor-pointer rounded-full !w-fit p-2 cta-neu-button hover:bg-primary-dark transition-colors"
-                  >
-                    <Plus className="w-5 h-5" />
-                    <input
-                      id="profileImage"
-                      name="profileImage"
-                      type="file"
-                      accept="image/jpeg,image/png"
-                      className="hidden"
-                      onChange={(e) => handleImageChange(e, setFieldValue)}
-                    />
-                  </label>
-                </div>
+                <ProfilePicPicker
+                  previewImage={previewImage}
+                  onImageChange={handleImageChange}
+                  onRemoveImage={() => {
+                    setPreviewImage(null);
+                    setFieldValue("profileImage", null);
+                  }}
+                  setFieldValue={setFieldValue}
+                  size="small"
+                />
               </div>
               <CustomInput
                 name="email"
