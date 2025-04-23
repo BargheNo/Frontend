@@ -82,8 +82,9 @@ jobs:
         id: cypress-tests
         run: |
           # touch /tmp/output.txt
-          npx cypress run | awk '/\(Run Finished\)/{flag=1} flag'
+          # npx cypress run | awk '/\(Run Finished\)/{flag=1} flag'
           # npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/output.txt
+          npx cypress run
           # export OUTPUT="$(cat /tmp/output.txt)"
           # cat /tmp/output.txt
       # - name: Debug - Show file content

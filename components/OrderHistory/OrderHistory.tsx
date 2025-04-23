@@ -10,9 +10,9 @@ const OrderHistory = ({ name, status, address, createdTime }: Orderhistory) => {
     <div
       className={` w-full ${
         0 ? "h-64" : ""
-      } border-t-1 border-gray-300 first:border-t-0 `}
+      } border-t-1  md:border-gray-300 border-gray-400 first:border-t-0 w-full`}
     >
-      <div className="flex flex-row justify-between w-full h-full bg-[#F0EDEF] p-5 overflow-hidden relative">
+      <div className="flex flex-row justify-between w-full h-full bg-[#F0EDEF] p-5 md:py-5 py-10 overflow-hidden relative">
         <div className="flex flex-col justify-between w-full z-10">
           <div className="space-y-3 w-full">
             <h2 className="text-2xl font-bold text-gray-800">{name}</h2>
@@ -46,7 +46,7 @@ const OrderHistory = ({ name, status, address, createdTime }: Orderhistory) => {
           </div>
         </div>
 
-        <div className="flex flex-col justify-center gap-2 items-center z-10 min-w-48">
+        <div className="flex md:flex-col flex-row md:justify-center lg:mt-0 mt-auto gap-2 items-center z-10 min-w-48">
           <Link href="">
             <div className="flex items-center justify-between cursor-pointer rounded-full  ">
               <SignupButton>

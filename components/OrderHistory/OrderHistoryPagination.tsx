@@ -51,7 +51,7 @@ export default function OrderHistoryPagination() {
         <LoadingSpinner />
       ) : history?.length > 0 ? (
         <>
-          <div className="min-h-full flex flex-col text-white px-14 bg-transparent">
+          <div className="min-h-full flex flex-col text-white md:px-14 px-5 bg-transparent">
             	<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
               
 

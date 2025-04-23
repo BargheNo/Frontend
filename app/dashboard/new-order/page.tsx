@@ -7,7 +7,7 @@ export default function Page() {
 	return (
 		<>
 			<div
-				className={`${"flex justify-center items-center mt-9"} ${
+				className={`${"flex flex-col justify-center items-center mt-9"} ${
 					vazir.className
 				}`}
 			>
