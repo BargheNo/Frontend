@@ -60,7 +60,12 @@ export default function Page() {
         defaultSize={5}
         minSize={5}
         maxSize={35}
-        style={{ flexGrow: panelWidth, flexShrink: 1, flexBasis: "0%" }}
+        style={{
+          flexGrow: panelWidth,
+          flexShrink: 1,
+          flexBasis: "0%",
+          width: `${panelWidth}%`,
+        }}
         onResize={(size) => {
           if (size < 20) {
             if (panelWidth > 5) {
