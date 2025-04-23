@@ -69,8 +69,8 @@ const Profile = () => {
   }
 
   return (
-    <div className={`${vazir.className} w-full min-h-full flex flex-col gap-8 text-white py-8 px-14 bg-transparent`}>
-      <div className="flex gap-10">
+    <div className={`${vazir.className} w-full min-h-full flex flex-col gap-8 text-white py-4 md:py-8 px-4 md:px-14 bg-transparent`}>
+      <div className="flex flex-col md:flex-row gap-10">
         <UserProfile
           profileData={profileData}
           isEditable={isEditable}
@@ -84,6 +84,10 @@ const Profile = () => {
           profileData={profileData}
           isEditable={isEditable}
         />
+
+        <br />
+        <br />
+        <br />
       </div>
     </div>
   );

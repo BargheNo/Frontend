@@ -11,7 +11,7 @@ const RolesAndPermissions: React.FC<RolesAndPermissionsProps> = ({
   isEditable,
 }) => {
   return (
-    <div className="p-6 w-1/2 neu-container">
+    <div className="p-6 w-full md:w-1/2 neu-container">
       <h2 className="text-navy-blue text-2xl font-bold mb-6">نقش و دسترسی‌ها</h2>
       
       <div className="space-y-6">
