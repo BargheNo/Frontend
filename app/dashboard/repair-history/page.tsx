@@ -1,66 +1,71 @@
 "use client"
 
 // import Layout from "../../layout"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Carousel from '@/components/Slider/Slider';
 
 import CustomerRepairCard from "@/components/Repair/Customer/CustomerRepairCard";
 import CustomerRepairRequest from '@/components/Repair/Customer/CustomerRepairRequest';
 import RepairDetailsDialog from '@/components/Repair/Customer/CustomerRepairDialog';
 
+import { baseURL, getData } from '@/src/services/apiHub';
+import LoadingSpinner from '@/components/LoadingSpinner/LoadingSpinner';
+
 interface RepairHistoryItem {
-	title: string;
-	panelName: string;
-	panelId: string;
-	repairMan: string;
-	date: string;
-	notes: string;
-	status: string;
+	ID: number;
+    Subject: string;
+    Description: string;
+    Status: string;
+    UrgencyLevel: string;
+    CreatedAt: string;
+    OwnerID: number;
+    CorporationID: number;
+    PanelID: number;
+    Panel: {
+        id: number;
+        panelName: string;
+        corporationName: string;
+        power: number;
+        area: number;
+    };
 }
-
-// Define the repair items with the new data structure
-const repairItems: RepairHistoryItem[] = [
-	{
-		title: "تمیزکاری پنل قزوین",
-		panelName: "پنل قزوین",
-		panelId: "27",
-		repairMan: "مرتضی آنالویی",
-		date: "1404/2/3",
-		notes: "پنل را به خوبی تمیز کردم دریافت شد دریافت شد دریافت شد دریافت شد دریافت شد دریافت شد دریافت شد دریافت شد دریافت شد دریافت شد ",
-		status: "done",
-	},
-	{
-		title: "تعمیرات پنل تهران",
-		panelName: "پنل تهران",
-		panelId: "28",
-		repairMan: "علی محمدی",
-		date: "1404/2/4",
-		notes: "تعویض اینورتر و بررسی عملکرد سیستم",
-		status: "in_progress",
-	},
-	{
-		title: "بازرسی فنی پنل اصفهان",
-		panelName: "پنل اصفهان",
-		panelId: "29",
-		repairMan: "رضا حسینی",
-		date: "1404/2/5",
-		notes: "بررسی کلی سیستم و تعویض قطعات فرسوده",
-		status: "pending",
-	}
-];
-
-// Items for the slider (simplified version)
-const sliderItems = repairItems.map(item => ({
-	text: item.title,
-	date: item.date
-}));
 
 const Page = () => {
 	// State for the dialog
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [selectedItem, setSelectedItem] = useState<RepairHistoryItem | null>(null);
+	const [repairItems, setRepairItems] = useState<RepairHistoryItem[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [error, setError] = useState<Error | null>(null);
 
-	// Function to open the dialog with a selected item
+	// Function to filter repairs simce the last month
+	const getRecentRepairs = (items: RepairHistoryItem[]) => {
+		const oneMonthAgo = new Date();
+		oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+		
+		return items.filter(item => {
+			const repairDate = new Date(item.CreatedAt);
+			return repairDate >= oneMonthAgo;
+		});
+	};
+
+	useEffect(() => {		
+		getData({
+			endPoint: `${baseURL}/v1/user/maintenance/request/list`,
+		})
+		.then((res) => {
+			// console.log(res);
+			setRepairItems(res.data);
+			setIsLoading(false);
+		})
+		.catch((err) => {
+			setError(err instanceof Error ? err : new Error('Failed to fetch repair items'));
+			setIsLoading(false);
+		});
+	}, []);
+
+
+
 	const handleOpenDialog = (item: RepairHistoryItem) => {
 		setSelectedItem(item);
 		setIsDialogOpen(true);
@@ -72,29 +77,57 @@ const Page = () => {
 		setSelectedItem(null);
 	};
 
+	const recentRepairs = getRecentRepairs(repairItems);
+	const sliderItems = recentRepairs.map((item: RepairHistoryItem) => ({
+		text: item.Subject,
+		date: item.CreatedAt
+	}));
+
+	if (isLoading) {
+		return (
+			<LoadingSpinner />
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="min-h-full flex items-center justify-center text-white py-8 px-14 bg-transparent">
+				<p>Error loading repair items: {error.message}</p>
+			</div>
+		);
+	}
+
 	return (
-		<div className="min-h-full flex flex-col gap-8 text-white py-8 px-14 bg-transparent">
+		<div className="min-h-full flex flex-col gap-8 text-white py-8 px-3 md:px-14 bg-transparent" dir='rtl'>
 			<h1 className="text-navy-blue text-3xl font-black">
-				سوابق تعمیرات
+				درخواست تعمیرات
 			</h1>
-			<div className="flex">
-				<div className="w-[60%] h-60 items-center content-center">
-					<Carousel 
-						items={sliderItems} 
-						onItemClick={(index: number) => handleOpenDialog(repairItems[index])}
-					/>
-				</div>
-				<div className="flex flex-col gap-4 w-[40%] items-center align-center justify-center">
-					<CustomerRepairRequest />
-				</div>
+			<div className="flex flex-col-reverse md:flex-row">
+				{sliderItems.length > 0 ? (
+					<>
+						<div className="w-full md:w-[60%] h-60 items-center content-center">
+							<Carousel 
+								items={sliderItems} 
+								onItemClick={(index: number) => handleOpenDialog(recentRepairs[index])}
+							/>
+						</div>
+						<div className="flex flex-col gap-4 w-full md:w-[40%] items-center align-center justify-center mb-8 md:mt-0">
+							<CustomerRepairRequest />
+						</div>
+					</>
+				) : (
+					<div className="w-full flex justify-center">
+						<CustomerRepairRequest />
+					</div>
+				)}
 			</div>
 			<div>
 				<h1 className="text-navy-blue text-3xl mb-6 font-black">
 					سوابق تعمیرات
 				</h1>
 				<div className="flex flex-col neu-container">
-					{repairItems.map((item, index) => (
-						<div key={item.panelId || index}>
+					{repairItems.map((item: RepairHistoryItem, index: number) => (
+						<div key={item.ID || index}>
 							<CustomerRepairCard
 								repairItem={item}
 								onDetailsClick={() => handleOpenDialog(item)}
