@@ -8,12 +8,13 @@ import moment from 'jalali-moment';
 
 const OrderHistory = ({ name, status, address, createdTime }: Orderhistory) => {
   return (
+
     <div
       className={` w-full ${
         0 ? "h-64" : ""
       } border-t-1  md:border-gray-300 border-gray-400 first:border-t-0 w-full`}
     >
-      <div className="flex flex-row justify-between w-full h-full bg-[#F0EDEF] p-4 md:pb-5 pb-28 overflow-hidden relative">
+      <div className="flex flex-row justify-between w-full h-full bg-[#F0EDEF] p-4 rtl md:pb-5 pb-28 overflow-hidden relative">
         <div className="flex flex-col justify-between w-full z-10">
           <div className="space-y-3 w-full">
             <h2 className="text-2xl font-bold text-gray-800">{name}</h2>

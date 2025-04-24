@@ -51,7 +51,7 @@ export default function OrderHistoryPagination() {
         <LoadingSpinner />
       ) : history?.length > 0 ? (
         <>
-          <div className="min-h-full flex flex-col text-white md:px-14 px-2 bg-transparent">
+          <div className="flex flex-col text-white md:px-14 px-2 bg-transparent">
             	<div className="flex flex-col text-gray-800  rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
               
 
@@ -83,8 +83,8 @@ export default function OrderHistoryPagination() {
         </div>
       )}
       {history?.length > 0 && (
-        <div className="p-5">
-          <Pagination className=" mt-3 lg:mb-0 mb-20">
+        <div className="p-5 rtl">
+          <Pagination className="lg:mb-0 mb-20">
             <PaginationContent>
               <PaginationItem>
                 {Number(currpage) > 1 && (
