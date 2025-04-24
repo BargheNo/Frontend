@@ -5,6 +5,9 @@ import ChatItem from "../ChatItem/ChatItem";
 import { Separator } from "@/components/ui/separator";
 import { getData } from "@/src/services/apiHub";
 import { ChatRoom } from "@/types/chat";
+import { useDispatch } from "react-redux";
+import { setChatRooms, setSelectedChatRoom } from "@/src/store/slices/chatSlice";
+import { useSelector } from "react-redux";
 
 export default function ChatList({
   className,
@@ -15,11 +18,16 @@ export default function ChatList({
 }) {
 
 
-    const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
-
+  
+    const dispatch = useDispatch();
+    const chatRooms = useSelector((state: any) => state.chat.chatRooms);
     useEffect(() => {
-    getData({endPoint:"/v1/user/chat/room"}).then((res:ChatRoom[])=>{
-      setChatRooms(res)
+    getData({endPoint:"/v1/user/chat/room"}).then((res: any)=>{
+      console.log(res);
+      dispatch(setChatRooms(res?.data))
+      if(res?.data?.length > 0){
+        dispatch(setSelectedChatRoom(res?.data[0]))
+      }
     });
   }, []);
   return (
@@ -29,9 +37,11 @@ export default function ChatList({
         className
       )}
     >
-      {chatRooms.map((chatRoom) => (
-        <ChatItem containerWidth={conditionWidth} chatRoom={chatRoom} />
-      ))}
+      { chatRooms.length > 0 ? chatRooms.map((chatRoom: ChatRoom) => (
+        <ChatItem containerWidth={conditionWidth} chatRoom={chatRoom} onClick={()=>{
+          dispatch(setSelectedChatRoom(chatRoom))
+        }} />
+      )) : <div className="text-center text-gray-500">No chat rooms found</div>}
     </div>
   );
 }

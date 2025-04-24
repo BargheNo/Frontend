@@ -1,9 +1,15 @@
 export interface Message {
-  id: string;
+  sender: {
+        id: number;
+        firstName: string;  
+        lastName: string;
+        phone: string;
+        email: string;
+        nationalID: string;
+        profilePic: string;
+        status: string;
+  },
   content: string;
-  type: "self" | "other";
-  timestamp: Date;
-  replyTo?: string; // ID of the message being replied to
 }
 
 export interface Customer {
@@ -32,3 +38,8 @@ export  interface ChatRoom {
     status: string;
     blockedBy: string;
   }
+
+export interface chatData {
+  chatRooms: ChatRoom[];
+  selectedChatRoom: ChatRoom | null;
+}

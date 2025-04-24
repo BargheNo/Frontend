@@ -10,20 +10,92 @@ import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { set } from "react-hook-form";
-
+import { getData } from "@/src/services/apiHub";
+import { useSelector } from "react-redux";
+import { useWebSocket } from "@/src/hooks/useChatWebSocket";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function ChatBox({ className }: { className?: string }) {
   const router = useRouter();
   const [boxWidth, setBoxWidth] = React.useState(0);
-  const [messages, setMessages] = useState<Message[]>(mockMessages);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState("");
   const boxRef = React.useRef<HTMLDivElement>(null);
   const rollerRef = React.useRef<SVGSVGElement>(null);
   const thiredMessage = React.useRef<HTMLDivElement | null>(null);
   const messageReloaderRef = React.useRef<HTMLDivElement | null>(null);
+  const selectedChatRoom = useSelector((state: any) => state.chat.selectedChatRoom);
+  const token = useSelector((state: any) => state.user.accessToken);
+  const [currentPage, setCurrentPage] = useState(1);
+  
+  // const [wsMessages, setWsMessages] = useState<Message[]>([]);
+  // const [sendMessage, setSendMessage] = useState<Message | null>(null);
+  // const [isConnected, setIsConnected] = useState(false);
+  const [wsUrl, setWsUrl] = useState<string | null>(null);
+  // const { messages: wsMessages, sendMessage, isConnected, connect , socket} = useWebSocket(wsUrl);
+  const scrollToBottom = () => {
+    const chatBox = document.getElementById("chat-box");
+    if (chatBox) {
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  }
+  const getNewPage = () => {
+    setCurrentPage(currentPage + 1);
+    getData({endPoint: `/v1/user/chat/room/${selectedChatRoom.roomID}/messages`, params: {
+      page: currentPage,
+      pageSize: 5
+    }}).then((res: any)=>{
+      setMessages(prev => [...prev, ...res?.data])
+    })
+  }
+  
+  // // set ws url and connect
+  // useEffect(() => {
+    //   console.log("wsUrl: ", wsUrl);
+    //   setWsUrl(selectedChatRoom 
+    //     ? `ws://46.249.99.69:8080/v1/user/chat/room/${selectedChatRoom.roomID}/token/${token}`
+    //     : null);
+    //   connect();
+    
+    //   return () => {
+      //     if (socket) {
+        //       socket.close();
+        //     }
+        //   };
+        // }, [selectedChatRoom, token]);
+        
+        // // Handle incoming WebSocket messages
+        // useEffect(() => {
+          //   if (wsMessages.length > 0) {
+            //     const lastMessage = wsMessages[wsMessages.length - 1];
+            //     try {
+              //       const parsedMessage = JSON.parse(lastMessage);
+              //       console.log("parsedMessage: ", parsedMessage);
+              //       setMessages(prev => [...prev, parsedMessage]);
+              //     } catch (error) {
+                //       console.error('Error parsing WebSocket message:', error);
+                //     }
+                //   }
+                // }, [wsMessages]);
+                
+  
+  // Get initial messages
+  useEffect(() => {
+    if(selectedChatRoom){
+      getNewPage();
+    }
+  }, [selectedChatRoom])
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages])
+
+  useEffect(() => {
+          console.log("message count: ", messages.length);
+  }, [messages])
+
+  // set box width
   React.useEffect(() => {
     if (!boxRef.current) return;
 
@@ -34,7 +106,7 @@ export default function ChatBox({ className }: { className?: string }) {
     });
 
     resizeObserver.observe(boxRef.current);
-
+    
     // Initial width set
     setBoxWidth(boxRef.current.offsetWidth);
 
@@ -44,6 +116,7 @@ export default function ChatBox({ className }: { className?: string }) {
     };
   }, []);
 
+  // scroll to bottom
   useEffect(() => {
     setTimeout(() => {
       const chatBox = document.getElementById("chat-box");
@@ -53,6 +126,7 @@ export default function ChatBox({ className }: { className?: string }) {
     }, 0);
   }, []);
 
+  // handle message reload
   useEffect(() => {
     const loaders = gsap.utils.toArray(".reload-spiner");
     // if (loaders.length !== 0) {
@@ -117,6 +191,7 @@ export default function ChatBox({ className }: { className?: string }) {
     };
   }, [messageReloaderRef]);
 
+  // handle scroll UP
   useEffect(() => {
     const chatBox = document.getElementById("chat-box");
     if (!chatBox || !rollerRef.current) return;
@@ -149,7 +224,11 @@ export default function ChatBox({ className }: { className?: string }) {
       end: "start start",
       scroller: "#chat-box",
       // onEnter: () => console.log("message reached"),
-      onLeaveBack: () => console.log("message left"),
+      onLeaveBack: () => 
+        {
+          console.log("fetching new page");
+          getNewPage();
+        },
       // markers: true, // This will show visual markers for debugging
     });
 
@@ -159,11 +238,13 @@ export default function ChatBox({ className }: { className?: string }) {
     };
   }, [thiredMessage.current]);
 
+  // handle reply
   const handleReply = (messageId: string) => {
     setReplyingTo(messageId);
     // You can also scroll to your input field or show a reply UI indicator
   };
 
+  // handle edit
   const handleEdit = (messageId: string, newContent: string) => {
     setMessages(
       messages.map((msg) =>
@@ -172,31 +253,28 @@ export default function ChatBox({ className }: { className?: string }) {
     );
   };
 
+  // handle send message
   const handleSendMessage = (
     e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     if (e.key === "Enter" && newMessage.trim()) {
-      const message: Message = {
-        id: Date.now().toString(),
-        content: newMessage.trim(),
-        type: "self",
-        timestamp: new Date(),
-        replyTo: replyingTo || undefined,
-      };
-      setMessages((prev) => [...prev, message]);
+      const message: any = 
+        {"type": "chat", "content": newMessage.trim()};
+      
+      // Send message through WebSocket
+      // sendMessage(JSON.stringify(message));
+      
       setNewMessage("");
       setReplyingTo(null);
 
       // Scroll to bottom after state update
-      setTimeout(() => {
-        const chatBox = document.getElementById("chat-box");
-        if (chatBox) {
-          chatBox.scrollTop = chatBox.scrollHeight;
-        }
-      }, 0);
+      scrollToBottom();
     }
   };
 
+  
+
+  // render
   return (
     <div
       ref={boxRef}
@@ -217,7 +295,12 @@ export default function ChatBox({ className }: { className?: string }) {
           </Avatar>
           <div className="flex flex-col mr-3">
             <span className="font-medium">Chat Name</span>
-            <span className="text-sm text-gray-500">Online</span>
+            {/* <span className={cn(
+              "text-sm",
+              isConnected ? "text-green-500" : "text-red-500"
+            )}>
+              {isConnected ? 'Online' : 'Offline'}
+            </span> */}
           </div>
         </div>
       </div>
@@ -233,7 +316,7 @@ export default function ChatBox({ className }: { className?: string }) {
           <Webhook color="#CB7096" className="reload-spiner" />
           <Webhook color="#A662D6" className="reload-spiner" />
         </div>
-        {messages.map((message, index) => (
+        {[...messages].reverse().map((message, index) => (
           <ChatMessage
             key={message.id}
             message={message.content}

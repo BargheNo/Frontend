@@ -30,9 +30,6 @@ export default function Page({mode}:{mode:"user" | "admin"}) {
 
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
 
-  useEffect(() => {
-    console.log(panelWidth);
-  }, [panelWidth]);
 
   const isClient = useClientCheck();
   if (!isClient)
