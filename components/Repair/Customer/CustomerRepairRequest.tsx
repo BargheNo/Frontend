@@ -91,7 +91,7 @@ const CustomerRepairRequest = () => {
     getCustomerMyPanels.GetCustomerMyPanels()
       .then((res) => {
         // console.log(res);
-        // console.log('meow meow nigga');
+        // Debugging: Log the response data if needed
         setPanels(res.data);
         setLoadingPanels(false);
       })
