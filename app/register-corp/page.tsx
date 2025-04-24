@@ -53,11 +53,11 @@ const validationSchemaForm = Yup.object({
 	signatories: Yup.array().of(
 		Yup.object().shape({
 			name: Yup.string().required("نام صاحب امضا الزامی است"),
-			// nationalCardNumber: Yup.string()
-			nationalID: Yup.string()
+			nationalCardNumber: Yup.string()
+				// nationalID: Yup.string()
 				.required("کد ملی صاحب امضا الزامی است")
 				.length(10, "کد ملی باید 10 رقم باشد"),
-			position: Yup.string(),
+			position: Yup.string().required("موقعیت صاحب امضا الزامی است"),
 		})
 	),
 	addresses: Yup.array().of(
@@ -121,9 +121,25 @@ export default function Page() {
 					const newSig = res.data.signatories
 						? res.data.signatories
 						: [];
-					if (values.signatories?.length != newSig.length) {
-						// formData["signatories"] = values.signatories;
+					if (
+						values.signatories?.length !== newSig.length ||
+						JSON.stringify(values.signatories) !== JSON.stringify(res.data.signatories)
+					) {
+						console.log("new signatory", values.signatories);
+						console.log(res.data.signatories);
+						formData["signatories"] = values.signatories;
 					}
+					// formData["signatories"]?.map((signatory) => {
+					// 	if (
+					// 		signatory.name === "" ||
+					// 		signatory.nationalCardNumber === ""
+					// 	) {
+					// 		toast(
+					// 			"اطلاعات مورد نیاز صاحبان امضا را کامل وارد کنید"
+					// 		);
+					// 		return;
+					// 	}
+					// });
 					console.log("formData in step 0", formData);
 					if (Object.keys(formData).length !== 0) {
 						putData({
@@ -141,6 +157,7 @@ export default function Page() {
 						})
 							.then((res) => {
 								toast(res.message);
+								// toast(generateErrorMessage(res));
 								if (step < steps.length - 1) {
 									setStep(step + 1);
 								}
@@ -270,73 +287,18 @@ export default function Page() {
 			router.push("/login");
 		}
 	}, [accessToken, router]);
-	const handleFormSubmit = async (values: corpData) => {
-		if (step === 0) {
-			if (corpId) {
-				putData({
-					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/basic`,
-					data: {
-						name: values.name,
-						registrationNumber: String(values.registrationNumber),
-						nationalID: String(values.nationalID),
-						iban: String(values.iban),
-						signatories: values.signatories,
-					},
-				});
-			}
-			console.log(values);
-			// getData({ endPoint: `${baseURL}/v1/contact/types` }).then((res) =>
-			// 	console.log(res)
-			// );
-			postData({
-				endPoint: `${baseURL}/v1/user/corps/registration/basic`,
-				data: {
-					name: values.name,
-					registrationNumber: String(values.registrationNumber),
-					nationalID: String(values.nationalID),
-					iban: String(values.iban),
-					signatories: values.signatories,
-				},
-			})
-				.then((res) => {
-					console.log(res);
-					dispatch(
-						setUser({
-							...user,
-							corpId: res.data.id,
-						})
-					);
-					toast(res.message);
-				})
-				.catch((err) => {
-					toast(generateErrorMessage(err));
-				});
-		} else if (step === 1) {
-		}
-		dispatch(
-			setCorp({
-				...corp,
-				name: values.name,
-				registrationNumber: values.registrationNumber,
-				nationalID: values.nationalID,
-				iban: values.iban,
-				signatories: values.signatories,
-				addresses: values.addresses,
-			})
-		);
-	};
 	const handleBack = (values: corpData) => {
-		dispatch(
-			setCorp({
-				...corp,
-				name: values.name,
-				registrationNumber: values.registrationNumber,
-				nationalID: values.nationalID,
-				iban: values.iban,
-				signatories: values.signatories,
-				addresses: values.addresses,
-			})
-		);
+		// dispatch(
+		// 	setCorp({
+		// 		...corp,
+		// 		name: values.name,
+		// 		registrationNumber: values.registrationNumber,
+		// 		nationalID: values.nationalID,
+		// 		iban: values.iban,
+		// 		signatories: values.signatories,
+		// 		addresses: values.addresses,
+		// 	})
+		// );
 		if (step > 0) {
 			setStep(step - 1);
 		}

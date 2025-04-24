@@ -67,7 +67,6 @@ export default function CorpInfoForm({
 }) {
 	const [loading, setLoading] = useState<boolean>(true);
 	const corpId = useSelector((state: RootState) => state.user.corpId);
-	const [signatories, setSignatories] = useState<Signatory[]>([]);
 	useEffect(() => {
 		setLoading(true);
 		getData({
@@ -80,6 +79,7 @@ export default function CorpInfoForm({
 					"registrationNumber",
 					res.data.registrationNumber
 				);
+				// setFieldValue("nationalCardNumber", res.data.nationalCardNumber);
 				setFieldValue("nationalID", res.data.nationalID);
 				setFieldValue("iban", res.data.iban);
 				setFieldValue("signatories", res.data.signatories);
@@ -169,8 +169,8 @@ const Signatories: React.FC<SignatoriesProps> = ({
 									// key={`name-${id}`}
 								/>
 								<CustomInput
-									// name={`signatories.[${index}].nationalCardNumber`}
-									name={`signatories.[${index}].nationalID`}
+									name={`signatories.[${index}].nationalCardNumber`}
+									// name={`signatories.[${index}].nationalID`}
 									placeholder="کد ملی"
 									icon={IdCard}
 									// key={`national-${id}`}
@@ -186,6 +186,7 @@ const Signatories: React.FC<SignatoriesProps> = ({
 								className="text-fire-orange rounded-sm hover:cursor-pointer flex mb-3 w-fit"
 								// onClick={() => removeSignatory(id)}
 								onClick={() => {
+									toast("صاحب امضا با موفقیت حذف شد")
 									remove(index);
 									// removeSignatory(id);
 								}}
@@ -195,13 +196,10 @@ const Signatories: React.FC<SignatoriesProps> = ({
 
 					<button
 						className="place-self-start cta-neu-button w-1/3 mt-8"
-						// onClick={addSignatory}
 						onClick={() => {
-							// addSignatory();
 							push({
 								name: "",
-								// nationalCardNumber: "",
-								nationalID: "",
+								nationalCardNumber: "",
 								position: "",
 							});
 						}}

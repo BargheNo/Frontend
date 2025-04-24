@@ -46,7 +46,8 @@ export default function ContactInfoForm({
 						contactValue: item.value,
 					})
 				);
-				setContactTypesList(transformed);
+				// setContactTypesList(transformed);
+				setContactTypesList(res.data.contactInfo);
 				// setFieldValue("contactInformation", transformed);
 				setLoading(false);
 			})
@@ -71,7 +72,7 @@ export default function ContactInfoForm({
 					<div className="flex w-[95%] gap-3">
 						<Select
 							disabled={true}
-							value={String(contactInfo?.contactTypeID)}
+							value={String(contactInfo?.contactType.id)}
 							name={`contactInformation.[${index}].contactTypeID`}
 							onValueChange={(value) => {
 								// console.log("contactInfo", contactInfo);
@@ -111,7 +112,7 @@ export default function ContactInfoForm({
 						</Select>
 						<CustomInput
 							name="sth"
-							value={String(contactInfo?.contactValue)}
+							value={String(contactInfo?.value)}
 							disabled={true}
 							icon={Phone}
 						/>
@@ -120,8 +121,11 @@ export default function ContactInfoForm({
 						className="text-fire-orange rounded-sm hover:cursor-pointer flex mb-3 w-fit"
 						onClick={() => {
 							deleteData({
-								endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/${contactInfo.contactTypeID}`,
+								endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/${contactInfo.ID}`,
 								// endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/0`,
+							}).then((res) => {
+								toast(res.message);
+								setContactTypesList()
 							});
 						}}
 					/>

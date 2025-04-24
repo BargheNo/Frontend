@@ -29,7 +29,7 @@ import { Form, FieldArray } from "formik";
 import { toast } from "sonner";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
-import { baseURL, getData } from "@/src/services/apiHub";
+import { baseURL, deleteData, getData, postData } from "@/src/services/apiHub";
 import { useSelector } from "react-redux";
 // import { setCorp } from "@/src/store/slices/corpSlice";
 // import { useDispatch } from "react-redux";
@@ -69,6 +69,7 @@ export default function AddressesForm({
 	values: corpData;
 }) {
 	// const dispatch = useDispatch();
+	const [addresses, setAddresses] = useState();
 	const [cities, setCities] = useState<City[]>([]);
 	const [provinces, setProvinces] = useState<Province[]>([]);
 	const [provinceId, setProvinceId] = useState<number>();
@@ -115,7 +116,8 @@ export default function AddressesForm({
 		})
 			.then((res) => {
 				console.log("res address", res);
-				setFieldValue("addresses", res.data.addresses);
+				setAddresses(res.data.addresses);
+				// setFieldValue("addresses", res.data.addresses);
 				setLoading(false);
 			})
 			.catch((err) => {
@@ -123,6 +125,9 @@ export default function AddressesForm({
 				setLoading(false);
 			});
 	}, []);
+	useEffect(() => {
+		console.log(addresses);
+	}, [addresses]);
 	if (loading)
 		return (
 			<div className="h-fit">
@@ -130,211 +135,371 @@ export default function AddressesForm({
 			</div>
 		);
 	return (
-		<Form className="flex flex-col gap-8">
-			<FieldArray name="addresses">
-				{({ push, remove }) => (
-					<>
-						{values.addresses?.map((address, index) => (
-							<div key={index} className="flex gap-3 h-full">
-								<div
-									className="hover:cursor-pointer text-fire-orange font-bold text-xl neu-shadow w-8 text-center place-content-center rounded-md bg-[#F1F4FC] group"
-									onClick={() => {
-										remove(index);
-										// removeAddress(id);
-									}}
-								>
-									<span className="absolute group-hover:opacity-0 transition-opacity duration-300 translate-x-[6px] -translate-y-[10px]">
-										{index + 1}
-									</span>
-									<XIcon className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-x-[3px] -translate-y-[10px]" />
-								</div>
-								<div className="flex flex-col">
-									<div className="flex w-full h-full gap-4">
-										<Select
-											value={String(
-												values.addresses[index]
-													.provinceID
-											)}
-											name={`addresses.[${index}].provinceID`}
-											onValueChange={(value) => {
-												// console.log(
-												// 	"value",
-												// 	value,
-												// 	":",
-												// 	values.addresses
-												// 	// address
-												// );
-												setDisable(false);
-												setFieldValue(
-													`addresses.[${index}].provinceID`,
-													Number(
-														value
-													)
-												);
-
-												const provinceId =
-													findProvinceId(
-														provinces,
-														value
-													);
-												setProvinceId(provinceId ?? 1);
-												if (provinceId)
-													UpdateCityList(provinceId);
-											}}
-										>
-											<SelectTrigger
-												value={
-													values.addresses[index]
-														.provinceID
-												}
-												// name={`addresses.[${index}].province`}
-
-												className={`${styles.CustomInput} cursor-pointer`}
-											>
-												<SelectValue placeholder="استان" />
-											</SelectTrigger>
-											<SelectContent>
-												<SelectGroup className="vazir">
-													<SelectLabel>
-														استان
-													</SelectLabel>
-													{provinces?.length > 0 ? (
-														provinces.map(
-															(
-																province,
-																index
-															) => (
-																<SelectItem
-																	key={index}
-																	value={
-																		String(province.ID)
-																	}
-																	className="cursor-pointer"
-																>
-																	{
-																		province.name
-																	}
-																</SelectItem>
-															)
-														)
-													) : (
-														<p>
-															هیچ استانی یافت نشد
-														</p>
-													)}
-												</SelectGroup>
-											</SelectContent>
-										</Select>
-										<Select
-											name={`addresses.[${index}].cityID`}
-											value={String(
-												values.addresses[index]
-													.cityID
-											)}
-											disabled={disable}
-											onValueChange={(value) => {
-												const iD = FindCityid(
-													cities,
-													value
-												);
-												setCityId(iD ?? 1);
-												setFieldValue(
-													`addresses.[${index}].cityID`,
-													Number(
-														value
-													)
-												);
-											}}
-										>
-											<SelectTrigger
-												disabled={disable}
-												className={`${styles.CustomInput} cursor-pointer`}
-											>
-												<SelectValue placeholder="شهر" />
-											</SelectTrigger>
-											<SelectContent>
-												<SelectGroup className="vazir">
-													<SelectLabel>
-														شهر
-													</SelectLabel>
-													{cities?.length > 0 ? (
-														cities.map(
-															(city, index) => (
-																<SelectItem
-																	key={index}
-																	value={
-																		String(city.ID)
-																	}
-																	className="cursor-pointer"
-																>
-																	{Object.values(
-																		city.name
-																	)}
-																</SelectItem>
-															)
-														)
-													) : (
-														<p>هیچ شهری یافت نشد</p>
-													)}
-												</SelectGroup>
-											</SelectContent>
-										</Select>
-									</div>
-									<CustomTextArea
-										name={`addresses.[${index}].streetAddress`}
-										// name="streetAddress"
-										placeholder="آدرس"
-										icon={MapPin}
-									/>
-									<div className="flex gap-4">
-										<CustomInput
-											name={`addresses.[${index}].postalCode`}
-											// name="postalCode"
-											placeholder="کد پستی"
-											icon={Mailbox}
-										/>
-										<CustomInput
-											name={`addresses.[${index}].houseNumber`}
-											// name="houseNumber"
-											placeholder="پلاک"
-											icon={Building}
-										/>
-										<CustomInput
-											name={`addresses.[${index}].unit`}
-											// name="unit"
-											placeholder="واحد"
-											icon={Home}
-											type="number"
-										/>
-									</div>
-								</div>
-							</div>
-						))}
-						<button
-							className={`place-self-start cta-neu-button w-1/3 mt-4`}
+		<>
+			<div className="flex flex-col gap-8">
+				{addresses?.map((address, index) => (
+					<div key={index} className="flex gap-3 h-full">
+						<div
+							className="hover:cursor-pointer text-fire-orange font-bold text-xl neu-shadow w-8 text-center place-content-center rounded-md bg-[#F1F4FC] group"
 							onClick={() => {
-								// addAddress();
-								if (values.addresses.length < 10) {
-									push({
-										provinceID: "",
-										cityID: "",
-										streetAddress: "",
-										postalCode: "",
-										houseNumber: "",
-										unit: 0,
-									});
-								} else {
-									toast(
-										"شما حداکثر مقدار آدرس را اضافه کرده‌اید"
-									);
-								}
+								setAddresses((addresses) =>
+									addresses?.filter(
+										(add) => add !== address.ID
+									)
+								);
+								deleteData({
+									endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/address/${address.ID}`,
+									// endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/0`,
+								}).then((res) => {
+									toast(res.message);
+								});
+								// removeAddress(id);
 							}}
 						>
-							افزودن آدرس
-						</button>
-					</>
-				)}
-			</FieldArray>
-		</Form>
+							<span className="absolute group-hover:opacity-0 transition-opacity duration-300 translate-x-[6px] -translate-y-[10px]">
+								{index + 1}
+							</span>
+							<XIcon className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-x-[3px] -translate-y-[10px]" />
+						</div>
+						<div className="flex flex-col">
+							<div className="flex w-full h-full gap-4">
+								<Select
+									value={address.province}
+									name={`addresses.[${index}].provinceID`}
+								>
+									<SelectTrigger
+										disabled
+										value={address.province}
+										// name={`addresses.[${index}].province`}
+
+										className={`${styles.CustomInput} cursor-pointer`}
+									>
+										<SelectValue placeholder="استان" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectGroup className="vazir">
+											<SelectLabel>استان</SelectLabel>
+											{provinces?.length > 0 ? (
+												provinces.map(
+													(province, index) => (
+														<SelectItem
+															key={index}
+															value={String(
+																province.name
+															)}
+															className="cursor-pointer"
+														>
+															{province.name}
+														</SelectItem>
+													)
+												)
+											) : (
+												<p>هیچ استانی یافت نشد</p>
+											)}
+										</SelectGroup>
+									</SelectContent>
+								</Select>
+								<Select
+									name={`addresses.[${index}].cityID`}
+									// value={String(values.addresses[index].cityID)}
+									value={address.city}
+									disabled={disable}
+									onValueChange={(value) => {
+										const iD = FindCityid(cities, value);
+										setCityId(iD ?? 1);
+										setFieldValue(
+											`addresses.[${index}].cityID`,
+											Number(value)
+										);
+									}}
+								>
+									<SelectTrigger
+										disabled={disable}
+										className={`${styles.CustomInput} cursor-pointer`}
+									>
+										<SelectValue placeholder="شهر" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectGroup className="vazir">
+											<SelectLabel>شهر</SelectLabel>
+											{cities?.length > 0 ? (
+												cities.map((city, index) => (
+													<SelectItem
+														key={index}
+														value={String(
+															city.name
+														)}
+														className="cursor-pointer"
+													>
+														{Object.values(
+															city.name
+														)}
+													</SelectItem>
+												))
+											) : (
+												<p>هیچ شهری یافت نشد</p>
+											)}
+										</SelectGroup>
+									</SelectContent>
+								</Select>
+							</div>
+							<CustomTextArea
+								name={`addresses.[${index}].streetAddress`}
+								value={address.streetAddress}
+								disabled
+								// name="streetAddress"
+								placeholder="آدرس"
+								icon={MapPin}
+							/>
+							<div className="flex gap-4">
+								<CustomInput
+									name={`addresses.[${index}].postalCode`}
+									value={address.postalCode}
+									disabled
+									// name="postalCode"
+									placeholder="کد پستی"
+									icon={Mailbox}
+								/>
+								<CustomInput
+									name={`addresses.[${index}].houseNumber`}
+									value={address.houseNumber}
+									disabled
+									// name="houseNumber"
+									placeholder="پلاک"
+									icon={Building}
+								/>
+								<CustomInput
+									name={`addresses.[${index}].unit`}
+									value={address.unit}
+									disabled
+									// name="unit"
+									placeholder="واحد"
+									icon={Home}
+									type="number"
+								/>
+							</div>
+						</div>
+					</div>
+				))}
+			</div>
+			<Form className="flex flex-col gap-8">
+				<FieldArray name="addresses">
+					{({ push, remove }) => (
+						<>
+							{values.addresses?.map((address, index) => (
+								<div key={index} className="flex gap-3 h-full">
+									<div
+										className="hover:cursor-pointer text-fire-orange font-bold text-xl neu-shadow w-8 text-center place-content-center rounded-md bg-[#F1F4FC] group"
+										onClick={() => {
+											remove(index);
+											// removeAddress(id);
+										}}
+									>
+										<span className="absolute group-hover:opacity-0 transition-opacity duration-300 translate-x-[6px] -translate-y-[10px]">
+											{index + 1}
+										</span>
+										<XIcon className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-x-[3px] -translate-y-[10px]" />
+									</div>
+									<div className="flex flex-col">
+										<div className="flex w-full h-full gap-4">
+											<Select
+												value={String(
+													values.addresses[index]
+														.provinceID
+												)}
+												name={`addresses.[${index}].provinceID`}
+												onValueChange={(value) => {
+													// console.log(
+													// 	"value",
+													// 	value,
+													// 	":",
+													// 	values.addresses
+													// 	// address
+													// );
+													setDisable(false);
+													setFieldValue(
+														`addresses.[${index}].provinceID`,
+														Number(value)
+													);
+
+													const provinceId =
+														findProvinceId(
+															provinces,
+															value
+														);
+													setProvinceId(
+														provinceId ?? 1
+													);
+													if (provinceId)
+														UpdateCityList(
+															provinceId
+														);
+												}}
+											>
+												<SelectTrigger
+													value={
+														values.addresses[index]
+															.provinceID
+													}
+													// name={`addresses.[${index}].province`}
+
+													className={`${styles.CustomInput} cursor-pointer`}
+												>
+													<SelectValue placeholder="استان" />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectGroup className="vazir">
+														<SelectLabel>
+															استان
+														</SelectLabel>
+														{provinces?.length >
+														0 ? (
+															provinces.map(
+																(
+																	province,
+																	index
+																) => (
+																	<SelectItem
+																		key={
+																			index
+																		}
+																		value={String(
+																			province.ID
+																		)}
+																		className="cursor-pointer"
+																	>
+																		{
+																			province.name
+																		}
+																	</SelectItem>
+																)
+															)
+														) : (
+															<p>
+																هیچ استانی یافت
+																نشد
+															</p>
+														)}
+													</SelectGroup>
+												</SelectContent>
+											</Select>
+											<Select
+												name={`addresses.[${index}].cityID`}
+												value={String(
+													values.addresses[index]
+														.cityID
+												)}
+												disabled={disable}
+												onValueChange={(value) => {
+													const iD = FindCityid(
+														cities,
+														value
+													);
+													setCityId(iD ?? 1);
+													setFieldValue(
+														`addresses.[${index}].cityID`,
+														Number(value)
+													);
+												}}
+											>
+												<SelectTrigger
+													disabled={disable}
+													className={`${styles.CustomInput} cursor-pointer`}
+												>
+													<SelectValue placeholder="شهر" />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectGroup className="vazir">
+														<SelectLabel>
+															شهر
+														</SelectLabel>
+														{cities?.length > 0 ? (
+															cities.map(
+																(
+																	city,
+																	index
+																) => (
+																	<SelectItem
+																		key={
+																			index
+																		}
+																		value={String(
+																			city.ID
+																		)}
+																		className="cursor-pointer"
+																	>
+																		{Object.values(
+																			city.name
+																		)}
+																	</SelectItem>
+																)
+															)
+														) : (
+															<p>
+																هیچ شهری یافت
+																نشد
+															</p>
+														)}
+													</SelectGroup>
+												</SelectContent>
+											</Select>
+										</div>
+										<CustomTextArea
+											name={`addresses.[${index}].streetAddress`}
+											// name="streetAddress"
+											placeholder="آدرس"
+											icon={MapPin}
+										/>
+										<div className="flex gap-4">
+											<CustomInput
+												name={`addresses.[${index}].postalCode`}
+												// name="postalCode"
+												placeholder="کد پستی"
+												icon={Mailbox}
+											/>
+											<CustomInput
+												name={`addresses.[${index}].houseNumber`}
+												// name="houseNumber"
+												placeholder="پلاک"
+												icon={Building}
+											/>
+											<CustomInput
+												name={`addresses.[${index}].unit`}
+												// name="unit"
+												placeholder="واحد"
+												icon={Home}
+												type="number"
+											/>
+										</div>
+									</div>
+								</div>
+							))}
+							<button
+								className={`place-self-start cta-neu-button w-1/3 mt-4`}
+								onClick={() => {
+									// addAddress();
+									if (values.addresses.length < 10) {
+										push({
+											provinceID: "",
+											cityID: "",
+											streetAddress: "",
+											postalCode: "",
+											houseNumber: "",
+											unit: 0,
+										});
+									} else {
+										toast(
+											"شما حداکثر مقدار آدرس را اضافه کرده‌اید"
+										);
+									}
+								}}
+							>
+								افزودن آدرس
+							</button>
+						</>
+					)}
+				</FieldArray>
+			</Form>
+		</>
 	);
 }
