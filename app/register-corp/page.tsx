@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
@@ -22,6 +23,10 @@ import {
 import { Building2, FileText, MapPin, Phone } from "lucide-react";
 import ContactInfoForm from "@/components/Auth/RegisterCorp/ContactInfoForm/ContactInfoForm";
 import CertificatesForm from "@/components/Auth/RegisterCorp/CertificatesForm/CertificatesForm";
+import { baseURL, getData, postData, putData } from "@/src/services/apiHub";
+import { toast } from "sonner";
+import generateErrorMessage from "@/src/functions/handleAPIErrors";
+import { setUser } from "@/src/store/slices/userSlice";
 
 const steps = ["اطلاعات شرکت", "اطلاعات تماس", "آدرس", "مدارک"];
 const icons = [
@@ -31,23 +36,24 @@ const icons = [
 	<FileText className="w-5" key="مدارک" />,
 ];
 const initialValuesForm = {
-	corpName: "",
+	name: "",
 	registrationNumber: "",
 	nationalID: "",
 	iban: "",
 	signatories: [],
 	addresses: [],
+	contactInformation: [],
 };
 
 const validationSchemaForm = Yup.object({
-	corpName: Yup.string().required("نام شرکت الزامی است"),
+	name: Yup.string().required("نام شرکت الزامی است"),
 	registrationNumber: Yup.string().required("شماره ثبت الزامی است"),
 	nationalID: Yup.string().required("شناسه ملی الزامی است"),
 	iban: Yup.string().required("شماره شبا الزامی است"),
 	signatories: Yup.array().of(
 		Yup.object().shape({
-			signatoryName: Yup.string().required("نام صاحب امضا الزامی است"),
-			nationalID: Yup.string()
+			name: Yup.string().required("نام صاحب امضا الزامی است"),
+			nationalCardNumber: Yup.string()
 				.required("کد ملی صاحب امضا الزامی است")
 				.length(10, "کد ملی باید 10 رقم باشد"),
 			position: Yup.string(),
@@ -65,10 +71,20 @@ const validationSchemaForm = Yup.object({
 			unit: Yup.number().optional(),
 		})
 	),
+	contactInformation: Yup.array().of(
+		Yup.object().shape({
+			contactTypeID: Yup.number()
+				.lessThan(9, "نوع اطلاعات تماس غیرقابل قبول است")
+				.required("این مورد الزامی است"),
+			contactValue: Yup.string().required("این مورد الزامی است"),
+		})
+	),
 });
 
 export default function Page() {
+	// const [corpId, setCorpId] = useState(0);
 	const dispatch = useDispatch();
+	const router = useRouter();
 	const [step, setStep] = useState<number>(0);
 	// 	provinceService
 	// 		.GetProvinces()
@@ -100,20 +116,174 @@ export default function Page() {
 	// 	Getprovinces();
 	// }, []);
 	const corp = useSelector((state: RootState) => state).corp;
+	const user = useSelector((state: RootState) => state).user;
+	const accessToken = useSelector(
+		(state: RootState) => state.user.accessToken
+	);
+	const corpId = useSelector((state: RootState) => state.user.corpId);
 	const onSubmit = async (values: corpData) => {
-		await handleFormSubmit(values);
-		console.log("values", values);
-		if (step < steps.length - 1) {
-			setStep(step + 1);
-		} else {
-			// submit form
+		console.log("putting corpId", corpId);
+		// await handleFormSubmit(values);
+		if (step === 0) {
+			if (corpId) {
+				getData({
+					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
+				}).then((res) => {
+					console.log("res", res);
+					console.log("values", values);
+					const formData: corpData = {};
+					if (values.name != res.data.name) {
+						formData["name"] = values.name;
+					}
+					if (
+						values.registrationNumber != res.data.registrationNumber
+					) {
+						formData["registrationNumber"] = String(
+							values.registrationNumber
+						);
+					}
+					if (values.nationalID != res.data.nationalID) {
+						formData["nationalID"] = String(values.nationalID);
+					}
+					if (values.iban != res.data.iban) {
+						formData["iban"] = String(values.iban);
+					}
+					const newSig = res.data.signatories
+						? res.data.signatories
+						: [];
+					console.log("check: ", values.signatories, newSig);
+					if (values.signatories?.length != newSig.length) {
+						formData["signatories"] = newSig;
+						console.log("put");
+					}
+					console.log("formData", formData);
+					if (Object.keys(formData).length !== 0) {
+						console.log("meow");
+						putData({
+							endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/basic`,
+							data: formData,
+							// data: {
+							// 	name: values.name,
+							// 	registrationNumber: String(
+							// 		values.registrationNumber
+							// 	),
+							// 	nationalID: String(values.nationalID),
+							// 	iban: String(values.iban),
+							// 	// signatories: values.signatories,
+							// },
+						})
+							.then((res) => {
+								toast(res.message);
+								if (step < steps.length - 1) {
+									setStep(step + 1);
+								}
+							})
+							.catch((err) => {
+								toast(generateErrorMessage(err));
+							});
+					} else if (step < steps.length - 1) {
+						setStep(step + 1);
+					}
+				});
+			} else {
+				console.log("post", values);
+				// getData({ endPoint: `${baseURL}/v1/contact/types` }).then((res) =>
+				// 	console.log(res)
+				// );
+				postData({
+					endPoint: `${baseURL}/v1/user/corps/registration/basic`,
+					data: {
+						name: values.name,
+						registrationNumber: String(values.registrationNumber),
+						nationalID: String(values.nationalID),
+						iban: String(values.iban),
+						signatories: values.signatories,
+					},
+				})
+					.then((res) => {
+						console.log(res);
+						// setCorpId(res.data.id);
+						dispatch(
+							setUser({
+								...user,
+								corpId: res.data.id,
+							})
+						);
+						toast(res.message);
+						if (step < steps.length - 1) {
+							setStep(step + 1);
+						}
+					})
+					.catch((err) => {
+						toast(generateErrorMessage(err));
+					});
+			}
+		} else if (step === 1) {
 		}
+		// dispatch(
+		// 	setCorp({
+		// 		...corp,
+		// 		name: values.name,
+		// 		registrationNumber: values.registrationNumber,
+		// 		nationalID: values.nationalID,
+		// 		iban: values.iban,
+		// 		signatories: values.signatories,
+		// 		addresses: values.addresses,
+		// 	})
+		// );
 	};
+	useEffect(() => {
+		if (!accessToken) {
+			router.push("/login");
+		}
+	}, [accessToken, router]);
 	const handleFormSubmit = async (values: corpData) => {
+		if (step === 0) {
+			if (corpId) {
+				putData({
+					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/basic`,
+					data: {
+						name: values.name,
+						registrationNumber: String(values.registrationNumber),
+						nationalID: String(values.nationalID),
+						iban: String(values.iban),
+						signatories: values.signatories,
+					},
+				});
+			}
+			console.log(values);
+			// getData({ endPoint: `${baseURL}/v1/contact/types` }).then((res) =>
+			// 	console.log(res)
+			// );
+			postData({
+				endPoint: `${baseURL}/v1/user/corps/registration/basic`,
+				data: {
+					name: values.name,
+					registrationNumber: String(values.registrationNumber),
+					nationalID: String(values.nationalID),
+					iban: String(values.iban),
+					signatories: values.signatories,
+				},
+			})
+				.then((res) => {
+					console.log(res);
+					dispatch(
+						setUser({
+							...user,
+							corpId: res.data.id,
+						})
+					);
+					toast(res.message);
+				})
+				.catch((err) => {
+					toast(generateErrorMessage(err));
+				});
+		} else if (step === 1) {
+		}
 		dispatch(
 			setCorp({
 				...corp,
-				corpName: values.corpName,
+				name: values.name,
 				registrationNumber: values.registrationNumber,
 				nationalID: values.nationalID,
 				iban: values.iban,
@@ -126,7 +296,7 @@ export default function Page() {
 		dispatch(
 			setCorp({
 				...corp,
-				corpName: values.corpName,
+				name: values.name,
 				registrationNumber: values.registrationNumber,
 				nationalID: values.nationalID,
 				iban: values.iban,
@@ -192,12 +362,12 @@ export default function Page() {
 									{step === 0 && (
 										<CorpInfoForm
 											values={values}
+											setFieldValue={setFieldValue}
+											corpId={corpId}
 										/>
 									)}
 									{step === 1 && (
-										<ContactInfoForm
-											values={values}
-										/>
+										<ContactInfoForm values={values} />
 									)}
 									{step === 2 && (
 										<AddressesForm

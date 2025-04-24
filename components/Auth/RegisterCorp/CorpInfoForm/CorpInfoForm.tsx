@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Form, FieldArray } from "formik";
 // import * as Yup from "yup";
 // import { v4 as uuidv4 } from "uuid";
@@ -12,6 +12,10 @@ import {
 	XIcon,
 } from "lucide-react";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
+import { baseURL, getData } from "@/src/services/apiHub";
+import { toast } from "sonner";
+import generateErrorMessage from "@/src/functions/handleAPIErrors";
+import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 // import { setCorp } from "@/src/store/slices/corpSlice";
 // import { useDispatch } from "react-redux";
 // import {
@@ -29,13 +33,13 @@ interface SignatoriesProps {
 	values: corpData;
 }
 // const validationSchemaForm = Yup.object({
-// 	corpName: Yup.string().required("نام شرکت الزامی است"),
+// 	name: Yup.string().required("نام شرکت الزامی است"),
 // 	registrationNumber: Yup.string().required("شماره ثبت الزامی است"),
 // 	nationalID: Yup.string().required("شناسه ملی الزامی است"),
 // 	iban: Yup.string().required("شماره شبا الزامی است"),
 // 	signatories: Yup.array().of(
 // 		Yup.object().shape({
-// 			signatoryName: Yup.string().required("نام صاحب امضا الزامی است"),
+// 			name: Yup.string().required("نام صاحب امضا الزامی است"),
 // 			nationalID: Yup.string()
 // 				.required("کد ملی صاحب امضا الزامی است")
 // 				.length(10, "کد ملی باید 10 رقم باشد"),
@@ -49,7 +53,9 @@ export default function CorpInfoForm({
 	// steps,
 	// signatories,
 	// setSignatories,
-	values
+	values,
+	setFieldValue,
+	corpId,
 }: {
 	// step: number;
 	// setStep: (step: number) => void;
@@ -57,13 +63,43 @@ export default function CorpInfoForm({
 	// signatories: string[];
 	// setSignatories: React.Dispatch<React.SetStateAction<string[]>>;
 	values: corpData;
+	setFieldValue: any;
+	corpId: number;
 }) {
+	const [loading, setLoading] = useState<boolean>(true);
+	useEffect(() => {
+		setLoading(true);
+		getData({
+			endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
+		})
+			.then((res) => {
+				console.log("res", res);
+				setFieldValue("name", res.data.name);
+				setFieldValue(
+					"registrationNumber",
+					res.data.registrationNumber
+				);
+				setFieldValue("nationalID", res.data.nationalID);
+				setFieldValue("iban", res.data.iban);
+				setLoading(false);
+			})
+			.catch((err) => {
+				toast(generateErrorMessage(err));
+				setLoading(false);
+			});
+	}, []);
+	if (loading)
+		return (
+			<div className="h-fit">
+				<LoadingSpinner />
+			</div>
+		);
 	return (
 		<Form>
 			<div className="flex flex-col w-full">
 				<div className="flex w-full justify-between gap-3">
 					<CustomInput
-						name="corpName"
+						name="name"
 						placeholder="نام شرکت"
 						icon={Building2}
 						containerClassName="w-2/3 mx-auto"
@@ -91,7 +127,7 @@ export default function CorpInfoForm({
 				</div>
 				<h2 className="mt-8 text-xl">صاحبان امضا</h2>
 				<Signatories
-				values={values}
+					values={values}
 					// signatories={signatories}
 					// setSignatories={setSignatories}
 				/>
@@ -103,7 +139,7 @@ export default function CorpInfoForm({
 const Signatories: React.FC<SignatoriesProps> = ({
 	// signatories,
 	// setSignatories,
-	values
+	values,
 }: SignatoriesProps) => {
 	// Add a new signatory
 	// const addSignatory = () => {
@@ -119,20 +155,20 @@ const Signatories: React.FC<SignatoriesProps> = ({
 		<FieldArray name="signatories">
 			{({ push, remove }) => (
 				<>
-					{values.signatories.map((id, index) => (
+					{values?.signatories.map((id, index) => (
 						<div
 							key={index}
 							className="flex gap-3 items-end w-full"
 						>
 							<div className="flex w-[95%] gap-3">
 								<CustomInput
-									name={`signatories.[${index}].signatoryName`}
+									name={`signatories.[${index}].name`}
 									placeholder="نام"
 									icon={UserRound}
 									// key={`name-${id}`}
 								/>
 								<CustomInput
-									name={`signatories.[${index}].nationalID`}
+									name={`signatories.[${index}].nationalCardNumber`}
 									placeholder="کد ملی"
 									icon={IdCard}
 									// key={`national-${id}`}
@@ -156,13 +192,13 @@ const Signatories: React.FC<SignatoriesProps> = ({
 					))}
 
 					<button
-						className="place-self-start cta-neu-button w-1/3 mt-4"
+						className="place-self-start cta-neu-button w-1/3 mt-8"
 						// onClick={addSignatory}
 						onClick={() => {
 							// addSignatory();
 							push({
-								signatoryName: "",
-								nationalID: "",
+								name: "",
+								nationalCardNumber: "",
 								position: "",
 							});
 						}}

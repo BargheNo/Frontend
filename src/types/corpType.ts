@@ -1,6 +1,6 @@
 interface Signatory {
-	signatoryName: string;
-	nationalID: string;
+	name: string;
+	nationalCardNumber: string;
 	position?: string;
 }
 
@@ -13,11 +13,17 @@ interface Address {
 	unit: number;
 }
 
+interface contactInformation {
+	contactTypeID: number;
+	contactValue: string;
+}
+
 interface corpData {
-	corpName: string;
-	registrationNumber: string;
-	nationalID: string;
-	iban: string;
-	signatories: Signatory[];
-	addresses: Address[];
+	name?: string;
+	registrationNumber?: string;
+	nationalID?: string;
+	iban?: string;
+	signatories?: Signatory[];
+	addresses?: Address[];
+	contactInformation?: contactInformation[];
 }
