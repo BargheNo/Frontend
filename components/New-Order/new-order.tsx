@@ -114,8 +114,9 @@ export default function Neworder() {
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}
-				className="min-w-[57vw] overflow-auto py-4"
-			>
+				className="w-full sm:min-w-[750px] max-w-xl mx-auto p-4 max-h-[95vh] overflow-y-auto py-4"
+				>
+
 				<DialogHeader>
 					<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
 						ثبت سفارش پنل جدید
@@ -176,7 +177,7 @@ export default function Neworder() {
 					{({ setFieldValue, values }) => (
 						<Form className="flex flex-col items-end w-full h-auto gap-4 rtl">
 							<div
-								className="flex justify-end w-full items-center"
+								className="flex md:flex-row flex-col justify-end w-full items-center"
 								style={{ gap: "1vw" }}
 							>
 								<CustomInput
@@ -190,7 +191,7 @@ export default function Neworder() {
 								</CustomInput>
 								<div className="flex flex-row justify-center mt-5 gap-x-1 text-gray-500 w-full">
 									<ShieldAlert />
-									<p className="rtl">
+									<p className="rtl whitespace-nowrap">
 										پنل شما با این نام در بخش پنل‌ها ثبت
 										خواهد شد.
 									</p>
@@ -198,8 +199,7 @@ export default function Neworder() {
 							</div>
 
 							<div
-								className="flex justify-between w-full mt-2"
-								style={{ gap: "1vw" }}
+								className={`${style.citypro} flex md:flex-row flex-col justify-between w-full mt-2`}
 							>
 								<Select
 									name="province"
@@ -290,7 +290,7 @@ export default function Neworder() {
 								</CustomTextArea>
 							</div>
 							<div
-								className="flex justify-end w-full -mt-4"
+								className="flex md:flex-row flex-col justify-end w-full -mt-4"
 								style={{ gap: "1vw" }}
 							>
 								<CustomInput
@@ -346,7 +346,7 @@ export default function Neworder() {
 								</CustomInput>
 								<div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
 									<ShieldAlert />
-									<p>مساحت محل نصب پنل (متر مربع)</p>
+									<p>مساحت محل نصب پنل </p>
 								</div>
 								<CustomInput
 									type="number"
@@ -362,28 +362,17 @@ export default function Neworder() {
 									<ShieldAlert />
 									<p className="">میزان برق مورد نیاز </p>
 								</div>
+								
 								<CustomInput
 									type="number"
 									dir="rtl"
-									// style={{ width: "25vw" }}
 									placeholder="سقف هزینه(ریال)"
 									icon={CircleDollarSign}
 									name="cost"
 								>
 									{" "}
 								</CustomInput>
-								{/* <div className="mb-6 w-full">
-									<CustomInput
-										type="number"
-										dir="rtl"
-										// style={{ width: "25vw" }}
-										placeholder="سقف هزینه"
-										icon={CircleDollarSign}
-										name="cost"
-									>
-										{" "}
-									</CustomInput>
-								</div> */}
+								
 								<Select
 									name="building"
 									onValueChange={(value) =>
@@ -392,7 +381,7 @@ export default function Neworder() {
 								>
 									<SelectTrigger
 										className={`${style.CustomInput} mt-[27px] min-h-[43px]`}
-										// style={{ width: "25vw" }}
+										
 									>
 										<SelectValue placeholder="نوع ساختمان" />
 									</SelectTrigger>
@@ -421,12 +410,11 @@ export default function Neworder() {
 								</Select>
 							</div>
 
-							<div className="flex flex-row justify-center items-center self-center">
+							<div className="flex flex-row w-80 justify-center items-center self-center">
 								<SignupButton
 									type="submit"
 									style={{
 										marginTop: "10px",
-										width: "25vw",
 									}}
 								>
 									{" "}
