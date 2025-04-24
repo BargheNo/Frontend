@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface ChatMessageProps {
-  log?: boolean;
+  log?: number;
   type: "self" | "other";
   containerWidth: number;
   message: string;
@@ -19,13 +19,14 @@ interface ChatMessageProps {
   // onReply: (messageId: string) => void;
   // onEdit: (messageId: string, newContent: string) => void;
   // replyTo?: string;
-  ref?: React.RefObject<HTMLDivElement> | null;
+  ref?: any;
 }
 
 export default function ChatMessage({
   type = "self",
   message,
   messageId,
+  log,
   ref,
 }: ChatMessageProps) {
   const [messageWidth, setMessageWidth] = useState<number>(0);
@@ -82,6 +83,7 @@ export default function ChatMessage({
       className="flex flex-col items-end gap-2 self-end max-w-[50%]"
       // style={{ width: `${messageWidth}px` }}
     >
+      {log && <div className="text-xs text-gray-500">{log}</div>}
       <Avatar className="h-12 w-12">
         <AvatarImage
           src="/images/Default/jinks.jpg"
@@ -129,6 +131,7 @@ export default function ChatMessage({
       className="flex flex-col items-start gap-2 self-start max-w-[50%]"
       // style={{ width: `${messageWidth}px` }}
     >
+      {log && <div className="text-xs text-gray-500">{log}</div>}
       <Avatar className="h-12 w-12">
         <AvatarImage
           src="/images/Default/jinks.jpg"

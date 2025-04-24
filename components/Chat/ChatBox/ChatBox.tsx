@@ -24,7 +24,7 @@ export default function ChatBox({ className }: { className?: string }) {
   const [newMessage, setNewMessage] = useState("");
   const boxRef = React.useRef<HTMLDivElement>(null);
   const rollerRef = React.useRef<SVGSVGElement>(null);
-  const thiredMessage = React.useRef<HTMLDivElement | null>(null);
+  const thirdMessage = React.useRef<any>(null);
   const messageReloaderRef = React.useRef<HTMLDivElement | null>(null);
   const selectedChatRoom = useSelector((state: any) => state.chat.selectedChatRoom);
   const token = useSelector((state: any) => state.user.accessToken);
@@ -46,9 +46,13 @@ export default function ChatBox({ className }: { className?: string }) {
     console.log("roomID: ", selectedChatRoom.roomID);
     setCurrentPage(page);
     getData({endPoint: `/v1/user/chat/room/${selectedChatRoom.roomID}/messages`, params: {
-      page: currentPage,
+      page: page,
       pageSize: 10
     }}).then((res: any)=>{
+      if(res?.data?.length == 0){
+        setIsLoading(false);
+        return;
+      }
       if(keepData){
         setMessages(prev => [...prev, ...res?.data])
       }else{
@@ -161,7 +165,7 @@ export default function ChatBox({ className }: { className?: string }) {
         end: "bottom bottom",
         // scrub: true,
         pin: true,
-        markers: true, // This will show visual markers for debugging
+        // markers: true, // This will show visual markers for debugging
         id: "messageReloader",
         onEnterBack: () => {
           console.log("reload trigger");
@@ -215,6 +219,7 @@ export default function ChatBox({ className }: { className?: string }) {
 
   // handle scroll UP
   useEffect(() => {
+    console.log("thirdMessage: ", thirdMessage.current);
     const chatBox = document.getElementById("chat-box");
     if (!chatBox || !rollerRef.current) return;
 
@@ -240,25 +245,28 @@ export default function ChatBox({ className }: { className?: string }) {
     chatBox.addEventListener("scroll", handleScroll);
 
     // Setup ScrollTrigger for the third message
-    const thirdMessageTrigger = ScrollTrigger.create({
-      trigger: thiredMessage.current,
-      start: "top top",
-      end: "start start",
-      scroller: "#chat-box",
-      // onEnter: () => console.log("message reached"),
-      onLeaveBack: () => 
-        {
+    let thirdMessageTrigger = null;
+    if(thirdMessage.current){
+      thirdMessageTrigger = ScrollTrigger.create({
+        trigger: thirdMessage.current,
+        start: "top top",
+        end: "start start",
+        scroller: "#chat-box",
+        onLeaveBack: () => {
           console.log("fetching new page");
           getNewPage(currentPage + 1);
         },
-      // markers: true, // This will show visual markers for debugging
-    });
+        // markers: true, // This will show visual markers for debugging
+      });
+    }
 
     return () => {
       chatBox.removeEventListener("scroll", handleScroll);
-      thirdMessageTrigger.kill();
+      if(thirdMessageTrigger) {
+        thirdMessageTrigger.kill();
+      }
     };
-  }, [thiredMessage.current]);
+  }, [messages]);
 
   // handle reply
   const handleReply = (messageId: string) => {
@@ -344,7 +352,12 @@ export default function ChatBox({ className }: { className?: string }) {
         </div>
         {[...new Map(messages.map(message => [message.id, message])).values()]
           .reverse()
-          .map((message, index) => (
+          .map((message, index) => {
+            // console.log("message: ", message);
+            if(index == 2){
+              console.log("message: ", message);
+            }
+            return (
             <ChatMessage
             key={message.id}
             message={message.content}
@@ -354,13 +367,15 @@ export default function ChatBox({ className }: { className?: string }) {
               // onReply={handleReply}
               // onEdit={handleEdit}
               // replyTo={message.replyTo}
+              log={index}
               ref={
-                index === 2
-                ? (thiredMessage as React.RefObject<HTMLDivElement>)
+                index == 2
+                ? thirdMessage 
                 : null
               }
               />
-            ))}
+            )
+          })}
       </div>
       <div className="absolute neo-card-rev bottom-3 bg-white min-h-[48px] max-h-[200px] right-3 left-3 rtl mx-auto flex items-center rounded-lg px-3">
         <Webhook id="roller" ref={rollerRef} />
