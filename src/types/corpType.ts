@@ -1,6 +1,7 @@
 interface Signatory {
 	name: string;
-	nationalCardNumber: string;
+	// nationalCardNumber: string;
+	nationalID: string;
 	position?: string;
 }
 

@@ -7,11 +7,16 @@ import {
 	SelectLabel,
 	SelectTrigger,
 	SelectValue,
-} from "@radix-ui/react-select";
+} from "@/components/ui/select";
 import { FieldArray } from "formik";
 import style from "./ContactInfoForm.module.css";
 import { Phone, XIcon } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { baseURL, deleteData, getData } from "@/src/services/apiHub";
+import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import { toast } from "sonner";
+import generateErrorMessage from "@/src/functions/handleAPIErrors";
+import { useSelector } from "react-redux";
 
 export default function ContactInfoForm({
 	setFieldValue,
@@ -20,62 +25,110 @@ export default function ContactInfoForm({
 	setFieldValue?: any;
 	values: corpData;
 }) {
+	const [loading, setLoading] = useState<boolean>(true);
+	const [contactTypes, setContactTypes] = useState<contactType[]>([]);
+	const corpId = useSelector((state: RootState) => state.user.corpId);
+	useEffect(() => {
+		getData({ endPoint: `${baseURL}/v1/contact/types` }).then((res) => {
+			setContactTypes(res.data);
+		});
+		getData({
+			endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
+		})
+			.then((res) => {
+				const transformed = res.data.contactInfo.map(
+					(item: {
+						contactType: { id: number; name: string };
+						value: string;
+					}) => ({
+						contactTypeID: item.contactType.id,
+						contactValue: item.value,
+					})
+				);
+				setFieldValue("contactInformation", transformed);
+				setLoading(false);
+			})
+			.catch((err) => {
+				toast(generateErrorMessage(err));
+				setLoading(false);
+			});
+	}, []);
+	if (loading)
+		return (
+			<div className="h-fit">
+				<LoadingSpinner />
+			</div>
+		);
 	return (
 		<FieldArray name="contactInformation">
 			{({ push, remove }) => (
 				<>
-					{values.contactInformation?.map((id, index) => (
+					{values.contactInformation?.map((contactInfo, index) => (
 						<div
 							key={index}
 							className="flex gap-3 items-end w-full"
 						>
 							<div className="flex w-[95%] gap-3">
 								<Select
-									name="building"
+									value={String(
+										values.contactInformation[index]
+											.contactTypeID
+									)}
+									name={`contactInformation.[${index}].contactTypeID`}
 									onValueChange={(value) => {
+										console.log("contactInfo", contactInfo);
 										// Setbuilding(value);
-										setFieldValue("building", value);
+										setFieldValue(
+											`contactInformation.[${index}].contactTypeID`,
+											Number(value)
+										);
 									}}
 								>
 									<SelectTrigger
-										className={`${style.CustomInput} mt-[27px] min-h-[43px]`}
+										className={`${style.CustomInput} mt-[25px] min-h-[43px] cursor-pointer `}
 									>
-										<SelectValue placeholder="نوع ساختمان" />
+										<SelectValue placeholder="راه ارتباطی" />
 									</SelectTrigger>
-									<SelectContent>
+									<SelectContent className="vazir">
 										<SelectGroup>
 											<SelectLabel>
-												نوع ساختمان
+												راه ارتباطی
 											</SelectLabel>
-											<SelectItem value="residential">
-												مسکونی
-											</SelectItem>
-											<SelectItem value="commercial">
-												تجاری
-											</SelectItem>
-											<SelectItem value="industrial">
-												صنعتی
-											</SelectItem>
-											<SelectItem value="argiculture">
-												کشاورزی
-											</SelectItem>
-											<SelectItem value="more">
-												سایر
-											</SelectItem>
+											{contactTypes?.length > 0 ? (
+												contactTypes.map(
+													(contactType, index) => (
+														<SelectItem
+															key={index}
+															value={String(
+																contactType.id
+															)}
+														>
+															{contactType.name}
+														</SelectItem>
+													)
+												)
+											) : (
+												<p>
+													هیچ راه ارتباطی یافت نشد
+												</p>
+											)}
 										</SelectGroup>
 									</SelectContent>
 								</Select>
 								<CustomInput
-									name={`contactInformation.[${index}].position`}
+									name={`contactInformation.[${index}].contactValue`}
 									placeholder="اطلاعات تماس"
 									icon={Phone}
-									// key={`position-${id}`}
 								/>
 							</div>
 							<XIcon
 								className="text-fire-orange rounded-sm hover:cursor-pointer flex mb-3 w-fit"
 								onClick={() => {
 									remove(index);
+									deleteData({
+										// endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/${contactInfo.contactTypeID}`,
+										endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/0`,
+									});
 								}}
 							/>
 						</div>

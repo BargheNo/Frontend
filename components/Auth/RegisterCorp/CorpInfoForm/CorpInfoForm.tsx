@@ -16,6 +16,7 @@ import { baseURL, getData } from "@/src/services/apiHub";
 import { toast } from "sonner";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import { useSelector } from "react-redux";
 // import { setCorp } from "@/src/store/slices/corpSlice";
 // import { useDispatch } from "react-redux";
 // import {
@@ -55,7 +56,6 @@ export default function CorpInfoForm({
 	// setSignatories,
 	values,
 	setFieldValue,
-	corpId,
 }: {
 	// step: number;
 	// setStep: (step: number) => void;
@@ -64,9 +64,9 @@ export default function CorpInfoForm({
 	// setSignatories: React.Dispatch<React.SetStateAction<string[]>>;
 	values: corpData;
 	setFieldValue: any;
-	corpId: number;
 }) {
 	const [loading, setLoading] = useState<boolean>(true);
+	const corpId = useSelector((state: RootState) => state.user.corpId);
 	useEffect(() => {
 		setLoading(true);
 		getData({
@@ -81,6 +81,7 @@ export default function CorpInfoForm({
 				);
 				setFieldValue("nationalID", res.data.nationalID);
 				setFieldValue("iban", res.data.iban);
+				setFieldValue("signatories", res.data.signatories);
 				setLoading(false);
 			})
 			.catch((err) => {
@@ -168,7 +169,8 @@ const Signatories: React.FC<SignatoriesProps> = ({
 									// key={`name-${id}`}
 								/>
 								<CustomInput
-									name={`signatories.[${index}].nationalCardNumber`}
+									// name={`signatories.[${index}].nationalCardNumber`}
+									name={`signatories.[${index}].nationalID`}
 									placeholder="کد ملی"
 									icon={IdCard}
 									// key={`national-${id}`}
@@ -198,7 +200,8 @@ const Signatories: React.FC<SignatoriesProps> = ({
 							// addSignatory();
 							push({
 								name: "",
-								nationalCardNumber: "",
+								// nationalCardNumber: "",
+								nationalID: "",
 								position: "",
 							});
 						}}

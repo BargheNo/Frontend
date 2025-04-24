@@ -53,7 +53,8 @@ const validationSchemaForm = Yup.object({
 	signatories: Yup.array().of(
 		Yup.object().shape({
 			name: Yup.string().required("نام صاحب امضا الزامی است"),
-			nationalCardNumber: Yup.string()
+			// nationalCardNumber: Yup.string()
+			nationalID: Yup.string()
 				.required("کد ملی صاحب امضا الزامی است")
 				.length(10, "کد ملی باید 10 رقم باشد"),
 			position: Yup.string(),
@@ -74,6 +75,7 @@ const validationSchemaForm = Yup.object({
 	contactInformation: Yup.array().of(
 		Yup.object().shape({
 			contactTypeID: Yup.number()
+				.moreThan(0, "نوع اطلاعات تماس غیرقابل قبول است")
 				.lessThan(9, "نوع اطلاعات تماس غیرقابل قبول است")
 				.required("این مورد الزامی است"),
 			contactValue: Yup.string().required("این مورد الزامی است"),
@@ -122,15 +124,12 @@ export default function Page() {
 	);
 	const corpId = useSelector((state: RootState) => state.user.corpId);
 	const onSubmit = async (values: corpData) => {
-		console.log("putting corpId", corpId);
 		// await handleFormSubmit(values);
 		if (step === 0) {
 			if (corpId) {
 				getData({
 					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
 				}).then((res) => {
-					console.log("res", res);
-					console.log("values", values);
 					const formData: corpData = {};
 					if (values.name != res.data.name) {
 						formData["name"] = values.name;
@@ -151,14 +150,11 @@ export default function Page() {
 					const newSig = res.data.signatories
 						? res.data.signatories
 						: [];
-					console.log("check: ", values.signatories, newSig);
 					if (values.signatories?.length != newSig.length) {
-						formData["signatories"] = newSig;
-						console.log("put");
+						// formData["signatories"] = values.signatories;
 					}
-					console.log("formData", formData);
+					console.log("formData in step 0", formData);
 					if (Object.keys(formData).length !== 0) {
-						console.log("meow");
 						putData({
 							endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/basic`,
 							data: formData,
@@ -219,6 +215,82 @@ export default function Page() {
 					});
 			}
 		} else if (step === 1) {
+			if (corpId) {
+				getData({
+					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
+				}).then((res) => {
+					const formData: corpData = {};
+					if (values.contactInformation != res.data.contactInfo) {
+						formData["contactInformation"] =
+							values.contactInformation;
+					}
+					console.log("formData in step 1", formData);
+					postData({
+						endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts`,
+						data: formData,
+						// data: {
+						// 	contactInformation: values.contactInformation
+						// },
+					})
+						.then((res) => {
+							console.log(res);
+							// setCorpId(res.data.id);
+							// dispatch(
+							// 	setUser({
+							// 		...user,
+							// 		corpId: res.data.id,
+							// 	})
+							// );
+							toast(res?.message);
+							if (step < steps.length - 1) {
+								setStep(step + 1);
+							}
+						})
+						.catch((err) => {
+							toast(generateErrorMessage(err));
+						});
+				});
+			} else {
+				toast("شرکتی برای شما ثبت نشده است.");
+			}
+		} else if (step === 2) {
+			if (corpId) {
+				getData({
+					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
+				}).then((res) => {
+					const formData: corpData = {};
+					if (values.addresses != res.data.addresses) {
+						formData["addresses"] = values.addresses;
+					}
+					console.log("formData in step 2", formData);
+					postData({
+						endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts`,
+						data: formData,
+						// data: {
+						// 	contactInformation: values.contactInformation
+						// },
+					})
+						.then((res) => {
+							console.log(res);
+							// setCorpId(res.data.id);
+							// dispatch(
+							// 	setUser({
+							// 		...user,
+							// 		corpId: res.data.id,
+							// 	})
+							// );
+							toast(res?.message);
+							if (step < steps.length - 1) {
+								setStep(step + 1);
+							}
+						})
+						.catch((err) => {
+							toast(generateErrorMessage(err));
+						});
+				});
+			} else {
+				toast("شرکتی برای شما ثبت نشده است.");
+			}
 		}
 		// dispatch(
 		// 	setCorp({
@@ -363,11 +435,13 @@ export default function Page() {
 										<CorpInfoForm
 											values={values}
 											setFieldValue={setFieldValue}
-											corpId={corpId}
 										/>
 									)}
 									{step === 1 && (
-										<ContactInfoForm values={values} />
+										<ContactInfoForm
+											values={values}
+											setFieldValue={setFieldValue}
+										/>
 									)}
 									{step === 2 && (
 										<AddressesForm

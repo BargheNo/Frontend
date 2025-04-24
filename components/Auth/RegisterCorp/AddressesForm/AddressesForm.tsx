@@ -27,6 +27,10 @@ import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import { Building, Home, Mailbox, MapPin, XIcon } from "lucide-react";
 import { Form, FieldArray } from "formik";
 import { toast } from "sonner";
+import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import generateErrorMessage from "@/src/functions/handleAPIErrors";
+import { baseURL, getData } from "@/src/services/apiHub";
+import { useSelector } from "react-redux";
 // import { setCorp } from "@/src/store/slices/corpSlice";
 // import { useDispatch } from "react-redux";
 // import { useSelector } from "react-redux";
@@ -70,36 +74,18 @@ export default function AddressesForm({
 	const [provinceId, setProvinceId] = useState<number>();
 	const [disable, setDisable] = useState(true);
 	const [cityId, setCityId] = useState<number>();
+	const [loading, setLoading] = useState<boolean>(true);
+	const corpId = useSelector((state: RootState) => state.user.corpId);
 	const FindCityid = (cities: City[], name: string) => {
 		const city = cities.find((p) => p.name === name);
 		return city?.ID ?? null;
 	};
-	// const addAddress = () => {
-	// 	setAddresses((prev) => [...prev, uuidv4()]);
-	// };
-	// const removeAddress = (id: string) => {
-	// 	setAddresses((prev) => prev.filter((item) => item !== id));
-	// };
-	// const corp = useSelector((state: RootState) => state).corp;
-	// const handleFormSubmit = (values: corpData) => {
-	// 	dispatch(
-	// 		setCorp({
-	// 			...corp,
-	// 			corpName: values.corpName,
-	// 			registrationNumber: values.registrationNumber,
-	// 			nationalID: values.nationalID,
-	// 			iban: values.iban,
-	// 			signatories: values.signatories,
-	// 			addresses: values.addresses,
-	// 		})
-	// 	);
-	// };
 	const Getprovinces = () => {
 		provinceService
 			.GetProvinces()
 			.then((res) => {
 				setProvinces(res.data.data);
-				console.log("provinces", res.data.data);
+				// console.log("provinces", res.data.data);
 			})
 			.catch((err) => {
 				console.log(err.message);
@@ -108,9 +94,6 @@ export default function AddressesForm({
 	useEffect(() => {
 		Getprovinces();
 	}, []);
-	// useEffect(() => {
-	// 	console.log(addresses);
-	// }, [addresses]);
 
 	const UpdateCityList = (provinceId: number) => {
 		provinceService
@@ -125,12 +108,33 @@ export default function AddressesForm({
 	useEffect(() => {
 		UpdateCityList(provinceId ?? 1);
 	}, [provinceId]);
+	useEffect(() => {
+		setLoading(true);
+		getData({
+			endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
+		})
+			.then((res) => {
+				console.log("res", res);
+				setFieldValue("name", res.data.name);
+				setLoading(false);
+			})
+			.catch((err) => {
+				toast(generateErrorMessage(err));
+				setLoading(false);
+			});
+	}, []);
+	if (loading)
+		return (
+			<div className="h-fit">
+				<LoadingSpinner />
+			</div>
+		);
 	return (
 		<Form className="flex flex-col gap-8">
 			<FieldArray name="addresses">
 				{({ push, remove }) => (
 					<>
-						{values.addresses.map((id, index) => (
+						{values.addresses?.map((id, index) => (
 							<div key={index} className="flex gap-3 h-full">
 								<div
 									className="hover:cursor-pointer text-fire-orange font-bold text-xl neu-shadow w-8 text-center place-content-center rounded-md bg-[#F1F4FC] group"
@@ -165,7 +169,6 @@ export default function AddressesForm({
 													`addresses.[${index}].province`,
 													value
 												);
-												console.log(values);
 												// setFieldValue(`addresses.${id}.city`, "");
 
 												const provinceId =
@@ -183,9 +186,6 @@ export default function AddressesForm({
 													values.addresses[index]
 														.province
 												}
-												onChange={() => {
-													console.log(values);
-												}}
 												name={`addresses.[${index}].province`}
 												className={`${styles.CustomInput}`}
 											>
