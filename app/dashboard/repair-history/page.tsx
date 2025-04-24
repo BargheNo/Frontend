@@ -98,20 +98,20 @@ const Page = () => {
 	}
 
 	return (
-		<div className="min-h-full flex flex-col gap-8 text-white py-8 px-14 bg-transparent">
+		<div className="min-h-full flex flex-col gap-8 text-white py-8 px-3 md:px-14 bg-transparent" dir='rtl'>
 			<h1 className="text-navy-blue text-3xl font-black">
 				درخواست تعمیرات
 			</h1>
-			<div className="flex">
+			<div className="flex flex-col-reverse md:flex-row">
 				{sliderItems.length > 0 ? (
 					<>
-						<div className="w-[60%] h-60 items-center content-center">
+						<div className="w-full md:w-[60%] h-60 items-center content-center">
 							<Carousel 
 								items={sliderItems} 
 								onItemClick={(index: number) => handleOpenDialog(recentRepairs[index])}
 							/>
 						</div>
-						<div className="flex flex-col gap-4 w-[40%] items-center align-center justify-center">
+						<div className="flex flex-col gap-4 w-full md:w-[40%] items-center align-center justify-center mb-8 md:mt-0">
 							<CustomerRepairRequest />
 						</div>
 					</>
