@@ -147,11 +147,11 @@ const CustomerRepairRequest = () => {
     postRepairRequest.PostCustomerRepairRequest(formData)
       .then(res => {
         console.log(res);
-        toast("سلام دختری؟");
+        toast.success("درخواست تعمیر با موفقیت ثبت شد!");
         setButtonLoading(false);
       })
       .catch(res => {
-        toast("عه ببخشید");
+        toast.error("مشکلی در ثبت درخواست پیش آمد!");
         setButtonLoading(false);
       });
 
