@@ -17,7 +17,7 @@ interface RepairFormProps {
 
 const RepairForm: React.FC<RepairFormProps> = ({ panelId, onSuccess }) => {
     return (
-        <div className='w-full p-5 border-t-2 border-gray-300'>
+        <div className='w-full md:p-5 border-t-2 border-gray-300'>
             <Formik
                 initialValues={{
                     date: '',

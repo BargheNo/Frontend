@@ -38,8 +38,8 @@ export default function Page() {
 	};
 
 	return (
-		<div className="min-h-full flex flex-col gap-8 text-white py-8 px-14 bg-transparent">
-			<h1 className="text-navy-blue text-3xl font-black">
+		<div className="min-h-full flex flex-col gap-8 text-white py-8 px-4 md:px-14 bg-transparent">
+			<h1 className="text-navy-blue self-end md:self-auto text-3xl font-black">
 				تعمیرات پیش رو
 			</h1>
 
@@ -76,6 +76,9 @@ export default function Page() {
 					repairItem={selectedItem}
 				/>
 			)}
+
+		<br />
+		<br />
 		</div>
 	);
 }
