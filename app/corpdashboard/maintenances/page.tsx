@@ -58,7 +58,8 @@ export default function Page() {
 								panelPower={item.Panel.power}
 								owner={item.Panel.customerName}
 								date={item.CreatedAt}
-								status={item.Description}    // TODO: change it with status, if available
+								status={item.Status}    // TODO: change it with status, if available
+								UrgencyLevel={item.UrgencyLevel}
 								address={item.Panel.address.streetAddress}
 								className="w-full"
 								onDetailsClick={() => handleOpenDialog(item)}

@@ -4,14 +4,15 @@ import React, { useState } from "react";
 import IconWithBackground from "@/components/IconWithBackground/IconWithBackground";
 import Link from "next/link";
 import moment from "jalali-moment";
-import { User, Calendar, MapPin, MoveLeft, TextSearch, Move } from "lucide-react";
+import { User, Calendar, MapPin, MoveLeft, TextSearch, Move, Clock, CheckCircle2, AlertCircle } from "lucide-react";
 
 interface CorpRepairCard {
     panelName: string,
     panelPower: number;
     // technicalDetails: {efficiency: number},
     // requestDetails,
-    status: string;
+    status: "pending" | "completed";
+    UrgencyLevel: "low" | "medium" | "high";
     address: string,
     date: string,
     owner: string,
@@ -24,6 +25,7 @@ const CorpRepairCard = ({
         panelPower,
         // requestDetails,
         status,
+        UrgencyLevel,
         address,
         date,
         owner,
@@ -32,6 +34,54 @@ const CorpRepairCard = ({
     }: CorpRepairCard) => {
     // TODO: Set types for this shit
     const [isExpanded, setIsExpanded] = useState(false);
+
+    const getStatusIcon = () => {
+        switch (status) {
+            case "completed":
+                return <CheckCircle2 size={20} className="text-green-500" />;
+            case "pending":
+                return <Clock size={20} className="text-yellow-500" />;
+            default:
+                return <Clock size={20} className="text-gray-500" />;
+        }
+    };
+
+    const getStatusText = () => {
+        switch (status) {
+            case "completed":
+                return "تکمیل شده";
+            case "pending":
+                return "در انتظار";
+            default:
+                return "نامشخص";
+        }
+    };
+
+    const getUrgencyIcon = () => {
+        switch (UrgencyLevel) {
+            case "high":
+                return <AlertCircle size={20} className="text-red-500" />;
+            case "medium":
+                return <AlertCircle size={20} className="text-yellow-500" />;
+            case "low":
+                return <AlertCircle size={20} className="text-green-500" />;
+            default:
+                return <AlertCircle size={20} className="text-gray-500" />;
+        }
+    };
+
+    const getUrgencyText = () => {
+        switch (UrgencyLevel) {
+            case "high":
+                return "زیاد";
+            case "medium":
+                return "متوسط";
+            case "low":
+                return "کم";
+            default:
+                return "نامشخص";
+        }
+    };
 
     const getStatusColor = () => {
         const efficiency = panelPower;
@@ -56,7 +106,7 @@ const CorpRepairCard = ({
         <div
             className={`${className} w-full ${
                 0 ? "h-64" : ""
-            } border-t-1 border-gray-300 first:border-t-0`}
+            } border-b-1 border-gray-300`}
         >
             <div className="flex flex-row justify-between gap-6 w-full h-full bg-[#F0EDEF] p-5 overflow-hidden relative">
                 {/* Left Section: Panel Details */}
@@ -131,14 +181,16 @@ const CorpRepairCard = ({
                 <div className="flex justify-around gap-4 w-1/3 items-center z-10">
                     <div className="flex flex-col gap-4 w-full h-2/3">
                         <div className="flex flex-col items-center justify-center gap-2 p-3 inset-neu-container !h-full !w-full">
-                            <span className="text-sm text-gray-800">
-                                نوع تعمیر
-                            </span>
-                            <span className="text-sm font-black text-gray-800">
-                                {/* requestDetails.status */}
-                                {/* سرویس دوره ای */}
-                                { status }
-                            </span>
+                            <div className="flex flex-col gap-2 text-sm font-black text-gray-800">
+                                <div className="flex items-center gap-2">
+                                    <span>وضعیت: {getStatusText()}</span>
+                                    {getStatusIcon()}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span>ضرورت: {getUrgencyText()}</span>
+                                    {getUrgencyIcon()}
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className="w-full">

@@ -53,6 +53,10 @@ const CorpRepairDialog = ({ isOpen, onClose, repairItem }: CorpRepairDialogProps
                         ) : (
                             <RepairHistory notes={notes} />
                         )}
+                        <div className='flex flex-col gap-2 justify-center items-center inset-neu-container !w-full !p-5 !bg-gray-50'>
+                            <h4 className="text-lg self-start font-semibold text-navy-blue">جزئیات تعمیر</h4>
+                            <span className='self-start'>{repairItem.Description}</span>
+                        </div>
                         <RepairForm panelId={repairItem.Panel.id} onSuccess={onClose} />
                     </div>
                 </div>
