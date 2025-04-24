@@ -16,10 +16,19 @@ import {
 } from "@/components/ui/sidebar";
 import { SidebarContent } from "@/components/ui/sidebar";
 import { Menu } from "lucide-react";
-export default function Page() {
+import { ChatRoom } from "@/types/chat";
+import { getData } from "@/src/services/apiHub";
+
+
+
+export default function Page({mode}:{mode:"user" | "admin"}) {
   const [panelWidth, setPanelWidth] = useState(5);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
+
+
+
+  const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
 
   useEffect(() => {
     console.log(panelWidth);
@@ -28,6 +37,8 @@ export default function Page() {
   const isClient = useClientCheck();
   if (!isClient)
     return <div className="h-full w-full bg-gray-100 p-4">Loading...</div>;
+
+
 
   if (isMobile) {
     return (

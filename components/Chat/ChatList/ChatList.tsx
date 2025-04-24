@@ -1,8 +1,10 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import ChatItem from "../ChatItem/ChatItem";
 import { Separator } from "@/components/ui/separator";
+import { getData } from "@/src/services/apiHub";
+import { ChatRoom } from "@/types/chat";
 
 export default function ChatList({
   className,
@@ -11,6 +13,15 @@ export default function ChatList({
   className?: string;
   conditionWidth?: number;
 }) {
+
+
+    const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
+
+    useEffect(() => {
+    getData({endPoint:"/v1/user/chat/room"}).then((res:ChatRoom[])=>{
+      setChatRooms(res)
+    });
+  }, []);
   return (
     <div
       className={cn(
@@ -18,10 +29,9 @@ export default function ChatList({
         className
       )}
     >
-      <ChatItem containerWidth={conditionWidth} />
-      <ChatItem selected containerWidth={conditionWidth} />
-      <ChatItem containerWidth={conditionWidth} />
-      <ChatItem containerWidth={conditionWidth} />
+      {chatRooms.map((chatRoom) => (
+        <ChatItem containerWidth={conditionWidth} chatRoom={chatRoom} />
+      ))}
     </div>
   );
 }

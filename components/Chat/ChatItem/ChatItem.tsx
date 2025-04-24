@@ -2,13 +2,15 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import React from "react";
-
+import { ChatRoom } from "@/types/chat";
 interface ChatItemProps {
   containerWidth?: number;
   selected?: boolean;
+  chatRoom: ChatRoom;
 }
 
 export default function ChatItem({
+  chatRoom,
   containerWidth,
   selected = false,
 }: ChatItemProps) {
@@ -25,7 +27,7 @@ export default function ChatItem({
     >
       <Avatar className="h-12 w-12 flex-shrink-0">
         <AvatarImage
-          src="/images/Default/jinks.jpg"
+          src={chatRoom.corporation.logo ?? "/images/Default/jinks.jpg"}
           alt="Profile"
           className="object-cover"
         />
@@ -33,7 +35,7 @@ export default function ChatItem({
       </Avatar>
       {showText && (
         <div className="flex flex-col gap-1 min-w-0">
-          <span className="font-medium">Chat Name</span>
+          <span className="font-medium">{chatRoom.corporation.name}</span>
           <span
             className={cn(
               "text-sm truncate",
