@@ -108,8 +108,8 @@ export default function AddPanel() {
             </DialogTrigger>
             <DialogContent
                 style={{ backgroundColor: "#F1F4FC" }}
-                className="min-w-[57vw] overflow-auto"
-            >
+                className="w-full sm:min-w-[750px] max-w-xl mx-auto p-4  overflow-auto py-4"
+                >
                 <DialogHeader>
                     <DialogTitle className="flex justify-center items-end font-bold mt-3.5">
                         ثبت پنل جدید
@@ -180,7 +180,7 @@ export default function AddPanel() {
                     {({ setFieldValue, values }) => (
                         <Form className="flex flex-col items-end w-full h-auto gap-4 rtl">
                              <div
-                                className="flex justify-between w-full mt-2"
+                                className="flex md:flex-row flex-col justify-between w-full mt-2"
                                 style={{ gap: "1vw" }}
                             >
                             
@@ -300,8 +300,8 @@ export default function AddPanel() {
                             </div>
 
                             <div
-                                className="flex justify-between w-full mt-2"
-                                style={{ gap: "1vw" }}
+                                className={`${style.citypro} flex md:flex-row flex-col justify-between w-full mt-2`}
+                                
                             >
                                 <Select
                                     name="province"
@@ -391,7 +391,7 @@ export default function AddPanel() {
                                 </CustomTextArea>
                             </div>
                             <div
-								className="flex justify-end w-full -mt-4"
+								className="flex md:flex-row flex-col justify-end w-full -mt-4"
 								style={{ gap: "1vw" }}
 							>
 								<CustomInput

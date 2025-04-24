@@ -14,3 +14,16 @@
     /* text-align: right; */
     background-color: #F1F4FC;
 }
+
+.citypro{
+    gap:1vw;
+}
+
+@media(max-width:720px) {
+    .citypro{
+        gap: 5vw;
+    }
+    .CustomInput{
+        width: 99%;
+    }
+}
