@@ -276,7 +276,7 @@ const TicketSupportPage = () => {
               <span className="font-bold">{status}</span>
               <div
                 className={`h-4 w-4 rounded-full ${
-                  status === "پاسخ دادید" ? "green" : "red"
+                  status === "پاسخ داده شده" ? "green" : "red"
                 }-status shadow-md`}
               />
             </div>
@@ -437,7 +437,7 @@ const TicketSupportPage = () => {
               subject={ticket.subject}
               description={ticket.description}
               status={
-                ticket.status === "resolved" ? "پاسخ دادید" : "بررسی نشده"
+                ticket.status === "resolved" ? "پاسخ داده شده" : "بررسی نشده"
               }
               created_at={new Date(ticket.created_at).toLocaleDateString(
                 "fa-IR"
