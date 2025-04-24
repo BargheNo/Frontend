@@ -450,14 +450,14 @@ const TicketSupportPage = () => {
                 <div className="bg-white px-10 rounded-lg w-full text-right space-y-4">
                   <h3 className="text-lg font-bold">ثبت نظر</h3>
                   <div
-                    className={`bg-white p-6 rounded-xl shadow-sm  ${styles.shadow}`}
+                    className={`bg-white p-6 rounded-xl shadow-md  ${styles.shadow}`}
                   >
                     <textarea
                       value={commentInput}
                       onChange={(e) => setCommentInput(e.target.value)}
                       rows={3}
-                      className="w-full p-2 resize-none outline-none focus:ring-0 focus:outline-none
-"
+                      className={`w-full p-2 resize-none outline-none focus:ring-0 focus:outline-none`}
+
                       placeholder="متن نظر..."
                     />
                   </div>

@@ -62,7 +62,7 @@
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
 		"@vitest/ui": "^3.0.8",
-		"cypress": "^14.3.0",
+		"cypress": "^14.3.2",
 		"eslint": "^9",
 		"eslint-config-next": "15.2.1",
 		"mocha": "^11.1.0",
