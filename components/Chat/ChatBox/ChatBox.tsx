@@ -152,61 +152,66 @@ export default function ChatBox({ className }: { className?: string }) {
     //     ease: "power1.out",
     //   });
     // }
-    const messageReloader = ScrollTrigger.create({
-      trigger: messageReloaderRef.current,
-      scroller: "#chat-box",
-      start: "center top",
-      end: "bottom bottom",
-      // scrub: true,
-      pin: true,
-      // markers: true, // This will show visual markers for debugging
-      id: "messageReloader",
-      onEnterBack: () => {
-        if (messageReloaderRef.current) {
-          gsap.to(messageReloaderRef.current, {
-            opacity: 1,
-            height: "40px",
-            duration: 0.7,
-            ease: "power1.out",
-          });
-          gsap.to(messageReloaderRef.current, {
-            opacity: 0,
-            height: "0px",
-            duration: 0.7,
-            ease: "power1.out",
-            delay: 0.7,
-          });
-          if (loaders.length !== 0) {
-            console.log("loders");
-            // Reset rotation first
-            gsap.set(loaders, { rotation: 0 });
-            gsap.to(loaders, {
-              rotate: 360,
-              duration: 0.2,
-              repeat: 7,
+    let messageReloader = null;
+    if(messageReloaderRef.current){
+      messageReloader = ScrollTrigger.create({
+        trigger: messageReloaderRef.current,
+        scroller: "#chat-box",
+        start: "center top",
+        end: "bottom bottom",
+        // scrub: true,
+        pin: true,
+        markers: true, // This will show visual markers for debugging
+        id: "messageReloader",
+        onEnterBack: () => {
+          console.log("reload trigger");
+          if (messageReloaderRef.current) {
+            gsap.to(messageReloaderRef.current, {
+              opacity: 1,
+              height: "40px",
+              duration: 0.7,
               ease: "power1.out",
             });
+            gsap.to(messageReloaderRef.current, {
+              opacity: 0,
+              height: "0px",
+              duration: 0.7,
+              ease: "power1.out",
+              delay: 0.7,
+            });
+            if (loaders.length !== 0) {
+              console.log("loders");
+              // Reset rotation first
+              gsap.set(loaders, { rotation: 0 });
+              gsap.to(loaders, {
+                rotate: 360,
+                duration: 0.2,
+                repeat: 7,
+                ease: "power1.out",
+              });
+            }
+            // setTimeout(() => {
+            //   if (messageReloaderRef.current) {
+            //     const chatBox = document.getElementById("chat-box");
+            //     if (chatBox) {
+            //       // console.log(messageReloaderRef.current.offsetTop);
+            //       chatBox.scrollTop =
+            //         messageReloaderRef.current.offsetHeight + 20;
+            //     }
+            //   }
+            // }, 1200);
           }
-          // setTimeout(() => {
-          //   if (messageReloaderRef.current) {
-          //     const chatBox = document.getElementById("chat-box");
-          //     if (chatBox) {
-          //       // console.log(messageReloaderRef.current.offsetTop);
-          //       chatBox.scrollTop =
-          //         messageReloaderRef.current.offsetHeight + 20;
-          //     }
-          //   }
-          // }, 1200);
-        }
-      },
-    });
+        },
+      });
+    }
+
 
     return () => {
       if (messageReloader) {
         messageReloader.kill();
       }
     };
-  }, [messageReloaderRef]);
+  }, [messageReloaderRef.current]);
 
   // handle scroll UP
   useEffect(() => {
