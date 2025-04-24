@@ -54,8 +54,8 @@ const PaginationLink = ({
         size,
       }),
       className,
-      "bg-custom-primary border-2 border-black border-solid rounded-md text-black hover:bg-gray-800 hover:text-white",
-      isActive && "bg-black text-white",
+      "bg-custom-primary shadow-gray-500 rounded-md text-gray-700 hover:bg-[#c6c6c6] hover:shadow-gray-950 ",
+      isActive && "bg-[#c6c6c6] text-gray-700",
     )}
     {...props}
   />
