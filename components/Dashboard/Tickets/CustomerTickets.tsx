@@ -99,10 +99,10 @@ const TicketSupportPage = () => {
       const data = await res.json();
       toast.success(data?.message);
       fetchTickets();
-    } catch (error : any) {
+    } catch (error: any) {
       const errMsg =
-            generateErrorMessage(error) || "هنگام تغییر رمز عبور مشکلی پیش آمد.";
-          toast.error(errMsg);
+        generateErrorMessage(error) || "هنگام ایجاد تیکت جدید مشکلی پیش آمد.";
+      toast.error(errMsg);
     }
   };
 
@@ -127,10 +127,10 @@ const TicketSupportPage = () => {
       const result = await response.json();
       toast.success(result?.message);
       getComments(activeCommentTicketId);
-    } catch (error : any) {
+    } catch (error: any) {
       const errMsg =
-            generateErrorMessage(error) || "هنگام تغییر رمز عبور مشکلی پیش آمد.";
-          toast.error(errMsg);
+        generateErrorMessage(error) || "هنگام ایجاد نظر جدید مشکلی پیش آمد.";
+      toast.error(errMsg);
     }
   };
 
@@ -149,13 +149,12 @@ const TicketSupportPage = () => {
     )
       .then((res) => res.json())
       .then((data) => {
-        toast.success(data?.message);
         setComments(data.data);
       })
-      .catch((err : any) => {
+      .catch((err: any) => {
         const errMsg =
-            generateErrorMessage(err) || "هنگام تغییر رمز عبور مشکلی پیش آمد.";
-          toast.error(errMsg);
+          generateErrorMessage(err) || "هنگام گردآوری نظرات مشکلی به وجود آمد.";
+        toast.error(errMsg);
       }).finally;
     {
       setIsLoadingComments(false);
@@ -176,8 +175,8 @@ const TicketSupportPage = () => {
       })
       .catch((err) => {
         const errMsg =
-            generateErrorMessage(err) || "هنگام تغییر رمز عبور مشکلی پیش آمد.";
-          toast.error(errMsg);
+          generateErrorMessage(err) || "هنگام گردآوری تیکت ها مشکلی پیش آمد.";
+        toast.error(errMsg);
       });
   };
 
@@ -224,23 +223,24 @@ const TicketSupportPage = () => {
 
             <p className="max-w-[600px] break-words">{description}</p>
           </div>
-          <div className="flex flex-row w-1/2">
+          <div className="flex flex-row w-100">
             <div
               className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
             >
-              
-                <button onClick={() => setActiveCommentTicketId(id)} className="cursor-pointer">
-                  افزودن نظر
-                </button>
-                <MessageCirclePlus />
-              
+              <button
+                onClick={() => setActiveCommentTicketId(id)}
+                className="cursor-pointer"
+              >
+                افزودن نظر
+              </button>
+              <MessageCirclePlus />
             </div>
             <div
               className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
             >
               <div className="flex gap-2 justify-end mt-2">
                 <button
-                className="cursor-pointer"
+                  className="cursor-pointer"
                   onClick={() => {
                     const nextValue = showCommentBoxFor === id ? null : id;
                     setShowCommentBoxFor(nextValue);
@@ -288,11 +288,16 @@ const TicketSupportPage = () => {
 
   const Comment = ({
     id,
-    from,
+    Author,
     body,
   }: {
     id: string;
-    from: string;
+    Author: {
+      id?: number;
+      first_name: string;
+      last_name: string;
+      owner_type: string;
+    };
     body: string;
   }) => {
     return (
@@ -302,7 +307,8 @@ const TicketSupportPage = () => {
           <div className="flex flex-col gap-3">
             <p className="max-w-[600px] break-words text-md">{body}</p>
             <p className="text-start content-start text-xs text-gray-600">
-              از طرف {from}
+              از طرف {Author.first_name} {Author.last_name} ({" "}
+              {Author.owner_type === "users" ? "کاربر" : "ادمین"} )
             </p>
           </div>
         </div>
@@ -353,7 +359,7 @@ const TicketSupportPage = () => {
                 value={formik.values.description}
                 onChange={formik.handleChange}
                 rows={5}
-                className=" bg-transparent text-right outline-none min-h-[250px] min-w-[800px] resize-none px-3
+                className=" bg-transparent text-right outline-none min-h-[250px] min-w-[750px] resize-none px-3 w-11/12
 "
               />
             </div>
@@ -431,7 +437,7 @@ const TicketSupportPage = () => {
               subject={ticket.subject}
               description={ticket.description}
               status={
-                ticket.status === "user_answered" ? "پاسخ دادید" : "بررسی نشده"
+                ticket.status === "resolved" ? "پاسخ دادید" : "بررسی نشده"
               }
               created_at={new Date(ticket.created_at).toLocaleDateString(
                 "fa-IR"
@@ -444,14 +450,14 @@ const TicketSupportPage = () => {
                 <div className="bg-white px-10 rounded-lg w-full text-right space-y-4">
                   <h3 className="text-lg font-bold">ثبت نظر</h3>
                   <div
-                    className={`bg-white p-6 rounded-xl shadow-sm  ${styles.shadow}`}
+                    className={`bg-white p-6 rounded-xl shadow-md  ${styles.shadow}`}
                   >
                     <textarea
                       value={commentInput}
                       onChange={(e) => setCommentInput(e.target.value)}
                       rows={3}
-                      className="w-full p-2 resize-none outline-none focus:ring-0 focus:outline-none
-"
+                      className={`w-full p-2 resize-none outline-none focus:ring-0 focus:outline-none`}
+
                       placeholder="متن نظر..."
                     />
                   </div>
@@ -487,7 +493,7 @@ const TicketSupportPage = () => {
                     <div key={i} className="pb-1 border-t border-gray-400">
                       <Comment
                         id="1"
-                        from={`${comment.Author.first_name} ${comment.Author.last_name}`}
+                        Author={comment.Author}
                         body={comment.body}
                       />
                     </div>
@@ -503,6 +509,7 @@ const TicketSupportPage = () => {
                       setShowCommentBoxFor(null);
                       setComments([]);
                     }}
+                    className="cursor-pointer"
                   >
                     بستن
                   </button>
