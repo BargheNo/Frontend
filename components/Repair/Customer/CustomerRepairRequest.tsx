@@ -96,7 +96,7 @@ const CustomerRepairRequest = () => {
         setLoadingPanels(false);
       })
       .catch((err) => {
-        console.error('Error fetching pamels', err);
+        console.error('Error fetching panels', err);
         setLoadingPanels(false);
       }
       );
