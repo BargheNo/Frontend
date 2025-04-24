@@ -1,15 +1,19 @@
 export interface Message {
-  sender: {
-        id: number;
-        firstName: string;  
-        lastName: string;
-        phone: string;
-        email: string;
-        nationalID: string;
-        profilePic: string;
-        status: string;
-  },
-  content: string;
+    id: number,
+    sender: {
+        id: number,
+        firstName: string,
+        lastName: string,
+        phone: string,
+        email: string,
+        nationalID: string,
+        profilePic: string,
+        status: string
+    },
+    type: string,
+    room_id: number,
+    content: string,
+    timestamp: string
 }
 
 export interface Customer {

@@ -15,22 +15,17 @@ interface ChatMessageProps {
   type: "self" | "other";
   containerWidth: number;
   message: string;
-  messageId: string;
-  onReply: (messageId: string) => void;
-  onEdit: (messageId: string, newContent: string) => void;
-  replyTo?: string;
+  messageId: number;
+  // onReply: (messageId: string) => void;
+  // onEdit: (messageId: string, newContent: string) => void;
+  // replyTo?: string;
   ref?: React.RefObject<HTMLDivElement> | null;
 }
 
 export default function ChatMessage({
-  log = false,
   type = "self",
-  containerWidth,
   message,
   messageId,
-  onReply,
-  onEdit,
-  replyTo,
   ref,
 }: ChatMessageProps) {
   const [messageWidth, setMessageWidth] = useState<number>(0);
@@ -66,20 +61,20 @@ export default function ChatMessage({
   //   }
   // }, [containerWidth, messageWidth, log]);
 
-  const handleReply = () => {
-    onReply(messageId);
-  };
+  // const handleReply = () => {
+  //   onReply(messageId);
+  // };
 
-  const handleEdit = () => {
-    if (type === "self") {
-      setIsEditing(true);
-    }
-  };
+  // const handleEdit = () => {
+  //   if (type === "self") {
+  //     setIsEditing(true);
+  //   }
+  // };
 
-  const saveEdit = () => {
-    onEdit(messageId, editedMessage);
-    setIsEditing(false);
-  };
+  // const saveEdit = () => {
+  //   onEdit(messageId, editedMessage);
+  //   setIsEditing(false);
+  // };
 
   return type === "other" ? (
     <div
@@ -101,19 +96,19 @@ export default function ChatMessage({
             className="bg-gray-800 text-white rounded-b-xl rounded-tr-xl ml-4 p-4 neo-card"
             // style={{ width: `${messageWidth}px` }}
           >
-            {replyTo && (
+            {/* {replyTo && (
               <div className="text-sm text-gray-400 mb-2">
                 Replying to a message
               </div>
-            )}
+            )} */}
             {message}
           </div>
         </ContextMenuTrigger>
         <ContextMenuContent className="w-48">
-          <ContextMenuItem onClick={handleReply}>
+          {/* <ContextMenuItem onClick={handleReply}>
             <Reply className="h-4 w-4" />
             Reply
-          </ContextMenuItem>
+          </ContextMenuItem> */}
           <ContextMenuItem className="flex items-center gap-2 hover:bg-gray-100 focus:bg-gray-100 cursor-pointer">
             <Share2 className="h-4 w-4" />
             Share
@@ -148,17 +143,17 @@ export default function ChatMessage({
             className="bg-white text-gray-800 rounded-b-xl rounded-tl-xl mr-4 p-4 neo-card"
             // style={{ width: `${messageWidth}px` }}
           >
-            {replyTo && (
+            {/* {replyTo && (
               <div className="text-sm text-gray-400 mb-2">
                 Replying to a message
               </div>
-            )}
+            )} */}
             {isEditing ? (
               <input
                 type="text"
                 value={editedMessage}
                 onChange={(e) => setEditedMessage(e.target.value)}
-                onBlur={saveEdit}
+                // onBlur={saveEdit}
                 autoFocus
                 className="w-full bg-transparent outline-none"
               />
@@ -168,14 +163,14 @@ export default function ChatMessage({
           </div>
         </ContextMenuTrigger>
         <ContextMenuContent className="w-48">
-          <ContextMenuItem onClick={handleReply}>
+          {/* <ContextMenuItem onClick={handleReply}>
             <Reply className="h-4 w-4" />
             Reply
-          </ContextMenuItem>
-          <ContextMenuItem className="flex items-center gap-2 hover:bg-gray-100 focus:bg-gray-100 cursor-pointer">
+          </ContextMenuItem> */}
+          {/* <ContextMenuItem className="flex items-center gap-2 hover:bg-gray-100 focus:bg-gray-100 cursor-pointer">
             <Pencil className="h-4 w-4" />
             Edit
-          </ContextMenuItem>
+          </ContextMenuItem> */}
           <ContextMenuItem className="flex items-center gap-2 hover:bg-gray-100 focus:bg-gray-100 cursor-pointer">
             <Share2 className="h-4 w-4" />
             Share

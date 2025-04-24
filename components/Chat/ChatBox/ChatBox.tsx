@@ -1,5 +1,5 @@
 "use client";
-import { ChevronLeft, Send, Webhook } from "lucide-react";
+import { ChevronLeft, Loader2, Send, Webhook } from "lucide-react";
 import React, { useState, useEffect, use } from "react";
 import ChatMessage from "../ChatMessage/ChatMessage";
 import { cn } from "@/lib/utils";
@@ -13,6 +13,7 @@ import { set } from "react-hook-form";
 import { getData } from "@/src/services/apiHub";
 import { useSelector } from "react-redux";
 import { useWebSocket } from "@/src/hooks/useChatWebSocket";
+import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function ChatBox({ className }: { className?: string }) {
@@ -28,68 +29,82 @@ export default function ChatBox({ className }: { className?: string }) {
   const selectedChatRoom = useSelector((state: any) => state.chat.selectedChatRoom);
   const token = useSelector((state: any) => state.user.accessToken);
   const [currentPage, setCurrentPage] = useState(1);
-  
-  // const [wsMessages, setWsMessages] = useState<Message[]>([]);
-  // const [sendMessage, setSendMessage] = useState<Message | null>(null);
-  // const [isConnected, setIsConnected] = useState(false);
   const [wsUrl, setWsUrl] = useState<string | null>(null);
-  // const { messages: wsMessages, sendMessage, isConnected, connect , socket} = useWebSocket(wsUrl);
+  const { messages: wsMessages, sendMessage, isConnected, connect , socket} = useWebSocket(wsUrl);
+  const user = useSelector((state: any) => state.user);
+  const [isLoading, setIsLoading] = useState(false);
+
+
   const scrollToBottom = () => {
     const chatBox = document.getElementById("chat-box");
     if (chatBox) {
       chatBox.scrollTop = chatBox.scrollHeight;
     }
   }
-  const getNewPage = () => {
-    setCurrentPage(currentPage + 1);
+
+  const getNewPage = (page: number = 1, keepData: boolean = true, isInitial: boolean = false) => {
+    console.log("roomID: ", selectedChatRoom.roomID);
+    setCurrentPage(page);
     getData({endPoint: `/v1/user/chat/room/${selectedChatRoom.roomID}/messages`, params: {
       page: currentPage,
-      pageSize: 5
+      pageSize: 10
     }}).then((res: any)=>{
-      setMessages(prev => [...prev, ...res?.data])
+      if(keepData){
+        setMessages(prev => [...prev, ...res?.data])
+      }else{
+        setMessages(res?.data)
+      }
+      setIsLoading(false);
+      if(isInitial){
+        setTimeout(() => {
+          scrollToBottom();
+        }, 100);
+      }
     })
   }
   
-  // // set ws url and connect
-  // useEffect(() => {
-    //   console.log("wsUrl: ", wsUrl);
-    //   setWsUrl(selectedChatRoom 
-    //     ? `ws://46.249.99.69:8080/v1/user/chat/room/${selectedChatRoom.roomID}/token/${token}`
-    //     : null);
-    //   connect();
-    
-    //   return () => {
-      //     if (socket) {
-        //       socket.close();
-        //     }
-        //   };
-        // }, [selectedChatRoom, token]);
-        
-        // // Handle incoming WebSocket messages
-        // useEffect(() => {
-          //   if (wsMessages.length > 0) {
-            //     const lastMessage = wsMessages[wsMessages.length - 1];
-            //     try {
-              //       const parsedMessage = JSON.parse(lastMessage);
-              //       console.log("parsedMessage: ", parsedMessage);
-              //       setMessages(prev => [...prev, parsedMessage]);
-              //     } catch (error) {
-                //       console.error('Error parsing WebSocket message:', error);
-                //     }
-                //   }
-                // }, [wsMessages]);
-                
-  
-  // Get initial messages
+  // get initial messages
   useEffect(() => {
     if(selectedChatRoom){
-      getNewPage();
+      setIsLoading(true);
+      getNewPage(1, false, true);
     }
   }, [selectedChatRoom])
-
+  
+  // // set ws url and connect
   useEffect(() => {
-    scrollToBottom();
-  }, [messages])
+      console.log("wsUrl: ", wsUrl);
+      setWsUrl(selectedChatRoom 
+        ? `ws://46.249.99.69:8080/v1/user/chat/room/${selectedChatRoom.roomID}/token/${token}`
+        : null);
+      connect();
+    
+      return () => {
+          if (socket) {
+              socket.close();
+            }
+          };
+        }, [selectedChatRoom, token]);
+        
+  // Handle incoming WebSocket messages
+  useEffect(() => {
+      if (wsMessages.length > 0) {
+          const lastMessage = wsMessages[wsMessages.length - 1];
+          try {
+              const parsedMessage = JSON.parse(lastMessage);
+              console.log("parsedMessage: ", parsedMessage);
+              setMessages(prev => [parsedMessage, ...prev]);
+            } catch (error) {
+                console.error('Error parsing WebSocket message:', error);
+              }
+            }
+          }, [wsMessages]);
+                
+  
+
+  // useEffect(() => {
+  //   scrollToBottom();
+  // }, [messages])
 
   useEffect(() => {
           console.log("message count: ", messages.length);
@@ -150,11 +165,13 @@ export default function ChatBox({ className }: { className?: string }) {
         if (messageReloaderRef.current) {
           gsap.to(messageReloaderRef.current, {
             opacity: 1,
+            height: "40px",
             duration: 0.7,
             ease: "power1.out",
           });
           gsap.to(messageReloaderRef.current, {
             opacity: 0,
+            height: "0px",
             duration: 0.7,
             ease: "power1.out",
             delay: 0.7,
@@ -170,16 +187,16 @@ export default function ChatBox({ className }: { className?: string }) {
               ease: "power1.out",
             });
           }
-          setTimeout(() => {
-            if (messageReloaderRef.current) {
-              const chatBox = document.getElementById("chat-box");
-              if (chatBox) {
-                // console.log(messageReloaderRef.current.offsetTop);
-                chatBox.scrollTop =
-                  messageReloaderRef.current.offsetHeight + 20;
-              }
-            }
-          }, 1200);
+          // setTimeout(() => {
+          //   if (messageReloaderRef.current) {
+          //     const chatBox = document.getElementById("chat-box");
+          //     if (chatBox) {
+          //       // console.log(messageReloaderRef.current.offsetTop);
+          //       chatBox.scrollTop =
+          //         messageReloaderRef.current.offsetHeight + 20;
+          //     }
+          //   }
+          // }, 1200);
         }
       },
     });
@@ -227,7 +244,7 @@ export default function ChatBox({ className }: { className?: string }) {
       onLeaveBack: () => 
         {
           console.log("fetching new page");
-          getNewPage();
+          getNewPage(currentPage + 1);
         },
       // markers: true, // This will show visual markers for debugging
     });
@@ -262,7 +279,7 @@ export default function ChatBox({ className }: { className?: string }) {
         {"type": "chat", "content": newMessage.trim()};
       
       // Send message through WebSocket
-      // sendMessage(JSON.stringify(message));
+      sendMessage(JSON.stringify(message));
       
       setNewMessage("");
       setReplyingTo(null);
@@ -295,44 +312,50 @@ export default function ChatBox({ className }: { className?: string }) {
           </Avatar>
           <div className="flex flex-col mr-3">
             <span className="font-medium">Chat Name</span>
-            {/* <span className={cn(
+            <span className={cn(
               "text-sm",
               isConnected ? "text-green-500" : "text-red-500"
             )}>
               {isConnected ? 'Online' : 'Offline'}
-            </span> */}
+            </span>
           </div>
         </div>
       </div>
-      <div
+      {isLoading ? <div className="flex items-center justify-center h-full">
+        <LoadingSpinner />
+      </div> : (
+        <>
+        <div
         id="chat-box"
         className="flex flex-col overscroll-y-auto scroll-smooth gap-4 absolute p-3 top-20 right-0 left-0 bottom-18 rounded-lg overflow-y-scroll no-scrollbar neo-card-rev-lg m-3"
-      >
+        >
         <div
           ref={messageReloaderRef}
           className="w-full opacity-0 flex items-center justify-center gap-3"
-        >
+          >
           <Webhook color="#FA682D" className="reload-spiner" />
           <Webhook color="#CB7096" className="reload-spiner" />
           <Webhook color="#A662D6" className="reload-spiner" />
         </div>
-        {[...messages].reverse().map((message, index) => (
-          <ChatMessage
+        {[...new Map(messages.map(message => [message.id, message])).values()]
+          .reverse()
+          .map((message, index) => (
+            <ChatMessage
             key={message.id}
             message={message.content}
-            type={message.type}
-            containerWidth={boxWidth}
-            messageId={message.id}
-            onReply={handleReply}
-            onEdit={handleEdit}
-            replyTo={message.replyTo}
-            ref={
-              index === 2
+            type={message.sender.firstName === user.firstName && message.sender.lastName === user.lastName ? "self" : "other"}
+              containerWidth={boxWidth}
+              messageId={message.id}
+              // onReply={handleReply}
+              // onEdit={handleEdit}
+              // replyTo={message.replyTo}
+              ref={
+                index === 2
                 ? (thiredMessage as React.RefObject<HTMLDivElement>)
                 : null
-            }
-          />
-        ))}
+              }
+              />
+            ))}
       </div>
       <div className="absolute neo-card-rev bottom-3 bg-white min-h-[48px] max-h-[200px] right-3 left-3 rtl mx-auto flex items-center rounded-lg px-3">
         <Webhook id="roller" ref={rollerRef} />
@@ -340,8 +363,8 @@ export default function ChatBox({ className }: { className?: string }) {
           className="w-full bg-transparent outline-none resize-none py-3 mr-[8px] max-h-[200px] overflow-y-auto no-scrollbar"
           placeholder={
             replyingTo
-              ? "در حال پاسخ به پیام..."
-              : "پیام خود را اینجا بنویسید..."
+            ? "در حال پاسخ به پیام..."
+            : "پیام خود را اینجا بنویسید..."
           }
           value={newMessage}
           onChange={(e) => {
@@ -358,7 +381,7 @@ export default function ChatBox({ className }: { className?: string }) {
           }}
           style={{ minHeight: "48px" }}
           rows={1}
-        />
+          />
         <button
           title="=ارسال پیام"
           onClick={() =>
@@ -367,10 +390,12 @@ export default function ChatBox({ className }: { className?: string }) {
             } as React.KeyboardEvent<HTMLInputElement>)
           }
           className="p-2 hover:bg-gray-100 rounded-full transition-colors self-end"
-        >
+          >
           <Send className="text-gray-600 mb-0.5" size={24} />
         </button>
       </div>
+      </>
+      )}
     </div>
   );
 }
