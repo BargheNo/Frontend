@@ -27,7 +27,8 @@ export interface CorpRepairItem {
     };
     PanelID: number;
     Subject: string;
-    UrgencyLevel: string;
+    UrgencyLevel: "low" | "medium" | "high";
+    Status: "pending" | "completed";
 }
 
 export interface MaintenanceRecord {
