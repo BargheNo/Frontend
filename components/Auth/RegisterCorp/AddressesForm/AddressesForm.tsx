@@ -114,8 +114,8 @@ export default function AddressesForm({
 			endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
 		})
 			.then((res) => {
-				console.log("res", res);
-				setFieldValue("name", res.data.name);
+				console.log("res address", res);
+				setFieldValue("addresses", res.data.addresses);
 				setLoading(false);
 			})
 			.catch((err) => {
@@ -134,7 +134,7 @@ export default function AddressesForm({
 			<FieldArray name="addresses">
 				{({ push, remove }) => (
 					<>
-						{values.addresses?.map((id, index) => (
+						{values.addresses?.map((address, index) => (
 							<div key={index} className="flex gap-3 h-full">
 								<div
 									className="hover:cursor-pointer text-fire-orange font-bold text-xl neu-shadow w-8 text-center place-content-center rounded-md bg-[#F1F4FC] group"
@@ -151,25 +151,26 @@ export default function AddressesForm({
 								<div className="flex flex-col">
 									<div className="flex w-full h-full gap-4">
 										<Select
-											value={
-												values.addresses[index].province
-											}
-											name={`addresses.[${index}].province`}
+											value={String(
+												values.addresses[index]
+													.provinceID
+											)}
+											name={`addresses.[${index}].provinceID`}
 											onValueChange={(value) => {
-												setDisable(false);
-												// setAddresses((pre) => [...pre, value]);
-												// setAddresses((prev) =>
-												// 	prev.map((item) =>
-												// 		String(item) === String(id)
-												// 			? value
-												// 			: item
-												// 	)
+												// console.log(
+												// 	"value",
+												// 	value,
+												// 	":",
+												// 	values.addresses
+												// 	// address
 												// );
+												setDisable(false);
 												setFieldValue(
-													`addresses.[${index}].province`,
-													value
+													`addresses.[${index}].provinceID`,
+													Number(
+														value
+													)
 												);
-												// setFieldValue(`addresses.${id}.city`, "");
 
 												const provinceId =
 													findProvinceId(
@@ -184,10 +185,11 @@ export default function AddressesForm({
 											<SelectTrigger
 												value={
 													values.addresses[index]
-														.province
+														.provinceID
 												}
-												name={`addresses.[${index}].province`}
-												className={`${styles.CustomInput}`}
+												// name={`addresses.[${index}].province`}
+
+												className={`${styles.CustomInput} cursor-pointer`}
 											>
 												<SelectValue placeholder="استان" />
 											</SelectTrigger>
@@ -205,8 +207,9 @@ export default function AddressesForm({
 																<SelectItem
 																	key={index}
 																	value={
-																		province.name
+																		String(province.ID)
 																	}
+																	className="cursor-pointer"
 																>
 																	{
 																		province.name
@@ -223,7 +226,11 @@ export default function AddressesForm({
 											</SelectContent>
 										</Select>
 										<Select
-											name={`addresses.[${index}].city`}
+											name={`addresses.[${index}].cityID`}
+											value={String(
+												values.addresses[index]
+													.cityID
+											)}
 											disabled={disable}
 											onValueChange={(value) => {
 												const iD = FindCityid(
@@ -231,12 +238,17 @@ export default function AddressesForm({
 													value
 												);
 												setCityId(iD ?? 1);
-												// setFieldValue("city", value);
+												setFieldValue(
+													`addresses.[${index}].cityID`,
+													Number(
+														value
+													)
+												);
 											}}
 										>
 											<SelectTrigger
 												disabled={disable}
-												className={styles.CustomInput}
+												className={`${styles.CustomInput} cursor-pointer`}
 											>
 												<SelectValue placeholder="شهر" />
 											</SelectTrigger>
@@ -251,8 +263,9 @@ export default function AddressesForm({
 																<SelectItem
 																	key={index}
 																	value={
-																		city.name
+																		String(city.ID)
 																	}
+																	className="cursor-pointer"
 																>
 																	{Object.values(
 																		city.name
@@ -279,14 +292,12 @@ export default function AddressesForm({
 											// name="postalCode"
 											placeholder="کد پستی"
 											icon={Mailbox}
-											type="number"
 										/>
 										<CustomInput
 											name={`addresses.[${index}].houseNumber`}
 											// name="houseNumber"
 											placeholder="پلاک"
 											icon={Building}
-											type="number"
 										/>
 										<CustomInput
 											name={`addresses.[${index}].unit`}
@@ -305,8 +316,8 @@ export default function AddressesForm({
 								// addAddress();
 								if (values.addresses.length < 10) {
 									push({
-										province: "",
-										city: "",
+										provinceID: "",
+										cityID: "",
 										streetAddress: "",
 										postalCode: "",
 										houseNumber: "",

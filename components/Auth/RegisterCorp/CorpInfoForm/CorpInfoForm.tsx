@@ -67,6 +67,7 @@ export default function CorpInfoForm({
 }) {
 	const [loading, setLoading] = useState<boolean>(true);
 	const corpId = useSelector((state: RootState) => state.user.corpId);
+	const [signatories, setSignatories] = useState<Signatory[]>([]);
 	useEffect(() => {
 		setLoading(true);
 		getData({
@@ -151,7 +152,6 @@ const Signatories: React.FC<SignatoriesProps> = ({
 	// const removeSignatory = (id: string) => {
 	// 	setSignatories(signatories.filter((item) => item !== id));
 	// };
-
 	return (
 		<FieldArray name="signatories">
 			{({ push, remove }) => (

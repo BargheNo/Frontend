@@ -27,6 +27,7 @@ export default function ContactInfoForm({
 }) {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [contactTypes, setContactTypes] = useState<contactType[]>([]);
+	const [contactTypesList, setContactTypesList] = useState([]);
 	const corpId = useSelector((state: RootState) => state.user.corpId);
 	useEffect(() => {
 		getData({ endPoint: `${baseURL}/v1/contact/types` }).then((res) => {
@@ -45,7 +46,8 @@ export default function ContactInfoForm({
 						contactValue: item.value,
 					})
 				);
-				setFieldValue("contactInformation", transformed);
+				setContactTypesList(transformed);
+				// setFieldValue("contactInformation", transformed);
 				setLoading(false);
 			})
 			.catch((err) => {
@@ -53,6 +55,9 @@ export default function ContactInfoForm({
 				setLoading(false);
 			});
 	}, []);
+	useEffect(() => {
+		console.log(contactTypesList);
+	}, [contactTypesList]);
 	if (loading)
 		return (
 			<div className="h-fit">
@@ -60,93 +65,165 @@ export default function ContactInfoForm({
 			</div>
 		);
 	return (
-		<FieldArray name="contactInformation">
-			{({ push, remove }) => (
-				<>
-					{values.contactInformation?.map((contactInfo, index) => (
-						<div
-							key={index}
-							className="flex gap-3 items-end w-full"
+		<>
+			{contactTypesList.map((contactInfo, index) => (
+				<div key={index} className="flex gap-3 items-end w-full">
+					<div className="flex w-[95%] gap-3">
+						<Select
+							disabled={true}
+							value={String(contactInfo?.contactTypeID)}
+							name={`contactInformation.[${index}].contactTypeID`}
+							onValueChange={(value) => {
+								// console.log("contactInfo", contactInfo);
+								// Setbuilding(value);
+								setFieldValue(
+									`contactInformation.[${index}].contactTypeID`,
+									Number(value)
+								);
+							}}
 						>
-							<div className="flex w-[95%] gap-3">
-								<Select
-									value={String(
-										values.contactInformation[index]
-											.contactTypeID
+							<SelectTrigger
+								className={`${style.CustomInput} mt-[25px] min-h-[43px] cursor-pointer `}
+							>
+								<SelectValue placeholder="راه ارتباطی" />
+							</SelectTrigger>
+							<SelectContent className="vazir">
+								<SelectGroup>
+									<SelectLabel>راه ارتباطی</SelectLabel>
+									{contactTypes?.length > 0 ? (
+										contactTypes.map(
+											(contactType, index) => (
+												<SelectItem
+													key={index}
+													value={String(
+														contactType.id
+													)}
+												>
+													{contactType.name}
+												</SelectItem>
+											)
+										)
+									) : (
+										<p>هیچ راه ارتباطی یافت نشد</p>
 									)}
-									name={`contactInformation.[${index}].contactTypeID`}
-									onValueChange={(value) => {
-										console.log("contactInfo", contactInfo);
-										// Setbuilding(value);
-										setFieldValue(
-											`contactInformation.[${index}].contactTypeID`,
-											Number(value)
-										);
-									}}
-								>
-									<SelectTrigger
-										className={`${style.CustomInput} mt-[25px] min-h-[43px] cursor-pointer `}
-									>
-										<SelectValue placeholder="راه ارتباطی" />
-									</SelectTrigger>
-									<SelectContent className="vazir">
-										<SelectGroup>
-											<SelectLabel>
-												راه ارتباطی
-											</SelectLabel>
-											{contactTypes?.length > 0 ? (
-												contactTypes.map(
-													(contactType, index) => (
-														<SelectItem
-															key={index}
-															value={String(
-																contactType.id
-															)}
-														>
-															{contactType.name}
-														</SelectItem>
-													)
-												)
-											) : (
-												<p>
-													هیچ راه ارتباطی یافت نشد
-												</p>
-											)}
-										</SelectGroup>
-									</SelectContent>
-								</Select>
-								<CustomInput
-									name={`contactInformation.[${index}].contactValue`}
-									placeholder="اطلاعات تماس"
-									icon={Phone}
-								/>
-							</div>
-							<XIcon
-								className="text-fire-orange rounded-sm hover:cursor-pointer flex mb-3 w-fit"
-								onClick={() => {
-									remove(index);
-									deleteData({
-										// endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/${contactInfo.contactTypeID}`,
-										endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/0`,
-									});
-								}}
-							/>
-						</div>
-					))}
-
-					<button
-						className="place-self-start cta-neu-button w-1/3 mt-8"
+								</SelectGroup>
+							</SelectContent>
+						</Select>
+						<CustomInput
+							name="sth"
+							value={String(contactInfo?.contactValue)}
+							disabled={true}
+							icon={Phone}
+						/>
+					</div>
+					<XIcon
+						className="text-fire-orange rounded-sm hover:cursor-pointer flex mb-3 w-fit"
 						onClick={() => {
-							push({
-								contactTypeID: 0,
-								contactValue: "",
+							deleteData({
+								endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/${contactInfo.contactTypeID}`,
+								// endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/0`,
 							});
 						}}
-					>
-						افزودن اطلاعات تماس
-					</button>
-				</>
-			)}
-		</FieldArray>
+					/>
+				</div>
+			))}
+			<FieldArray name="contactInformation">
+				{({ push, remove }) => (
+					<>
+						{values.contactInformation?.map(
+							(contactInfo, index) => (
+								<div
+									key={index}
+									className="flex gap-3 items-end w-full"
+								>
+									<div className="flex w-[95%] gap-3">
+										<Select
+											value={String(
+												values.contactInformation[index]
+													.contactTypeID
+											)}
+											name={`contactInformation.[${index}].contactTypeID`}
+											onValueChange={(value) => {
+												// console.log("contactInfo", contactInfo);
+												// Setbuilding(value);
+												setFieldValue(
+													`contactInformation.[${index}].contactTypeID`,
+													Number(value)
+												);
+											}}
+										>
+											<SelectTrigger
+												className={`${style.CustomInput} mt-[25px] min-h-[43px] cursor-pointer `}
+											>
+												<SelectValue placeholder="راه ارتباطی" />
+											</SelectTrigger>
+											<SelectContent className="vazir">
+												<SelectGroup>
+													<SelectLabel>
+														راه ارتباطی
+													</SelectLabel>
+													{contactTypes?.length >
+													0 ? (
+														contactTypes.map(
+															(
+																contactType,
+																index
+															) => (
+																<SelectItem
+																	key={index}
+																	value={String(
+																		contactType.id
+																	)}
+																>
+																	{
+																		contactType.name
+																	}
+																</SelectItem>
+															)
+														)
+													) : (
+														<p>
+															هیچ راه ارتباطی یافت
+															نشد
+														</p>
+													)}
+												</SelectGroup>
+											</SelectContent>
+										</Select>
+										<CustomInput
+											name={`contactInformation.[${index}].contactValue`}
+											placeholder="اطلاعات تماس"
+											icon={Phone}
+										/>
+									</div>
+									<XIcon
+										className="text-fire-orange rounded-sm hover:cursor-pointer flex mb-3 w-fit"
+										onClick={() => {
+											remove(index);
+											deleteData({
+												endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/${contactInfo.contactTypeID}`,
+												// endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/0`,
+											});
+										}}
+									/>
+								</div>
+							)
+						)}
+
+						<button
+							className="place-self-start cta-neu-button w-1/3 mt-8"
+							onClick={() => {
+								push({
+									contactTypeID: 0,
+									contactValue: "",
+								});
+							}}
+						>
+							افزودن اطلاعات تماس
+						</button>
+					</>
+				)}
+			</FieldArray>
+		</>
 	);
 }

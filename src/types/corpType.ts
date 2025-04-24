@@ -6,8 +6,8 @@ interface Signatory {
 }
 
 interface Address {
-	province: string;
-	city: string;
+	provinceID: number;
+	cityID: number;
 	streetAddress: string;
 	postalCode: string;
 	houseNumber: string;

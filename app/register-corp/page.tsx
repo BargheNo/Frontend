@@ -62,8 +62,8 @@ const validationSchemaForm = Yup.object({
 	),
 	addresses: Yup.array().of(
 		Yup.object().shape({
-			province: Yup.string().required("این فیلد الزامی است"),
-			city: Yup.string().required("این فیلد الزامی است"),
+			provinceID: Yup.number().required("این فیلد الزامی است"),
+			cityID: Yup.number().required("این فیلد الزامی است"),
 			streetAddress: Yup.string().required("این فیلد الزامی است"),
 			postalCode: Yup.string()
 				.required("کد پستی الزامی است")
@@ -88,35 +88,6 @@ export default function Page() {
 	const dispatch = useDispatch();
 	const router = useRouter();
 	const [step, setStep] = useState<number>(0);
-	// 	provinceService
-	// 		.GetProvinces()
-	// 		.then((res) => {
-	// 			Setprovinces(res.data.data);
-	// 		})
-	// 		.catch((err) => {
-	// 			console.log(err.message);
-	// 		});
-	// };
-	// const UpdateCityList = (provinceId: number) => {
-	// 	provinceService
-	// 		.GetCities(provinceId)
-	// 		.then((res) => setCities(res.data.data))
-	// 		.catch((err) => console.log(err.message));
-	// };
-	// const Findprovinceid = (provinces: Province[], name: string) => {
-	// 	const province = provinces.find((p) => p.name === name);
-	// 	return province?.ID ?? null;
-	// };
-	// const FindCityid = (cities: City[], name: string) => {
-	// 	const city = cities.find((p) => p.name === name);
-	// 	return city?.ID ?? null;
-	// };
-	// useEffect(() => {
-	// 	UpdateCityList(provinceid ?? 1);
-	// }, [provinceId]);
-	// useEffect(() => {
-	// 	Getprovinces();
-	// }, []);
 	const corp = useSelector((state: RootState) => state).corp;
 	const user = useSelector((state: RootState) => state).user;
 	const accessToken = useSelector(
@@ -228,19 +199,9 @@ export default function Page() {
 					postData({
 						endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts`,
 						data: formData,
-						// data: {
-						// 	contactInformation: values.contactInformation
-						// },
 					})
 						.then((res) => {
 							console.log(res);
-							// setCorpId(res.data.id);
-							// dispatch(
-							// 	setUser({
-							// 		...user,
-							// 		corpId: res.data.id,
-							// 	})
-							// );
 							toast(res?.message);
 							if (step < steps.length - 1) {
 								setStep(step + 1);
@@ -264,7 +225,7 @@ export default function Page() {
 					}
 					console.log("formData in step 2", formData);
 					postData({
-						endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts`,
+						endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/address`,
 						data: formData,
 						// data: {
 						// 	contactInformation: values.contactInformation
