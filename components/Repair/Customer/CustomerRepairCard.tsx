@@ -5,6 +5,7 @@ import IconWithBackground from "@/components/IconWithBackground/IconWithBackgrou
 import { Drill, CalendarCheck, ChevronDown, TextSearch } from "lucide-react";
 
 interface RepairHistoryItem {
+    id: string;
     title: string;
     panelName: string;
     panelId: string;

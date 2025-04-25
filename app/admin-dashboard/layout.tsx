@@ -3,7 +3,7 @@
 import PanelAside from '@/components/Panel/PanelAside/PanelAside';
 import { NavItem } from '@/src/types/PanelAsideTypes';
 import '@/styles/global.css';
-import { Users, Gauge, Package, DollarSign, Headset, BookOpen, Megaphone } from "lucide-react";
+import { Users, Gauge, Package, DollarSign, Headset, BookOpen, Megaphone, AlertCircle } from "lucide-react";
   
 export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
     const navItems = [
@@ -14,6 +14,7 @@ export default function Layout({ children }: Readonly<{ children: React.ReactNod
         { name: "پشتیبانی", path: "/admin-dashboard/support", icon: <Headset /> },
         { name: "بلاگ‌ها", path: "/admin-dashboard/blogs", icon: <BookOpen /> },
         { name: "اخبار و اطلاعیه‌ها", path: "/admin-dashboard/news", icon: <Megaphone /> },
+        { name: "گزارشات", path: "/admin-dashboard/reports", icon: <AlertCircle /> },
     ];
   return (
     <PanelAside navItems={navItems as NavItem[]} mode="admin" >

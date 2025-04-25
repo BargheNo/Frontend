@@ -9,6 +9,7 @@ import CustomerRepairRequest from '@/components/Repair/Customer/CustomerRepairRe
 import RepairDetailsDialog from '@/components/Repair/Customer/CustomerRepairDialog';
 
 interface RepairHistoryItem {
+	id : string;
 	title: string;
 	panelName: string;
 	panelId: string;
@@ -21,6 +22,7 @@ interface RepairHistoryItem {
 // Define the repair items with the new data structure
 const repairItems: RepairHistoryItem[] = [
 	{
+		id : "1",
 		title: "تمیزکاری پنل قزوین",
 		panelName: "پنل قزوین",
 		panelId: "27",
@@ -30,6 +32,7 @@ const repairItems: RepairHistoryItem[] = [
 		status: "done",
 	},
 	{
+		id : "2",
 		title: "تعمیرات پنل تهران",
 		panelName: "پنل تهران",
 		panelId: "28",
@@ -39,6 +42,7 @@ const repairItems: RepairHistoryItem[] = [
 		status: "in_progress",
 	},
 	{
+		id : "3",
 		title: "بازرسی فنی پنل اصفهان",
 		panelName: "پنل اصفهان",
 		panelId: "29",
