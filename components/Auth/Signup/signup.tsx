@@ -8,14 +8,14 @@ import styles from "./signup.module.css";
 import { Building2, IdCard } from "lucide-react";
 
 import {
-  MoveLeft,
-  Smartphone,
-  Lock,
-  User,
-  Unlock,
-  Check,
-  ArrowLeft,
-  ArrowRight,
+	MoveLeft,
+	Smartphone,
+	Lock,
+	User,
+	Unlock,
+	Check,
+	ArrowLeft,
+	ArrowRight,
 } from "lucide-react";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
@@ -25,58 +25,58 @@ import { toast } from "sonner";
 // import useClientCheck from "@/src/hooks/useClientCheck";
 
 function Signup() {
-  const validationSchema = Yup.object({
-    firstname: Yup.string().required("نام الزامی است."),
-    lastname: Yup.string().required("نام خانوادگی الزامی است."),
-    phonenumber: Yup.string()
-      .matches(/^(9\d{9})$/, ".شماره تلفن وارد شده اشتباه است")
-      .required(".شماره تلفن الزامی است"),
-    password: Yup.string()
-      .min(8, "رمز عبور باید حداقل 8 کاراکتر باشد.")
-      .matches(/[a-z]/, ".رمز عبور باید شامل حداقل یک حرف کوچک باشد")
-      .matches(/[A-Z]/, ".رمز عبور باید شامل حداقل یک حرف بزرگ باشد")
-      .matches(/\d/, ".رمز عبور باید شامل حداقل یک عدد باشد")
-      .matches(/[\W_]/, ".رمز عبور باید شامل حداقل یک نماد باشد")
-      .required(".رمز عبور الزامی است"),
-    confirmpassword: Yup.string()
-      .oneOf(
-        [Yup.ref("password")],
-        ".تأیید رمز عبور باید با رمز عبور مطابقت داشته باشد"
-      )
-      .required(".تأیید رمز عبور الزامی است"),
-  });
+	const validationSchema = Yup.object({
+		firstname: Yup.string().required("نام الزامی است."),
+		lastname: Yup.string().required("نام خانوادگی الزامی است."),
+		phonenumber: Yup.string()
+			.matches(/^(9\d{9})$/, ".شماره تلفن وارد شده اشتباه است")
+			.required(".شماره تلفن الزامی است"),
+		password: Yup.string()
+			.min(8, "رمز عبور باید حداقل 8 کاراکتر باشد.")
+			.matches(/[a-z]/, ".رمز عبور باید شامل حداقل یک حرف کوچک باشد")
+			.matches(/[A-Z]/, ".رمز عبور باید شامل حداقل یک حرف بزرگ باشد")
+			.matches(/\d/, ".رمز عبور باید شامل حداقل یک عدد باشد")
+			.matches(/[\W_]/, ".رمز عبور باید شامل حداقل یک نماد باشد")
+			.required(".رمز عبور الزامی است"),
+		confirmpassword: Yup.string()
+			.oneOf(
+				[Yup.ref("password")],
+				".تأیید رمز عبور باید با رمز عبور مطابقت داشته باشد"
+			)
+			.required(".تأیید رمز عبور الزامی است"),
+	});
 
-  const validationCorpSchema = Yup.object({
-    corpname: Yup.string().required(".نام شرکت الزامی است"),
-    cin: Yup.string()
-      .matches(/^(\d{11})$/, ".شناسه ملی وارد شده اشتباه است")
-      .required(".شناسه ملی الزامی است"),
-    password: Yup.string()
-      .min(8, "رمز عبور باید حداقل 8 کاراکتر باشد.")
-      .matches(/[a-z]/, ".رمز عبور باید شامل حداقل یک حرف کوچک باشد")
-      .matches(/[A-Z]/, ".رمز عبور باید شامل حداقل یک حرف بزرگ باشد")
-      .matches(/\d/, ".رمز عبور باید شامل حداقل یک عدد باشد")
-      .matches(/[\W_]/, ".رمز عبور باید شامل حداقل یک نماد باشد")
-      .required(".رمز عبور الزامی است"),
-    confirmpassword: Yup.string()
-      .oneOf(
-        [Yup.ref("password")],
-        ".تأیید رمز عبور باید با رمز عبور مطابقت داشته باشد"
-      )
-      .required(".تأیید رمز عبور الزامی است"),
-  });
+	const validationCorpSchema = Yup.object({
+		name: Yup.string().required(".نام شرکت الزامی است"),
+		cin: Yup.string()
+			.matches(/^(\d{11})$/, ".شناسه ملی وارد شده اشتباه است")
+			.required(".شناسه ملی الزامی است"),
+		password: Yup.string()
+			.min(8, "رمز عبور باید حداقل 8 کاراکتر باشد.")
+			.matches(/[a-z]/, ".رمز عبور باید شامل حداقل یک حرف کوچک باشد")
+			.matches(/[A-Z]/, ".رمز عبور باید شامل حداقل یک حرف بزرگ باشد")
+			.matches(/\d/, ".رمز عبور باید شامل حداقل یک عدد باشد")
+			.matches(/[\W_]/, ".رمز عبور باید شامل حداقل یک نماد باشد")
+			.required(".رمز عبور الزامی است"),
+		confirmpassword: Yup.string()
+			.oneOf(
+				[Yup.ref("password")],
+				".تأیید رمز عبور باید با رمز عبور مطابقت داشته باشد"
+			)
+			.required(".تأیید رمز عبور الزامی است"),
+	});
 
-  const [check, Setcheck] = useState(false);
-  const [hidepass, Sethidepass] = useState(true);
-  const [open, setOpen] = useState(false);
-  const [hideconfpass, Sethideconfpass] = useState(true);
-  const [otpCode, setOtpCode] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [customer, setCustomer] = useState<boolean>(true);
-  const route = useRouter();
-  const handleOtpChange = (otp: string) => {
-    setOtpCode(otp);
-  };
+	const [check, Setcheck] = useState(false);
+	const [hidepass, Sethidepass] = useState(true);
+	const [open, setOpen] = useState(false);
+	const [hideconfpass, Sethideconfpass] = useState(true);
+	const [otpCode, setOtpCode] = useState<string>("");
+	const [phone, setPhone] = useState<string>("");
+	const [customer, setCustomer] = useState<boolean>(true);
+	const route = useRouter();
+	const handleOtpChange = (otp: string) => {
+		setOtpCode(otp);
+	};
 
 	const handelRegister = (
 		name: string,
@@ -97,24 +97,33 @@ function Signup() {
 			})
 			.then((res) => {
 				setOpen(true);
-				toast(res?.data?.message);
+				toast(<div id="sonner-toast">{res?.data?.message}</div>);
 			})
 			.catch((err) => {
 				toast(
-					err?.response?.data?.messages?.phone["alreadyRegistered"]
+					<div id="sonner-toast">
+						{
+							err?.response?.data?.messages?.phone[
+								"alreadyRegistered"
+							]
+						}
+					</div>
 				);
+				// toast(
+				// 	err?.response?.data?.messages?.phone["alreadyRegistered"]
+				// );
 			});
 	};
 	// const handleCorpRegister = (
-	// 	corpname: string,
+	// 	name: string,
 	// 	cin: string,
 	// 	password: string,
 	// 	isAcceptTerms: boolean
 	// ) => {
-	//     console.log(`Form: ${corpname}, ${cin}, ${password}, ${isAcceptTerms}`)
+	//     console.log(`Form: ${name}, ${cin}, ${password}, ${isAcceptTerms}`)
 	// 	registerService
 	// 		.createCorp({
-	// 			name: corpname,
+	// 			name: name,
 	// 			cin: String(cin),
 	// 			password: password,
 	// 			acceptedTerms: isAcceptTerms
@@ -130,15 +139,17 @@ function Signup() {
 	// 		});
 	// };
 
-  const handleVerification = (phone: string, otp: string) => {
-    registerService
-      .phonenumberVerification({ phone: phone, otp: otp })
-      .then((res) => {
-        route.push("/login");
-        toast(res.data.message);
-      })
-      .catch((err) => toast(err.response.data.messages.otp["invalidOTP"]));
-  };
+	const handleVerification = (phone: string, otp: string) => {
+		registerService
+			.phonenumberVerification({ phone: phone, otp: otp })
+			.then((res) => {
+				route.push("/login");
+				toast(res.data.message);
+			})
+			.catch((err) =>
+				toast(err.response.data.messages.otp["invalidOTP"])
+			);
+	};
 
 	useEffect(() => {
 		if (otpCode.length === 6) {
@@ -338,7 +349,7 @@ function Signup() {
 													}
 												>
 													<MoveLeft></MoveLeft>
-													<p>ثبت نام</p>
+													<p id="signup">ثبت نام</p>
 												</div>
 											</SignupButton>
 										</div>
@@ -351,6 +362,7 @@ function Signup() {
 										></PhoneVerification>
 										<div className={styles.loginText}>
 											<a
+												data-cy="navigate-login"
 												href="./login"
 												className={styles.link}
 											>
@@ -367,7 +379,7 @@ function Signup() {
 								<h1 className={styles.topic}>ثبت نام شرکت</h1>
 								<Formik
 									initialValues={{
-										corpname: "",
+										name: "",
 										cin: "",
 										password: "",
 										confirmpassword: "",
@@ -375,7 +387,7 @@ function Signup() {
 									validationSchema={validationCorpSchema}
 									onSubmit={(values) => {
 										handleCorpRegister(
-											values.corpname,
+											values.name,
 											values.cin,
 											values.password,
 											check
@@ -386,7 +398,7 @@ function Signup() {
 										<div className="w-9/10">
 										<CustomInput
 											placeholder="نام شرکت"
-											name="corpname"
+											name="name"
 											icon={Building2}
 											type="text"
 										>
