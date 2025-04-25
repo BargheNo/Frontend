@@ -131,11 +131,11 @@ export default function ChatBox({ className, mode = "user" }: { className?: stri
         <>
           <div
             id="chat-box"
-            className="flex flex-col overscroll-y-auto scroll-smooth gap-4 absolute p-3 top-20 right-0 left-0 bottom-18 rounded-lg overflow-y-scroll no-scrollbar neo-card-rev-lg m-3"
+            className="flex flex-col overscroll-y-auto scroll-smooth overflow-x-none gap-4 absolute p-3 top-20 right-0 left-0 bottom-18 rounded-lg overflow-y-scroll no-scrollbar neo-card-rev-lg m-3"
           >
             <div
               ref={messageReloaderRef}
-              className="w-full opacity-0 flex items-center justify-center gap-3"
+              className="w-full opacity-0 flex items-center justify-start gap-3"
             >
               <Webhook color="#FA682D" className="reload-spiner" />
               <Webhook color="#CB7096" className="reload-spiner" />
@@ -150,13 +150,18 @@ export default function ChatBox({ className, mode = "user" }: { className?: stri
                   type={message.sender.firstName === user.firstName && message.sender.lastName === user.lastName ? "self" : "other"}
                   containerWidth={boxWidth}
                   messageId={message.id}
+                  srcpic={mode === "user" ? selectedChatRoom?.corporation?.logo : selectedChatRoom?.customer?.profilePic}
+                  decpic={mode === "user" ? selectedChatRoom?.customer?.profilePic : selectedChatRoom?.corporation?.logo}
+                  srcName={mode === "user" ? selectedChatRoom?.corporation?.name : selectedChatRoom?.customer?.firstName + " " + selectedChatRoom?.customer?.lastName}
+                  decName={mode === "user" ? selectedChatRoom?.customer?.firstName + " " + selectedChatRoom?.customer?.lastName : selectedChatRoom?.corporation?.name}
+                  time={new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   // log={index}
                   ref={index === 2 ? thirdMessage : null}
                 />
               ))}
           </div>
-          <div className="absolute neo-card-rev bottom-3 bg-white min-h-[48px] max-h-[200px] right-3 left-3 rtl mx-auto flex items-center rounded-lg px-3">
-            <Webhook id="roller" ref={rollerRef} />
+          <div className="absolute neo-card-rev bottom-5 bg-white min-h-[48px] max-h-[200px] right-3 left-3 rtl mx-auto flex items-center rounded-lg px-3">
+            <Webhook id="roller" ref={rollerRef} className="self-end mb-3"/>
             <textarea
               className="w-full bg-transparent outline-none resize-none py-3 mr-[8px] max-h-[200px] overflow-y-auto no-scrollbar"
               placeholder={

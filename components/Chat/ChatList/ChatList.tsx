@@ -42,7 +42,7 @@ export default function ChatList({
       { chatRooms.length > 0 ? chatRooms.map((chatRoom: ChatRoom) => (
         <ChatItem containerWidth={conditionWidth} key={chatRoom.roomID} chatRoom={chatRoom} onClick={()=>{
           dispatch(setSelectedChatRoom(chatRoom))
-        }} />
+        }} mode={mode} />
       )) : <div className="text-center text-gray-500">No chat rooms found</div>}
     </div>
   );

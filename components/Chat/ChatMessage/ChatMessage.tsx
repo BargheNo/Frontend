@@ -20,6 +20,11 @@ interface ChatMessageProps {
   // onEdit: (messageId: string, newContent: string) => void;
   // replyTo?: string;
   ref?: any;
+  srcpic?: string;
+  decpic?: string;
+  time?: string;
+  srcName: string;
+  decName: string;
 }
 
 export default function ChatMessage({
@@ -28,6 +33,11 @@ export default function ChatMessage({
   messageId,
   log,
   ref,
+  srcpic,
+  decpic,
+  srcName,
+  decName,
+  time,
 }: ChatMessageProps) {
   const [messageWidth, setMessageWidth] = useState<number>(0);
   const [isEditing, setIsEditing] = useState(false);
@@ -86,11 +96,11 @@ export default function ChatMessage({
       {log && <div className="text-xs text-gray-500">{log}</div>}
       <Avatar className="h-12 w-12">
         <AvatarImage
-          src="/images/Default/jinks.jpg"
+          src={srcpic}
           alt="Profile"
           className="object-cover"
         />
-        <AvatarFallback>ER</AvatarFallback>
+        <AvatarFallback>{srcName?.charAt(0) + srcName?.charAt(1)}</AvatarFallback>
       </Avatar>
       <ContextMenu>
         <ContextMenuTrigger>
@@ -104,6 +114,7 @@ export default function ChatMessage({
               </div>
             )} */}
             {message}
+            {time && <div className="text-xs text-gray-400 mt-1">{time}</div>}
           </div>
         </ContextMenuTrigger>
         <ContextMenuContent className="w-48">
@@ -111,10 +122,10 @@ export default function ChatMessage({
             <Reply className="h-4 w-4" />
             Reply
           </ContextMenuItem> */}
-          <ContextMenuItem className="flex items-center gap-2 hover:bg-gray-100 focus:bg-gray-100 cursor-pointer">
+          {/* <ContextMenuItem className="flex items-center gap-2 hover:bg-gray-100 focus:bg-gray-100 cursor-pointer">
             <Share2 className="h-4 w-4" />
             Share
-          </ContextMenuItem>
+          </ContextMenuItem> */}
           <ContextMenuItem
             className="flex items-center gap-2 hover:bg-gray-100 focus:bg-gray-100 cursor-pointer"
             onClick={handleCopy}
@@ -134,11 +145,11 @@ export default function ChatMessage({
       {log && <div className="text-xs text-gray-500">{log}</div>}
       <Avatar className="h-12 w-12">
         <AvatarImage
-          src="/images/Default/jinks.jpg"
+          src={decpic}
           alt="Profile"
           className="object-cover"
         />
-        <AvatarFallback>ER</AvatarFallback>
+        <AvatarFallback>{decName?.charAt(0) + decName?.charAt(1)}</AvatarFallback>
       </Avatar>
       <ContextMenu>
         <ContextMenuTrigger>
@@ -161,7 +172,10 @@ export default function ChatMessage({
                 className="w-full bg-transparent outline-none"
               />
             ) : (
-              message
+              <>
+                {message}
+                {time && <div className="text-xs text-gray-400 mt-1">{time}</div>}
+              </>
             )}
           </div>
         </ContextMenuTrigger>

@@ -29,12 +29,14 @@ export const useChatScroll = (
             gsap.to(messageReloaderRef.current, {
               opacity: 1,
               height: "40px",
+              width: "100%",
               duration: 0.7,
               ease: "power1.out",
             });
             gsap.to(messageReloaderRef.current, {
               opacity: 0,
               height: "0px",
+              // width: "0px",
               duration: 0.7,
               ease: "power1.out",
               delay: 0.7,
