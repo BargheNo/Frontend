@@ -108,15 +108,17 @@ const validationSchemaForm = Yup.object({
 		vatTaxpayerCertificate: Yup.mixed()
 			.required("استعلام مودیان مالیات بر ارزش افزوده الزامی است")
 			.test("fileType", "فرمت فایل معتبر نیست", (value) => {
+				const file = value as File;
 				return (
-					value && ["image/jpeg", "image/png"].includes(value.type)
+					value && ["image/jpeg", "image/png"].includes(file.type)
 				);
 			}),
 		officialNewspaperAD: Yup.mixed()
 			.required("تصویر آگهی روزنامه رسمی آخرین تغییرات الزامی است")
 			.test("fileType", "فرمت فایل معتبر نیست", (value) => {
+				const file = value as File;
 				return (
-					value && ["image/jpeg", "image/png"].includes(value.type)
+					value && ["image/jpeg", "image/png"].includes(file.type)
 				);
 			}),
 	}),
@@ -353,7 +355,7 @@ export default function Page() {
 		}
 		resetFormValues(setFieldValue);
 	};
-	const checkNationalCardNumber = async (formData) => {
+	const checkNationalCardNumber = async (formData: corpData) => {
 		formData["signatories"]?.forEach((signatory) => {
 			if (signatory.nationalCardNumber?.length !== 10) {
 				toast("فرمت کد ملی صحیح نمی‌باشد");
@@ -362,7 +364,7 @@ export default function Page() {
 		});
 		return true;
 	};
-	const checkContactInformationOk = async (formData) => {
+	const checkContactInformationOk = async (formData: corpData) => {
 		formData["contactInformation"]?.forEach((contact) => {
 			console.log(contact.contactValue);
 			if (!contact.contactValue) {

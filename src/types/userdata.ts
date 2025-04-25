@@ -4,5 +4,5 @@ interface userData {
 	accessToken: string;
 	refreshToken: string;
 	isAuth: boolean;
-	corpId: number;
+	corpId?: number;
 }

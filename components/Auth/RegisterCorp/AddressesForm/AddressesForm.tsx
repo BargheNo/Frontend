@@ -69,7 +69,7 @@ export default function AddressesForm({
 	values: corpData;
 }) {
 	// const dispatch = useDispatch();
-	const [addresses, setAddresses] = useState();
+	const [addresses, setAddresses] = useState<Address[]>();
 	const [cities, setCities] = useState<City[]>([]);
 	const [provinces, setProvinces] = useState<Province[]>([]);
 	const [provinceId, setProvinceId] = useState<number>();
@@ -162,15 +162,13 @@ export default function AddressesForm({
 						</div>
 						<div className="flex flex-col w-full">
 							<div className="flex w-full h-full gap-4">
-								<Select
-									value={address.province}
+								{/* <Select
+									value={String(address.province)}
 									name={`addresses.[${index}].provinceID`}
 								>
 									<SelectTrigger
-										disabled
+										disabled={true}
 										value={address.province}
-										// name={`addresses.[${index}].province`}
-
 										className={`${styles.CustomInput} cursor-pointer`}
 									>
 										<SelectValue placeholder="استان" />
@@ -199,21 +197,12 @@ export default function AddressesForm({
 									</SelectContent>
 								</Select>
 								<Select
+									value={String(address.city)}
 									name={`addresses.[${index}].cityID`}
-									// value={String(values.addresses[index].cityID)}
-									value={address.city}
-									disabled={disable}
-									onValueChange={(value) => {
-										const iD = FindCityid(cities, value);
-										setCityId(iD ?? 1);
-										setFieldValue(
-											`addresses.[${index}].cityID`,
-											Number(value)
-										);
-									}}
 								>
 									<SelectTrigger
 										disabled={disable}
+										value={address.city}
 										className={`${styles.CustomInput} cursor-pointer`}
 									>
 										<SelectValue placeholder="شهر" />
@@ -230,9 +219,7 @@ export default function AddressesForm({
 														)}
 														className="cursor-pointer"
 													>
-														{Object.values(
-															city.name
-														)}
+														{city.name}
 													</SelectItem>
 												))
 											) : (
@@ -240,7 +227,17 @@ export default function AddressesForm({
 											)}
 										</SelectGroup>
 									</SelectContent>
-								</Select>
+								</Select> */}
+								<CustomInput
+									name={`addresses.[${index}].province`}
+									value={address.province}
+									disabled
+									/>
+								<CustomInput
+									name={`addresses.[${index}].city`}
+									value={address.city}
+									disabled
+								/>
 							</div>
 							<CustomTextArea
 								name={`addresses.[${index}].streetAddress`}
@@ -280,6 +277,7 @@ export default function AddressesForm({
 					</div>
 				))}
 			</div>
+			{/*  ------------------------------------------------------------------------------------------ */}
 			<Form className="flex flex-col gap-8">
 				<FieldArray name="addresses">
 					{({ push, remove }) => (
@@ -294,7 +292,7 @@ export default function AddressesForm({
 										}}
 									>
 										<span className="absolute group-hover:opacity-0 transition-opacity duration-300 translate-x-[6px] -translate-y-[10px]">
-											{addresses.length + index + 1}
+											{(addresses || []).length + index + 1}
 										</span>
 										<XIcon className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-x-[3px] -translate-y-[10px]" />
 									</div>
@@ -302,7 +300,7 @@ export default function AddressesForm({
 										<div className="flex w-full h-full gap-4">
 											<Select
 												value={String(
-													values.addresses[index]
+													values.addresses?.[index]
 														.provinceID
 												)}
 												name={`addresses.[${index}].provinceID`}
@@ -323,9 +321,11 @@ export default function AddressesForm({
 													const province =
 														provinces?.find(
 															(p) =>
-																p.ID === Number(value)
+																p.ID ===
+																Number(value)
 														);
-													const provinceId = province?.ID ?? 1;
+													const provinceId =
+														province?.ID ?? 1;
 													// return province?.ID ?? null;
 													// const provinceId =
 													// 	findProvinceId(
@@ -393,7 +393,7 @@ export default function AddressesForm({
 											<Select
 												name={`addresses.[${index}].cityID`}
 												value={String(
-													values.addresses[index]
+													values.addresses?.[index]
 														.cityID
 												)}
 												disabled={disable}
@@ -485,7 +485,7 @@ export default function AddressesForm({
 								className={`place-self-start cta-neu-button w-1/3 mt-4`}
 								onClick={() => {
 									// addAddress();
-									if (values.addresses.length < 10) {
+									if ((values.addresses || []).length < 10) {
 										push({
 											provinceID: "",
 											cityID: "",

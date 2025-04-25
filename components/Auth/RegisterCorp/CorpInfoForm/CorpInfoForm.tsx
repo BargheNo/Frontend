@@ -159,7 +159,7 @@ const Signatories: React.FC<SignatoriesProps> = ({
 		<FieldArray name="signatories">
 			{({ push, remove }) => (
 				<>
-					{values?.signatories.map((id, index) => (
+					{values?.signatories?.map((id, index) => (
 						<div
 							key={index}
 							className="flex gap-3 items-end w-full"

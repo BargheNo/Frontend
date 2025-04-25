@@ -67,12 +67,12 @@ export default function ContactInfoForm({
 		);
 	return (
 		<>
-			{contactTypesList.map((contactInfo, index) => (
+			{contactTypesList.map((contactInfo: contactType, index) => (
 				<div key={index} className="flex gap-3 items-end w-full">
 					<div className="flex w-[95%] gap-3">
 						<Select
 							disabled={true}
-							value={String(contactInfo?.contactType.id)}
+							value={String(contactInfo?.contactType?.id)}
 							name={`contactInformation.[${index}].contactTypeID`}
 							onValueChange={(value) => {
 								// console.log("contactInfo", contactInfo);
@@ -121,16 +121,16 @@ export default function ContactInfoForm({
 						className="text-fire-orange rounded-sm hover:cursor-pointer flex mb-3 w-fit"
 						onClick={() => {
 							deleteData({
-								endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/${contactInfo.ID}`,
+								endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/${contactInfo?.ID}`,
 								// endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/0`,
 							}).then((res) => {
 								toast(res.message);
-								setContactTypesList(
-									contactTypesList.filter(
-										(contact) =>
-											contact.ID !== contactInfo.ID
-									)
-								);
+								// setContactTypesList(
+								// 	contactTypesList.filter(
+								// 		(contact) =>
+								// 			contact.ID !== contactInfo.ID
+								// 	)
+								// );
 							});
 						}}
 					/>
