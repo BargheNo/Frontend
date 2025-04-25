@@ -1,4 +1,4 @@
-interface RootState {
+export interface RootState {
 	user: userData;
 	corp: corpData;
 }
