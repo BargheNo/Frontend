@@ -1,4 +1,5 @@
 import CorpMessageCard from "@/components/Messages/corp-message-card";
+import CorpMessagesPagination from "@/components/Messages/corp-message-pagination";
 import React from "react";
 
 export default function page() {
@@ -9,7 +10,8 @@ export default function page() {
 
 	return (
 		<>
-		<CorpMessageCard from={from} date={date} topic={topic} body={body}></CorpMessageCard>
+		{/* <CorpMessageCard from={from} date={date} topic={topic} body={body}></CorpMessageCard> */}
+		<CorpMessagesPagination></CorpMessagesPagination>
 		</>
 	)
 }
