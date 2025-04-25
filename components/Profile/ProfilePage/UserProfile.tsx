@@ -11,7 +11,7 @@ export interface ProfileData {
   phone: string;
   email: string;
   nationalCode: string;
-  profilePic: string;
+  profilePic: File | string | null;
   status: string;
 }
 
@@ -48,7 +48,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
     phone: '0' + profileData?.phone?.slice(3, 13) || "",    // TODO: WHILE SUBMITTING THE FORM, THE FORMAT OF NUMBERS SHOULD BE CHANGED TO WHAT BACKECND ACTUALLY NEEDS.
     email: profileData?.email || "",
     nationalCode: profileData?.nationalCode || "",
-    profilePic: profileData?.profilePic || "",
+    profilePic: profileData?.profilePic || null,
     status: profileData?.status || "",
   };
 
@@ -104,7 +104,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
                 onImageChange={handleImageChange}
                 onRemoveImage={() => {
                   setPreviewImage(null);
-                  setFieldValue("profilePic", "");
+                  setFieldValue("profilePic", null);
                   setIsEditable(true);
                 }}
                 setFieldValue={setFieldValue}

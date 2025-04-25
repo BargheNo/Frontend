@@ -3,7 +3,7 @@ import Image from "next/image";
 
 interface ProfilePicPickerProps {
   previewImage: string | null;
-  existingImage?: string;
+  existingImage?: string | null;
   isEditable?: boolean;
   onImageChange: (event: React.ChangeEvent<HTMLInputElement>, setFieldValue: (field: string, value: File | null) => void) => void;
   onRemoveImage?: () => void;

@@ -58,6 +58,7 @@ const ProfileSetup = () => {
     try {
       // Call your API to update profile
 
+      console.log("meow");
       console.log(values);
       // await updateProfile(values); // TODO: SETUP SUBMITTING FORM TO SERVER
       router.push('/dashboard');
