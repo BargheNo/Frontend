@@ -1,5 +1,5 @@
 import { UploadCloud } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./CertificatesForm.module.css";
 import { baseURL, postData, putData } from "@/src/services/apiHub";
 import { useSelector } from "react-redux";
@@ -41,6 +41,9 @@ export default function CertificatesForm({
 		// 		toast(generateErrorMessage(error));
 		// 	});
 	};
+	useEffect(() => {
+		console.log(values);
+	}, []);
 	return (
 		<div>
 			<div className="text-[#003a8b] text-lg mb-1 font-black w-full">
@@ -58,9 +61,19 @@ export default function CertificatesForm({
 					}
 					className={`${styles.file_input} absolute cursor-pointer`}
 				/>
-				<label className={`${styles.file_label} m-auto flex gap-2`}>
-					<span>آپلود سند</span>
-					<UploadCloud />
+				<label
+					className={`${styles.file_label} w-full m-auto flex flex-col cursor-pointer`}
+				>
+					<div className={`flex gap-2`}>
+						<span>آپلود سند</span>
+						<UploadCloud />
+					</div>
+					{values.certificates?.vatTaxpayerCertificate?.name && (
+						<div className="text-sm opacity-80">
+							نام سند:{" "}
+							{values.certificates?.vatTaxpayerCertificate?.name}
+						</div>
+					)}
 				</label>
 			</div>
 			<div className="text-[#003a8b] text-lg mt-3 mb-1 font-black w-full">
@@ -76,9 +89,19 @@ export default function CertificatesForm({
 					onChange={(e) => handleFileChange(e, "officialNewspaperAD")}
 					className={`${styles.file_input} absolute cursor-pointer`}
 				/>
-				<label className={`${styles.file_label} m-auto flex gap-2`}>
-					<span>آپلود سند</span>
-					<UploadCloud />
+				<label
+					className={`${styles.file_label} w-full m-auto flex flex-col cursor-pointer`}
+				>
+					<div className={`flex gap-2`}>
+						<span>آپلود سند</span>
+						<UploadCloud />
+					</div>
+					{values.certificates?.officialNewspaperAD?.name && (
+						<div className="text-sm opacity-80">
+							نام سند:{" "}
+							{values.certificates?.officialNewspaperAD?.name}
+						</div>
+					)}
 				</label>
 			</div>
 		</div>
