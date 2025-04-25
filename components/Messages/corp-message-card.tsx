@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react'
-import { ChevronDown,ChevronUp, MoveLeft, } from 'lucide-react'
+import { ChevronDown,ChevronUp } from 'lucide-react'
 import Link from 'next/link'
 import { corpMessage } from '@/src/types/corpMessageType'
 

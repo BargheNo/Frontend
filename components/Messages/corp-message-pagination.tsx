@@ -1,5 +1,7 @@
 "use client";
 import Image from "next/image";
+import { Search} from 'lucide-react'
+
 import {
   Pagination,
   PaginationContent,
@@ -16,6 +18,8 @@ import CorpMessageCard from "@/components/Messages/corp-message-card"
 import { useSelector } from "react-redux";
 import panelNotFound from "../../public/images/panelNotFound/panelNotFound.png";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import CustomInput from "../Custom/CustomInput/CustomInput";
+import { Form, Formik } from "formik";
 
 // import { RootState } from "@/src/store/types";
 
@@ -56,7 +60,24 @@ export default function CorpMessagesPagination() {
         <LoadingSpinner />
       ) : history?.length > 0 ? ( */}
         <>
-          <div className="flex flex-col text-white md:px-14 px-2 bg-transparent">
+        
+        <div className="flex flex-col mt-20 justify-start ">
+            <h1 className="mr-15 font-bold text-xl mb-3">پیام های من</h1>
+        
+        <div className="flex flex-col text-white md:px-14 px-2 bg-transparent ">
+                <div className="flex flex-row h-25 text-gray-800 bg-[#F0EDEF]  rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+                    <Formik  initialValues={{searchbox:""}} onSubmit={()=>console.log("")} >
+                        <Form className='flex flex-col justify-center items-center  w-[25%] mb-4 mr-7'>
+                        <CustomInput name="searchbox" type="search" icon={Search}>{" "}</CustomInput>
+                        </Form>
+                    </Formik>
+                    
+                </div>
+        </div>
+        </div>
+
+
+          <div className="flex flex-col text-white md:px-14 px-2 bg-transparent mt-20">
                 <div className="flex flex-col text-gray-800  rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
               
                 <CorpMessageCard from={from} date={date} topic={topic} body={body}></CorpMessageCard>
