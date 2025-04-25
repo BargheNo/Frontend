@@ -47,7 +47,7 @@ function Signup() {
 	});
 
 	const validationCorpSchema = Yup.object({
-		corpname: Yup.string().required(".نام شرکت الزامی است"),
+		name: Yup.string().required(".نام شرکت الزامی است"),
 		cin: Yup.string()
 			.matches(/^(\d{11})$/, ".شناسه ملی وارد شده اشتباه است")
 			.required(".شناسه ملی الزامی است"),
@@ -115,15 +115,15 @@ function Signup() {
 			});
 	};
 	// const handleCorpRegister = (
-	// 	corpname: string,
+	// 	name: string,
 	// 	cin: string,
 	// 	password: string,
 	// 	isAcceptTerms: boolean
 	// ) => {
-	//     console.log(`Form: ${corpname}, ${cin}, ${password}, ${isAcceptTerms}`)
+	//     console.log(`Form: ${name}, ${cin}, ${password}, ${isAcceptTerms}`)
 	// 	registerService
 	// 		.createCorp({
-	// 			name: corpname,
+	// 			name: name,
 	// 			cin: String(cin),
 	// 			password: password,
 	// 			acceptedTerms: isAcceptTerms
@@ -379,7 +379,7 @@ function Signup() {
 								<h1 className={styles.topic}>ثبت نام شرکت</h1>
 								<Formik
 									initialValues={{
-										corpname: "",
+										name: "",
 										cin: "",
 										password: "",
 										confirmpassword: "",
@@ -387,7 +387,7 @@ function Signup() {
 									validationSchema={validationCorpSchema}
 									onSubmit={(values) => {
 										handleCorpRegister(
-											values.corpname,
+											values.name,
 											values.cin,
 											values.password,
 											check
@@ -398,7 +398,7 @@ function Signup() {
 										<div className="w-9/10">
 										<CustomInput
 											placeholder="نام شرکت"
-											name="corpname"
+											name="name"
 											icon={Building2}
 											type="text"
 										>

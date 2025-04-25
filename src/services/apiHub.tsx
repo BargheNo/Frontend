@@ -33,14 +33,14 @@ apiClient.interceptors.request.use(
 		// 	"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU0MDcwMzcsImlhdCI6MTc0MjgxNTAzNywic3ViIjoxfQ.U245pmQco3hU0VATsXU8hovIl75FCpvcPGHDef0BVtRqPny5A9LBMMHRNcD4hQk9OciVS8v-kMYQvyuGsq6ido2ebNVFhIR0Vja023B48S5tW3yzSOyySEvcLEt3pWxTRQo45mK9GLBRtdpQu18qoKqreHOzr98K2mTd4E7lVE8";
 		// token = useSelector((state: RootState) => state.user.accessToken);
 		const userDataString = localStorage.getItem("user");
-    if (userDataString) {
-      const userData = JSON.parse(userDataString);
-      const accessToken = userData?.accessToken;
-      
-      if (accessToken && typeof accessToken === 'string') {
-        config.headers.Authorization = `Bearer ${accessToken}`;
-      }
-    }
+		if (userDataString) {
+			const userData = JSON.parse(userDataString);
+			const accessToken = userData?.accessToken;
+
+			if (accessToken && typeof accessToken === "string") {
+				config.headers.Authorization = `Bearer ${accessToken}`;
+			}
+		}
 		// const accessToken: string | null =
 		// 	JSON.parse(localStorage.getItem("user") ?? "")?.accessToken || "";
 		// if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`;
@@ -179,6 +179,25 @@ export const patchData = async ({ endPoint, data, headers }: postParams) => {
 	try {
 		const response = await apiClient.patch(endPoint, data, {
 			...headers,
+		});
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+};
+export const putDataFile = async ({
+	endPoint,
+	formData,
+	headers,
+}: {
+	endPoint: string;
+	formData: any;
+	headers?: any;
+}) => {
+	//   await RefreshToken();
+	try {
+		const response = await apiClient.put(endPoint, formData, {
+			headers: { "Content-Type": "multipart/form-data", ...headers },
 		});
 		return response.data;
 	} catch (error) {
