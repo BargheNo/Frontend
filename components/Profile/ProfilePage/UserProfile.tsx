@@ -10,7 +10,7 @@ export interface ProfileData {
   lastName: string;
   phone: string;
   email: string;
-  nationalID: string;
+  nationalCode: string;
   profilePic: string;
   status: string;
 }
@@ -30,7 +30,7 @@ const validationSchema = Yup.object({
   lastName: Yup.string().required("نام خانوادگی الزامی است"),
   phone: Yup.string().required("شماره تلفن الزامی است"),
   email: Yup.string().email("ایمیل نامعتبر است").nullable(),
-  nationalID: Yup.string().min(10, "کد ملی باید ده رفم باشد.").max(10, "کد ملی باید ده رفم باشد.").nullable(),
+  nationalCode: Yup.string().min(10, "کد ملی باید ده رفم باشد.").max(10, "کد ملی باید ده رفم باشد.").nullable(),
 });
 
 const UserProfile: React.FC<UserProfileProps> = ({
@@ -47,7 +47,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
     lastName: profileData?.lastName || "",
     phone: '0' + profileData?.phone?.slice(3, 13) || "",    // TODO: WHILE SUBMITTING THE FORM, THE FORMAT OF NUMBERS SHOULD BE CHANGED TO WHAT BACKECND ACTUALLY NEEDS.
     email: profileData?.email || "",
-    nationalID: profileData?.nationalID || "",
+    nationalCode: profileData?.nationalCode || "",
     profilePic: profileData?.profilePic || "",
     status: profileData?.status || "",
   };
@@ -78,7 +78,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
       icon: Mail,
     },
     {
-      name: "nationalID",
+      name: "nationalCode",
       type: "text",
       placeholder: "کد ملی",
       icon: IdCard,
@@ -120,7 +120,8 @@ const UserProfile: React.FC<UserProfileProps> = ({
                 placeholder={field.placeholder}
                 icon={field.icon}
                 containerClassName="w-full"
-                disabled={!isEditable}
+                disabled={field.name === "email" || field.name === "phone" ? true : !isEditable}
+                // readOnly={field.name === "email" || field.name === "phone"}
                 inputClassName={!isEditable ? "!bg-warm-white" : ""}
               />
             ))}
