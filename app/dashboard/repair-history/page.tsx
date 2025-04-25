@@ -126,14 +126,20 @@ const Page = () => {
 					سوابق تعمیرات
 				</h1>
 				<div className="flex flex-col neu-container">
-					{repairItems.map((item: RepairHistoryItem, index: number) => (
-						<div key={item.ID || index}>
-							<CustomerRepairCard
-								repairItem={item}
-								onDetailsClick={() => handleOpenDialog(item)}
-							/>
+					{repairItems.length === 0 ? (
+						<div className="text-center py-8 text-gray-500">
+							هیچ سابقه تعمیراتی موجود نیست
 						</div>
-					))}
+					) : (
+						repairItems.map((item: RepairHistoryItem, index: number) => (
+							<div key={item.ID || index}>
+								<CustomerRepairCard
+									repairItem={item}
+									onDetailsClick={() => handleOpenDialog(item)}
+								/>
+							</div>
+						))
+					)}
 				</div>
 			</div>
 
