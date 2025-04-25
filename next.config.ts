@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
 		config.ignoreWarnings = [{ module: /@opentelemetry\/instrumentation/ }];
 		return config;
 	},
+	images: {
+		domains: ['barghe-no-profile-pic.s3.ir-thr-at1.arvanstorage.ir'],
+	},
 };
 
 export default nextConfig;
