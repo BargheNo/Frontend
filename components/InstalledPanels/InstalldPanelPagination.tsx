@@ -26,7 +26,7 @@ export default function InstalledPanelPagination() {
 			.GetInstalledPanels({ page: page, pageSize: pageSize })
 			.then((res) => {
 				sethistory(res.data);
-				// console.log(res)
+				// console.log(res.data);
 				setIsLoading(false);
 			})
 			.catch((err) => console.log(err));
@@ -37,17 +37,18 @@ export default function InstalledPanelPagination() {
 
 	return (
 		<>
+		<div className="sm:px-4">
 			{isLoading ? (
         <LoadingSpinner />
       ) : history?.length > 0 ? (
         <>
-          <div className="min-h-full flex flex-col text-white px-14 bg-transparent">
-            	<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
-             
+           <div className="flex flex-col text-white md:px-13 bg-transparent w-full">
+            	<div className="flex flex-col text-gray-800  rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+              
 				{history.map((order: installedpanel, index) => (
 					<InstalledPanel
 						key={index}
-						customerName={order.customerName}
+						customer={order.customer}
 						panelName={order.panelName}
 						power={order.power}
 						address={order.address}
@@ -64,8 +65,8 @@ export default function InstalledPanelPagination() {
 				</div>
 			)}
 		    {history?.length>0&&
-			<div className="p-5">
-			<Pagination className="mt-4">
+			<div className="p-5 rtl">
+          <Pagination className="lg:mb-0 mb-20">
 				<PaginationContent>
 					<PaginationItem>
 						{Number(currpage)>1&&
@@ -103,6 +104,7 @@ export default function InstalledPanelPagination() {
 			</Pagination>
 			</div>
             }
+			</div>
 		</>
 	);
 }
