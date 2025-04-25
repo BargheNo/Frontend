@@ -125,7 +125,12 @@ export default function ContactInfoForm({
 								// endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/0`,
 							}).then((res) => {
 								toast(res.message);
-								setContactTypesList()
+								setContactTypesList(
+									contactTypesList.filter(
+										(contact) =>
+											contact.ID !== contactInfo.ID
+									)
+								);
 							});
 						}}
 					/>
@@ -142,10 +147,10 @@ export default function ContactInfoForm({
 								>
 									<div className="flex w-[95%] gap-3">
 										<Select
-											value={String(
-												values.contactInformation[index]
-													.contactTypeID
-											)}
+											// value={String(
+											// 	values.contactInformation[index]
+											// 		.contactTypeID
+											// )}
 											name={`contactInformation.[${index}].contactTypeID`}
 											onValueChange={(value) => {
 												// console.log("contactInfo", contactInfo);

@@ -142,9 +142,9 @@ export default function AddressesForm({
 						<div
 							className="hover:cursor-pointer text-fire-orange font-bold text-xl neu-shadow w-8 text-center place-content-center rounded-md bg-[#F1F4FC] group"
 							onClick={() => {
-								setAddresses((addresses) =>
+								setAddresses(
 									addresses?.filter(
-										(add) => add !== address.ID
+										(add) => add.ID !== address.ID
 									)
 								);
 								deleteData({

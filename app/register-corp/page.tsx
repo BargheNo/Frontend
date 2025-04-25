@@ -94,7 +94,7 @@ export default function Page() {
 		(state: RootState) => state.user.accessToken
 	);
 	const corpId = useSelector((state: RootState) => state.user.corpId);
-	const onSubmit = async (values: corpData) => {
+	const onSubmit = async (values: corpData, setFieldValue: any) => {
 		// await handleFormSubmit(values);
 		if (step === 0) {
 			if (corpId) {
@@ -123,7 +123,8 @@ export default function Page() {
 						: [];
 					if (
 						values.signatories?.length !== newSig.length ||
-						JSON.stringify(values.signatories) !== JSON.stringify(res.data.signatories)
+						JSON.stringify(values.signatories) !==
+							JSON.stringify(res.data.signatories)
 					) {
 						console.log("new signatory", values.signatories);
 						console.log(res.data.signatories);
@@ -204,6 +205,7 @@ export default function Page() {
 			}
 		} else if (step === 1) {
 			if (corpId) {
+				let error = false;
 				getData({
 					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
 				}).then((res) => {
@@ -213,20 +215,32 @@ export default function Page() {
 							values.contactInformation;
 					}
 					console.log("formData in step 1", formData);
-					postData({
-						endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts`,
-						data: formData,
-					})
-						.then((res) => {
-							console.log(res);
-							toast(res?.message);
-							if (step < steps.length - 1) {
-								setStep(step + 1);
-							}
+
+					formData["contactInformation"]?.forEach((contact) => {
+						console.log(contact.contactValue);
+						if (!contact.contactValue) {
+							toast("مقدار راه ارتباطی را وارد کنید");
+							error = true;
+							return;
+						}
+					});
+					if (!error) {
+						postData({
+							endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts`,
+							data: formData,
 						})
-						.catch((err) => {
-							toast(generateErrorMessage(err));
-						});
+							.then((res) => {
+								console.log(res);
+								toast(res?.message);
+								setFieldValue("contactInformation", [])
+								if (step < steps.length - 1) {
+									setStep(step + 1);
+								}
+							})
+							.catch((err) => {
+								toast(generateErrorMessage(err));
+							});
+					}
 				});
 			} else {
 				toast("شرکتی برای شما ثبت نشده است.");
@@ -384,7 +398,9 @@ export default function Page() {
 								<button
 									type="submit"
 									className="hover:cursor-pointer cta-neu-button w-1/4"
-									onClick={() => onSubmit(values)}
+									onClick={() =>
+										onSubmit(values, setFieldValue)
+									}
 								>
 									{step === steps.length - 1
 										? "تایید"
