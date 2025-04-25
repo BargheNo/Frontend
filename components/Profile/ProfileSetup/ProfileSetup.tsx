@@ -3,13 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Form, Formik } from "formik";
-import * as Yup from "yup";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import styles from '../../Auth/Signup/signup.module.css'
 import { ArrowLeft, IdCard, Mail } from "lucide-react";
 import { toast } from "sonner";
 import ProfilePicPicker from "@/components/Custom/ProfilePicPicker/ProfilePicPicker";
+import { baseURL, putData } from "@/src/services/apiHub";
 
 interface FormValues {
   email: string;
@@ -18,25 +18,6 @@ interface FormValues {
   nationalID: string;
   profileImage: File | null;
 }
-
-const validationSchema = Yup.object({
-  email: Yup.string().email("ایمیل نامعتبر است.").nullable(),
-  nationalID: Yup.string()
-                    .matches(/^[0-9]+$/, "کد ملی باید 10 رقم باشد.")
-                    .min(10, "کد ملی باید 10 رقم باشد.")
-                    .max(10, "کد ملی باید 10 رقم باشد.")
-                    .nullable(),
-  profileImage: Yup.mixed<File>()
-    .test("fileSize", "حجم فایل باید کمتر از 2 مگابایت باشد", (value) => {
-      if (!value) return true;
-      return value.size <= 2000000;
-    })
-    .test("fileType", "فرمت فایل باید jpg یا png باشد", (value) => {
-      if (!value) return true;
-      return ["image/jpeg", "image/png"].includes(value.type);
-    })
-    .nullable(),
-});
 
 const ProfileSetup = () => {
   const router = useRouter();
@@ -56,14 +37,20 @@ const ProfileSetup = () => {
 
   const handleSubmit = async (values: FormValues) => {
     try {
-      // Call your API to update profile
-
-      console.log("meow");
       console.log(values);
-      // await updateProfile(values); // TODO: SETUP SUBMITTING FORM TO SERVER
-      router.push('/dashboard');
-    } catch {
-      toast("خطا در ذخیرۀ اطلاعات");
+
+      const response = await putData({
+        endPoint: `${baseURL}/v1/user/profile`,
+        data: values,
+      });
+      
+      if (response) {
+        toast.success("اطلاعات با موفقیت ذخیره شد");
+        router.push('/dashboard');
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("خطا در ذخیرۀ اطلاعات");
     }
   };
 
@@ -86,7 +73,6 @@ const ProfileSetup = () => {
             nationalID: "",
             profileImage: null,
           }}
-          validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
           {({ setFieldValue }) => (

@@ -99,7 +99,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
             <div className="flex justify-center mb-10">
               <ProfilePicPicker
                 previewImage={previewImage}
-                existingImage={profileData?.profilePic}
+                existingImage={typeof profileData?.profilePic === 'string' ? profileData.profilePic : null}
                 isEditable={isEditable}
                 onImageChange={handleImageChange}
                 onRemoveImage={() => {
