@@ -69,26 +69,29 @@ export default function CorpInfoForm({
 	const corpId = useSelector((state: RootState) => state.user.corpId);
 	useEffect(() => {
 		setLoading(true);
-		getData({
-			endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
-		})
-			.then((res) => {
-				console.log("res", res);
-				setFieldValue("name", res.data.name);
-				setFieldValue(
-					"registrationNumber",
-					res.data.registrationNumber
-				);
-				// setFieldValue("nationalCardNumber", res.data.nationalCardNumber);
-				setFieldValue("nationalID", res.data.nationalID);
-				setFieldValue("iban", res.data.iban);
-				setFieldValue("signatories", res.data.signatories);
-				setLoading(false);
+		if (corpId) {
+			getData({
+				endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
 			})
-			.catch((err) => {
-				toast(generateErrorMessage(err));
-				setLoading(false);
-			});
+				.then((res) => {
+					console.log("res", res);
+					setFieldValue("name", res.data.name);
+					setFieldValue(
+						"registrationNumber",
+						res.data.registrationNumber
+					);
+					// setFieldValue("nationalCardNumber", res.data.nationalCardNumber);
+					setFieldValue("nationalID", res.data.nationalID);
+					setFieldValue("iban", res.data.iban);
+					setFieldValue("signatories", res.data.signatories);
+					setLoading(false);
+				})
+				.catch((err) => {
+					toast(generateErrorMessage(err));
+					setLoading(false);
+				});
+		}
+		setLoading(false);
 	}, []);
 	if (loading)
 		return (
@@ -186,7 +189,7 @@ const Signatories: React.FC<SignatoriesProps> = ({
 								className="text-fire-orange rounded-sm hover:cursor-pointer flex mb-3 w-fit"
 								// onClick={() => removeSignatory(id)}
 								onClick={() => {
-									toast("صاحب امضا با موفقیت حذف شد")
+									toast("صاحب امضا با موفقیت حذف شد");
 									remove(index);
 									// removeSignatory(id);
 								}}

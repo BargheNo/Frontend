@@ -275,7 +275,6 @@ export default function AddressesForm({
 									// name="unit"
 									placeholder="واحد"
 									icon={Home}
-									type="number"
 								/>
 							</div>
 						</div>
@@ -309,17 +308,14 @@ export default function AddressesForm({
 												)}
 												name={`addresses.[${index}].provinceID`}
 												onValueChange={(value) => {
-													// console.log(
-													// 	"value",
-													// 	value,
-													// 	":",
-													// 	values.addresses
-													// 	// address
-													// );
 													setDisable(false);
 													setFieldValue(
 														`addresses.[${index}].provinceID`,
 														Number(value)
+													);
+													setFieldValue(
+														`addresses.[${index}].cityID`,
+														""
 													);
 
 													const provinceId =
@@ -337,10 +333,7 @@ export default function AddressesForm({
 												}}
 											>
 												<SelectTrigger
-													value={
-														values.addresses[index]
-															.provinceID
-													}
+													value={address.provinceID}
 													// name={`addresses.[${index}].province`}
 
 													className={`${styles.CustomInput} cursor-pointer`}
@@ -485,7 +478,7 @@ export default function AddressesForm({
 											streetAddress: "",
 											postalCode: "",
 											houseNumber: "",
-											unit: 0,
+											unit: "",
 										});
 									} else {
 										toast(

@@ -126,8 +126,8 @@ export default function Page() {
 						JSON.stringify(values.signatories) !==
 							JSON.stringify(res.data.signatories)
 					) {
-						console.log("new signatory", values.signatories);
-						console.log(res.data.signatories);
+						// console.log("new signatory", values.signatories);
+						// console.log(res.data.signatories);
 						formData["signatories"] = values.signatories;
 					}
 					// formData["signatories"]?.map((signatory) => {
@@ -142,70 +142,85 @@ export default function Page() {
 					// 	}
 					// });
 					console.log("formData in step 0", formData);
-					if (Object.keys(formData).length !== 0) {
-						putData({
-							endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/basic`,
-							data: formData,
-							// data: {
-							// 	name: values.name,
-							// 	registrationNumber: String(
-							// 		values.registrationNumber
-							// 	),
-							// 	nationalID: String(values.nationalID),
-							// 	iban: String(values.iban),
-							// 	// signatories: values.signatories,
-							// },
-						})
-							.then((res) => {
-								toast(res.message);
-								// toast(generateErrorMessage(res));
-								if (step < steps.length - 1) {
-									setStep(step + 1);
-								}
-							})
-							.catch((err) => {
-								toast(generateErrorMessage(err));
-							});
-					} else if (step < steps.length - 1) {
-						setStep(step + 1);
-					}
+					checkNationalCardNumber(formData).then(
+						(nationalCardNumberOk) => {
+							if (
+								Object.keys(formData).length !== 0 &&
+								nationalCardNumberOk
+							) {
+								putData({
+									endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/basic`,
+									data: formData,
+									// data: {
+									// 	name: values.name,
+									// 	registrationNumber: String(
+									// 		values.registrationNumber
+									// 	),
+									// 	nationalID: String(values.nationalID),
+									// 	iban: String(values.iban),
+									// 	// signatories: values.signatories,
+									// },
+								})
+									.then((res) => {
+										toast(res.message);
+										// toast(generateErrorMessage(res));
+										if (step < steps.length - 1) {
+											setStep(step + 1);
+										}
+									})
+									.catch((err) => {
+										toast(generateErrorMessage(err));
+									});
+							} else if (step < steps.length - 1) {
+								setStep(step + 1);
+							}
+						}
+					);
 				});
 			} else {
 				console.log("post", values);
 				// getData({ endPoint: `${baseURL}/v1/contact/types` }).then((res) =>
 				// 	console.log(res)
 				// );
-				postData({
-					endPoint: `${baseURL}/v1/user/corps/registration/basic`,
-					data: {
-						name: values.name,
-						registrationNumber: String(values.registrationNumber),
-						nationalID: String(values.nationalID),
-						iban: String(values.iban),
-						signatories: values.signatories,
-					},
-				})
-					.then((res) => {
-						console.log(res);
-						// setCorpId(res.data.id);
-						dispatch(
-							setUser({
-								...user,
-								corpId: res.data.id,
+				console.log("formData in step 0", values);
+				checkNationalCardNumber(values).then(
+					(nationalCardNumberOk) => {
+						if (nationalCardNumberOk) {
+							postData({
+								endPoint: `${baseURL}/v1/user/corps/registration/basic`,
+								data: {
+									name: values.name,
+									registrationNumber: String(
+										values.registrationNumber
+									),
+									nationalID: String(values.nationalID),
+									iban: String(values.iban),
+									signatories: values.signatories,
+								},
 							})
-						);
-						toast(res.message);
-						if (step < steps.length - 1) {
-							setStep(step + 1);
+								.then((res) => {
+									console.log(res);
+									// setCorpId(res.data.id);
+									dispatch(
+										setUser({
+											...user,
+											corpId: res.data.id,
+										})
+									);
+									toast(res.message);
+									if (step < steps.length - 1) {
+										setStep(step + 1);
+									}
+								})
+								.catch((err) => {
+									toast(generateErrorMessage(err));
+								});
 						}
-					})
-					.catch((err) => {
-						toast(generateErrorMessage(err));
-					});
+					}
+				);
 			}
 		} else if (step === 1) {
 			if (corpId) {
-				let error = false;
 				getData({
 					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
 				}).then((res) => {
@@ -215,71 +230,54 @@ export default function Page() {
 							values.contactInformation;
 					}
 					console.log("formData in step 1", formData);
-
-					formData["contactInformation"]?.forEach((contact) => {
-						console.log(contact.contactValue);
-						if (!contact.contactValue) {
-							toast("مقدار راه ارتباطی را وارد کنید");
-							error = true;
-							return;
+					checkContactInformationOk(formData).then(
+						(contactInformationOk) => {
+							if (
+								Object.keys(formData).length !== 0 &&
+								contactInformationOk
+							)
+								postData({
+									endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts`,
+									data: formData,
+								})
+									.then((res) => {
+										console.log(res);
+										toast(res?.message);
+										setFieldValue("contactInformation", []);
+										if (step < steps.length - 1) {
+											setStep(step + 1);
+										}
+									})
+									.catch((err) => {
+										toast(generateErrorMessage(err));
+									});
 						}
-					});
-					if (!error) {
-						postData({
-							endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts`,
-							data: formData,
-						})
-							.then((res) => {
-								console.log(res);
-								toast(res?.message);
-								setFieldValue("contactInformation", [])
-								if (step < steps.length - 1) {
-									setStep(step + 1);
-								}
-							})
-							.catch((err) => {
-								toast(generateErrorMessage(err));
-							});
-					}
+					);
 				});
 			} else {
 				toast("شرکتی برای شما ثبت نشده است.");
 			}
 		} else if (step === 2) {
 			if (corpId) {
-				getData({
-					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
-				}).then((res) => {
-					const formData: corpData = {};
-					if (values.addresses != res.data.addresses) {
-						formData["addresses"] = values.addresses;
-					}
-					console.log("formData in step 2", formData);
-					postData({
-						endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/address`,
-						data: formData,
-						// data: {
-						// 	contactInformation: values.contactInformation
-						// },
+				console.log("formData in step 2", values.addresses);
+				postData({
+					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/address`,
+					// data: values.addresses,
+					data: {
+						addresses: values.addresses,
+					},
+				})
+					.then((res) => {
+						console.log("res", res);
+						toast(res?.message);
+						setFieldValue("addresses", []);
+						if (step < steps.length - 1) {
+							setStep(step + 1);
+						}
 					})
-						.then((res) => {
-							console.log(res);
-							// setCorpId(res.data.id);
-							// dispatch(
-							// 	setUser({
-							// 		...user,
-							// 		corpId: res.data.id,
-							// 	})
-							// );
-							toast(res?.message);
-							if (step < steps.length - 1) {
-								setStep(step + 1);
-							}
-						})
-						.catch((err) => {
-							toast(generateErrorMessage(err));
-						});
-				});
+					.catch((err) => {
+						toast(generateErrorMessage(err));
+					});
 			} else {
 				toast("شرکتی برای شما ثبت نشده است.");
 			}
@@ -295,6 +293,25 @@ export default function Page() {
 		// 		addresses: values.addresses,
 		// 	})
 		// );
+	};
+	const checkNationalCardNumber = async (formData) => {
+		formData.signatories?.forEach((signatory) => {
+			if (signatory.nationalCardNumber?.length !== 10) {
+				toast("فرمت کد ملی صحیح نمی‌باشد");
+				return false;
+			}
+		});
+		return true;
+	};
+	const checkContactInformationOk = async (formData) => {
+		formData["contactInformation"]?.forEach((contact) => {
+			console.log(contact.contactValue);
+			if (!contact.contactValue) {
+				toast("مقدار راه ارتباطی را وارد کنید");
+				return false;
+			}
+		});
+		return true;
 	};
 	useEffect(() => {
 		if (!accessToken) {
