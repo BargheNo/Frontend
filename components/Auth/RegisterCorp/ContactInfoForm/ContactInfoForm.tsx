@@ -57,7 +57,7 @@ export default function ContactInfoForm({
 			});
 	}, []);
 	useEffect(() => {
-		console.log(contactTypesList);
+		console.log("contactTypesList", contactTypesList);
 	}, [contactTypesList]);
 	if (loading)
 		return (
@@ -120,6 +120,7 @@ export default function ContactInfoForm({
 					<XIcon
 						className="text-fire-orange rounded-sm hover:cursor-pointer flex mb-3 w-fit"
 						onClick={() => {
+							setContactTypesList(contactTypesList.filter((contact: contactType) => contact.ID !== contactInfo.ID))
 							deleteData({
 								endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/${contactInfo?.ID}`,
 								// endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/0`,

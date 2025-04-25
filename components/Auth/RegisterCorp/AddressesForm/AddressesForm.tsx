@@ -229,18 +229,18 @@ export default function AddressesForm({
 									</SelectContent>
 								</Select> */}
 								<CustomInput
-									name={`addresses.[${index}].province`}
+									name={`province`}
 									value={address.province}
 									disabled
 									/>
 								<CustomInput
-									name={`addresses.[${index}].city`}
+									name={`city`}
 									value={address.city}
 									disabled
 								/>
 							</div>
 							<CustomTextArea
-								name={`addresses.[${index}].streetAddress`}
+								name={`streetAddress`}
 								value={address.streetAddress}
 								disabled
 								// name="streetAddress"
@@ -249,7 +249,7 @@ export default function AddressesForm({
 							/>
 							<div className="flex gap-4">
 								<CustomInput
-									name={`addresses.[${index}].postalCode`}
+									name={`postalCode`}
 									value={address.postalCode}
 									disabled
 									// name="postalCode"
@@ -257,7 +257,7 @@ export default function AddressesForm({
 									icon={Mailbox}
 								/>
 								<CustomInput
-									name={`addresses.[${index}].houseNumber`}
+									name={`houseNumber`}
 									value={address.houseNumber}
 									disabled
 									// name="houseNumber"
