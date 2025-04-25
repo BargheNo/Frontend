@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Plus, Calendar, NotebookPen, ChevronDown, Check } from 'lucide-react'
 import {
     Dialog,
@@ -12,22 +12,12 @@ import * as Yup from 'yup';
 import CustomInput from '@/components/Custom/CustomInput/CustomInput';
 import CustomTextArea from '@/components/Custom/CustomTextArea/CustomTextArea';
 import { Formik } from 'formik'
-
-const companies = [
-  { id: 1, name: 'نورسان انرژی' },
-  { id: 2, name: 'کیان انرژی' },
-  { id: 3, name: 'مازیار انرژی' },
-  { id: 4, name: 'مجتبی انرژی' },
-  { id: 5, name: 'مهرشاد انرژی' },
-];
-
-const panels = [
-  { id: 1, name: 'پنل خورشیدی 300 وات', corpId: 1 },
-  { id: 2, name: 'پنل خورشیدی 400 وات', corpId: 2 },
-  { id: 3, name: 'پنل خورشیدی 500 وات', corpId: 3 },
-  { id: 4, name: 'پنل خورشیدی 600 وات', corpId: 4 },
-  { id: 5, name: 'پنل خورشیدی 700 وات', corpId: 5 },
-];
+import CompaniesService from '@/src/services/getCompaniesService';
+import getCustomerMyPanels from '@/src/services/getCustomerMyPanels';
+import postRepairRequest from '@/src/services/postRepairRequest';
+import LoadingSpinner from '@/components/LoadingSpinner/LoadingSpinner';
+import { toast } from 'sonner';
+import TransparentLoading from '@/components/LoadingSpinner/TransparentLoading';
 
 const urgencyOptions = [
   { value: 1, label: 'اولویت پایین' },
@@ -49,6 +39,41 @@ const validationSchema = Yup.object({
     .min(10, 'توضیحات باید حداقل 10 کاراکتر باشد'),
 });
 
+interface Company {
+  id: number;
+  name: string;
+  logo: string;    // TODO: What is proper type for image??
+  contactInfo: string[];    // TODO: fix the type
+  adresses: string[];       // TODO: fix the type
+}
+
+interface Panel {
+  id: number;
+  panelName: string;
+  Corporation: {
+    id: number;
+    name: string;
+    logo: string;    // TODO: Set the proper type for logo
+    contactInfo: string[];    // TODO: Set the proper type
+    addresses: string[];    // TODO: Set the proper type
+  };
+  power: number;
+  area: number;
+  buildingType: string;
+  totalNumberOfModules: number;
+  tilt: number;
+  azimuth: number;
+  address: {
+    ID: number;
+    province: string;
+    city: string;
+    streetAddress: string;
+    postalCode: string;
+    houseNumber: string;
+    unit: number;
+  };
+}
+
 const CustomerRepairRequest = () => {
   const [isUrgencyOpen, setIsUrgencyOpen] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
@@ -56,11 +81,44 @@ const CustomerRepairRequest = () => {
   const [repairByManufacturer, setRepairByManufacturer] = useState(true);
   const [selectedCompany, setSelectedCompany] = useState<number | null>(null);
   const [selectedPanel, setSelectedPanel] = useState<number | null>(null);
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [panels, setPanels] = useState<Panel[]>([]);
+  const [loadingPanels, setLoadingPanels] = useState(true);
+  const [buttonLoading, setButtonLoading] = useState(false);
 
-  const handleCompanySelection = (companyId: number) => {
-    setSelectedCompany(companyId);
+  useEffect(() => {
+    getCustomerMyPanels.GetCustomerMyPanels()
+      .then((res) => {
+        // console.log(res);
+        // Debugging: Log the response data if needed
+        setPanels(res.data);
+        setLoadingPanels(false);
+      })
+      .catch((err) => {
+        console.error('Error fetching panels', err);
+        setLoadingPanels(false);
+      }
+      );
+  }, []);
+
+  useEffect(() => {
+    CompaniesService.GetCompanies()
+      .then((res) => {
+        setCompanies(res.data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error('Error fetching companies:', err);
+        setIsLoading(false);
+      });
+  }, []);
+
+  // TODO: It is obviously the better practice to use corporation ID instead of name which is not handled by API.
+  const handleCompanySelection = (companyID: number) => {
+    setSelectedCompany(companyID);
     const panel = panels.find(p => p.id === selectedPanel);
-    if (panel && companyId !== panel.corpId) {
+    if (panel && companyID !== panel.Corporation.id) {
       setRepairByManufacturer(false);
     }
   };
@@ -69,7 +127,7 @@ const CustomerRepairRequest = () => {
     setSelectedPanel(panelId);
     const panel = panels.find(p => p.id === panelId);
     if (panel) {
-      setSelectedCompany(panel.corpId);
+      setSelectedCompany(panel.Corporation.id);
       setRepairByManufacturer(true);
     }
   };
@@ -77,33 +135,46 @@ const CustomerRepairRequest = () => {
   const handleSubmit = async (values: FormValues) => {
     const formData = {
       panelID: selectedPanel,
-      corporationID: repairByManufacturer ? panels.find(p => p.id === selectedPanel)?.corpId : selectedCompany,
+      corporationID: repairByManufacturer ? panels.find(p => p.id === selectedPanel)?.Corporation.id : selectedCompany,
       subject: values.title,
       description: values.note,
       urgencyLevel: urgency
     };
 
     console.log(formData);
+    setButtonLoading(true);
 
-    try {
-      const response = await fetch('EndPointtttttttttttttttttttttt', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Tokennnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn'
-        },
-        body: JSON.stringify(formData)
+    postRepairRequest.PostCustomerRepairRequest(formData)
+      .then(res => {
+        console.log(res);
+        toast.success("درخواست تعمیر با موفقیت ثبت شد!");
+        setButtonLoading(false);
+      })
+      .catch(res => {
+        toast.error("مشکلی در ثبت درخواست پیش آمد!");
+        setButtonLoading(false);
       });
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
 
-      const data = await response.json();
-      console.log('Success:', data);
-    } catch (error) {
-      console.error('Error:', error);
-    }
+    // try {
+    //   const response = await fetch('EndPointtttttttttttttttttttttt', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'Authorization': 'Tokennnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn'
+    //     },
+    //     body: JSON.stringify(formData)
+    //   });
+
+    //   if (!response.ok) {
+    //     throw new Error('Network response was not ok');
+    //   }
+
+    //   const data = await response.json();
+    //   console.log('Success:', data);
+    // } catch (error) {
+    //   console.error('Error:', error);
+    // }
   };
 
   return (
@@ -148,7 +219,7 @@ const CustomerRepairRequest = () => {
                       className="w-full px-4 py-3 flex justify-between items-center inset-neu-container !bg-[#FEFEFE] focus:outline-2"
                       onClick={() => setIsPanelOpen(!isPanelOpen)}
                     >
-                      {selectedPanel ? panels.find(p => p.id === selectedPanel)?.name : 'انتخاب پنل'}
+                      {selectedPanel ? panels.find(p => p.id === selectedPanel)?.panelName : 'انتخاب پنل'}
                       <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${isPanelOpen ? 'transform rotate-180' : ''}`} />
                     </button>
                     
@@ -163,7 +234,7 @@ const CustomerRepairRequest = () => {
                               setIsPanelOpen(false);
                             }}
                           >
-                            <span>{panel.name}</span>
+                            <span>{panel.panelName}</span>
                             {selectedPanel === panel.id && <Check className="w-5 h-5 text-blue-500" />}
                           </div>
                         ))}
@@ -242,7 +313,7 @@ const CustomerRepairRequest = () => {
                           if (!repairByManufacturer) {
                             const panel = panels.find(p => p.id === selectedPanel);
                             if (panel) {
-                              setSelectedCompany(panel.corpId);
+                              setSelectedCompany(panel.Corporation.id);
                             }
                           }
                         }}
@@ -255,21 +326,25 @@ const CustomerRepairRequest = () => {
 
                     {!repairByManufacturer && (
                       <div className="ml-6 space-y-2 h-28 p-5 inset-neu-container overflow-y-scroll w-full !bg-[#FEFEFE]">
-                        {companies.map(company => (
-                          <div key={company.id} className="flex items-center">
-                            <input
-                              type="radio"
-                              id={`company-${company.id}`}
-                              name="company-selection"
-                              checked={selectedCompany === company.id}
-                              onChange={() => handleCompanySelection(company.id)}
-                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-                            />
-                            <label htmlFor={`company-${company.id}`} className="mr-2 block text-sm text-gray-700">
-                              {company.name}
-                            </label>
-                          </div>
-                        ))}
+                        {isLoading || loadingPanels ? (
+                          <LoadingSpinner />
+                        ) : (
+                          companies.map(company => (
+                            <div key={company.id} className="flex items-center">
+                              <input
+                                type="radio"
+                                id={`company-${company.id}`}
+                                name="company-selection"
+                                checked={selectedCompany === company.id}
+                                onChange={() => handleCompanySelection(company.id)}    // TODO: Change it to use ID
+                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                              />
+                              <label htmlFor={`company-${company.id}`} className="mr-2 block text-sm text-gray-700">
+                                {company.name}
+                              </label>
+                            </div>
+                          ))
+                        )}
                       </div>
                     )}
                   </div>
@@ -283,6 +358,7 @@ const CustomerRepairRequest = () => {
                                 active:from-[#008C25] active:to-[#2AAE4F]
                                 text-white py-2 px-4 rounded-md transition-all duration-300"
                     >
+                      {buttonLoading && <TransparentLoading />}
                       ثبت درخواست تعمیر
                     </button>
                   </div>

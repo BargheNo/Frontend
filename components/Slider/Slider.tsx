@@ -1,6 +1,7 @@
 "use client"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight, Wrench } from "lucide-react";
+import moment from "jalali-moment";
 
 // Define the item type
 interface CarouselItem {
@@ -18,21 +19,21 @@ const Carousel = ({ items, onItemClick }: CarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      nextSlide();
-    }, 2000);
-    return () => clearInterval(interval);
-  }, [currentIndex]);
-
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     if (isTransitioning) return;
     setIsTransitioning(true);
     setTimeout(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
       setTimeout(() => setIsTransitioning(false), 200);
     }, 400);
-  };
+  }, [isTransitioning, items.length]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [nextSlide]);
 
   const prevSlide = () => {
     if (isTransitioning) return;
@@ -67,7 +68,8 @@ const Carousel = ({ items, onItemClick }: CarouselProps) => {
             {items[currentIndex].text}
           </h3>
           <span className="text-gray-400">
-            {items[currentIndex].date}
+            {/* {items[currentIndex].date} */}
+            {moment(items[currentIndex].date.slice(0, 10), "YYYY-MM-DD").locale('fa').format('YYYY/MM/DD')}
           </span>
         </div>
       </div>

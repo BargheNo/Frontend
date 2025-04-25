@@ -8,7 +8,7 @@ import * as Yup from "yup";
 import CustomInput from "../../Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import LoginButton from "./LoginButton";
-import { postData } from "../../../src/services/apiHub";
+import { baseURL, postData } from "../../../src/services/apiHub";
 import { toast } from "sonner";
 import { setUser } from "@/src/store/slices/userSlice";
 import { useDispatch } from "react-redux";

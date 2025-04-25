@@ -1,10 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
-
+import { useFormik } from "formik";
 import { useSelector } from "react-redux";
-import { MessageCirclePlus, MessageCircleMore, ArrowLeft } from "lucide-react";
+import {
+  MessageCirclePlus,
+  MessageCircleMore,
+  ImagePlus,
+  List,
+} from "lucide-react";
 import React from "react";
-import styles from "./Tickets.module.css";
+import styles from "./CustomerTickets.module.css";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { toast } from "sonner";
 
@@ -46,8 +51,16 @@ const TicketSupportPage = () => {
   const [showCommentBoxFor, setShowCommentBoxFor] = useState<string | null>(
     null
   );
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [commentInput, setCommentInput] = useState("");
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
+  const subjectOptions = [
+    { id: 1, label: "عمومی" },
+    { id: 2, label: "پنل" },
+    { id: 3, label: "نصب" },
+    { id: 4, label: "تعمیرات" },
+    { id: 5, label: "سایر" },
+  ];
   const translateSubjectToPersian = (subject: string): string => {
     const translations: { [key: string]: string } = {
       installation: "نصب",
@@ -59,32 +72,36 @@ const TicketSupportPage = () => {
 
     return translations[subject.toLowerCase()] || subject;
   };
-  const resolveTicket = async (ticketId: string) => {
+
+  const createTicket = async (values: {
+    subject: string;
+    description: string;
+    image: File | null;
+  }) => {
+    const formData = new FormData();
+    formData.append("subject", values.subject);
+    console.log(values.subject);
+    formData.append("description", values.description);
+
+    if (values.image) {
+      formData.append("image", values.image);
+    }
+
     try {
-      const response = await fetch(
-        `http://46.249.99.69:8080/v1/admin/ticket/${ticketId}/resolve`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({}),
-        }
-      );
+      const res = await fetch("http://46.249.99.69:8080/v1/user/ticket", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: formData,
+      });
 
-      if (!response.ok) {
-        throw new Error("Failed to resolve ticket");
-      }
-
-      const result = await response.json();
-      toast.success(result?.message);
+      const data = await res.json();
+      toast.success(data?.message);
       fetchTickets();
-
-      // Optionally refresh ticket list or update UI
     } catch (error: any) {
       const errMsg =
-        generateErrorMessage(error) || "هنگام بررسی تیکت مشکلی پیش آمد.";
+        generateErrorMessage(error) || "هنگام ایجاد تیکت جدید مشکلی پیش آمد.";
       toast.error(errMsg);
     }
   };
@@ -96,7 +113,7 @@ const TicketSupportPage = () => {
     try {
       console.log("comment", comment);
       const response = await fetch(
-        `http://46.249.99.69:8080/v1/admin/ticket/${activeCommentTicketId}/comments`,
+        `http://46.249.99.69:8080/v1/user/ticket/${activeCommentTicketId}/comments`,
         {
           method: "POST",
           headers: {
@@ -121,7 +138,7 @@ const TicketSupportPage = () => {
     setComments([]);
     setIsLoadingComments(true);
     fetch(
-      `http://46.249.99.69:8080/v1/admin/ticket/${showCommentBoxFor}/comments`,
+      `http://46.249.99.69:8080/v1/user/ticket/${showCommentBoxFor}/comments`,
       {
         method: "GET",
         headers: {
@@ -145,7 +162,7 @@ const TicketSupportPage = () => {
   };
 
   const fetchTickets = () => {
-    fetch("http://46.249.99.69:8080/v1/admin/ticket", {
+    fetch("http://46.249.99.69:8080/v1/user/ticket/list", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -167,6 +184,19 @@ const TicketSupportPage = () => {
     fetchTickets();
   }, []);
 
+  const formik = useFormik({
+    initialValues: {
+      subject: "",
+      description: "",
+      image: null as File | null,
+    },
+    onSubmit: (values) => {
+      createTicket(values);
+      console.log(values);
+      formik.resetForm();
+    },
+  });
+
   const Ticket = ({
     id,
     subject,
@@ -174,7 +204,6 @@ const TicketSupportPage = () => {
     status,
     created_at,
     image,
-    Owner,
   }: {
     id: string;
     subject: string;
@@ -182,16 +211,6 @@ const TicketSupportPage = () => {
     status: string;
     created_at: string;
     image: string;
-    Owner: {
-      id?: number;
-      firstName: string;
-      lastName: string;
-      phone: string;
-      email: string;
-      nationalID: string;
-      profilePic: string;
-      status: string;
-    };
   }) => {
     return (
       <div className="flex flex-row justify-between w-full h-full bg-white gap-10 py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 min-h-[250px]">
@@ -200,9 +219,6 @@ const TicketSupportPage = () => {
           <div className="flex flex-col gap-3">
             <p className="text-start content-start w-full text-2xl font-bold">
               {translateSubjectToPersian(subject)}
-            </p>
-            <p className="text-start content-start w-full text-lg ">
-              از طرف {Owner.firstName} {Owner.lastName}
             </p>
 
             <p className="max-w-[600px] break-words">{description}</p>
@@ -250,7 +266,7 @@ const TicketSupportPage = () => {
           />
         )}
         {/* Left section */}
-        <div className="w-50 min-w-[50px] pr-5 flex flex-col gap-4">
+        <div className="w-1/5 pr-5 flex flex-col gap-4">
           {/* status */}
           <div
             className={`flex flex-col items-center ${styles.status} py-4 gap-2`}
@@ -260,23 +276,10 @@ const TicketSupportPage = () => {
               <span className="font-bold">{status}</span>
               <div
                 className={`h-4 w-4 rounded-full ${
-                  status === "پاسخ دادید" ? "green" : "red"
+                  status === "پاسخ داده شده" ? "green" : "red"
                 }-status shadow-md`}
               />
             </div>
-          </div>
-          <div
-            className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
-          >
-            <button
-              className="cursor-pointer"
-              onClick={() => {
-                resolveTicket(id);
-              }}
-            >
-              پاسخ
-            </button>
-            <ArrowLeft />
           </div>
         </div>
       </div>
@@ -314,7 +317,114 @@ const TicketSupportPage = () => {
   };
 
   return (
-    <div className="flex flex-col p-6 space-y-6 gap-10 w-full">
+    <div className="flex flex-col p-6 space-y-6 gap-10">
+      <h2 className="text-right text-2xl font-bold text-blue-800">ثبت تیکت</h2>
+
+      {/* Ticket Creation Form */}
+      <form
+        onSubmit={formik.handleSubmit}
+        className={`space-y-4 min-h-[400px]`}
+      >
+        <div
+          className={`${styles.outsideShadow} 
+        flex flex-col gap-10 py-3 px-7`}
+        >
+          <div
+            className={`bg-white p-4 rounded-xl shadow-sm flex items-center gap-3   ${styles.shadow}`}
+          >
+            <select
+              name="subject"
+              value={formik.values.subject}
+              onChange={formik.handleChange}
+              className={`bg-transparent text-right outline-none w-full  text-bold text-xl appearance-none`}
+            >
+              <option value="">انتخاب عنوان</option>
+              {subjectOptions.map((item) => (
+                <option key={item.label} value={item.id} className="text-black">
+                  {item.label}
+                </option>
+              ))}
+            </select>
+            <div className="text-orange-500">
+              <List />
+            </div>
+          </div>
+          <div className="flex flex-row justify-between gap-2 min-h-[250px]">
+            <div
+              className={`bg-white p-6 rounded-xl shadow-sm  w-5/7 ${styles.shadow}`}
+            >
+              <textarea
+                name="description"
+                placeholder="متن تیکت"
+                value={formik.values.description}
+                onChange={formik.handleChange}
+                rows={5}
+                className=" bg-transparent text-right outline-none min-h-[250px] min-w-[750px] resize-none px-3 w-11/12
+"
+              />
+            </div>
+
+            <div
+              className={`bg-white p-4 rounded-xl shadow-sm text-right w-2/7 ${styles.shadow}`}
+            >
+              <label
+                htmlFor="image-upload"
+                className="block mb-2 text-sm text-gray-600 text-center py-3"
+              >
+                بارگذاری تصویر (اختیاری)
+              </label>
+
+              {/* Custom Styled Button */}
+              <label
+                htmlFor="image-upload"
+                className={`cursor-pointer cta-neu-button flex ${styles.button} items-center content-center justify-center gap-2 w-full py-2`}
+              >
+                <ImagePlus className="w-5 h-5" />
+                <span>انتخاب تصویر</span>
+              </label>
+
+              {/* Hidden File Input */}
+              <input
+                id="image-upload"
+                name="image"
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.currentTarget.files?.[0];
+                  formik.setFieldValue("image", file ?? null);
+                  if (file) {
+                    const previewUrl = URL.createObjectURL(file);
+                    setImagePreview(previewUrl);
+                  } else {
+                    setImagePreview(null);
+                  }
+                }}
+                className="hidden"
+              />
+
+              {/* Image Preview */}
+              {imagePreview && (
+                <div className="mt-4">
+                  <img
+                    src={imagePreview}
+                    alt="پیش‌نمایش تصویر"
+                    className="max-w-full h-auto rounded-lg shadow-md"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex justify-end p-5">
+            <button
+              type="submit"
+              className={`cta-neu-button flex ${styles.button} items-center justify-end w-20`}
+            >
+              ارسال
+            </button>
+          </div>
+        </div>
+      </form>
       <h2 className="text-right text-2xl font-bold text-blue-800">
         تیکت های قبلی
       </h2>
@@ -327,13 +437,12 @@ const TicketSupportPage = () => {
               subject={ticket.subject}
               description={ticket.description}
               status={
-                ticket.status === "resolved" ? "پاسخ دادید" : "بررسی نشده"
+                ticket.status === "resolved" ? "پاسخ داده شده" : "بررسی نشده"
               }
               created_at={new Date(ticket.created_at).toLocaleDateString(
                 "fa-IR"
               )}
               image={ticket.image}
-              Owner={ticket.Owner}
             />
 
             {activeCommentTicketId && (
@@ -341,17 +450,17 @@ const TicketSupportPage = () => {
                 <div className="bg-white px-10 rounded-lg w-full text-right space-y-4">
                   <h3 className="text-lg font-bold">ثبت نظر</h3>
                   <div
-                    className={`bg-white p-6 rounded-xl shadow-xl ${styles.shadow}`}
+                    className={`bg-white p-6 rounded-xl shadow-md  ${styles.shadow}`}
                   >
                     <textarea
                       value={commentInput}
                       onChange={(e) => setCommentInput(e.target.value)}
                       rows={3}
-                      className={`w-full p-2 resize-none outline-none focus:ring-0 focus:outline-none `}
+                      className={`w-full p-2 resize-none outline-none focus:ring-0 focus:outline-none`}
+
                       placeholder="متن نظر..."
                     />
                   </div>
-
                   <div className="flex justify-between">
                     <button
                       onClick={() => setActiveCommentTicketId(null)}
@@ -383,7 +492,7 @@ const TicketSupportPage = () => {
                   comments.map((comment, i) => (
                     <div key={i} className="pb-1 border-t border-gray-400">
                       <Comment
-                        id={ticket.id}
+                        id="1"
                         Author={comment.Author}
                         body={comment.body}
                       />
