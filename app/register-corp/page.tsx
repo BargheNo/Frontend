@@ -54,6 +54,19 @@ const initialValuesForm = {
 		officialNewspaperAD: null,
 	},
 };
+const resetFormValues = (
+	setFieldValue: (field: string, value: any) => void
+) => {
+	setFieldValue("name", "");
+	setFieldValue("registrationNumber", "");
+	setFieldValue("nationalID", "");
+	setFieldValue("iban", "");
+	setFieldValue("signatories", []);
+	setFieldValue("addresses", []);
+	setFieldValue("contactInformation", []);
+	setFieldValue("certificates.vatTaxpayerCertificate", null);
+	setFieldValue("certificates.officialNewspaperAD", null);
+};
 
 const validationSchemaForm = Yup.object({
 	name: Yup.string().required("نام شرکت الزامی است"),
@@ -321,17 +334,6 @@ export default function Page() {
 				for (const pair of formData.entries()) {
 					console.log(pair[0], pair[1]);
 				}
-
-				// axios.put(
-				// 	`${baseURL}/v1/user/corps/registration/${corpId}/certificates`,
-				// 	formData,
-				// 	{
-				// 	  headers: {
-				// 		"Content-Type": "multipart/form-data",
-				// 	  },
-				// 	}
-				//   );
-
 				putDataFile({
 					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/certificates`,
 					formData: formData,
@@ -349,17 +351,7 @@ export default function Page() {
 				console.log("meow");
 			}
 		}
-		// dispatch(
-		// 	setCorp({
-		// 		...corp,
-		// 		name: values.name,
-		// 		registrationNumber: values.registrationNumber,
-		// 		nationalID: values.nationalID,
-		// 		iban: values.iban,
-		// 		signatories: values.signatories,
-		// 		addresses: values.addresses,
-		// 	})
-		// );
+		resetFormValues(setFieldValue);
 	};
 	const checkNationalCardNumber = async (formData) => {
 		formData["signatories"]?.forEach((signatory) => {
@@ -385,18 +377,8 @@ export default function Page() {
 			router.push("/login");
 		}
 	}, [accessToken, router]);
-	const handleBack = (values: corpData) => {
-		// dispatch(
-		// 	setCorp({
-		// 		...corp,
-		// 		name: values.name,
-		// 		registrationNumber: values.registrationNumber,
-		// 		nationalID: values.nationalID,
-		// 		iban: values.iban,
-		// 		signatories: values.signatories,
-		// 		addresses: values.addresses,
-		// 	})
-		// );
+	const handleBack = () => {
+		// resetFormValues(setFieldValue);
 		if (step > 0) {
 			setStep(step - 1);
 		}
@@ -494,7 +476,10 @@ export default function Page() {
 									<button
 										type="button"
 										className="hover:cursor-pointer cta-neu-button w-1/4"
-										onClick={() => handleBack(values)}
+										onClick={() => {
+											handleBack();
+											resetFormValues(setFieldValue);
+										}}
 									>
 										قبلی
 									</button>

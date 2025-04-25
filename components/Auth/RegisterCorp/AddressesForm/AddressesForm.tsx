@@ -86,7 +86,6 @@ export default function AddressesForm({
 			.GetProvinces()
 			.then((res) => {
 				setProvinces(res.data.data);
-				// console.log("provinces", res.data.data);
 			})
 			.catch((err) => {
 				console.log(err.message);
@@ -102,7 +101,7 @@ export default function AddressesForm({
 			.then((res) => setCities(res.data.data))
 			.catch((err) => console.log(err.message));
 	};
-	const findProvinceId = (provinces: Province[], name: string) => {
+	const findProvinceId = (provinces: Province[], name: any) => {
 		const province = provinces.find((p) => p.name === name);
 		return province?.ID ?? null;
 	};
@@ -135,8 +134,8 @@ export default function AddressesForm({
 			</div>
 		);
 	return (
-		<>
-			<div className="flex flex-col gap-8">
+		<div className="flex flex-col gap-8">
+			<div className="flex flex-col gap-8 w-full">
 				{addresses?.map((address, index) => (
 					<div key={index} className="flex gap-3 h-full">
 						<div
@@ -161,7 +160,7 @@ export default function AddressesForm({
 							</span>
 							<XIcon className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-x-[3px] -translate-y-[10px]" />
 						</div>
-						<div className="flex flex-col">
+						<div className="flex flex-col w-full">
 							<div className="flex w-full h-full gap-4">
 								<Select
 									value={address.province}
@@ -295,11 +294,11 @@ export default function AddressesForm({
 										}}
 									>
 										<span className="absolute group-hover:opacity-0 transition-opacity duration-300 translate-x-[6px] -translate-y-[10px]">
-											{index + 1}
+											{addresses.length + index + 1}
 										</span>
 										<XIcon className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-x-[3px] -translate-y-[10px]" />
 									</div>
-									<div className="flex flex-col">
+									<div className="flex flex-col w-full">
 										<div className="flex w-full h-full gap-4">
 											<Select
 												value={String(
@@ -317,12 +316,27 @@ export default function AddressesForm({
 														`addresses.[${index}].cityID`,
 														""
 													);
-
-													const provinceId =
-														findProvinceId(
-															provinces,
-															value
+													console.log(
+														"provinces",
+														provinces
+													);
+													const province =
+														provinces?.find(
+															(p) =>
+																p.ID === Number(value)
 														);
+													const provinceId = province?.ID ?? 1;
+													// return province?.ID ?? null;
+													// const provinceId =
+													// 	findProvinceId(
+													// 		provinces,
+													// 		String(value)
+													// 	);
+
+													console.log(
+														"provinceId",
+														provinceId
+													);
 													setProvinceId(
 														provinceId ?? 1
 													);
@@ -493,6 +507,6 @@ export default function AddressesForm({
 					)}
 				</FieldArray>
 			</Form>
-		</>
+		</div>
 	);
 }
