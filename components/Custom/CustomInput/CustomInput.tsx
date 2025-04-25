@@ -4,7 +4,7 @@ import { LucideIcon } from "lucide-react";
 import { useField } from "formik";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
-	name: string;
+	name?: string;
 	children?: React.ReactNode;
 	icon?: LucideIcon;
 	onIconClick?: () => void;
@@ -59,7 +59,6 @@ export default function CustomInput({
 					dir={isRTL(value) ? "rtl" : "ltr"}
 					{...field}
 					{...props}
-					value={value} // Controlled value
 					autoFocus={autoFocus}
 					className={`${style.CustomInput} ${
 						style.numberInput

@@ -1,18 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
-// import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-// import CustomInput from "@/components/Custom/CustomInput/CustomInput";
-// import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
-import provinceService from "@/src/services/provinceService";
-import { City, Province } from "@/src/types/provinceType";
 import CorpInfoForm from "@/components/Auth/RegisterCorp/CorpInfoForm/CorpInfoForm";
-import ContactInfoForm from "@/components/Auth/RegisterCorp/ContactInfoForm/ContactInfoForm";
+import AddressesForm from "@/components/Auth/RegisterCorp/AddressesForm/AddressesForm";
 import { useSelector } from "react-redux";
 import { setCorp } from "@/src/store/slices/corpSlice";
 import { useDispatch } from "react-redux";
@@ -24,41 +20,73 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Building2, FileText, Phone } from "lucide-react";
+import { Building2, FileText, MapPin, Phone } from "lucide-react";
+import ContactInfoForm from "@/components/Auth/RegisterCorp/ContactInfoForm/ContactInfoForm";
+import CertificatesForm from "@/components/Auth/RegisterCorp/CertificatesForm/CertificatesForm";
+import {
+	baseURL,
+	getData,
+	postData,
+	putData,
+	putDataFile,
+} from "@/src/services/apiHub";
+import { toast } from "sonner";
+import generateErrorMessage from "@/src/functions/handleAPIErrors";
+import { setUser } from "@/src/store/slices/userSlice";
 
-const steps = ["اطلاعات شرکت", "اطلاعات تماس", "مدارک"];
+const steps = ["اطلاعات شرکت", "اطلاعات تماس", "آدرس", "مدارک"];
 const icons = [
 	<Building2 className="w-5" key="اطلاعات شرکت" />,
 	<Phone className="w-5" key="اطلاعات تمایس" />,
+	<MapPin className="w-5" key="آدرس" />,
 	<FileText className="w-5" key="مدارک" />,
 ];
 const initialValuesForm = {
-	corpName: "",
+	name: "",
 	registrationNumber: "",
 	nationalID: "",
 	iban: "",
 	signatories: [],
 	addresses: [],
+	contactInformation: [],
+	certificates: {
+		vatTaxpayerCertificate: null,
+		officialNewspaperAD: null,
+	},
+};
+const resetFormValues = (
+	setFieldValue: (field: string, value: any) => void
+) => {
+	setFieldValue("name", "");
+	setFieldValue("registrationNumber", "");
+	setFieldValue("nationalID", "");
+	setFieldValue("iban", "");
+	setFieldValue("signatories", []);
+	setFieldValue("addresses", []);
+	setFieldValue("contactInformation", []);
+	setFieldValue("certificates.vatTaxpayerCertificate", null);
+	setFieldValue("certificates.officialNewspaperAD", null);
 };
 
 const validationSchemaForm = Yup.object({
-	corpName: Yup.string().required("نام شرکت الزامی است"),
+	name: Yup.string().required("نام شرکت الزامی است"),
 	registrationNumber: Yup.string().required("شماره ثبت الزامی است"),
 	nationalID: Yup.string().required("شناسه ملی الزامی است"),
 	iban: Yup.string().required("شماره شبا الزامی است"),
 	signatories: Yup.array().of(
 		Yup.object().shape({
-			signatoryName: Yup.string().required("نام صاحب امضا الزامی است"),
-			nationalID: Yup.string()
+			name: Yup.string().required("نام صاحب امضا الزامی است"),
+			nationalCardNumber: Yup.string()
+				// nationalID: Yup.string()
 				.required("کد ملی صاحب امضا الزامی است")
 				.length(10, "کد ملی باید 10 رقم باشد"),
-			position: Yup.string(),
+			position: Yup.string().required("موقعیت صاحب امضا الزامی است"),
 		})
 	),
 	addresses: Yup.array().of(
 		Yup.object().shape({
-			province: Yup.string().required("این فیلد الزامی است"),
-			city: Yup.string().required("این فیلد الزامی است"),
+			provinceID: Yup.number().required("این فیلد الزامی است"),
+			cityID: Yup.number().required("این فیلد الزامی است"),
 			streetAddress: Yup.string().required("این فیلد الزامی است"),
 			postalCode: Yup.string()
 				.required("کد پستی الزامی است")
@@ -67,88 +95,292 @@ const validationSchemaForm = Yup.object({
 			unit: Yup.number().optional(),
 		})
 	),
+	contactInformation: Yup.array().of(
+		Yup.object().shape({
+			contactTypeID: Yup.number()
+				.moreThan(0, "نوع اطلاعات تماس غیرقابل قبول است")
+				.lessThan(9, "نوع اطلاعات تماس غیرقابل قبول است")
+				.required("این مورد الزامی است"),
+			contactValue: Yup.string().required("این مورد الزامی است"),
+		})
+	),
+	certificates: Yup.object().shape({
+		vatTaxpayerCertificate: Yup.mixed()
+			.required("استعلام مودیان مالیات بر ارزش افزوده الزامی است")
+			.test("fileType", "فرمت فایل معتبر نیست", (value) => {
+				const file = value as File;
+				return (
+					value && ["image/jpeg", "image/png"].includes(file.type)
+				);
+			}),
+		officialNewspaperAD: Yup.mixed()
+			.required("تصویر آگهی روزنامه رسمی آخرین تغییرات الزامی است")
+			.test("fileType", "فرمت فایل معتبر نیست", (value) => {
+				const file = value as File;
+				return (
+					value && ["image/jpeg", "image/png"].includes(file.type)
+				);
+			}),
+	}),
 });
 
 export default function Page() {
+	// const [corpId, setCorpId] = useState(0);
 	const dispatch = useDispatch();
-
-	// const [cities, setCities] = useState<City[]>([]);
-	// const [provinces, setProvinces] = useState<Province[]>([]);
-	// const [provinceId, setProvinceId] = useState<number>();
-	// const [disable, setDisable] = useState(true);
-	// const [cityId, setCityId] = useState<number>();
+	const router = useRouter();
 	const [step, setStep] = useState<number>(0);
-
-	// const [addresses, setAddresses] = useState<string[]>([]);
-	// const [signatories, setSignatories] = useState<string[]>([]);
-
-	// const getProvinces = () => {
-	// 	provinceService
-	// 		.GetProvinces()
-	// 		.then((res) => {
-	// 			Setprovinces(res.data.data);
-	// 		})
-	// 		.catch((err) => {
-	// 			console.log(err.message);
-	// 		});
-	// };
-	// const UpdateCityList = (provinceId: number) => {
-	// 	provinceService
-	// 		.GetCities(provinceId)
-	// 		.then((res) => setCities(res.data.data))
-	// 		.catch((err) => console.log(err.message));
-	// };
-	// const Findprovinceid = (provinces: Province[], name: string) => {
-	// 	const province = provinces.find((p) => p.name === name);
-	// 	return province?.ID ?? null;
-	// };
-	// const FindCityid = (cities: City[], name: string) => {
-	// 	const city = cities.find((p) => p.name === name);
-	// 	return city?.ID ?? null;
-	// };
-	// useEffect(() => {
-	// 	UpdateCityList(provinceid ?? 1);
-	// }, [provinceId]);
-	// useEffect(() => {
-	// 	Getprovinces();
-	// }, []);
 	const corp = useSelector((state: RootState) => state).corp;
-	const onSubmit = async (values: corpData) => {
-		await handleFormSubmit(values);
-		// console.log("signatories", values.signatories);
-		console.log("values", values);
-		if (step < steps.length - 1) {
-			setStep(step + 1);
-		} else {
-			// submit form
+	const user = useSelector((state: RootState) => state).user;
+	const accessToken = useSelector(
+		(state: RootState) => state.user.accessToken
+	);
+	const corpId = useSelector((state: RootState) => state.user.corpId);
+	const onSubmit = async (values: corpData, setFieldValue: any) => {
+		// await handleFormSubmit(values);
+		if (step === 0) {
+			if (corpId) {
+				getData({
+					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
+				}).then((res) => {
+					const formData: corpData = {};
+					if (values.name != res.data.name) {
+						formData["name"] = values.name;
+					}
+					if (
+						values.registrationNumber != res.data.registrationNumber
+					) {
+						formData["registrationNumber"] = String(
+							values.registrationNumber
+						);
+					}
+					if (values.nationalID != res.data.nationalID) {
+						formData["nationalID"] = String(values.nationalID);
+					}
+					if (values.iban != res.data.iban) {
+						formData["iban"] = String(values.iban);
+					}
+					const newSig = res.data.signatories
+						? res.data.signatories
+						: [];
+					if (
+						values.signatories?.length !== newSig.length ||
+						JSON.stringify(values.signatories) !==
+							JSON.stringify(res.data.signatories)
+					) {
+						// console.log("new signatory", values.signatories);
+						// console.log(res.data.signatories);
+						formData["signatories"] = values.signatories;
+					}
+					// formData["signatories"]?.map((signatory) => {
+					// 	if (
+					// 		signatory.name === "" ||
+					// 		signatory.nationalCardNumber === ""
+					// 	) {
+					// 		toast(
+					// 			"اطلاعات مورد نیاز صاحبان امضا را کامل وارد کنید"
+					// 		);
+					// 		return;
+					// 	}
+					// });
+					console.log("formData in step 0", formData);
+					checkNationalCardNumber(formData).then(
+						(nationalCardNumberOk) => {
+							if (
+								Object.keys(formData).length !== 0 &&
+								nationalCardNumberOk
+							) {
+								putData({
+									endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/basic`,
+									data: formData,
+									// data: {
+									// 	name: values.name,
+									// 	registrationNumber: String(
+									// 		values.registrationNumber
+									// 	),
+									// 	nationalID: String(values.nationalID),
+									// 	iban: String(values.iban),
+									// 	// signatories: values.signatories,
+									// },
+								})
+									.then((res) => {
+										toast(res.message);
+										// toast(generateErrorMessage(res));
+										if (step < steps.length - 1) {
+											setStep(step + 1);
+										}
+									})
+									.catch((err) => {
+										toast(generateErrorMessage(err));
+									});
+							} else if (step < steps.length - 1) {
+								setStep(step + 1);
+							}
+						}
+					);
+				});
+			} else {
+				console.log("post", values);
+				// getData({ endPoint: `${baseURL}/v1/contact/types` }).then((res) =>
+				// 	console.log(res)
+				// );
+				console.log("formData in step 0", values);
+				checkNationalCardNumber(values).then((nationalCardNumberOk) => {
+					if (nationalCardNumberOk) {
+						postData({
+							endPoint: `${baseURL}/v1/user/corps/registration/basic`,
+							data: {
+								name: values.name,
+								registrationNumber: String(
+									values.registrationNumber
+								),
+								nationalID: String(values.nationalID),
+								iban: String(values.iban),
+								signatories: values.signatories,
+							},
+						})
+							.then((res) => {
+								console.log(res);
+								// setCorpId(res.data.id);
+								dispatch(
+									setUser({
+										...user,
+										corpId: res.data.id,
+									})
+								);
+								toast(res.message);
+								if (step < steps.length - 1) {
+									setStep(step + 1);
+								}
+							})
+							.catch((err) => {
+								toast(generateErrorMessage(err));
+							});
+					}
+				});
+			}
+		} else if (step === 1) {
+			if (corpId) {
+				getData({
+					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
+				}).then((res) => {
+					const formData: corpData = {};
+					if (values.contactInformation != res.data.contactInfo) {
+						formData["contactInformation"] =
+							values.contactInformation;
+					}
+					console.log("formData in step 1", formData);
+					checkContactInformationOk(formData).then(
+						(contactInformationOk) => {
+							if (
+								Object.keys(formData).length !== 0 &&
+								contactInformationOk
+							)
+								postData({
+									endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts`,
+									data: formData,
+								})
+									.then((res) => {
+										console.log(res);
+										toast(res?.message);
+										setFieldValue("contactInformation", []);
+										if (step < steps.length - 1) {
+											setStep(step + 1);
+										}
+									})
+									.catch((err) => {
+										toast(generateErrorMessage(err));
+									});
+						}
+					);
+				});
+			} else {
+				toast("شرکتی برای شما ثبت نشده است.");
+			}
+		} else if (step === 2) {
+			if (corpId) {
+				console.log("formData in step 2", values.addresses);
+				postData({
+					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/address`,
+					// data: values.addresses,
+					data: {
+						addresses: values.addresses,
+					},
+				})
+					.then((res) => {
+						console.log("res", res);
+						toast(res?.message);
+						setFieldValue("addresses", []);
+						if (step < steps.length - 1) {
+							setStep(step + 1);
+						}
+					})
+					.catch((err) => {
+						toast(generateErrorMessage(err));
+					});
+			} else {
+				toast("شرکتی برای شما ثبت نشده است.");
+			}
+		} else if (step === 3) {
+			if (corpId) {
+				const formData = new FormData();
+				formData.append(
+					"vatTaxpayerCertificate",
+					values.certificates?.vatTaxpayerCertificate
+				);
+				formData.append(
+					"officialNewspaperAD",
+					values.certificates?.officialNewspaperAD
+				);
+				console.log("formData in step 3", formData);
+				console.log("CHECKING FormData:");
+				for (const pair of formData.entries()) {
+					console.log(pair[0], pair[1]);
+				}
+				putDataFile({
+					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/certificates`,
+					formData: formData,
+				})
+					.then((res) => {
+						console.log("result file", res);
+						toast(res?.message);
+						router.push("/");
+					})
+					.catch((error) => {
+						console.log(error);
+						toast(generateErrorMessage(error));
+					});
+			} else {
+				console.log("meow");
+			}
 		}
+		resetFormValues(setFieldValue);
 	};
-	const handleFormSubmit = async (values: corpData) => {
-		// console.log(values);
-		dispatch(
-			setCorp({
-				...corp,
-				corpName: values.corpName,
-				registrationNumber: values.registrationNumber,
-				nationalID: values.nationalID,
-				iban: values.iban,
-				signatories: values.signatories,
-				addresses: values.addresses,
-			})
-		);
+	const checkNationalCardNumber = async (formData: corpData) => {
+		formData["signatories"]?.forEach((signatory) => {
+			if (signatory.nationalCardNumber?.length !== 10) {
+				toast("فرمت کد ملی صحیح نمی‌باشد");
+				return false;
+			}
+		});
+		return true;
 	};
-	const handleBack = (values: corpData) => {
-		dispatch(
-			setCorp({
-				...corp,
-				corpName: values.corpName,
-				registrationNumber: values.registrationNumber,
-				nationalID: values.nationalID,
-				iban: values.iban,
-				signatories: values.signatories,
-				addresses: values.addresses,
-			})
-		);
+	const checkContactInformationOk = async (formData: corpData) => {
+		formData["contactInformation"]?.forEach((contact) => {
+			console.log(contact.contactValue);
+			if (!contact.contactValue) {
+				toast("مقدار راه ارتباطی را وارد کنید");
+				return false;
+			}
+		});
+		return true;
+	};
+	useEffect(() => {
+		if (!accessToken) {
+			router.push("/login");
+		}
+	}, [accessToken, router]);
+	const handleBack = () => {
+		// resetFormValues(setFieldValue);
 		if (step > 0) {
 			setStep(step - 1);
 		}
@@ -162,7 +394,7 @@ export default function Page() {
 						<div key={index} className="flex items-center">
 							<Badge
 								className={cn(
-									"rounded-full w-44 transition-all duration-300 ease-in-out text-md neu-shadow gap-2 p-2 bg-gradient-to-r ",
+									"rounded-full w-42 transition-all duration-300 ease-in-out text-md neu-shadow gap-2 p-2 bg-gradient-to-r ",
 									index <= step
 										? "from-[#A55FDA] to-[#F37240] text-black/80"
 										: "from-[#A55FDA]/30 to-[#F37240]/30 text-black",
@@ -206,21 +438,24 @@ export default function Page() {
 								<div>
 									{step === 0 && (
 										<CorpInfoForm
-											// step={step}
-											// setStep={setStep}
-											// steps={steps}
-											// signatories={signatories}
-											// setSignatories={setSignatories}
 											values={values}
+											setFieldValue={setFieldValue}
 										/>
 									)}
 									{step === 1 && (
 										<ContactInfoForm
-											// step={step}
-											// setStep={setStep}
-											// steps={steps}
-											// addresses={addresses}
-											// setAddresses={setAddresses}
+											values={values}
+											setFieldValue={setFieldValue}
+										/>
+									)}
+									{step === 2 && (
+										<AddressesForm
+											values={values}
+											setFieldValue={setFieldValue}
+										/>
+									)}
+									{step === 3 && (
+										<CertificatesForm
 											values={values}
 											setFieldValue={setFieldValue}
 										/>
@@ -231,7 +466,9 @@ export default function Page() {
 								<button
 									type="submit"
 									className="hover:cursor-pointer cta-neu-button w-1/4"
-									onClick={() => onSubmit(values)}
+									onClick={() =>
+										onSubmit(values, setFieldValue)
+									}
 								>
 									{step === steps.length - 1
 										? "تایید"
@@ -241,7 +478,10 @@ export default function Page() {
 									<button
 										type="button"
 										className="hover:cursor-pointer cta-neu-button w-1/4"
-										onClick={() => handleBack(values)}
+										onClick={() => {
+											handleBack();
+											resetFormValues(setFieldValue);
+										}}
 									>
 										قبلی
 									</button>
