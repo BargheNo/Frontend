@@ -84,11 +84,11 @@ export default function Page({mode}:{mode:"user" | "admin"}) {
           setPanelWidth(size);
         }}
       >
-        <ChatList conditionWidth={panelWidth} className="w-full h-full" />
+        <ChatList conditionWidth={panelWidth} className="w-full h-full" mode="user" />
       </ResizablePanel>
       <ResizableHandle className="bg-transparent" />
       <ResizablePanel className="h-full flex justify-center items-center py-2 pl-3 pr-2 bg-transparent rounded-lg">
-        <ChatBox className="w-full h-full" />
+        <ChatBox className="w-full h-full" mode="user" />
       </ResizablePanel>
     </ResizablePanelGroup>
   );

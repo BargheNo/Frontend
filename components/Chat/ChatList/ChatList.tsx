@@ -12,17 +12,19 @@ import { useSelector } from "react-redux";
 export default function ChatList({
   className,
   conditionWidth,
+  mode = "user"
 }: {
   className?: string;
   conditionWidth?: number;
+  mode?: "user" | "corp";
 }) {
 
 
   
-    const dispatch = useDispatch();
-    const chatRooms = useSelector((state: any) => state.chat.chatRooms);
-    useEffect(() => {
-    getData({endPoint:"/v1/user/chat/room"}).then((res: any)=>{
+  const dispatch = useDispatch();
+  const chatRooms = useSelector((state: any) => state.chat.chatRooms);
+  useEffect(() => {
+    getData({ endPoint: mode === "user" ? "/v1/user/chat/room" : "/v1/corp/chat/rooms/1" }).then((res: any) => {
       console.log(res);
       dispatch(setChatRooms(res?.data))
       if(res?.data?.length > 0){
