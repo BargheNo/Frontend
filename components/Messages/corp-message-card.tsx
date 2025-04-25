@@ -69,16 +69,16 @@ const CorpMessageCard=  ({
                                          توان مصرفی:
                                     </span> */}
                                     <span className="mr-2">
-                                    {showFullBody || body.length <= 550
+                                    {showFullBody || body.length <= 500
                                         ? body
-                                        : `${body.slice(0, 550)}... `}
+                                        : `${body.slice(0, 500)}... `}
                                     
                                     </span>
                                 </div>
             
                             </div>
                             <div className='flex flex-row gap-1 mt-4'>
-                                {body.length > 550 && (
+                                {body.length > 500 && (
                                 <button
                                 onClick={() => setShowFullBody((prev) => !prev)}
                                 className="text-gray-500 justify-center items-center text-xl ml-1 flex flex-row">
@@ -101,12 +101,17 @@ const CorpMessageCard=  ({
 
                 <div className="flex flex-col lg:justify-center justify-end lg:mb-0 -mb-18 gap-2 items-center z-10 min-w-48" >
                     
-                     <Link href={"#"}>
-                        <button className="flex items-center justify-between bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
-                            <span className="font-medium">مدیریت پنل</span>
-                            <MoveLeft className="mr-2 w-4 h-4" />
-                        </button>
-                    </Link>
+                     <div className="flex flex-col items-center justify-center gap-2 p-5 rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)] w-27">
+                            <span className="text-sm font-medium text-gray-600">
+								{date}
+							</span>
+                            <Link  href={"#"}>
+							<button
+								className={` shadow-md cursor-pointer w-25 rounded-l rounded-r bg-fire-orange text-white h-9`}
+							>مدیریت</button>
+							</Link>
+						</div>
+                    
                 </div>
             </div>
         </div>
