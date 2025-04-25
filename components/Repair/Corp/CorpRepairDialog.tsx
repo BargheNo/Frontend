@@ -50,8 +50,13 @@ const CorpRepairDialog = ({ isOpen, onClose, repairItem }: CorpRepairDialogProps
                             <div className="flex justify-center items-center h-full">
                                 <LoadingSpinner />
                             </div>
-                        ) : (
+                        ) : notes && notes.length > 0 ? (
                             <RepairHistory notes={notes} />
+                        ) : (
+                            <div className="flex flex-col items-center justify-center gap-4 py-8">
+                                <div className="text-6xl text-gray-400 font-bold">!</div>
+                                <p className="text-gray-500">هیچ یادداشتی ثبت نشده است</p>
+                            </div>
                         )}
                         <div className='flex flex-col gap-2 justify-center items-center inset-neu-container !w-full !p-5 !bg-gray-50'>
                             <h4 className="text-lg self-start font-semibold text-navy-blue">جزئیات تعمیر</h4>

@@ -62,25 +62,30 @@ export default function Page() {
 
 			<div>
 				<div className="flex flex-col neu-container">
-
-					{repairItems.map((item) => (
-						<div 
-							key={item.ID} 
-							className=""
-						>
-							<CorpRepairCard
-								panelName={item.Panel.panelName}
-								panelPower={item.Panel.power}
-								owner={item.Panel.customerName}
-								date={item.CreatedAt}
-								status={item.Status}    // TODO: change it with status, if available
-								UrgencyLevel={item.UrgencyLevel}
-								address={item.Panel.address.streetAddress}
-								className="w-full"
-								onDetailsClick={() => handleOpenDialog(item)}
-							/>
+					{repairItems.length === 0 ? (
+						<div className="text-center py-8 text-gray-500">
+							هیچ درخواست تعمیراتی موجود نیست
 						</div>
-					))}
+					) : (
+						repairItems.map((item) => (
+							<div 
+								key={item.ID} 
+								className=""
+							>
+								<CorpRepairCard
+									panelName={item.Panel.panelName}
+									panelPower={item.Panel.power}
+									owner={item.Panel.customerName}
+									date={item.CreatedAt}
+									status={item.Status}    // TODO: change it with status, if available
+									UrgencyLevel={item.UrgencyLevel}
+									address={item.Panel.address.streetAddress}
+									className="w-full"
+									onDetailsClick={() => handleOpenDialog(item)}
+								/>
+							</div>
+						))
+					)}
 				</div>
 			</div>
 

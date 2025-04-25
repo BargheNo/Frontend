@@ -148,7 +148,7 @@ const CorpRepairCard = ({
                                     <div className="">
                                         <span className="mr-1 font-black">
                                             {
-                                                moment(date.slice(0, 10), "YYYY-MM-DD").locale('fa').format('YYYY/MM/DD')
+                                                moment(date.slice(0, 10), "YYYY-MM-DD").locale('fa').format('jYYYY/jMM/jDD')
                                             }
                                         </span>
                                     </div>
