@@ -26,4 +26,5 @@ interface corpData {
 	signatories?: Signatory[];
 	addresses?: Address[];
 	contactInformation?: contactInformation[];
+	certificates?: { vatTaxpayerCertificate: any; officialNewspaperAD: any };
 }

@@ -23,7 +23,13 @@ import {
 import { Building2, FileText, MapPin, Phone } from "lucide-react";
 import ContactInfoForm from "@/components/Auth/RegisterCorp/ContactInfoForm/ContactInfoForm";
 import CertificatesForm from "@/components/Auth/RegisterCorp/CertificatesForm/CertificatesForm";
-import { baseURL, getData, postData, putData } from "@/src/services/apiHub";
+import {
+	baseURL,
+	getData,
+	postData,
+	putData,
+	putDataFile,
+} from "@/src/services/apiHub";
 import { toast } from "sonner";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { setUser } from "@/src/store/slices/userSlice";
@@ -43,6 +49,10 @@ const initialValuesForm = {
 	signatories: [],
 	addresses: [],
 	contactInformation: [],
+	certificates: {
+		vatTaxpayerCertificate: null,
+		officialNewspaperAD: null,
+	},
 };
 
 const validationSchemaForm = Yup.object({
@@ -81,6 +91,22 @@ const validationSchemaForm = Yup.object({
 			contactValue: Yup.string().required("این مورد الزامی است"),
 		})
 	),
+	certificates: Yup.object().shape({
+		vatTaxpayerCertificate: Yup.mixed()
+			.required("استعلام مودیان مالیات بر ارزش افزوده الزامی است")
+			.test("fileType", "فرمت فایل معتبر نیست", (value) => {
+				return (
+					value && ["image/jpeg", "image/png"].includes(value.type)
+				);
+			}),
+		officialNewspaperAD: Yup.mixed()
+			.required("تصویر آگهی روزنامه رسمی آخرین تغییرات الزامی است")
+			.test("fileType", "فرمت فایل معتبر نیست", (value) => {
+				return (
+					value && ["image/jpeg", "image/png"].includes(value.type)
+				);
+			}),
+	}),
 });
 
 export default function Page() {
@@ -183,41 +209,39 @@ export default function Page() {
 				// 	console.log(res)
 				// );
 				console.log("formData in step 0", values);
-				checkNationalCardNumber(values).then(
-					(nationalCardNumberOk) => {
-						if (nationalCardNumberOk) {
-							postData({
-								endPoint: `${baseURL}/v1/user/corps/registration/basic`,
-								data: {
-									name: values.name,
-									registrationNumber: String(
-										values.registrationNumber
-									),
-									nationalID: String(values.nationalID),
-									iban: String(values.iban),
-									signatories: values.signatories,
-								},
+				checkNationalCardNumber(values).then((nationalCardNumberOk) => {
+					if (nationalCardNumberOk) {
+						postData({
+							endPoint: `${baseURL}/v1/user/corps/registration/basic`,
+							data: {
+								name: values.name,
+								registrationNumber: String(
+									values.registrationNumber
+								),
+								nationalID: String(values.nationalID),
+								iban: String(values.iban),
+								signatories: values.signatories,
+							},
+						})
+							.then((res) => {
+								console.log(res);
+								// setCorpId(res.data.id);
+								dispatch(
+									setUser({
+										...user,
+										corpId: res.data.id,
+									})
+								);
+								toast(res.message);
+								if (step < steps.length - 1) {
+									setStep(step + 1);
+								}
 							})
-								.then((res) => {
-									console.log(res);
-									// setCorpId(res.data.id);
-									dispatch(
-										setUser({
-											...user,
-											corpId: res.data.id,
-										})
-									);
-									toast(res.message);
-									if (step < steps.length - 1) {
-										setStep(step + 1);
-									}
-								})
-								.catch((err) => {
-									toast(generateErrorMessage(err));
-								});
-						}
+							.catch((err) => {
+								toast(generateErrorMessage(err));
+							});
 					}
-				);
+				});
 			}
 		} else if (step === 1) {
 			if (corpId) {
@@ -281,6 +305,49 @@ export default function Page() {
 			} else {
 				toast("شرکتی برای شما ثبت نشده است.");
 			}
+		} else if (step === 3) {
+			if (corpId) {
+				const formData = new FormData();
+				formData.append(
+					"vatTaxpayerCertificate",
+					values.certificates?.vatTaxpayerCertificate
+				);
+				formData.append(
+					"officialNewspaperAD",
+					values.certificates?.officialNewspaperAD
+				);
+				console.log("formData in step 3", formData);
+				console.log("CHECKING FormData:");
+				for (const pair of formData.entries()) {
+					console.log(pair[0], pair[1]);
+				}
+
+				// axios.put(
+				// 	`${baseURL}/v1/user/corps/registration/${corpId}/certificates`,
+				// 	formData,
+				// 	{
+				// 	  headers: {
+				// 		"Content-Type": "multipart/form-data",
+				// 	  },
+				// 	}
+				//   );
+
+				putDataFile({
+					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/certificates`,
+					formData: formData,
+				})
+					.then((res) => {
+						console.log("result file", res);
+						toast(res?.message);
+						router.push("/");
+					})
+					.catch((error) => {
+						console.log(error);
+						toast(generateErrorMessage(error));
+					});
+			} else {
+				console.log("meow");
+			}
 		}
 		// dispatch(
 		// 	setCorp({
@@ -295,7 +362,7 @@ export default function Page() {
 		// );
 	};
 	const checkNationalCardNumber = async (formData) => {
-		formData.signatories?.forEach((signatory) => {
+		formData["signatories"]?.forEach((signatory) => {
 			if (signatory.nationalCardNumber?.length !== 10) {
 				toast("فرمت کد ملی صحیح نمی‌باشد");
 				return false;
