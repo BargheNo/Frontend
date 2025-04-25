@@ -12,6 +12,7 @@ import { baseURL, getData } from '@/src/services/apiHub';
 import LoadingSpinner from '@/components/LoadingSpinner/LoadingSpinner';
 
 interface RepairHistoryItem {
+
 	ID: number;
     Subject: string;
     Description: string;
@@ -29,7 +30,6 @@ interface RepairHistoryItem {
         area: number;
     };
 }
-
 const Page = () => {
 	// State for the dialog
 	const [isDialogOpen, setIsDialogOpen] = useState(false);

@@ -1,5 +1,5 @@
-"use client"
-import React from 'react'
+"use client";
+import React from "react";
 import {
     Dialog,
     DialogContent,
@@ -32,17 +32,16 @@ interface RepairHistoryItem {
 }
 
 interface RepairDetailsDialogProps {
-    isOpen: boolean;
-    onClose: () => void;
-    repairItem: RepairHistoryItem | null;
+  isOpen: boolean;
+  onClose: () => void;
+  repairItem: RepairHistoryItem | null;
 }
 
 const validationSchema = Yup.object({
-    problem: Yup.string()
-        .required('لطفا مشکل را توضیح دهید')
-        .min(10, 'توضیحات باید حداقل 10 کاراکتر باشد'),
+  problem: Yup.string()
+    .required("لطفا مشکل را توضیح دهید")
+    .min(10, "توضیحات باید حداقل 10 کاراکتر باشد"),
 });
-
 const RepairDetailsDialog = ({ isOpen, onClose, repairItem }: RepairDetailsDialogProps) => {
     if (!repairItem) return null;
 
@@ -156,18 +155,18 @@ const RepairDetailsDialog = ({ isOpen, onClose, repairItem }: RepairDetailsDialo
                                                     hover:from-[#2AAE4F] hover:to-[#008C25]
                                                     active:from-[#008C25] active:to-[#2AAE4F]
                                                     text-white py-2 px-4 rounded-md transition-all duration-300"
-                                        >
-                                            ارسال گزارش
-                                        </button>
-                                    </Form>
-                                )}
-                            </Formik>
-                        </div>
-                    </div>
-                </div>
-            </DialogContent>
-        </Dialog>
-    );
+                    >
+                      ارسال گزارش
+                    </button>
+                  </Form>
+                )}
+              </Formik>
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
 };
 
-export default RepairDetailsDialog; 
+export default RepairDetailsDialog;
