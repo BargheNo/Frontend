@@ -109,17 +109,13 @@ const validationSchemaForm = Yup.object({
 			.required("استعلام مودیان مالیات بر ارزش افزوده الزامی است")
 			.test("fileType", "فرمت فایل معتبر نیست", (value) => {
 				const file = value as File;
-				return (
-					value && ["image/jpeg", "image/png"].includes(file.type)
-				);
+				return value && ["image/jpeg", "image/png"].includes(file.type);
 			}),
 		officialNewspaperAD: Yup.mixed()
 			.required("تصویر آگهی روزنامه رسمی آخرین تغییرات الزامی است")
 			.test("fileType", "فرمت فایل معتبر نیست", (value) => {
 				const file = value as File;
-				return (
-					value && ["image/jpeg", "image/png"].includes(file.type)
-				);
+				return value && ["image/jpeg", "image/png"].includes(file.type);
 			}),
 	}),
 });
@@ -135,7 +131,13 @@ export default function Page() {
 		(state: RootState) => state.user.accessToken
 	);
 	const corpId = useSelector((state: RootState) => state.user.corpId);
-	const onSubmit = async (values: corpData, setFieldValue: any) => {
+	const onSubmit = async (
+		values: corpData,
+		setFieldValue: any,
+		validateForm: any,
+		validateField: any,
+		setErrors: any
+	) => {
 		// await handleFormSubmit(values);
 		if (step === 0) {
 			if (corpId) {
@@ -185,10 +187,24 @@ export default function Page() {
 					console.log("formData in step 0", formData);
 					checkNationalCardNumber(formData).then(
 						(nationalCardNumberOk) => {
-							if (
-								Object.keys(formData).length !== 0 &&
-								nationalCardNumberOk
-							) {
+							// if (
+							// 	!nationalCardNumberOk ||
+							// 	values.name === "" ||
+							// 	values.iban === "" ||
+							// 	values.registrationNumber === "" ||
+							// 	values.nationalID === ""
+							// ) {
+
+							// } else
+							validateForm().then((formErrors: any) => {
+								if (Object.keys(formErrors).length > 0) {
+									setErrors(formErrors);
+									toast(
+										"لطفا اطلاعات را به درستی تکمیل نمایید"
+									);
+								}
+							});
+							if (Object.keys(formData).length !== 0) {
 								putData({
 									endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/basic`,
 									data: formData,
@@ -212,8 +228,10 @@ export default function Page() {
 									.catch((err) => {
 										toast(generateErrorMessage(err));
 									});
-							} else if (step < steps.length - 1) {
-								setStep(step + 1);
+							} else {
+								if (step < steps.length - 1) {
+									setStep(step + 1);
+								}
 							}
 						}
 					);
@@ -424,7 +442,13 @@ export default function Page() {
 					validationSchema={validationSchemaForm}
 					onSubmit={onSubmit}
 				>
-					{({ setFieldValue, values }) => (
+					{({
+						setFieldValue,
+						values,
+						validateForm,
+						validateField,
+						setErrors,
+					}) => (
 						<Card className="justify-between neu-shadow border-0">
 							<CardHeader>
 								<CardTitle className="text-lg">
@@ -467,7 +491,13 @@ export default function Page() {
 									type="submit"
 									className="hover:cursor-pointer cta-neu-button w-1/4"
 									onClick={() =>
-										onSubmit(values, setFieldValue)
+										onSubmit(
+											values,
+											setFieldValue,
+											validateForm,
+											validateField,
+											setErrors
+										)
 									}
 								>
 									{step === steps.length - 1
