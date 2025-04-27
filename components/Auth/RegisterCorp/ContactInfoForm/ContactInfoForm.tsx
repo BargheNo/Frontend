@@ -18,17 +18,19 @@ import { toast } from "sonner";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { useSelector } from "react-redux";
 
-export default function ContactInfoForm({
-	setFieldValue,
-	values,
-}: {
-	setFieldValue?: any;
-	values: corpData;
-}) {
+export default function ContactInfoForm(
+	{
+		// 	setFieldValue,
+		// 	values,
+		// }: {
+		// 	setFieldValue?: any;
+		// 	values: corpData;
+	}
+) {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [contactTypes, setContactTypes] = useState<contactType[]>([]);
 	const [contactTypesList, setContactTypesList] = useState([]);
-	const corpId = useSelector((state: RootState) => state.user.corpId);
+	const corpId = useSelector((state: RootState) => state.corp.corpId);
 	useEffect(() => {
 		getData({ endPoint: `${baseURL}/v1/contact/types` }).then((res) => {
 			setContactTypes(res.data);
@@ -70,18 +72,10 @@ export default function ContactInfoForm({
 			{contactTypesList.map((contactInfo: contactType, index) => (
 				<div key={index} className="flex gap-3 items-end w-full">
 					<div className="flex w-[95%] gap-3">
-						<Select
+						{/* <Select
 							disabled={true}
 							value={String(contactInfo?.contactType?.id)}
 							name={`contactInformation.[${index}].contactTypeID`}
-							onValueChange={(value) => {
-								// console.log("contactInfo", contactInfo);
-								// Setbuilding(value);
-								setFieldValue(
-									`contactInformation.[${index}].contactTypeID`,
-									Number(value)
-								);
-							}}
 						>
 							<SelectTrigger
 								className={`${style.CustomInput} mt-[25px] min-h-[43px] cursor-pointer `}
@@ -109,9 +103,14 @@ export default function ContactInfoForm({
 									)}
 								</SelectGroup>
 							</SelectContent>
-						</Select>
+						</Select> */}
 						<CustomInput
-							name="sth"
+							name="contactType"
+							value={String(contactInfo?.contactType?.title)}
+							disabled={true}
+						/>
+						<CustomInput
+							name="contactTypeValue"
 							value={String(contactInfo?.value)}
 							disabled={true}
 							icon={Phone}
@@ -120,7 +119,12 @@ export default function ContactInfoForm({
 					<XIcon
 						className="text-fire-orange rounded-sm hover:cursor-pointer flex mb-3 w-fit"
 						onClick={() => {
-							setContactTypesList(contactTypesList.filter((contact: contactType) => contact.ID !== contactInfo.ID))
+							setContactTypesList(
+								contactTypesList.filter(
+									(contact: contactType) =>
+										contact.ID !== contactInfo.ID
+								)
+							);
 							deleteData({
 								endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/${contactInfo?.ID}`,
 								// endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/0`,

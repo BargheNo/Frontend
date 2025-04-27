@@ -57,16 +57,16 @@ export default function AddressesForm({
 	// steps,
 	// addresses,
 	// setAddresses,
-	setFieldValue,
-	values,
-}: {
+// 	setFieldValue,
+// 	values,
+// }: {
 	// step: number;
 	// setStep: (step: number) => void;
 	// steps: string[];
 	// addresses: string[];
 	// setAddresses: React.Dispatch<React.SetStateAction<string[]>>;
-	setFieldValue: any;
-	values: corpData;
+	// setFieldValue: any;
+	// values: corpData;
 }) {
 	// const dispatch = useDispatch();
 	const [addresses, setAddresses] = useState<Address[]>();
@@ -162,72 +162,6 @@ export default function AddressesForm({
 						</div>
 						<div className="flex flex-col w-full">
 							<div className="flex w-full h-full gap-4">
-								{/* <Select
-									value={String(address.province)}
-									name={`addresses.[${index}].provinceID`}
-								>
-									<SelectTrigger
-										disabled={true}
-										value={address.province}
-										className={`${styles.CustomInput} cursor-pointer`}
-									>
-										<SelectValue placeholder="استان" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectGroup className="vazir">
-											<SelectLabel>استان</SelectLabel>
-											{provinces?.length > 0 ? (
-												provinces.map(
-													(province, index) => (
-														<SelectItem
-															key={index}
-															value={String(
-																province.name
-															)}
-															className="cursor-pointer"
-														>
-															{province.name}
-														</SelectItem>
-													)
-												)
-											) : (
-												<p>هیچ استانی یافت نشد</p>
-											)}
-										</SelectGroup>
-									</SelectContent>
-								</Select>
-								<Select
-									value={String(address.city)}
-									name={`addresses.[${index}].cityID`}
-								>
-									<SelectTrigger
-										disabled={disable}
-										value={address.city}
-										className={`${styles.CustomInput} cursor-pointer`}
-									>
-										<SelectValue placeholder="شهر" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectGroup className="vazir">
-											<SelectLabel>شهر</SelectLabel>
-											{cities?.length > 0 ? (
-												cities.map((city, index) => (
-													<SelectItem
-														key={index}
-														value={String(
-															city.name
-														)}
-														className="cursor-pointer"
-													>
-														{city.name}
-													</SelectItem>
-												))
-											) : (
-												<p>هیچ شهری یافت نشد</p>
-											)}
-										</SelectGroup>
-									</SelectContent>
-								</Select> */}
 								<CustomInput
 									name={`province`}
 									value={address.province}

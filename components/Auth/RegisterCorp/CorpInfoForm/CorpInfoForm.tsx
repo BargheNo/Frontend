@@ -11,12 +11,13 @@ import {
 	UserRound,
 	XIcon,
 } from "lucide-react";
-import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { baseURL, getData } from "@/src/services/apiHub";
 import { toast } from "sonner";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setCorp } from "@/src/store/slices/corpSlice";
+import CustomInput from "@/components/Custom/Manual/CustomInput/CustomInput";
 // import { setCorp } from "@/src/store/slices/corpSlice";
 // import { useDispatch } from "react-redux";
 // import {
@@ -48,26 +49,33 @@ interface SignatoriesProps {
 // 		})
 // 	),
 // });
-export default function CorpInfoForm({
-	// step,
-	// setStep,
-	// steps,
-	// signatories,
-	// setSignatories,
-	values,
-	setFieldValue,
-}: {
-	// step: number;
-	// setStep: (step: number) => void;
-	// steps: string[];
-	// signatories: string[];
-	// setSignatories: React.Dispatch<React.SetStateAction<string[]>>;
-	values: corpData;
-	setFieldValue: any;
-}) {
+export default function CorpInfoForm(
+	{
+		// step,
+		// setStep,
+		// steps,
+		// signatories,
+		// setSignatories,
+		// values,
+		// setFieldValue,
+		// }: {
+		// step: number;
+		// setStep: (step: number) => void;
+		// steps: string[];
+		// signatories: string[];
+		// setSignatories: React.Dispatch<React.SetStateAction<string[]>>;
+		// values: corpData;
+		// setFieldValue: any;
+	}
+) {
+	const dispatch = useDispatch();
+	const [name, setName] = useState<string>("");
 	const [loading, setLoading] = useState<boolean>(true);
-	const corpId = useSelector((state: RootState) => state.user.corpId);
+	const corpId = useSelector((state: RootState) => state.corp.corpId);
+	const corp = useSelector((state: RootState) => state).corp;
+
 	useEffect(() => {
+		// console.log("corp", corp);
 		setLoading(true);
 		if (corpId) {
 			getData({
@@ -75,15 +83,24 @@ export default function CorpInfoForm({
 			})
 				.then((res) => {
 					console.log("res", res);
-					setFieldValue("name", res.data.name);
-					setFieldValue(
-						"registrationNumber",
-						res.data.registrationNumber
+					// setFieldValue("name", res.data.name);
+					// setFieldValue(
+					// 	"registrationNumber",
+					// 	res.data.registrationNumber
+					// );
+					// setFieldValue("nationalID", res.data.nationalID);
+					// setFieldValue("iban", res.data.iban);
+					// setFieldValue("signatories", res.data.signatories);
+					dispatch(
+						setCorp({
+							name: res.data.name,
+							registrationNumber: res.data.registrationNumber,
+							nationalID: res.data.nationalID,
+							iban: res.data.iban,
+							signatories: res.data.signatories,
+							...corp,
+						})
 					);
-					// setFieldValue("nationalCardNumber", res.data.nationalCardNumber);
-					setFieldValue("nationalID", res.data.nationalID);
-					setFieldValue("iban", res.data.iban);
-					setFieldValue("signatories", res.data.signatories);
 					setLoading(false);
 				})
 				.catch((err) => {
@@ -100,17 +117,32 @@ export default function CorpInfoForm({
 			</div>
 		);
 	return (
-		<Form>
+		<form>
 			<div className="flex flex-col w-full">
 				<div className="flex w-full justify-between gap-3">
+					{/* <CustomInput
+						// value={corp.name}
+						value={name}
+						onChange={(e) => {
+							setName(e.target.value);
+							// dispatch(
+							// 	setCorp({
+							// 		name: e.target.value,
+							// 		...corp,
+							// 	})
+							// );
+						}}
+						placeholder="نام شرکت"
+						icon={Building2}
+						containerClassName="w-2/3 mx-auto"
+					/> */}
 					<CustomInput
-						name="name"
+						name={"name"}
 						placeholder="نام شرکت"
 						icon={Building2}
 						containerClassName="w-2/3 mx-auto"
 					/>
 					<CustomInput
-						name="registrationNumber"
 						placeholder="شماره ثبت"
 						icon={Fingerprint}
 						type="number"
@@ -118,26 +150,20 @@ export default function CorpInfoForm({
 				</div>
 				<div className="flex w-full justify-between gap-3">
 					<CustomInput
-						name="nationalID"
 						placeholder="شناسه ملی"
 						icon={IdCard}
 						type="number"
 					/>
 					<CustomInput
-						name="iban"
 						placeholder="شماره شبا"
 						icon={CreditCard}
 						type="number"
 					/>
 				</div>
 				<h2 className="mt-8 text-xl">صاحبان امضا</h2>
-				<Signatories
-					values={values}
-					// signatories={signatories}
-					// setSignatories={setSignatories}
-				/>
+				{/* <Signatories values={corp} /> */}
 			</div>
-		</Form>
+		</form>
 	);
 }
 

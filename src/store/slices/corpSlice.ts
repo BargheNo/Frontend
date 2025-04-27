@@ -7,6 +7,8 @@ const initialState: corpData = {
 	iban: "",
 	signatories: [],
 	addresses: [],
+	contactInformation: [],
+	certificates: { vatTaxpayerCertificate: null, officialNewspaperAD: null },
 };
 
 export const corpSlice = createSlice({
@@ -19,10 +21,23 @@ export const corpSlice = createSlice({
 			state.nationalID = action.payload.nationalID;
 			state.iban = action.payload.iban;
 			state.signatories = action.payload.signatories;
+			state.addresses = action.payload.addresses;
+			state.contactInformation = action.payload.contactInformation;
+			state.certificates = action.payload.certificates;
+		},
+		resetCorp: (state: corpData) => {
+			state.name = initialState.name;
+			state.registrationNumber = initialState.registrationNumber;
+			state.nationalID = initialState.nationalID;
+			state.iban = initialState.iban;
+			state.signatories = initialState.signatories;
+			state.addresses = initialState.addresses;
+			state.contactInformation = initialState.contactInformation;
+			state.certificates = initialState.certificates;
 		},
 	},
 });
 
-export const { setCorp } = corpSlice.actions;
+export const { setCorp, resetCorp } = corpSlice.actions;
 
 export default corpSlice.reducer;

@@ -6,7 +6,6 @@ const initialState: userData = {
 	accessToken: "",
 	refreshToken: "",
 	isAuth: false,
-	corpId: 0,
 };
 
 export const userSlice = createSlice({
@@ -22,7 +21,6 @@ export const userSlice = createSlice({
 			state.lastName = action.payload.lastName;
 			state.accessToken = action.payload.accessToken;
 			state.refreshToken = action.payload.refreshToken;
-			state.corpId = action.payload.corpId;
 		},
 		resetUser: (state: userData) => {
 			state.isAuth = false;
@@ -30,7 +28,6 @@ export const userSlice = createSlice({
 			state.lastName = "";
 			state.accessToken = "";
 			state.refreshToken = "";
-			state.corpId = 0;
 		},
 	},
 });

@@ -7,11 +7,11 @@ import { toast } from "sonner";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 
 export default function CertificatesForm({
-	setFieldValue,
-	values,
-}: {
-	setFieldValue?: any;
-	values: corpData;
+// 	setFieldValue,
+// 	values,
+// }: {
+// 	setFieldValue?: any;
+// 	values: corpData;
 }) {
 	const corpId = useSelector((state: RootState) => state.user.corpId);
 	const handleFileChange = async (

@@ -30,4 +30,5 @@ interface corpData {
 	addresses?: Address[];
 	contactInformation?: contactInformation[];
 	certificates?: { vatTaxpayerCertificate: any; officialNewspaperAD: any };
+	corpId?: number;
 }
