@@ -122,8 +122,10 @@ jobs:
             #         issue_number: context.issue.number,
             #         body: message
             #       });
-            - name: Install dependencies
-              run: npm ci
+            # - name: Install dependencies
+            #   run: npm ci
+            #   env:
+            #     NODE_ENV: development
 
             - name: Run Cypress tests
               uses: cypress-io/github-action@v6
