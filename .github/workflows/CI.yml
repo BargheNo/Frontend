@@ -126,11 +126,15 @@ jobs:
             #   run: npm ci
             #   env:
             #     NODE_ENV: development
-
+            - uses: actions/setup-node@v3
+              with:
+                node-version: 20
+                cache: npm
+            - run: npm install  # Ensure lockfile is synced
             - name: Run Cypress tests
               uses: cypress-io/github-action@v6
               with:
-                  install-command: "npm ci --unsafe-perm"
+                  install-command: "npm install"
                   record: true # Optional: Record to Cypress Dashboard
                   browser: chrome
 
