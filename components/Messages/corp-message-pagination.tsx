@@ -1,6 +1,5 @@
 "use client";
-import Image from "next/image";
-import { Search} from 'lucide-react'
+
 
 import {
   Pagination,
@@ -11,15 +10,11 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import orderService from "@/src/services/orderService";
-import { useEffect, useState } from "react";
-import { Orderhistory } from "@/src/types/OrderhistoryType";
+import {  useState } from "react";
 import CorpMessageCard from "@/components/Messages/corp-message-card"
-import { useSelector } from "react-redux";
 import panelNotFound from "../../public/images/panelNotFound/panelNotFound.png";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
-import CustomInput from "../Custom/CustomInput/CustomInput";
-import { Form, Formik } from "formik";
+
 
 // import { RootState } from "@/src/store/types";
 
@@ -59,45 +54,28 @@ export default function CorpMessagesPagination() {
       {/* {false ? (
         <LoadingSpinner />
       ) : history?.length > 0 ? ( */}
-        <>
-        
-        <div className="flex flex-col mt-20 justify-start ">
-            <h1 className="mr-15 font-bold text-xl mb-3">پیام های من</h1>
-        
-        <div className="flex flex-col text-white md:px-14 px-2 bg-transparent ">
-                <div className="flex flex-row h-25 text-gray-800 bg-[#F0EDEF]  rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
-                    <Formik  initialValues={{searchbox:""}} onSubmit={()=>console.log("")} >
-                        <Form className='flex flex-col justify-center items-center  w-[25%] mb-4 mr-7'>
-                        <CustomInput name="searchbox" type="search" icon={Search}>{" "}</CustomInput>
-                        </Form>
-                    </Formik>
+      <>  
+ 
+                <div className="flex flex-col text-white md:px-14 bg-transparent px-2 w-full">
+                    <div className="flex flex-col text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+                        <CorpMessageCard from={from} date={date} topic={topic} body={body}></CorpMessageCard>
+                        <CorpMessageCard from={from} date={date} topic={topic} body={body}></CorpMessageCard>
+                        <CorpMessageCard from={from} date={date} topic={topic} body={body}></CorpMessageCard>
+                    {/* {history.map((order: Orderhistory, index) => (
+                            <OrderHistory
+                            key={index}
+                            id={index}
+                                name={order.name}
+                                address={order.address}
+                                status={order.status}
+                                createdTime={order.createdTime}
+                                />
+                                ))} */}
                     
+                    </div>
                 </div>
-        </div>
-        </div>
-
-
-          <div className="flex flex-col text-white md:px-14 px-2 bg-transparent mt-20">
-                <div className="flex flex-col text-gray-800  rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
-              
-                <CorpMessageCard from={from} date={date} topic={topic} body={body}></CorpMessageCard>
-                <CorpMessageCard from={from} date={date} topic={topic} body={body}></CorpMessageCard>
-                <CorpMessageCard from={from} date={date} topic={topic} body={body}></CorpMessageCard>
-              {/* {history.map((order: Orderhistory, index) => (
-                    <OrderHistory
-                    key={index}
-                    id={index}
-                        name={order.name}
-                        address={order.address}
-                        status={order.status}
-                        createdTime={order.createdTime}
-                        />
-                        ))} */}
-              
-            </div>
-          </div>
         </>
-      {/* ) : (
+    {/* ) : (
         <div className="text-center place-items-center mt-6">
           <Image className="w-1/3" src={panelNotFound} alt="orderNotFound" />
           <div className="-mt-8">
@@ -110,9 +88,9 @@ export default function CorpMessagesPagination() {
           </div>
         </div>
       )} */}
-      { (
-        <div className="p-5 rtl">
-          <Pagination className="lg:mb-0 mb-20">
+      
+        <div className="flex justify-center w-full p-5 rtl mt-5">
+          <Pagination className="lg:mb-0 mb-20 ">
             <PaginationContent>
               <PaginationItem>
                 {Number(currpage) > 1 && (
@@ -153,7 +131,7 @@ export default function CorpMessagesPagination() {
             </PaginationContent>
           </Pagination>
         </div>
-      )}
+      
     </>
   );
 }

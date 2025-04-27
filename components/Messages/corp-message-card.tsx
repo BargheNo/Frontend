@@ -99,7 +99,7 @@ const CorpMessageCard=  ({
                     </div> */}
                 </div>
 
-                <div className="flex flex-col lg:justify-center justify-end lg:mb-0 -mb-18 gap-2 items-center z-10 min-w-48" >
+                <div className="flex flex-col lg:justify-center justify-end lg:mb-0 -mb-18 gap-2 items-center md:mr-0 -mr-40 min-w-48" >
                     
                      <div className="flex flex-col items-center justify-center gap-2 p-5 rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)] w-27">
                             <span className="text-sm font-medium text-gray-600">
