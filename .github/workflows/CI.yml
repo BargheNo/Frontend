@@ -1,73 +1,75 @@
 name: CI
 
 on:
-  push:
-    branches: 
-      - ops/test 
-  pull_request:
-    branches:
-      - develop
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - ready_for_review
+    push:
+        branches:
+            - ops/CI
+    pull_request:
+        branches:
+            - develop
+        types:
+            - opened
+            - reopened
+            - synchronize
+            - ready_for_review
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: read
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18.x
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential python3
+    test:
+        runs-on: ubuntu-latest
+        permissions:
+            pull-requests: write
+            contents: read
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
 
-      - name: Install dependencies with legacy peers
-        run: |
-          npm uninstall tailwindcss --legacy-peer-deps && \
-          rm -rf node_modules package-lock.json && \
-          npm install --legacy-peer-deps
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 18.x
 
-      - name: Build app
-        run: npm run build
+            - name: Install system dependencies
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y build-essential python3
 
-      - name: Start app in background
-        run: npm start &
+            - name: Install dependencies with legacy peers
+              run: |
+                  npm uninstall tailwindcss --legacy-peer-deps && \
+                  rm -rf node_modules package-lock.json && \
+                  npm install --legacy-peer-deps
 
-      - name: Wait for app to be ready
-        run: npx wait-on http://localhost:3000
+            - name: Build app
+              run: npm run build
 
-      #- name: Run Cypress tests
-        #continue-on-error: true
-        #uses: cypress-io/github-action@v6
-        #with:
-          # Disable auto-installation (we already ran `npm ci`)
-          # install: false
-          #install-command: npm install --legacy-peer-deps
-          # No need for `build`/`start` since we did it manually
-          #command: npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/TestResult.txt
-          # command: npx cypress run | grep -A 9999 "(Run Finished)" | tee /tmp/TestResult.txt
-      # - name: Calculate Pass Percentage
-      #- name: Store test results
-      #  id: results
-      #  if: always()
-      #  run: |
+            - name: Start app in background
+              run: npm start &
+
+            - name: Wait for app to be ready
+              run: npx wait-on http://localhost:3000
+
+            #- name: Run Cypress tests
+            #continue-on-error: true
+            #uses: cypress-io/github-action@v6
+            #with:
+            # Disable auto-installation (we already ran `npm ci`)
+            # install: false
+            #install-command: npm install --legacy-peer-deps
+            # No need for `build`/`start` since we did it manually
+            #command: npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/TestResult.txt
+            # command: npx cypress run | grep -A 9999 "(Run Finished)" | tee /tmp/TestResult.txt
+            # - name: Calculate Pass Percentage
+            #- name: Store test results
+            #  id: results
+            #  if: always()
+            #  run: |
             # Install jq for JSON parsing (if not already available)
             #sudo apt-get install -y jq
 
             # Parse the JSON report
             #TOTAL_TESTS=$(jq '.stats.tests' cypress/results/mochawesome.json)
             #PASSED_TESTS=$(jq '.stats.passes' cypress/results/mochawesome.json)
-            
+
             # Avoid division by zero
             #if [ "$TOTAL_TESTS" -eq 0 ]; then
             #    PERCENTAGE=0
@@ -78,45 +80,72 @@ jobs:
             # Output the result for use in the next step
             #echo "PERCENTAGE=${PERCENTAGE}%" >> $GITHUB_ENV
             #echo "TestResult=${PERCENTAGE}" >> $GITHUB_ENV
-      - name: Run Cypress tests
-        id: cypress-tests
-        run: |
-          # touch /tmp/output.txt
-          # npx cypress run | awk '/\(Run Finished\)/{flag=1} flag'
-          # npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/output.txt
-          npx cypress run
-          # export OUTPUT="$(cat /tmp/output.txt)"
-          # cat /tmp/output.txt
-      # - name: Debug - Show file content
-      #   run: |
-      #     echo "Checking if output.txt exists:"
-      #     cat /tmp/output.txt || echo "File not found"
-      # - name: Comment Test Results on PR
-      #   if: github.event_name == 'pull_request'
-      #   uses: actions/github-script@v6
-      #   with:
-      #     script: |
-      #       const fs = require('fs');
-            
-      #       let testOutput = 'No test results found';
-      #       try {
-      #         testOutput = fs.readFileSync('/tmp/output.txt', 'utf8');
-      #       } catch (error) {
-      #         testOutput = `Error: ${error} ${OUTPUT}`
-      #         //console.error('Error reading test results:', error);
-      #       }
+            - name: Run Cypress tests
+              id: cypress-tests
+              run: |
+                  # touch /tmp/output.txt
+                  # npx cypress run | awk '/\(Run Finished\)/{flag=1} flag'
+                  # npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/output.txt
+                  npx cypress run
+                  # export OUTPUT="$(cat /tmp/output.txt)"
+                  # cat /tmp/output.txt
+            # - name: Debug - Show file content
+            #   run: |
+            #     echo "Checking if output.txt exists:"
+            #     cat /tmp/output.txt || echo "File not found"
+            # - name: Comment Test Results on PR
+            #   if: github.event_name == 'pull_request'
+            #   uses: actions/github-script@v6
+            #   with:
+            #     script: |
+            #       const fs = require('fs');
 
-      #       const message = `**Cypress Test Results**\n\n` +
-      #         `${fs.readFileSync('/tmp/output.txt', 'utf8')}` +
-      #         `${process.env.OUTPUT}` +
+            #       let testOutput = 'No test results found';
+            #       try {
+            #         testOutput = fs.readFileSync('/tmp/output.txt', 'utf8');
+            #       } catch (error) {
+            #         testOutput = `Error: ${error} ${OUTPUT}`
+            #         //console.error('Error reading test results:', error);
+            #       }
 
-      #         `\`\`\`\n${testOutput}\n\`\`\`\n` +
-      #         `\`\`\`\n${fs.readFileSync('/tmp/output.txt', 'utf8')}\n\`\`\`\n` +
-      #         `[View Full Report](${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID})`;
+            #       const message = `**Cypress Test Results**\n\n` +
+            #         `${fs.readFileSync('/tmp/output.txt', 'utf8')}` +
+            #         `${process.env.OUTPUT}` +
 
-      #       await github.rest.issues.createComment({
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         issue_number: context.issue.number,
-      #         body: message
-      #       });
+            #         `\`\`\`\n${testOutput}\n\`\`\`\n` +
+            #         `\`\`\`\n${fs.readFileSync('/tmp/output.txt', 'utf8')}\n\`\`\`\n` +
+            #         `[View Full Report](${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID})`;
+
+            #       await github.rest.issues.createComment({
+            #         owner: context.repo.owner,
+            #         repo: context.repo.repo,
+            #         issue_number: context.issue.number,
+            #         body: message
+            #       });
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Run Cypress tests
+              uses: cypress-io/github-action@v6
+              with:
+                  record: true # Optional: Record to Cypress Dashboard
+                  browser: chrome
+
+            - name: Parse Cypress results
+              id: cypress-results
+              run: |
+                  PASS_COUNT=$(jq '.stats.passes' cypress/results/*.json || echo "0")
+                  FAIL_COUNT=$(jq '.stats.failures' cypress/results/*.json || echo "0")
+                  echo "passes=$PASS_COUNT" >> $GITHUB_OUTPUT
+                  echo "failures=$FAIL_COUNT" >> $GITHUB_OUTPUT
+
+            - name: Send results to Telegram
+              uses: appleboy/telegram-action@master
+              with:
+                  to: ${{ secrets.TELEGRAM_CHAT_ID }}
+                  token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+                  message: |
+                      ✅ Cypress Test Results (PR #${{ github.event.pull_request.number }})
+                      ✔️ Passed: ${{ steps.cypress-results.outputs.passes }}
+                      ❌ Failed: ${{ steps.cypress-results.outputs.failures }}
+                      🔗 Job: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
