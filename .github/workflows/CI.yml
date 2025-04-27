@@ -130,6 +130,7 @@ jobs:
             - name: Run Cypress tests
               uses: cypress-io/github-action@v6
               with:
+                  install-command: "npm ci --unsafe-perm"
                   record: true # Optional: Record to Cypress Dashboard
                   browser: chrome
 
