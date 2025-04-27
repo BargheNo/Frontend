@@ -131,7 +131,6 @@ jobs:
                 node-version: 20
                 cache: npm
             - run: npm install  # Ensure lockfile is synced
-            - run: npm run build  # If using Next.js
             - name: Install jq for JSON parsing
               run: sudo apt-get install -y jq
             - name: Run Cypress tests
