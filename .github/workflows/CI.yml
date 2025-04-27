@@ -140,7 +140,6 @@ jobs:
                   install-command: "npm install"
                   record: false # Optional: Record to Cypress Dashboard
                   browser: chrome
-                  start: npm run start
                   config-file: cypress.config.ts
 
             - name: Parse Cypress results
