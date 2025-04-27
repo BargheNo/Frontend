@@ -12,8 +12,9 @@ export default function page() {
 	return (
 		<>
 		{/* <CorpMessageCard from={from} date={date} topic={topic} body={body}></CorpMessageCard> */}
-		<div className="flex flex-wrap w-full rtl">
+		<div className="flex flex-wrap w-full rtl mt-20 ">
 			<Head><meta name="viewport" content="width=device-width, initial-scale=1" /></Head>
+			<h1 className="font-bold text-xl mb-4  md:mr-14 mr-4">پیام های من</h1>
 			<CorpMessagesPagination></CorpMessagesPagination>
 		</div>
 		</>
