@@ -131,12 +131,18 @@ jobs:
                 node-version: 20
                 cache: npm
             - run: npm install  # Ensure lockfile is synced
+            - run: npm run build  # If using Next.js
+            - name: Install jq for JSON parsing
+              run: sudo apt-get install -y jq
             - name: Run Cypress tests
               uses: cypress-io/github-action@v6
               with:
+                  install: false
                   install-command: "npm install"
-                  record: true # Optional: Record to Cypress Dashboard
+                  record: false # Optional: Record to Cypress Dashboard
                   browser: chrome
+                  start: npm run start
+                  config-file: cypress.config.ts
 
             - name: Parse Cypress results
               id: cypress-results

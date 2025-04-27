@@ -14,6 +14,7 @@ export default defineConfig({
 			
 		},
 	},
+	projectId: 'BargheNo',
 	// reporter: "mochawesome",
 	// reporterOptions: {
 	// 	reportDir: "cypress/results",
