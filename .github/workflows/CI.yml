@@ -95,6 +95,7 @@ jobs:
             - name: Run Cypress and capture output
               id: cypress
               run: |
+                touch /tmp/output.txt
                 npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/output.txt
                 # OUTPUT=$(npx cypress run | awk '/\(Run Finished\)/{flag=1} flag')
                 # echo "CYPRESS_OUTPUT<<EOF" >> $GITHUB_ENV
