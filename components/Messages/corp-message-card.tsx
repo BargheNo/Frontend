@@ -77,11 +77,11 @@ const CorpMessageCard=  ({
                                 </div>
             
                             </div>
-                            <div className='flex flex-row gap-1 mt-4'>
+                            <div className='flex flex-row gap-1 mt-4 '>
                                 {body.length > 150 && (
                                 <button
                                 onClick={() => setShowFullBody((prev) => !prev)}
-                                className="text-gray-500 justify-center items-center text-xl ml-1 flex flex-row">
+                                className="text-gray-500 justify-center items-center text-xl ml-1 flex flex-row cursor-pointer underline underline-offset-2">
                                     {showFullBody?<ChevronUp/>:<ChevronDown/>}
                                 {showFullBody ? "بستن" : "بیشتر"}
                                 
