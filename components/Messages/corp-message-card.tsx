@@ -60,7 +60,7 @@ const CorpMessageCard=  ({
                             </div>
                             
                             <div className="flex  text-gray-700 justify-between mt-6 items-center">
-                                <div className="flex items-start text-black">
+                                <div className="flex items-start text-black ">
                                     {/* <IconWithBackground
                                         icon={Battery}
                                         color="#FA682D"
@@ -69,16 +69,16 @@ const CorpMessageCard=  ({
                                          توان مصرفی:
                                     </span> */}
                                     <span className="mr-2">
-                                    {showFullBody || body.length <= 500
+                                    {showFullBody || body.length <= 150
                                         ? body
-                                        : `${body.slice(0, 500)}... `}
+                                        : `${body.slice(0, 150)}... `}
                                     
                                     </span>
                                 </div>
             
                             </div>
                             <div className='flex flex-row gap-1 mt-4'>
-                                {body.length > 500 && (
+                                {body.length > 150 && (
                                 <button
                                 onClick={() => setShowFullBody((prev) => !prev)}
                                 className="text-gray-500 justify-center items-center text-xl ml-1 flex flex-row">
