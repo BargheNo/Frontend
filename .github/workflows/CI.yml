@@ -56,7 +56,10 @@ jobs:
                 
                 PR_TITLE="${{ github.event.pull_request.title }}"
                 PR_TITLE_ESCAPED=$(echo "$PR_TITLE" | sed -e 's/\./\\./g' -e 's/\-/\\-/g' -e 's/|/\\|/g')
-
+                echo "PR_TITLE"
+                echo "$PR_TITLE"
+                echo "PR_TITLE_ESCAPED"
+                echo "$PR_TITLE_ESCAPED"
                 # FINAL_MESSAGE="*PR Title:* ${PR_TITLE} \`\`\`${MESSAGE_ESCAPED}\`\`\`"
 
                 curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
