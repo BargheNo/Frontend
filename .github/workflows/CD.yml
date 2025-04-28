@@ -51,10 +51,7 @@ jobs:
         # cat /tmp/output.txt
         export OUTPUT="$(cat /tmp/output.txt)"
 
-        touch /tmp/tests.txt
-        npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/tests.txt
-
-        #echo "$ERROR_OUTPUT"
+        # echo "$ERROR_OUTPUT"
         
         # Store the error output for later use
         # echo "error_output<<EOF" >> $GITHUB_ENV
@@ -71,6 +68,18 @@ jobs:
       if: success() && steps.docker_build.outcome == 'success'
       continue-on-error: true
       run: docker compose push
+    - name: Handle Build Failure
+      if: ${{ steps.docker_build.outcome == 'failure' && github.event_name == 'pull_request' }}
+      run: |
+        PR_TITLE="${{ github.event.pull_request.title }}"
+        PR_TITLE_ESCAPED=$(echo "$PR_TITLE" | sed -e 's/\./\\./g' -e 's/\-/\\-/g' -e 's/|/\\|/g')
+        ERRORMESSAGE=$(cat /tmp/output.txt)
+        ERRORMESSAGE_ESCAPED=$(echo "$ERRORMESSAGE" | sed -e 's/\./\\./g' -e 's/\-/\\-/g' -e 's/|/\\|/g')
+        curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+        -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+        -d "message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }}" \
+        -d "text=PR ${PR_TITLE_ESCAPED} failed: \`\`\`${MESSAGE_ESCAPED}\`\`\`" \
+        -d "parse_mode=MarkdownV2"
 
     - name: Handle Build Failure
       if: ${{ steps.docker_build.outcome == 'failure' && github.event_name == 'pull_request' }}
@@ -82,8 +91,6 @@ jobs:
           
           // const errorLog = process.env.OUTPUT || 'Docker build or push failed';
           let errorMessage = `❌ Build failed!\n\nError details:\n\`\`\`\n${fs.readFileSync('/tmp/output.txt', 'utf8')}\n\`\`\``;
-          
-          let testResults = `❌ Build failed!\n\nError details:\n\`\`\`\n${fs.readFileSync('/tmp/tests.txt', 'utf8')}\n\`\`\``;
 
           // Add comment to PR
           await github.rest.issues.createComment({
@@ -91,13 +98,6 @@ jobs:
             repo,
             issue_number: number,
             body: errorMessage
-          });
-
-          await github.rest.issues.createComment({
-            owner,
-            repo,
-            issue_number: number,
-            body: testResults
           });
           
           // Close PR
