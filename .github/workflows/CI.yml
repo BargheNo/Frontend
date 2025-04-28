@@ -96,14 +96,14 @@ jobs:
               id: cypress
               run: |
                 OUTPUT=$(npx cypress run | awk '/\(Run Finished\)/{flag=1} flag')
-                echo "CYPRESS_OUTPUT<<EOF" >> $GITHUB_ENV
-                echo "$OUTPUT" >> $GITHUB_ENV
-                echo "EOF" >> $GITHUB_ENV
+                # echo "CYPRESS_OUTPUT<<EOF" >> $GITHUB_ENV
+                # echo "$OUTPUT" >> $GITHUB_ENV
+                # echo "EOF" >> $GITHUB_ENV
 
                 curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
                 -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
                 -d "message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }}" \
-                -d "text=Cypress Results: $OUTPUT"
+                -d "text=$OUTPUT"
       
             # - name: Send to Telegram
             #   run: |
