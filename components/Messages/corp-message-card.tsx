@@ -60,7 +60,7 @@ const CorpMessageCard=  ({
                             </div>
                             
                             <div className="flex  text-gray-700 justify-between mt-6 items-center">
-                                <div className="flex items-start text-black">
+                                <div className="flex items-start text-black ">
                                     {/* <IconWithBackground
                                         icon={Battery}
                                         color="#FA682D"
@@ -69,19 +69,19 @@ const CorpMessageCard=  ({
                                          توان مصرفی:
                                     </span> */}
                                     <span className="mr-2">
-                                    {showFullBody || body.length <= 500
+                                    {showFullBody || body.length <= 150
                                         ? body
-                                        : `${body.slice(0, 500)}... `}
+                                        : `${body.slice(0, 150)}... `}
                                     
                                     </span>
                                 </div>
             
                             </div>
-                            <div className='flex flex-row gap-1 mt-4'>
-                                {body.length > 500 && (
+                            <div className='flex flex-row gap-1 mt-4 '>
+                                {body.length > 150 && (
                                 <button
                                 onClick={() => setShowFullBody((prev) => !prev)}
-                                className="text-gray-500 justify-center items-center text-xl ml-1 flex flex-row">
+                                className="text-gray-500 justify-center items-center text-xl ml-1 flex flex-row cursor-pointer underline underline-offset-2">
                                     {showFullBody?<ChevronUp/>:<ChevronDown/>}
                                 {showFullBody ? "بستن" : "بیشتر"}
                                 
@@ -99,7 +99,7 @@ const CorpMessageCard=  ({
                     </div> */}
                 </div>
 
-                <div className="flex flex-col lg:justify-center justify-end lg:mb-0 -mb-18 gap-2 items-center z-10 min-w-48" >
+                <div className="flex flex-col lg:justify-center justify-end lg:mb-0 -mb-18 gap-2 items-center md:mb-10 md:mr-0 -mr-40 min-w-48" >
                     
                      <div className="flex flex-col items-center justify-center gap-2 p-5 rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)] w-27">
                             <span className="text-sm font-medium text-gray-600">
@@ -107,7 +107,7 @@ const CorpMessageCard=  ({
 							</span>
                             <Link  href={"#"}>
 							<button
-								className={` shadow-md cursor-pointer w-25 rounded-l rounded-r bg-fire-orange text-white h-9`}
+								className={` shadow-md cursor-pointer w-23 rounded-l rounded-r bg-fire-orange text-white h-9`}
 							>مدیریت</button>
 							</Link>
 						</div>

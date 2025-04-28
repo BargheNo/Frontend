@@ -1,5 +1,6 @@
 import CorpMessageCard from "@/components/Messages/corp-message-card";
 import CorpMessagesPagination from "@/components/Messages/corp-message-pagination";
+import Head from "next/head";
 import React from "react";
 
 export default function page() {
@@ -11,7 +12,11 @@ export default function page() {
 	return (
 		<>
 		{/* <CorpMessageCard from={from} date={date} topic={topic} body={body}></CorpMessageCard> */}
-		<CorpMessagesPagination></CorpMessagesPagination>
+		<div className="flex flex-wrap w-full rtl mt-20 ">
+			<Head><meta name="viewport" content="width=device-width, initial-scale=1" /></Head>
+			<h1 className="font-bold text-xl mb-4  md:mr-14 mr-4">پیام های من</h1>
+			<CorpMessagesPagination></CorpMessagesPagination>
+		</div>
 		</>
 	)
 }
