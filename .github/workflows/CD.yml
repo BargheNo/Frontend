@@ -3,7 +3,7 @@ name: CD
 on:
   push:
     branches:
-      - feature/landing
+      - ops/CI
   pull_request:
     branches:
       - develop
@@ -50,6 +50,10 @@ jobs:
         # BUILD_EXIT_CODE=$?
         # cat /tmp/output.txt
         export OUTPUT="$(cat /tmp/output.txt)"
+
+        touch /tmp/tests.txt
+        npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/tests.txt
+
         #echo "$ERROR_OUTPUT"
         
         # Store the error output for later use
@@ -79,12 +83,21 @@ jobs:
           // const errorLog = process.env.OUTPUT || 'Docker build or push failed';
           let errorMessage = `❌ Build failed!\n\nError details:\n\`\`\`\n${fs.readFileSync('/tmp/output.txt', 'utf8')}\n\`\`\``;
           
+          let testResults = `❌ Build failed!\n\nError details:\n\`\`\`\n${fs.readFileSync('/tmp/tests.txt', 'utf8')}\n\`\`\``;
+
           // Add comment to PR
           await github.rest.issues.createComment({
             owner,
             repo,
             issue_number: number,
             body: errorMessage
+          });
+
+          await github.rest.issues.createComment({
+            owner,
+            repo,
+            issue_number: number,
+            body: testResults
           });
           
           // Close PR
