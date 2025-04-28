@@ -44,10 +44,11 @@ jobs:
             #       sudo apt-get install -y build-essential python3
 
             - name: Install dependencies with legacy peers
-              run: |
-                  npm uninstall tailwindcss --legacy-peer-deps && \
-                  rm -rf node_modules package-lock.json && \
-                  npm install --legacy-peer-deps
+              run: npm install --legacy-peer-deps
+              # run: |
+              #     npm uninstall tailwindcss --legacy-peer-deps && \
+              #     rm -rf node_modules package-lock.json && \
+              #     npm install --legacy-peer-deps
 
             - name: Build app
               run: npm run build
@@ -107,7 +108,7 @@ jobs:
               run: |
                 touch /tmp/output.txt
                 # npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/output.txt
-                npx cypress run > cypress_output.log && cat cypress_output.log
+                npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' > cypress_output.log && cat cypress_output.log
                 # OUTPUT=$(npx cypress run | awk '/\(Run Finished\)/{flag=1} flag')
                 # echo "CYPRESS_OUTPUT<<EOF" >> $GITHUB_ENV
                 # echo "$OUTPUT" >> $GITHUB_ENV
@@ -117,19 +118,20 @@ jobs:
 
                 MESSAGE=$(cat cypress_output.log)
                 echo "$(cat cypress_output.log)"
+                echo "MESSAGE: "
                 echo "$MESSAGE"
                 curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
                 -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
                 -d "message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }}" \
                 -d "text=$MESSAGE"
 
-            - name: Send to Telegram
-              run: |
-                MESSAGE=$(cat /tmp/output.txt)
-                curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
-                -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
-                -d "message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }}" \
-                -d "text=$MESSAGE"
+            # - name: Send to Telegram
+            #   run: |
+            #     MESSAGE=$(cat /tmp/output.txt)
+            #     curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            #     -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+            #     -d "message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }}" \
+            #     -d "text=$MESSAGE"
       
             # - name: Send to Telegram
             #   run: |
