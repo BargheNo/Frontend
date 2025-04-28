@@ -99,13 +99,18 @@ jobs:
                 echo "CYPRESS_OUTPUT<<EOF" >> $GITHUB_ENV
                 echo "$OUTPUT" >> $GITHUB_ENV
                 echo "EOF" >> $GITHUB_ENV
-      
-            - name: Send to Telegram
-              run: |
+
                 curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
                 -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
                 -d "message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }}" \
-                -d "text=Cypress Results: ${{ env.CYPRESS_OUTPUT }}"
+                -d "text=Cypress Results: $OUTPUT"
+      
+            # - name: Send to Telegram
+            #   run: |
+            #     curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            #     -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+            #     -d "message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }}" \
+            #     -d "text=Cypress Results: ${{ env.CYPRESS_OUTPUT }}"
 
             # - name: Debug - Show file content
             #   run: |
