@@ -107,7 +107,7 @@ jobs:
               run: |
                 touch /tmp/output.txt
                 # npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/output.txt
-                npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' > cypress_output.log && cat cypress_output.log
+                npx cypress run > cypress_output.log && cat cypress_output.log
                 # OUTPUT=$(npx cypress run | awk '/\(Run Finished\)/{flag=1} flag')
                 # echo "CYPRESS_OUTPUT<<EOF" >> $GITHUB_ENV
                 # echo "$OUTPUT" >> $GITHUB_ENV

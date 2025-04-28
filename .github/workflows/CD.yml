@@ -3,7 +3,7 @@ name: CD
 on:
   push:
     branches:
-      - ops/CI
+      - ops/ci
   pull_request:
     branches:
       - develop
