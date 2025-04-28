@@ -110,9 +110,9 @@ const Login = () => {
 										readOnly={true}
 										icon={Smartphone}
 										type="text"
-										value="+98"
+										// value="+98"
 									>
-										+98
+										98+
 									</CustomInput>
 								</div>
 							</div>
