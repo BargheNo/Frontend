@@ -100,6 +100,7 @@ jobs:
                 # echo "CYPRESS_OUTPUT<<EOF" >> $GITHUB_ENV
                 # echo "$OUTPUT" >> $GITHUB_ENV
                 # echo "EOF" >> $GITHUB_ENV
+                cat /tmp/output.txt
 
             - name: Send to Telegram
               run: |
