@@ -116,6 +116,8 @@ jobs:
                 # export OUTPUT="$(cat /tmp/output.txt)"
 
                 MESSAGE=$(cat cypress_output.log)
+                echo "$(cat cypress_output.log)"
+                echo "$MESSAGE"
                 curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
                 -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
                 -d "message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }}" \
