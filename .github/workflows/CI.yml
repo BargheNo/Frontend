@@ -80,15 +80,33 @@ jobs:
             # Output the result for use in the next step
             #echo "PERCENTAGE=${PERCENTAGE}%" >> $GITHUB_ENV
             #echo "TestResult=${PERCENTAGE}" >> $GITHUB_ENV
-            - name: Run Cypress tests
-              id: cypress-tests
+
+
+            # - name: Run Cypress tests
+            #   id: cypress-tests
+            #   run: |
+            #       # touch /tmp/output.txt
+            #       # npx cypress run | awk '/\(Run Finished\)/{flag=1} flag'
+            #       # npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/output.txt
+            #       # npx cypress run
+            #       # export OUTPUT="$(cat /tmp/output.txt)"
+            #       # cat /tmp/output.txt
+            
+            - name: Run Cypress and capture output
+              id: cypress
               run: |
-                  # touch /tmp/output.txt
-                  # npx cypress run | awk '/\(Run Finished\)/{flag=1} flag'
-                  # npx cypress run | awk '/\(Run Finished\)/{flag=1} flag' | tee /tmp/output.txt
-                  npx cypress run
-                  # export OUTPUT="$(cat /tmp/output.txt)"
-                  # cat /tmp/output.txt
+                OUTPUT=$(npx cypress run | awk '/\(Run Finished\)/{flag=1} flag')
+                echo "CYPRESS_OUTPUT<<EOF" >> $GITHUB_ENV
+                echo "$OUTPUT" >> $GITHUB_ENV
+                echo "EOF" >> $GITHUB_ENV
+      
+            - name: Send to Telegram
+              run: |
+                curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+                -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+                -d "message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }}" \
+                -d "text=Cypress Results: ${{ env.CYPRESS_OUTPUT }}"
+
             # - name: Debug - Show file content
             #   run: |
             #     echo "Checking if output.txt exists:"
@@ -126,37 +144,37 @@ jobs:
             #   run: npm ci
             #   env:
             #     NODE_ENV: development
-            - uses: actions/setup-node@v3
-              with:
-                node-version: 20
-                cache: npm
-            - run: npm install  # Ensure lockfile is synced
-            - name: Install jq for JSON parsing
-              run: sudo apt-get install -y jq
-            - name: Run Cypress tests
-              uses: cypress-io/github-action@v6
-              with:
-                  install: false
-                  install-command: "npm install"
-                  record: false # Optional: Record to Cypress Dashboard
-                  browser: chrome
-                  config-file: cypress.config.ts
+            # - uses: actions/setup-node@v3
+            #   with:
+            #     node-version: 20
+            #     cache: npm
+            # - run: npm install  # Ensure lockfile is synced
+            # - name: Install jq for JSON parsing
+            #   run: sudo apt-get install -y jq
+            # - name: Run Cypress tests
+            #   uses: cypress-io/github-action@v6
+            #   with:
+            #       install: false
+            #       install-command: "npm install"
+            #       record: false # Optional: Record to Cypress Dashboard
+            #       browser: chrome
+            #       config-file: cypress.config.ts
 
-            - name: Parse Cypress results
-              id: cypress-results
-              run: |
-                  PASS_COUNT=$(jq '.stats.passes' cypress/results/*.json || echo "0")
-                  FAIL_COUNT=$(jq '.stats.failures' cypress/results/*.json || echo "0")
-                  echo "passes=$PASS_COUNT" >> $GITHUB_OUTPUT
-                  echo "failures=$FAIL_COUNT" >> $GITHUB_OUTPUT
+            # - name: Parse Cypress results
+            #   id: cypress-results
+            #   run: |
+            #       PASS_COUNT=$(jq '.stats.passes' cypress/results/*.json || echo "0")
+            #       FAIL_COUNT=$(jq '.stats.failures' cypress/results/*.json || echo "0")
+            #       echo "passes=$PASS_COUNT" >> $GITHUB_OUTPUT
+            #       echo "failures=$FAIL_COUNT" >> $GITHUB_OUTPUT
 
-            - name: Send results to Telegram
-              uses: appleboy/telegram-action@master
-              with:
-                  to: ${{ secrets.TELEGRAM_CHAT_ID }}
-                  token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-                  message: |
-                      ✅ Cypress Test Results (PR #${{ github.event.pull_request.number }})
-                      ✔️ Passed: ${{ steps.cypress-results.outputs.passes }}
-                      ❌ Failed: ${{ steps.cypress-results.outputs.failures }}
-                      🔗 Job: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            # - name: Send results to Telegram
+            #   uses: appleboy/telegram-action@master
+            #   with:
+            #       to: ${{ secrets.TELEGRAM_CHAT_ID }}
+            #       token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+            #       message: |
+            #           ✅ Cypress Test Results (PR #${{ github.event.pull_request.number }})
+            #           ✔️ Passed: ${{ steps.cypress-results.outputs.passes }}
+            #           ❌ Failed: ${{ steps.cypress-results.outputs.failures }}
+            #           🔗 Job: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
