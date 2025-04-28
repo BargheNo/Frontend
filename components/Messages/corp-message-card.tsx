@@ -107,7 +107,7 @@ const CorpMessageCard=  ({
 							</span>
                             <Link  href={"#"}>
 							<button
-								className={` shadow-md cursor-pointer w-25 rounded-l rounded-r bg-fire-orange text-white h-9`}
+								className={` shadow-md cursor-pointer w-23 rounded-l rounded-r bg-fire-orange text-white h-9`}
 							>مدیریت</button>
 							</Link>
 						</div>
