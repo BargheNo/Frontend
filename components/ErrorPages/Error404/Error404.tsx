@@ -20,7 +20,7 @@ const Error404 = () => {
         <Image 
           src="/images/error404/cloud1.svg"
           className={`absolute self-center z-50 -translate-y-30 -translate-x-10 sm:-translate-y-40 sm:-translate-x-14 w-[130px] md:w-[160px] lg:w-[180px] ${styles.floating1}`}
-          alt="404 Error"
+          alt=""
           width={180}
           height={180}
         />
