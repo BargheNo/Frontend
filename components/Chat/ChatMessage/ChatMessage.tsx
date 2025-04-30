@@ -22,7 +22,7 @@ interface ChatMessageProps {
   ref?: any;
   srcpic?: string;
   decpic?: string;
-  time?: string;
+  // time?: string;
   srcName: string;
   decName: string;
 }
@@ -174,7 +174,7 @@ export default function ChatMessage({
             ) : (
               <>
                 {message}
-                {time && <div className="text-xs text-gray-400 mt-1">{time}</div>}
+                {/* {time && <div className="text-xs text-gray-400 mt-1">{time}</div>} */}
               </>
             )}
           </div>
