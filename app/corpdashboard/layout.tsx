@@ -4,7 +4,7 @@ import PanelAside from '@/components/Panel/PanelAside/PanelAside';
 import { NavItem } from '@/src/types/PanelAsideTypes';
 // import '../styles/globals.css';
 import '@/styles/global.css';
-import { Server, Send, ClipboardList, SquarePen, MessageSquare, Wrench, BarChart, Users } from "lucide-react";
+import { Server, Send, ClipboardList, SquarePen, MessageSquare, Wrench, BarChart, Users, Megaphone } from "lucide-react";
 
 // const myFont = localFont({ src: '../..' })
   
@@ -20,6 +20,7 @@ export default function Layout({ children }: Readonly<{ children: React.ReactNod
         { name: "تعمیرات پیش رو", path: "/corpdashboard/maintenances", icon: <Wrench /> },
         { name: "گزارشات", path: "/corpdashboard/reports", icon: <BarChart /> },
         { name: "تکنسین‌ها", path: "/corpdashboard/technicians", icon: <Users /> },
+        { name: "اخبار و اطلاعیه‌ها", path: "/corpdashboard/announcements", icon: <Megaphone /> },
     ];
 
 
