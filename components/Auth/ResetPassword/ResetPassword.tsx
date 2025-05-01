@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { useSelector } from "react-redux";
 // import { RootState } from "@/src/store/types";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
-import { postData } from "@/src/services/apiHub";
+import { postData, putData } from "@/src/services/apiHub";
 
 const validationSchema = Yup.object({
 	password: Yup.string()
@@ -50,14 +50,13 @@ const handleFormSubmit = async (values: {
 	const { confirmPassword, password } = values;
 	
 	try {
-		const response = await postData({
-			endPoint: "/v1/user/auth/reset-password",
+		const response = await putData({
+			endPoint: "/v1/user/profile/password",
 
 			data: {
 				password,
 				confirmPassword,
 			},
-			accessToken: accessToken,
 		});
 
 		if (response?.statusCode === 200) {
