@@ -74,7 +74,7 @@ export default function CorpInfoForm({
 				endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
 			})
 				.then((res) => {
-					console.log("res", res);
+					// console.log("res", res);
 					setFieldValue("name", res.data.name);
 					setFieldValue(
 						"registrationNumber",
