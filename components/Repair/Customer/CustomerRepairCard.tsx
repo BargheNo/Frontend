@@ -62,33 +62,33 @@ const CustomerRepairCard = ({
                         </h2>
                         <div className="space-y-2 w-full">
                             <div className="flex flex-col md:flex-row gap-4 md:gap-36">
-                                <div className="flex text-sm text-gray-700 justify-between items-center">
+                                <div className="flex text-sm text-gray-700 items-center w-full md:w-1/2">
                                     <div className="flex items-center">
                                         <IconWithBackground
                                             icon={Eclipse}
                                             color="#6B7280"
                                         />
-                                        <span className="font-medium mr-2">
+                                        <span className="font-medium mr-2 whitespace-nowrap">
                                             پنل تعمیر شده:
                                         </span>
                                     </div>
-                                    <div className="">
+                                    <div className="truncate">
                                         <span className="mr-1">
                                             {repairItem.Panel.panelName}
                                         </span>
                                     </div>
                                 </div>
-                                <div className="flex text-sm text-gray-700 justify-between items-center">
+                                <div className="flex text-sm text-gray-700 items-center w-full md:w-1/2">
                                     <div className="flex items-center">
                                         <IconWithBackground
                                             icon={CalendarCheck}
                                             color="#F59E0B"
                                         />
-                                        <span className="font-medium mr-2">
+                                        <span className="font-medium mr-2 whitespace-nowrap">
                                             تاریخ:
                                         </span>
                                     </div>
-                                    <div className="">
+                                    <div className="truncate">
                                         <span className="mr-1">
                                             {moment(repairItem.CreatedAt.slice(0, 10), "YYYY-MM-DD").locale('fa').format('YYYY/MM/DD')}
                                         </span>
