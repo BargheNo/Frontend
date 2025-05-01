@@ -87,12 +87,12 @@ const validationSchemaForm = Yup.object({
 		Yup.object().shape({
 			provinceID: Yup.number().required("این فیلد الزامی است"),
 			cityID: Yup.number().required("این فیلد الزامی است"),
-			streetAddress: Yup.string().required("این فیلد الزامی است"),
+			streetAddress: Yup.string().required("آدرس الزامی است"),
 			postalCode: Yup.string()
 				.required("کد پستی الزامی است")
 				.length(10, "کد پستی باید 10 رقم باشد"),
-			houseNumber: Yup.string().optional(),
-			unit: Yup.number().optional(),
+			houseNumber: Yup.string().required("پلاک الزامی است"),
+			unit: Yup.number().required("واحد الزامی است"),
 		})
 	),
 	contactInformation: Yup.array().of(
@@ -294,6 +294,13 @@ export default function Page() {
 							formData["contactInformation"] =
 								values.contactInformation;
 						}
+						if (
+							values.contactInformation?.length === 0 &&
+							res.data.contactInfo.length === 0
+						) {
+							toast("افزودن حداقل یک راه ارتباطی الزامی است");
+							return;
+						}
 						console.log("formData in step 1", formData);
 						const contactInformationOk =
 							await checkContactInformationOk(formData);
@@ -331,25 +338,49 @@ export default function Page() {
 			}
 		} else if (step === 2) {
 			if (corpId) {
-				console.log("formData in step 2", values.addresses);
-				postData({
-					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/address`,
-					// data: values.addresses,
-					data: {
-						addresses: values.addresses,
-					},
-				})
-					.then((res) => {
-						console.log("res", res);
-						toast(res?.message);
-						setFieldValue("addresses", []);
-						if (step < steps.length - 1) {
-							setStep(step + 1);
+				getData({
+					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
+				}).then(async (res) => {
+					const formData: corpData = {};
+					if (
+						values.addresses?.length === 0 &&
+						res.data.addresses.length === 0
+					) {
+						toast("افزودن حداقل یک آدرس الزامی است");
+						return;
+					}
+					if (values.addresses != res.data.addresses) {
+						formData["addresses"] = values.addresses;
+					}
+					console.log("formData in step 2", values.addresses);
+
+					const addressesOk = await checkAddressOk(formData);
+					if (addressesOk) {
+						if (formData?.addresses?.length !== 0) {
+							postData({
+								endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/address`,
+								data: {
+									addresses: values.addresses,
+								},
+							})
+								.then((res) => {
+									console.log("res", res);
+									toast(res?.message);
+									setFieldValue("addresses", []);
+									if (step < steps.length - 1) {
+										setStep(step + 1);
+									}
+								})
+								.catch((err) => {
+									toast(generateErrorMessage(err));
+								});
+						} else {
+							if (step < steps.length - 1) {
+								setStep(step + 1);
+							}
 						}
-					})
-					.catch((err) => {
-						toast(generateErrorMessage(err));
-					});
+					}
+				});
 			} else {
 				toast("شرکتی برای شما ثبت نشده است.");
 			}
@@ -413,6 +444,43 @@ export default function Page() {
 			}
 			if (!contact.contactValue) {
 				toast("مقدار راه ارتباطی را وارد کنید");
+				return false;
+			}
+		}
+		return true;
+	};
+	const checkAddressOk = async (formData: corpData) => {
+		for (const address of formData["addresses"] || []) {
+			if (!address.provinceID) {
+				toast("مقدار استان را انتخاب کنید");
+				return false;
+			}
+			if (!address.cityID) {
+				toast("مقدار شهر را انتخاب کنید");
+				return false;
+			}
+			if (!address.cityID) {
+				toast("مقدار شهر را انتخاب کنید");
+				return false;
+			}
+			if (!address.streetAddress) {
+				toast("آدرس را وارد کنید");
+				return false;
+			}
+			if (!address.postalCode) {
+				toast("کد پستی را وارد کنید");
+				return false;
+			}
+			if (address.postalCode.length !== 10) {
+				toast("فرمت کد پستی صحیح نمی‌باشد");
+				return false;
+			}
+			if (!address.houseNumber) {
+				toast("پلاک را وارد کنید");
+				return false;
+			}
+			if (!address.unit) {
+				toast("واحد را وارد کنید");
 				return false;
 			}
 		}
