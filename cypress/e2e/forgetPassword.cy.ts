@@ -31,6 +31,21 @@ describe("Forget Password", () => {
 		cy.get('input[name="password"]').type("!Amin123");
 		cy.get('input[name="confirmPassword"]').type("!Amin123");
 		cy.get('[data-test="submit"]').click();
-        cy.url().should("include", "dashboard");
+		cy.url().should("include", "dashboard");
+	});
+
+	it("checks wrongs OTP", () => {
+		cy.visit("/forgot-password");
+		cy.get('input[name="phoneNumber"]').type("9174911318");
+		cy.get('[data-test="submit"]').click();
+		cy.get('[data-test="sonner-toast"]')
+			.should("exist")
+			.and("contain", "لطفا پیامک های خود را بررسی کنید");
+		for (let i = 0; i < 6; i++) {
+			cy.get('[data-test="digits"]').type("0");
+		}
+		cy.get('[data-test="sonner-toast"]')
+			.should("exist")
+			.and("contain", "رمز یکبار مصرف وارد شده اشتباه است");
 	});
 });
