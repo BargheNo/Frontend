@@ -9,7 +9,7 @@
 		"lint": "next lint",
 		"update": "npm install --legacy-peer-deps",
 		"test:e2e": "start-server-and-test dev http://localhost:3000 cypress",
-		"test": "npm run build:reporter && cypress run"
+		"test": "npx cypress open"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^5.0.1",

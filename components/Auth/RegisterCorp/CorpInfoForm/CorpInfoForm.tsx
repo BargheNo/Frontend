@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { baseURL, getData } from "@/src/services/apiHub";
-import { toast } from "sonner";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 import { useSelector } from "react-redux";
@@ -87,7 +87,7 @@ export default function CorpInfoForm({
 					setLoading(false);
 				})
 				.catch((err) => {
-					toast(generateErrorMessage(err));
+					CustomToast(generateErrorMessage(err));
 					setLoading(false);
 				});
 		}
@@ -189,7 +189,7 @@ const Signatories: React.FC<SignatoriesProps> = ({
 								className="text-fire-orange rounded-sm hover:cursor-pointer flex mb-3 w-fit"
 								// onClick={() => removeSignatory(id)}
 								onClick={() => {
-									toast("صاحب امضا با موفقیت حذف شد");
+									CustomToast("صاحب امضا با موفقیت حذف شد");
 									remove(index);
 									// removeSignatory(id);
 								}}
@@ -199,6 +199,7 @@ const Signatories: React.FC<SignatoriesProps> = ({
 
 					<button
 						className="place-self-start cta-neu-button w-1/3 mt-8"
+						data-test="addSignatory"
 						onClick={() => {
 							push({
 								name: "",

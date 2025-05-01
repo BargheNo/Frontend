@@ -232,7 +232,7 @@ export default function AddressesForm({
 									name={`province`}
 									value={address.province}
 									disabled
-									/>
+								/>
 								<CustomInput
 									name={`city`}
 									value={address.city}
@@ -292,7 +292,9 @@ export default function AddressesForm({
 										}}
 									>
 										<span className="absolute group-hover:opacity-0 transition-opacity duration-300 translate-x-[6px] -translate-y-[10px]">
-											{(addresses || []).length + index + 1}
+											{(addresses || []).length +
+												index +
+												1}
 										</span>
 										<XIcon className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-x-[3px] -translate-y-[10px]" />
 									</div>
@@ -347,6 +349,7 @@ export default function AddressesForm({
 												}}
 											>
 												<SelectTrigger
+													data-test="select-province"
 													value={address.provinceID}
 													// name={`addresses.[${index}].province`}
 
@@ -370,6 +373,7 @@ export default function AddressesForm({
 																		key={
 																			index
 																		}
+																		data-test={`select-province-${index}`}
 																		value={String(
 																			province.ID
 																		)}
@@ -410,6 +414,7 @@ export default function AddressesForm({
 												}}
 											>
 												<SelectTrigger
+													data-test="select-city"
 													disabled={disable}
 													className={`${styles.CustomInput} cursor-pointer`}
 												>
@@ -430,6 +435,7 @@ export default function AddressesForm({
 																		key={
 																			index
 																		}
+																		data-test={`select-city-${index}`}
 																		value={String(
 																			city.ID
 																		)}
@@ -483,6 +489,7 @@ export default function AddressesForm({
 							))}
 							<button
 								className={`place-self-start cta-neu-button w-1/3 mt-4`}
+								data-test="add-address"
 								onClick={() => {
 									// addAddress();
 									if ((values.addresses || []).length < 10) {
