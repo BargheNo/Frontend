@@ -1,4 +1,11 @@
 describe("Register Corporation", () => {
+	it("see register corp button in corp landing", () => {
+		cy.visit("/landing/corp-introduction");
+		cy.get('[data-test="register-corp"]')
+			.contains("ثبت نام شرکت")
+			.should("be.visible");
+	});
+
 	it("Prevent user from accessing page when not logged in", () => {
 		cy.visit("/landing/corp-introduction");
 
@@ -13,13 +20,13 @@ describe("Register Corporation", () => {
 
 		cy.url().should("include", "/login");
 	});
-	
+
 	it("Register corporation", () => {
 		cy.visit("/login");
-		
+
 		cy.get('input[name="phoneNumber"]').type("9174911318");
 		cy.get('input[name="password"]').type("!Amin123");
-		
+
 		cy.get("#login").click();
 
 		// cy.get("#sonner-toast").contains("وارد", { timeout: 5000 }).as("loginSuccess");
@@ -30,7 +37,7 @@ describe("Register Corporation", () => {
 		// 	.and("contain", "وارد");
 
 		// cy.wait("@loginSuccess");
-		
+
 		cy.visit("/register-corp");
 
 		cy.get('[data-test="submit-button"]').click();
@@ -38,26 +45,26 @@ describe("Register Corporation", () => {
 		cy.get('[data-test="sonner-toast"]')
 			.should("exist")
 			.and("contain", "اطلاعات خواسته شده را پر کنید");
-			
+
 		const name = Math.floor(Math.random() * 1e9).toString();
 		cy.get('input[name="name"]').type(name);
 
 		cy.get('[data-test="submit-button"]').click();
-		
+
 		const registrationNumber = Math.floor(Math.random() * 1e9).toString();
 		cy.get('input[name="registrationNumber"]').type(registrationNumber);
-		
+
 		const nationalID = Math.floor(Math.random() * 1e9).toString();
 		cy.get('input[name="nationalID"]').type(nationalID);
 		const iban = Math.floor(Math.random() * 1e16).toString();
 		cy.get('input[name="iban"]').type(iban);
-		
+
 		cy.get('[data-test="submit-button"]').click();
-		
+
 		cy.get('[data-test="sonner-toast"]')
-		.should("exist")
-		.and("contain", "افزودن حداقل یک صاحب امضا الزامی است");
-		
+			.should("exist")
+			.and("contain", "افزودن حداقل یک صاحب امضا الزامی است");
+
 		cy.get('[data-test="addSignatory"]').click();
 		const signatoryName = Math.floor(Math.random() * 1e9).toString();
 		cy.get('input[name="signatories.[0].name"]').type(signatoryName);
@@ -73,25 +80,25 @@ describe("Register Corporation", () => {
 		);
 
 		cy.get('[data-test="submit-button"]').click();
-		
+
 		cy.get('[data-test="sonner-toast"]')
-		.should("exist")
-		.and(
-			"contain",
-			"درخواست ثبت نام شما با موفقیت ارسال شد. لطفا منتظر بمانید تا ادمین درخواست شما را تایید کند."
-		);
-		
+			.should("exist")
+			.and(
+				"contain",
+				"درخواست ثبت نام شما با موفقیت ارسال شد. لطفا منتظر بمانید تا ادمین درخواست شما را تایید کند."
+			);
+
 		cy.get('[data-test="add-contact"]').click();
 		cy.get('[data-test="select-contact-type"]').click();
 		cy.get('[data-test="option-2"]').click();
 		cy.get('input[name="contactInformation.[0].contactValue"]').type("abc");
-		
+
 		cy.get('[data-test="submit-button"]').click();
-		
+
 		cy.get('[data-test="sonner-toast"]')
-		.should("exist")
-		.and("contain", "اطلاعات تماس");
-		
+			.should("exist")
+			.and("contain", "اطلاعات تماس");
+
 		cy.get('[data-test="add-address"]').click();
 		cy.get('[data-test="select-province"]').click();
 		cy.get('[data-test="select-province-0"]').click();
