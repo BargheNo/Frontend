@@ -33,6 +33,7 @@ import {
 import { toast } from "sonner";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { setUser } from "@/src/store/slices/userSlice";
+import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
 
 const steps = ["اطلاعات شرکت", "اطلاعات تماس", "آدرس", "مدارک"];
 const icons = [
@@ -122,6 +123,7 @@ const validationSchemaForm = Yup.object({
 
 export default function Page() {
 	// const [corpId, setCorpId] = useState(0);
+	const [loading, setLoading] = useState<boolean>(false);
 	const dispatch = useDispatch();
 	const router = useRouter();
 	const [step, setStep] = useState<number>(0);
@@ -137,15 +139,7 @@ export default function Page() {
 		validateForm: any
 	) => {
 		// Validate the form values
-		const errors = await validateForm(values);
-		if (Object.keys(errors).length > 0) {
-			console.log("errors", errors);
-			// If there are errors, set them in Formik's state
-			// Object.keys(errors).forEach((key) => {
-			// 	toast(errors[key]); // Display the error message
-			// });
-			// return; // Prevent further execution
-		}
+		await validateForm(values);
 
 		if (step === 0) {
 			if (corpId) {
@@ -278,8 +272,6 @@ export default function Page() {
 							.catch((err) => {
 								toast(generateErrorMessage(err));
 							});
-					} else {
-						toast("کد ملی صاحبان امضا را به درستی وارد کنید");
 					}
 				}
 			}
@@ -386,6 +378,14 @@ export default function Page() {
 			}
 		} else if (step === 3) {
 			if (corpId) {
+				if (
+					!values.certificates?.vatTaxpayerCertificate ||
+					!values.certificates?.officialNewspaperAD
+				) {
+					toast("لطفا مدرک خواسته شده را بارگذاری کنید.");
+					return;
+				}
+
 				const formData = new FormData();
 				formData.append(
 					"vatTaxpayerCertificate",
@@ -396,10 +396,7 @@ export default function Page() {
 					values.certificates?.officialNewspaperAD
 				);
 				console.log("formData in step 3", formData);
-				// console.log("CHECKING FormData:");
-				// for (const pair of formData.entries()) {
-				// 	console.log(pair[0], pair[1]);
-				// }
+				setLoading(true);
 				putDataFile({
 					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/certificates`,
 					formData: formData,
@@ -408,10 +405,12 @@ export default function Page() {
 						console.log("result file", res);
 						toast(res?.message);
 						router.push("/");
+						setLoading(false);
 					})
 					.catch((error) => {
 						console.log(error);
 						toast(generateErrorMessage(error));
+						setLoading(false);
 					});
 			} else {
 				console.log("meow");
@@ -588,9 +587,13 @@ export default function Page() {
 										);
 									}}
 								>
-									{step === steps.length - 1
-										? "تایید"
-										: "بعدی"}
+									{loading ? (
+										<TransparentLoading />
+									) : step === steps.length - 1 ? (
+										"تایید"
+									) : (
+										"بعدی"
+									)}
 								</button>
 								{step > 0 && (
 									<button
