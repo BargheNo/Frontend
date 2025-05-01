@@ -288,7 +288,9 @@ export default function Page() {
 							values.contactInformation?.length === 0 &&
 							res.data.contactInfo.length === 0
 						) {
-							CustomToast("افزودن حداقل یک راه ارتباطی الزامی است");
+							CustomToast(
+								"افزودن حداقل یک راه ارتباطی الزامی است"
+							);
 							return;
 						}
 						console.log("formData in step 1", formData);
@@ -507,6 +509,7 @@ export default function Page() {
 					{Array.from({ length: steps.length }).map((_, index) => (
 						<div key={index} className={`flex items-center`}>
 							<Badge
+								data-test={`step-${index}`}
 								className={cn(
 									"rounded-full w-42 transition-all duration-300 ease-in-out text-md neu-shadow gap-2 p-2 bg-gradient-to-r",
 									index === step
