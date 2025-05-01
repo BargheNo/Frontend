@@ -163,6 +163,7 @@ export default function ContactInfoForm({
 											}}
 										>
 											<SelectTrigger
+												data-test="select-contact-type"
 												className={`${style.CustomInput} mt-[25px] min-h-[43px] cursor-pointer `}
 											>
 												<SelectValue placeholder="راه ارتباطی" />
@@ -181,6 +182,7 @@ export default function ContactInfoForm({
 															) => (
 																<SelectItem
 																	key={index}
+																	data-test={`option-${index}`}
 																	value={String(
 																		contactType.id
 																	)}
@@ -222,6 +224,7 @@ export default function ContactInfoForm({
 
 						<button
 							className="place-self-start cta-neu-button w-1/3 mt-8"
+							data-test="add-contact"
 							onClick={() => {
 								push({
 									contactTypeID: 0,
