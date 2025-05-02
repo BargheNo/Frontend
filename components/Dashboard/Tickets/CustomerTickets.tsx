@@ -79,6 +79,7 @@ const TicketSupportPage = () => {
     image: File | null;
   }) => {
     const formData = new FormData();
+    setImagePreview(null);
     formData.append("subject", values.subject);
     console.log(values.subject);
     formData.append("description", values.description);
