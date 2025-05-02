@@ -5,7 +5,16 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { toast } from "sonner";
-import { MessageCirclePlus, MessageCircleMore, ArrowLeft } from "lucide-react";
+import {
+  MessageCirclePlus,
+  MessageCircleMore,
+  ArrowLeft,
+  User,
+  Hammer,
+  ReceiptText,
+  CircleAlert,
+  School
+} from "lucide-react";
 
 const Reports = () => {
   const [panelReports, setPanelReports] = useState<any[]>([]);
@@ -115,21 +124,31 @@ const Reports = () => {
             <p className="text-start content-start w-full text-2xl font-bold">
               گزارش مربوط به سابقه تعمیر {MaintenanceRecord.Title}
             </p>
-            <p className="text-start content-start w-full text-lg">
-              از طرف {MaintenanceRecord.Customer.firstName}{" "}
-              {MaintenanceRecord.Customer.lastName}
-            </p>
-            <p className="text-start content-start w-full text-lg">
-              اپراتور : {MaintenanceRecord.Operator.firstName}{" "}
-              {MaintenanceRecord.Operator.lastName}
-            </p>
-            <p className="max-w-[600px] break-words">
-              شرح جزئیات : {MaintenanceRecord.Details}
-            </p>
+            <div className="flex flex-row gap-2">
+              <User className="text-orange-500"></User>
+              <p className="text-start content-start w-full text-lg">
+                از طرف {MaintenanceRecord.Customer.firstName}{" "}
+                {MaintenanceRecord.Customer.lastName}
+              </p>
+            </div>
+            <div className="flex flex-row gap-2">
+              <Hammer className="text-orange-500"></Hammer>
+              <p className="text-start content-start w-full text-lg">
+                اپراتور : {MaintenanceRecord.Operator.firstName}{" "}
+                {MaintenanceRecord.Operator.lastName}
+              </p>
+            </div>
+            <div className="flex flex-row gap-2">
+              <ReceiptText className="text-orange-500"></ReceiptText>
+              <p className="max-w-[600px] break-words">
+                شرح جزئیات : {MaintenanceRecord.Details}
+              </p>
+            </div>
           </div>
 
           {/* Bottom - Description */}
-          <div>
+          <div className="flex flex-row gap-2">
+            <CircleAlert className="text-orange-500"></CircleAlert>
             <p className="max-w-[600px] break-words font-medium">
               شرح گزارش : {Description}
             </p>
@@ -198,15 +217,24 @@ const Reports = () => {
             <p className="text-start w-full text-2xl font-bold">
               گزارش مربوط به پنل: {Panel.PanelName}
             </p>
-            <p className="text-start w-full text-lg">
-              مشتری: {Panel.Customer.firstName} {Panel.Customer.lastName}
-            </p>
-            <p className="text-start w-full text-lg">
-              شرکت: {Panel.Corporation.name}
-            </p>
-            <p className="max-w-[600px] break-words">
-              شرح گزارش: {Description}
-            </p>
+            <div className="flex flex-row gap-2">
+              <User className="text-orange-500"></User>
+              <p className="text-start w-full text-lg">
+                مشتری: {Panel.Customer.firstName} {Panel.Customer.lastName}
+              </p>
+            </div>
+            <div className="flex flex-row gap-2">
+              <School className="text-orange-500"></School>
+              <p className="text-start w-full text-lg">
+                شرکت: {Panel.Corporation.name}
+              </p>
+            </div>
+            <div className="flex flex-row gap-2">
+              <CircleAlert className="text-orange-500"></CircleAlert>
+              <p className="max-w-[600px] break-words">
+                شرح گزارش: {Description}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -255,7 +283,9 @@ const Reports = () => {
                 key={report.id}
                 id={report.ID}
                 Description={report.Description}
-                Status={report.Status === "resolved" ? "بررسی شده" : "بررسی نشده"}
+                Status={
+                  report.Status === "resolved" ? "بررسی شده" : "بررسی نشده"
+                }
                 MaintenanceRecord={report.MaintenanceRecord}
               />
             ))
@@ -277,7 +307,9 @@ const Reports = () => {
                 key={report.id}
                 id={report.ID}
                 Description={report.Description}
-                Status={report.Status === "resolved" ? "بررسی شده" : "بررسی نشده"}
+                Status={
+                  report.Status === "resolved" ? "بررسی شده" : "بررسی نشده"
+                }
                 Panel={report.Panel}
               />
             ))
