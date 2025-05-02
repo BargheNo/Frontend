@@ -127,7 +127,7 @@ const Reports = () => {
             <div className="flex flex-row gap-2">
               <User className="text-orange-500"></User>
               <p className="text-start content-start w-full text-lg">
-                از طرف {MaintenanceRecord.Customer.firstName}{" "}
+                از طرف: {MaintenanceRecord.Customer.firstName}{" "}
                 {MaintenanceRecord.Customer.lastName}
               </p>
             </div>
@@ -220,7 +220,7 @@ const Reports = () => {
             <div className="flex flex-row gap-2">
               <User className="text-orange-500"></User>
               <p className="text-start w-full text-lg">
-                مشتری: {Panel.Customer.firstName} {Panel.Customer.lastName}
+                از طرف: {Panel.Customer.firstName} {Panel.Customer.lastName}
               </p>
             </div>
             <div className="flex flex-row gap-2">
