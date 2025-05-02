@@ -446,7 +446,7 @@ const TicketSupportPage = () => {
               image={ticket.image}
             />
 
-            {activeCommentTicketId && (
+            {activeCommentTicketId === ticket.id && (
               <div className="flex items-center justify-center">
                 <div className="bg-white px-10 rounded-lg w-full text-right space-y-4">
                   <h3 className="text-lg font-bold">ثبت نظر</h3>
