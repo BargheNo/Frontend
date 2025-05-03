@@ -17,7 +17,7 @@ export default function AnnouncementBox({children, className}: {children: React.
             ScrollTrigger.create({
                 scroller: holder.current,
                 trigger: panel as Element,
-                start: 'top 0px',
+                start: '-40px 0px',
                 end: 'bottom 0px',
                 scrub: true,
                 // pin: true,
