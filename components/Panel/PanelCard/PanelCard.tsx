@@ -18,6 +18,7 @@ import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
+import Modal from "./ReportModal";
 
 const PanelCard = ({
   id,
@@ -31,36 +32,37 @@ const PanelCard = ({
 
   const handleSubmit = async (values: { problem: string }) => {
     try {
-        const panelId = id;
+      const panelId = id;
 
-        const payload = {
-            description: values.problem,
-        };
+      const payload = {
+        description: values.problem,
+      };
 
-        const response = await fetch(`http://46.249.99.69:8080/v1/user/report/panel/${panelId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${accessToken}`,
-            },
-            body: JSON.stringify(payload),
-        });
-
-        const data = await response.json();
-        toast.success(data?.message);
-        setModalOpen(false);
-
-        if (!response.ok) {
-            throw new Error('API error: ' + JSON.stringify(data));
+      const response = await fetch(
+        `http://46.249.99.69:8080/v1/user/report/panel/${panelId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(payload),
         }
+      );
 
-        
-    } catch (error : any) {
-        const errMsg =
-                generateErrorMessage(error) || "هنگام ایجاد گزارش جدید مشکلی پیش آمد.";
-              toast.error(errMsg);
+      const data = await response.json();
+      toast.success(data?.message);
+      setModalOpen(false);
+
+      if (!response.ok) {
+        throw new Error("API error: " + JSON.stringify(data));
+      }
+    } catch (error: any) {
+      const errMsg =
+        generateErrorMessage(error) || "هنگام ایجاد گزارش جدید مشکلی پیش آمد.";
+      toast.error(errMsg);
     }
-};
+  };
 
   const validationSchema = Yup.object({
     problem: Yup.string().required("وارد کردن توضیحات ضروری است."),
@@ -119,9 +121,7 @@ const PanelCard = ({
                     <span className="font-medium mr-2">بازدهی:</span>
                   </div>
                   <div className="w-1/2">
-                    <span className="mr-1">
-                      {technicalDetails.efficiency}%
-                    </span>
+                    <span className="mr-1">{technicalDetails.efficiency}%</span>
                   </div>
                 </div>
               </div>
@@ -167,46 +167,35 @@ const PanelCard = ({
         </div>
       </div>
 
-      {/* === MODAL === */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-[9999] bg-black/60 flex items-center justify-center">
-          <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6 relative">
-            <button
-              onClick={() => setModalOpen(false)}
-              className="absolute top-3 left-3 text-gray-500 hover:text-gray-700"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <h4 className="text-lg font-semibold text-navy-blue mb-4">
-              گزارش مشکل
-            </h4>
-            <Formik
-              initialValues={{ problem: "" }}
-              validationSchema={validationSchema}
-              onSubmit={handleSubmit}
-            >
-              {({ isSubmitting }) => (
-                <Form className="flex flex-col space-y-4">
-                  <CustomTextArea
-                    name="problem"
-                    icon={AlertCircle}
-                    textareaClassName="!bg-[#FEFEFE] h-32"
-                  >
-                    توضیحات مشکل
-                  </CustomTextArea>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="self-end bg-gradient-to-br from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white py-2 px-4 rounded-md transition-all duration-300"
-                  >
-                    ارسال گزارش
-                  </button>
-                </Form>
-              )}
-            </Formik>
-          </div>
-        </div>
-      )}
+      <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+        <h4 className="text-lg font-semibold text-navy-blue mb-4">
+          گزارش مشکل
+        </h4>
+        <Formik
+          initialValues={{ problem: "" }}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ isSubmitting }) => (
+            <Form className="flex flex-col space-y-4">
+              <CustomTextArea
+                name="problem"
+                icon={AlertCircle}
+                textareaClassName="!bg-[#FEFEFE] h-32"
+              >
+                توضیحات مشکل
+              </CustomTextArea>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="self-end bg-gradient-to-br from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white py-2 px-4 rounded-md transition-all duration-300"
+              >
+                ارسال گزارش
+              </button>
+            </Form>
+          )}
+        </Formik>
+      </Modal>
     </>
   );
 };
