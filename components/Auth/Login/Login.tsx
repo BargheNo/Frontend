@@ -136,7 +136,7 @@ const Login = () => {
 					</Formik>
 
 					<p className="flex gap-5 justify-center text-center text-sm text-blue-600">
-						<a href="/forgot-password">فراموشی رمز عبور</a>
+						<a href="/forgot-password" data-test="forget-password">فراموشی رمز عبور</a>
 						<Link href="/signup">ثبت نام نکرده ام</Link>
 					</p>
 				</div>
