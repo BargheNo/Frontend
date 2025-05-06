@@ -6,25 +6,25 @@ describe("Register Corporation", () => {
 			.should("be.visible");
 	});
 
-	// it("see all steps of corporation registration", () => {
-	// 	cy.visit("/login");
-	// 	cy.get('input[name="phoneNumber"]').type("9174911318");
-	// 	cy.get('input[name="password"]').type("!Amin123");
-	// 	cy.get("#login").click();
+	it("see all steps of corporation registration", () => {
+		cy.visit("/login");
+		cy.get('input[name="phoneNumber"]').type("9174911318");
+		cy.get('input[name="password"]').type("!Amin123");
+		cy.get("#login").click();
 
-	// 	cy.url().should("include", "dashboard", { timeout: 10000 });
+		cy.url().should("include", "dashboard", { timeout: 10000 });
 
-	// 	cy.visit("/register-corp");
+		cy.visit("/register-corp");
 
-	// 	cy.get('[data-test="step-0"]')
-	// 		.contains("اطلاعات شرکت")
-	// 		.should("be.visible");
-	// 	cy.get('[data-test="step-1"]')
-	// 		.contains("اطلاعات تماس")
-	// 		.should("be.visible");
-	// 	cy.get('[data-test="step-2"]').contains("آدرس").should("be.visible");
-	// 	cy.get('[data-test="step-3"]').contains("مدارک").should("be.visible");
-	// });
+		cy.get('[data-test="step-0"]')
+			.contains("اطلاعات شرکت")
+			.should("be.visible");
+		cy.get('[data-test="step-1"]')
+			.contains("اطلاعات تماس")
+			.should("be.visible");
+		cy.get('[data-test="step-2"]').contains("آدرس").should("be.visible");
+		cy.get('[data-test="step-3"]').contains("مدارک").should("be.visible");
+	});
 
 	it("Prevent user from accessing page when not logged in", () => {
 		cy.visit("/landing/corp-introduction");
