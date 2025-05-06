@@ -223,7 +223,7 @@ export default function ContactInfoForm({
 						)}
 
 						<button
-							className="place-self-start cta-neu-button w-1/3 mt-8"
+							className="place-self-start cta-neu-button w-full md:w-1/2 lg:w-2/5 mt-8"
 							data-test="add-contact"
 							onClick={() => {
 								push({

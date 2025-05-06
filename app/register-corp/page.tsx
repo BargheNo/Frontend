@@ -521,7 +521,7 @@ export default function Page() {
 
 	return (
 		<div className="w-screen min-h-screen h-fit place-items-center flex place-content-center items-center transition-all duration-300 ease-in-out bg-[#F0EDEF]">
-			<div className="space-y-4 rtl vazir m-auto h-2/3 sm:w-2/3 md:w-2/3 lg:w-3/5 my-20">
+			<div className="space-y-4 rtl vazir m-auto h-2/3 sm:w-2/3 md:w-2/3 lg:w-3/5 w-5/6 my-20">
 				<div className="flex items-center justify-center">
 					{Array.from({ length: steps.length }).map((_, index) => (
 						<div key={index} className={`flex items-center`}>

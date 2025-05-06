@@ -119,7 +119,7 @@ const Signatories: React.FC<SignatoriesProps> = ({
 								key={index}
 								className="flex gap-3 items-end w-full"
 							>
-								<div className="flex lg:flex-row sm:flex-col w-[95%] gap-3">
+								<div className="flex flex-col lg:flex-row sm:flex-col w-[95%] gap-3">
 									<CustomInput
 										name={`signatories.[${index}].name`}
 										placeholder="نام"
@@ -150,7 +150,7 @@ const Signatories: React.FC<SignatoriesProps> = ({
 					))}
 
 					<button
-						className="place-self-start cta-neu-button w-1/3 mt-8"
+						className="place-self-start cta-neu-button w-full sm:w-1/2 lg:w-1/3 mt-8"
 						data-test="addSignatory"
 						onClick={() => {
 							push({
