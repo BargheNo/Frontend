@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import CorpInfoForm from "@/components/Auth/RegisterCorp/CorpInfoForm/CorpInfoForm";
 import AddressesForm from "@/components/Auth/RegisterCorp/AddressesForm/AddressesForm";
+import { useMediaQuery } from 'react-responsive';
 import { useSelector } from "react-redux";
 import { setCorp } from "@/src/store/slices/corpSlice";
 import { useDispatch } from "react-redux";
@@ -122,15 +123,18 @@ const validationSchemaForm = Yup.object({
 	}),
 });
 
-function getScreenType() {
-	const width = window.innerWidth;
-	if (width < 768) return "mobile";
-	if (width < 1024) return "tablet";
-	return "desktop";
-}
+// function getScreenType() {
+// 	const width = window.innerWidth;
+// 	if (width < 768) return "mobile";
+// 	if (width < 1024) return "tablet";
+// 	return "desktop";
+// }
 
 export default function Page() {
-	const [screenType, setScreenType] = useState(getScreenType());
+	const isMobile = useMediaQuery({ minWidth: 640 });
+	const isTablet = useMediaQuery({ minWidth: 768 });
+	const isDesktop = useMediaQuery({ minWidth: 1024 });
+	// const [screenType, setScreenType] = useState(getScreenType());
 	// const [corpId, setCorpId] = useState(0);
 	const [loading, setLoading] = useState<boolean>(false);
 	const dispatch = useDispatch();
@@ -504,14 +508,14 @@ export default function Page() {
 			// );
 		}
 	}, [accessToken, router]);
-	useEffect(() => {
-		function handleResize() {
-			setScreenType(getScreenType());
-		}
+	// useEffect(() => {
+	// 	function handleResize() {
+	// 		setScreenType(getScreenType());
+	// 	}
 
-		window.addEventListener("resize", handleResize);
-		return () => window.removeEventListener("resize", handleResize);
-	}, []);
+	// 	window.addEventListener("resize", handleResize);
+	// 	return () => window.removeEventListener("resize", handleResize);
+	// }, []);
 	const handleBack = () => {
 		// resetFormValues(setFieldValue);
 		if (step > 0) {
@@ -521,7 +525,7 @@ export default function Page() {
 
 	return (
 		<div className="w-screen min-h-screen h-fit place-items-center flex place-content-center items-center transition-all duration-300 ease-in-out bg-[#F0EDEF]">
-			<div className="space-y-4 rtl vazir m-auto h-2/3 sm:w-2/3 md:w-2/3 lg:w-3/5 w-5/6 my-20">
+			<div className="space-y-4 rtl vazir m-auto sm:pb-6 h-2/3 sm:w-2/3 md:w-2/3 lg:w-3/5 w-5/6 my-20">
 				<div className="flex items-center justify-center">
 					{Array.from({ length: steps.length }).map((_, index) => (
 						<div key={index} className={`flex items-center`}>
@@ -537,7 +541,7 @@ export default function Page() {
 								)}
 								key={index}
 							>
-								{screenType !== "mobile" && steps[index]}
+								{isTablet && steps[index]}
 								{/* <p className="lg:visible md:hidden sm:hidden hidden">{steps[index]}</p> */}
 								<div className="">{icons[index]}</div>
 							</Badge>
@@ -554,7 +558,7 @@ export default function Page() {
 						</div>
 					))}
 				</div>
-				{screenType === "mobile" && (
+				{!isTablet && (
 					<div className="text-center text-xl font-bold mt-7">
 						{steps[step]}
 					</div>
@@ -584,7 +588,7 @@ export default function Page() {
 										<CorpInfoForm
 											values={values}
 											setFieldValue={setFieldValue}
-											screenType={screenType}
+											// screenType={screenType}
 										/>
 									)}
 									{step === 1 && (

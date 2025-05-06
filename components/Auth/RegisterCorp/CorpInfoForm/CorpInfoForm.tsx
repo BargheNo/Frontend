@@ -16,19 +16,17 @@ import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 import { useSelector } from "react-redux";
+import { useMediaQuery } from "react-responsive";
 
 interface SignatoriesProps {
 	values: corpData;
-	screenType: string;
 }
 export default function CorpInfoForm({
 	values,
 	setFieldValue,
-	screenType,
 }: {
 	values: corpData;
 	setFieldValue: any;
-	screenType: string;
 }) {
 	const [loading, setLoading] = useState<boolean>(true);
 	const corpId = useSelector((state: RootState) => state.user.corpId);
@@ -96,7 +94,7 @@ export default function CorpInfoForm({
 					/>
 				</div>
 				<h2 className="mt-8 text-xl">صاحبان امضا</h2>
-				<Signatories values={values} screenType={screenType} />
+				<Signatories values={values} />
 			</div>
 		</Form>
 	);
@@ -104,15 +102,17 @@ export default function CorpInfoForm({
 
 const Signatories: React.FC<SignatoriesProps> = ({
 	values,
-	screenType,
 }: SignatoriesProps) => {
+	const isMobile = useMediaQuery({ minWidth: 640 });
+	const isTablet = useMediaQuery({ minWidth: 768 });
+	const isDesktop = useMediaQuery({ minWidth: 1024 });
 	return (
 		<FieldArray name="signatories">
 			{({ push, remove }) => (
 				<>
 					{values?.signatories?.map((id, index) => (
 						<>
-							{index > 0 && screenType !== "desktop" && (
+							{index > 0 && !isDesktop && (
 								<div className="mt-6 border-solid border-1 border-gray-200 rounded-full" />
 							)}
 							<div
