@@ -162,72 +162,6 @@ export default function AddressesForm({
 						</div>
 						<div className="flex flex-col w-full">
 							<div className="flex w-full h-full gap-4">
-								{/* <Select
-									value={String(address.province)}
-									name={`addresses.[${index}].provinceID`}
-								>
-									<SelectTrigger
-										disabled={true}
-										value={address.province}
-										className={`${styles.CustomInput} cursor-pointer`}
-									>
-										<SelectValue placeholder="استان" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectGroup className="vazir">
-											<SelectLabel>استان</SelectLabel>
-											{provinces?.length > 0 ? (
-												provinces.map(
-													(province, index) => (
-														<SelectItem
-															key={index}
-															value={String(
-																province.name
-															)}
-															className="cursor-pointer"
-														>
-															{province.name}
-														</SelectItem>
-													)
-												)
-											) : (
-												<p>هیچ استانی یافت نشد</p>
-											)}
-										</SelectGroup>
-									</SelectContent>
-								</Select>
-								<Select
-									value={String(address.city)}
-									name={`addresses.[${index}].cityID`}
-								>
-									<SelectTrigger
-										disabled={disable}
-										value={address.city}
-										className={`${styles.CustomInput} cursor-pointer`}
-									>
-										<SelectValue placeholder="شهر" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectGroup className="vazir">
-											<SelectLabel>شهر</SelectLabel>
-											{cities?.length > 0 ? (
-												cities.map((city, index) => (
-													<SelectItem
-														key={index}
-														value={String(
-															city.name
-														)}
-														className="cursor-pointer"
-													>
-														{city.name}
-													</SelectItem>
-												))
-											) : (
-												<p>هیچ شهری یافت نشد</p>
-											)}
-										</SelectGroup>
-									</SelectContent>
-								</Select> */}
 								<CustomInput
 									name={`province`}
 									value={address.province}
@@ -247,7 +181,7 @@ export default function AddressesForm({
 								placeholder="آدرس"
 								icon={MapPin}
 							/>
-							<div className="flex gap-4">
+							<div className="flex flex-row sm:flex-col md:flex-col gap-4">
 								<CustomInput
 									name={`postalCode`}
 									value={address.postalCode}
@@ -463,7 +397,7 @@ export default function AddressesForm({
 											placeholder="آدرس"
 											icon={MapPin}
 										/>
-										<div className="flex gap-4">
+										<div className="flex flex-col sm:flex-col md:flex-row lg:flex-row gap-4">
 											<CustomInput
 												name={`addresses.[${index}].postalCode`}
 												// name="postalCode"
@@ -488,7 +422,7 @@ export default function AddressesForm({
 								</div>
 							))}
 							<button
-								className={`place-self-start cta-neu-button w-1/3 mt-4`}
+								className={`place-self-start cta-neu-button w-full sm:w-1/2 lg:w-1/3 mt-4`}
 								data-test="add-address"
 								onClick={() => {
 									// addAddress();
