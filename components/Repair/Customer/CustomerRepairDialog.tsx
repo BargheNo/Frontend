@@ -178,8 +178,19 @@ const RepairDetailsDialog = ({
               <p className="text-gray-700">{repairItem.Description}</p>
             </div>
 
+            {/* Override Request */}
+            <div className="w-full flex flex-col items-start mt-5 border-t border-gray-300 pt-5">
+              <button className="self-end cursor-pointer
+                                bg-gradient-to-br from-[#ef3f3f] to-[#d00202]
+                                hover:from-[#e33333] hover:to-[#bd0000]
+                                active:from-[#bd0000] active:to-[#e33333]
+                                text-white py-2 px-4 rounded-md transition-all duration-300">
+                لغو گزارش
+              </button>
+            </div>
+
             {/* Problem Report Form */}
-            <div className="w-full mt-5 border-t border-gray-300 pt-5">
+            {/* <div className="w-full mt-5 border-t border-gray-300 pt-5">
               <h4 className="text-lg font-semibold text-navy-blue">
                 گزارش مشکل
               </h4>
@@ -211,7 +222,7 @@ const RepairDetailsDialog = ({
                   </Form>
                 )}
               </Formik>
-            </div>
+            </div> */}
           </div>
         </div>
       </DialogContent>
