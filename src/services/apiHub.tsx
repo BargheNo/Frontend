@@ -1,13 +1,13 @@
 import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getParams, postParams } from "../types/apiHubType";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 // import { RootState } from "../store/types";
 import { toast } from "sonner";
 import generateErrorMessage from "../functions/handleAPIErrors";
 
-export const baseURL = "http://46.249.99.69:8080";
-// export const baseURL = "https://86c4-212-64-199-253.ngrok-free.app";
+// export const baseURL = "http://46.249.99.69:8080";
+export const baseURL = "https://1772-212-64-199-253.ngrok-free.app";
 
 // const {accessToken} = localStorage.getItem("user");
 // export const accessToken =
@@ -18,6 +18,7 @@ const apiClient = axios.create({
 	timeout: 20000,
 	headers: {
 		"Content-Type": "application/json",
+		"ngrok-skip-browser-warning": "69420",
 	},
 });
 

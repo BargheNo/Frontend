@@ -34,6 +34,7 @@ import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { setUser } from "@/src/store/slices/userSlice";
 import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
+import useClientCheck from "@/src/hooks/useClientCheck";
 
 const steps = ["اطلاعات شرکت", "اطلاعات تماس", "آدرس", "مدارک"];
 const icons = [
@@ -121,7 +122,15 @@ const validationSchemaForm = Yup.object({
 	}),
 });
 
+function getScreenType() {
+	const width = window.innerWidth;
+	if (width < 768) return "mobile";
+	if (width < 1024) return "tablet";
+	return "desktop";
+}
+
 export default function Page() {
+	const [screenType, setScreenType] = useState(getScreenType());
 	// const [corpId, setCorpId] = useState(0);
 	const [loading, setLoading] = useState<boolean>(false);
 	const dispatch = useDispatch();
@@ -495,6 +504,14 @@ export default function Page() {
 			// );
 		}
 	}, [accessToken, router]);
+	useEffect(() => {
+		function handleResize() {
+			setScreenType(getScreenType());
+		}
+
+		window.addEventListener("resize", handleResize);
+		return () => window.removeEventListener("resize", handleResize);
+	}, []);
 	const handleBack = () => {
 		// resetFormValues(setFieldValue);
 		if (step > 0) {
@@ -503,15 +520,15 @@ export default function Page() {
 	};
 
 	return (
-		<div className="w-screen min-h-screen h-fit place-items-center flex place-content-center items-center bg-[#F0EDEF]">
-			<div className="space-y-4 rtl vazir m-auto h-2/3 w-1/2 my-20">
+		<div className="w-screen min-h-screen h-fit place-items-center flex place-content-center items-center transition-all duration-300 ease-in-out bg-[#F0EDEF]">
+			<div className="space-y-4 rtl vazir m-auto h-2/3 sm:w-2/3 md:w-2/3 lg:w-3/5 my-20">
 				<div className="flex items-center justify-center">
 					{Array.from({ length: steps.length }).map((_, index) => (
 						<div key={index} className={`flex items-center`}>
 							<Badge
 								data-test={`step-${index}`}
 								className={cn(
-									"rounded-full w-42 transition-all duration-300 ease-in-out text-md neu-shadow gap-2 p-2 bg-gradient-to-r",
+									"rounded-full sm:w-12 md:w-36 lg:w-42 transition-all duration-300 ease-in-out text-md neu-shadow gap-2 p-2 bg-gradient-to-r",
 									index === step
 										? "from-[#A55FDA] to-[#F37240] text-black/80"
 										: index > step
@@ -520,7 +537,8 @@ export default function Page() {
 								)}
 								key={index}
 							>
-								{steps[index]}
+								{screenType !== "mobile" && steps[index]}
+								{/* <p className="lg:visible md:hidden sm:hidden hidden">{steps[index]}</p> */}
 								<div className="">{icons[index]}</div>
 							</Badge>
 							{index < steps.length - 1 && (
@@ -536,6 +554,12 @@ export default function Page() {
 						</div>
 					))}
 				</div>
+				{screenType === "mobile" && (
+					<div className="text-center text-xl font-bold mt-7">
+						{steps[step]}
+					</div>
+				)}
+
 				<Formik
 					initialValues={initialValuesForm}
 					validationSchema={validationSchemaForm}
@@ -560,6 +584,7 @@ export default function Page() {
 										<CorpInfoForm
 											values={values}
 											setFieldValue={setFieldValue}
+											screenType={screenType}
 										/>
 									)}
 									{step === 1 && (
