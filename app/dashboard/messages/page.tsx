@@ -1,5 +1,4 @@
-import CorpMessageCard from "@/components/Messages/message-card";
-import CorpMessagesPagination from "@/components/Messages/message-pagination";
+import MessagesPagination from "@/components/Messages/message-pagination";
 import Head from "next/head";
 import React from "react";
 
@@ -18,7 +17,7 @@ export default function page() {
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
         <h1 className="font-bold text-xl mb-4  md:mr-14 mr-4">پیام های من</h1>
-        <CorpMessagesPagination></CorpMessagesPagination>
+        <MessagesPagination></MessagesPagination>
       </div>
     </>
   );
