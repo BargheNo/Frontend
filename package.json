@@ -12,6 +12,7 @@
 		"test": "npm run build:reporter && cypress run"
 	},
 	"dependencies": {
+		"@editorjs/editorjs": "^2.30.8",
 		"@hookform/resolvers": "^5.0.1",
 		"@ijavad805/react-datepicker": "^2.2.18",
 		"@radix-ui/react-avatar": "^1.1.3",
