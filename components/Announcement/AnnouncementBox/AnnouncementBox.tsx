@@ -1,13 +1,67 @@
 "use client"
 import { cn } from "@/lib/utils";
-import {useRef, useEffect} from "react";
+import {useRef, useEffect, useState, useReducer} from "react";
+import { createContext} from 'react';
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import { any } from "cypress/types/bluebird";
 
-export default function AnnouncementBox({children, className}: {children: React.ReactNode, className?: string}) {
+type State = {
+    selectedCount: number;
+}
+
+type Action = 
+    | { type: 'INCREMENT' }
+    | { type: 'DECREMENT' }
+    | { type: 'RESET' };
+
+const reducer = (state: State, action: Action): State => {
+    switch (action.type) {
+        case 'INCREMENT':
+            return { ...state, selectedCount: state.selectedCount + 1 };
+        case 'DECREMENT':
+            return { ...state, selectedCount: Math.max(0, state.selectedCount - 1) };
+        case 'RESET':
+            return { ...state, selectedCount: 0 };
+        default:
+            return state;
+    }
+};
+
+export const AnnounceContex = createContext<{
+    selectMode: boolean, 
+    setSelectMode: (value: boolean) => void,
+    selectedCount: number,
+    incrementCount: () => void,
+    decrementCount: () => void,
+    resetCount: () => void
+}>({
+    selectMode: false,
+    setSelectMode: () => {},
+    selectedCount: 0,
+    incrementCount: () => {},
+    decrementCount: () => {},
+    resetCount: () => {}
+});
+
+export default function AnnouncementBox({children, className, insideClassName}: {children: React.ReactNode, className?: string, insideClassName?: string}) {
     const holder = useRef<HTMLDivElement>(null);
     const scrollTween = useRef<gsap.core.Tween | null>(null);
+    const [selectMode, setSelectMode] = useState(false);
+    const [state, dispatch] = useReducer(reducer, { selectedCount: 0 });
+    const [currentPos, setCurrentPos] = useState(0);
+    const [scrollable, setScrollable] = useState(true);
+
+    const incrementCount = () => dispatch({ type: 'INCREMENT' });
+    const decrementCount = () => dispatch({ type: 'DECREMENT' });
+    const resetCount = () => dispatch({ type: 'RESET' });
+
+    useEffect(() => {
+        if (state.selectedCount === 0) {
+            setSelectMode(false);
+        }
+    }, [state.selectedCount]);
 
     useEffect(() => {
         gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
@@ -17,8 +71,8 @@ export default function AnnouncementBox({children, className}: {children: React.
             ScrollTrigger.create({
                 scroller: holder.current,
                 trigger: panel as Element,
-                start: '-40px 0px',
-                end: 'bottom 0px',
+                start: 'top top',
+                end: 'bottom top',
                 scrub: true,
                 // pin: true,
                 // snap: 1,
@@ -47,7 +101,7 @@ export default function AnnouncementBox({children, className}: {children: React.
                 //     console.log("Toggle:", i)
                 // },
                 id: 'panel-' + i,
-                markers: true,
+                // markers: true,
             });
         });
 
@@ -55,7 +109,7 @@ export default function AnnouncementBox({children, className}: {children: React.
             start: 0,
             end: 'max',
             snap: 1 / (panels.length - 1),
-            markers: true,
+            // markers: true,
         });
 
         return () => {
@@ -63,40 +117,124 @@ export default function AnnouncementBox({children, className}: {children: React.
         };
     }, []);
 
+    // useEffect(() => {
+    //     setScrollable(true)
+    // }, [currentPos])
+
+    // useEffect(()=>
+    // {
+    //     const element = holder.current;
+    //     if (!element) return;
+    //     console.log(currentPos)
+
+    //     const handleScroll = () => {
+    //         setScrollable(false)
+    //         console.log("Element scrolled:", element.scrollTop);
+    //         let target = currentPos??0;
+    //         if (element.scrollTop > currentPos)
+    //         {
+    //             target = currentPos + (element.offsetHeight??0)
+    //         }
+    //         else
+    //         {
+    //             target = currentPos - (element.offsetHeight??0)
+    //         }
+    //         element?.removeEventListener("scroll", handleScroll);
+    //         element.scrollTo({ top: target, behavior: "smooth" });
+    //         setCurrentPos(target);
+
+    //     };
+    //     if(scrollable)
+    //     {
+    //         element.addEventListener("scroll", handleScroll);            
+    //     }
+    //     return () => {
+    //         element?.removeEventListener("scroll", handleScroll);
+    //     };
+    // }
+    // ,[scrollable])
+
     const goToSection_down = (i: number) => {
-        const target = (document.querySelector('#panel-' + (i+2)) as HTMLElement)?.offsetTop-window.innerHeight/20;
+        const target = (holder.current?.offsetHeight??0) * (i+1)-1;
+        console.log("goto: ", target, "currentPos: ", currentPos);
         if (target) {
+            setScrollable(false);
             scrollTween.current = gsap.to(holder.current, {
                 scrollTo: target,
                 duration: 1.5,
                 ease: 'power2.inOut',
                 id: 'scrollTween',
-                onComplete: () => (scrollTween.current = null),
+                onStart: () => {
+                    if (holder.current) {
+                        holder.current.style.overflow = 'hidden';
+                    }
+                },
+                onComplete: () => {
+                    if (holder.current) {
+                        holder.current.style.overflow = 'auto';
+                    }
+                    scrollTween.current = null;
+                    setScrollable(true);
+                },
                 overwrite: true,
             });
         }
     };
 
     const goToSection_up = (i: number) => {
-        const target = (document.querySelector('#panel-' + (i+1)) as HTMLElement)?.offsetTop-window.innerHeight/20;
+        const target = (i) * (holder.current?.offsetHeight??0)+1;
+        console.log("goto: ", target, "currentPos: ", currentPos);
         if (target) {
+            setScrollable(false);
             scrollTween.current = gsap.to(holder.current, {
                 scrollTo: target,
                 duration: 1.5,
                 ease: 'power2.inOut',
                 id: 'scrollTween',
-                onComplete: () => (scrollTween.current = null),
+                onStart: () => {
+                    if (holder.current) {
+                        holder.current.style.overflow = 'hidden';
+                    }
+                },
+                onComplete: () => {
+                    if (holder.current) {
+                        holder.current.style.overflow = 'auto';
+                    }
+                    scrollTween.current = null;
+                    setScrollable(true);
+                },
                 overwrite: true,
             });
         }
     };
     
     return (
-        <div className={cn("neo-card p-5 rounded-lg", className)}>
-            <div ref={holder} className="neo-card-rev rounded-lg p-10 h-full overflow-y-scroll scroll-smooth no-scrollbar flex flex-col justify-between items-center gap-[10vh]">
-                {children}
-                {/* <div className="w-full h-6" /> */}
+        <AnnounceContex.Provider value={{ 
+            selectMode, 
+            setSelectMode,
+            selectedCount: state.selectedCount,
+            incrementCount,
+            decrementCount,
+            resetCount
+        }}>
+            <div className="flex flex-col items-center">
+                    <div className={cn("self-end px-1 pt-1 flex neo-card rounded-t-lg bg-[#F0EDEF] transition-all duration-500 ease-in-out transform translate-y-full z-0", 
+                        selectMode && "translate-y-0"
+                    )}>
+                    <div className="neo-card-rev mx-2 mt-2 p-3 rounded-md bg-white cursor-pointer hover:bg-gray-50">
+                        ویرایش
+                    </div>
+                    <div className="neo-card-rev mx-2 mt-2 p-3 rounded-md bg-white cursor-pointer hover:bg-gray-50">
+                        حذف
+                    </div>
+                </div>
+                <div className={cn("p-5 rounded-lg z-10",selectMode && "rounded-tl-none" , className)}>
+                    <div ref={holder} className={cn("neo-card-rev rounded-lg p-10 h-full overflow-y-scroll scroll-smooth no-scrollbar flex flex-col justify-between items-center", insideClassName)}>
+                        {children}
+                        {/* <div className="w-full h-6" /> */}
+                    </div>
+                </div>
             </div>
-        </div>
+        </AnnounceContex.Provider>
     );
 }
