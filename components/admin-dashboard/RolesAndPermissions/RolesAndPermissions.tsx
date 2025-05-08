@@ -18,7 +18,7 @@ const RolesAndPermissions = () => {
   const [roles, setRoles] = useState<any[]>([]);
   
 
-  const fetchRoles = () => {
+  const getRoles = () => {
       fetch("http://46.249.99.69:8080/v1/admin/roles", {
         method: "GET",
         headers: {
@@ -36,9 +36,38 @@ const RolesAndPermissions = () => {
           toast.error(errMsg);
         });
     };
+    const deleteRole = async (roleToDeleteId: string) => {
+        try {
+          const response = await fetch(
+            `http://46.249.99.69:8080/v1/admin/roles/${roleToDeleteId}`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({}),
+            }
+          );
+    
+          if (!response.ok) {
+            throw new Error("Failed to resolve ticket");
+          }
+    
+          const result = await response.json();
+          toast.success(result.message);
+          getRoles();
+    
+          // Optionally refresh ticket list or update UI
+        } catch (error: any) {
+          const errMsg =
+            generateErrorMessage(error) || "هنگام حذف نقش مشکلی پیش آمد.";
+          toast.error(errMsg);
+        }
+      };
 
   useEffect(() => {
-      fetchRoles();
+      getRoles();
     }, []);
 
   const Roles = ({
@@ -63,7 +92,7 @@ const RolesAndPermissions = () => {
             <p className="text-start content-start  text-xl ">{name}</p>
           </div>
           <div className="flex flex-row gap-2 w-5/7 ">
-            <p className="content-start w-full text-xl" dir="rtl">
+            <p className="content-start w-full text-xl text-gray-600" dir="rtl">
               دسترسی‌ها:{" "}
               {permissions.length === 0
                 ? "دسترسی موجود نیست"
@@ -91,14 +120,15 @@ const RolesAndPermissions = () => {
               </button>
             </div>
             <div
-              className={`cta-neu-button flex ${styles.button} items-center content-center justify-center h-1/2 w-1/2`}
+              className={`cta-neu-button flex ${styles.button} items-center content-center justify-center h-1/2 w-1/2 cursor-pointer`}
             >
               <div className="text-orange-500">
                 <Trash2 />
               </div>
               <button
+                onClick={() => deleteRole(id)}
                 className="cursor-pointer"
-                // onClick={() => resolverole(id)}
+                
               >
                 حذف
               </button>
