@@ -421,6 +421,7 @@ export default function Neworder() {
 
 							<div className="flex flex-row w-80 justify-center items-center self-center">
 								<SignupButton
+								   className="text-[#FA682D]"
 								   id="newOrderBtn"
 									type="submit"
 									style={{

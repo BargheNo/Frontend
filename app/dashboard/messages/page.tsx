@@ -16,7 +16,7 @@ export default function page() {
         <Head>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
-        <h1 className="font-bold text-xl mb-4  md:mr-14 mr-4">اعلان ها</h1>
+        {/* <h1 className="font-bold text-xl mb-4  md:mr-14 mr-4">اعلان ها</h1> */}
         <MessagesPagination></MessagesPagination>
       </div>
     </>

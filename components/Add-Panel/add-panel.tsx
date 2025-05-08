@@ -428,6 +428,7 @@ export default function AddPanel() {
 
                             <div className="flex flex-row justify-center items-center self-center">
                                 <SignupButton
+                                    className="text-[#FA682D]"
                                     type="submit"
                                     style={{
                                         marginTop: "10px",

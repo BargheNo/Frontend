@@ -1,5 +1,6 @@
 "use client";
 
+import { Save } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -23,6 +24,7 @@ import {
 import style from "./style.module.css"
 import panelNotFound from "../../public/images/panelNotFound/panelNotFound.png";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import SignupButton from "../SignupButton/SignupButton";
 
 // import { RootState } from "@/src/store/types";
 
@@ -64,6 +66,24 @@ export default function CorpMessagesPagination() {
         <LoadingSpinner />
       ) : history?.length > 0 ? ( */}
       <>
+      <h1 className="font-bold text-xl mb-4  md:mr-14 mr-4"> تنظیمات اعلان ها</h1>
+      <div className="flex flex-col text-white md:px-14 bg-transparent px-2 w-full">
+          <div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] md:h-100 h-80 mb-5">
+              <div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-90/100 rounded-2xl overflow-auto shadow-[inset_-6px_-6px_16px_rgba(255,255,255,0.8),inset_6px_6px_16px_rgba(0,0,0,0.2)] mt-10 m-auto md:h-70 h-60">
+                  <div>
+
+                  </div>
+                  <div>
+                    
+                  </div>
+              </div>
+              <div className="md:w-3/10 w-6/10 mr-auto ml-auto mb-5">
+                <SignupButton className="bg-[#FA682D]  text-white">ذخیرۀ تغییرات<Save/></SignupButton>
+              </div>
+          </div>
+      </div>
+
+      <h1 className="font-bold text-xl mb-4  md:mr-14 mr-4">اعلان ها</h1>
         <div className="flex flex-col text-white md:px-14 bg-transparent px-2 w-full">
             <div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] md:h-20 h-30 mb-5">
                 <div className={`${style.citypro} flex flex-row mr-4 justify-between m-auto md:w-4/10 w-8/10`}>
