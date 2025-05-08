@@ -68,13 +68,20 @@ export default function CorpMessagesPagination() {
       <>
       <h1 className="font-bold text-xl mb-4  md:mr-14 mr-4"> تنظیمات اعلان ها</h1>
       <div className="flex flex-col text-white md:px-14 bg-transparent px-2 w-full">
-          <div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] md:h-100 h-80 mb-5">
-              <div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-90/100 rounded-2xl overflow-auto shadow-[inset_-6px_-6px_16px_rgba(255,255,255,0.8),inset_6px_6px_16px_rgba(0,0,0,0.2)] mt-10 m-auto md:h-70 h-60">
-                  <div>
-
+          <div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]  mb-5">
+              <div className="flex flex-row mr-auto ml-30 gap-17">
+                    <p className="mt-8">دریافت اعلان از طریق وبسایت</p>
+                    <p className="mt-8">دریافت اعلان از طریق ایمیل</p>
+              </div>
+              <div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-90/100 rounded-2xl overflow-auto shadow-[inset_-6px_-6px_16px_rgba(255,255,255,0.8),inset_6px_6px_16px_rgba(0,0,0,0.2)] mt-14 m-auto md:h-65 h-60">
+                  <div className="flex flex-row justify-between border-b-2 border-gray-300 h-1/3">
+                    <p className="mt-auto mb-auto mr-4 text-gray-600">متمایل هستم اعلان ها را به شکل ایمیل دریافت کنم.</p>
                   </div>
-                  <div>
-                    
+                  <div className="flex flex-row justify-between border-b-2 border-gray-300 h-1/3">
+                    <p className="mb-auto mt-auto mr-4 text-gray-600">متمایل هستم اعلان ها را به شکل ایمیل دریافت کنم.</p>
+                  </div>
+                  <div className="flex flex-row justify-between  h-1/3">
+                    <p className="mb-auto mt-auto mr-4 text-gray-600">متمایل هستم اعلان ها را به شکل ایمیل دریافت کنم.</p>
                   </div>
               </div>
               <div className="md:w-3/10 w-6/10 mr-auto ml-auto mb-5">
