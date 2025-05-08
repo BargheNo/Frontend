@@ -80,13 +80,24 @@ export default function CorpMessagesPagination() {
               <div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-90/100 rounded-2xl overflow-auto shadow-[inset_-6px_-6px_16px_rgba(255,255,255,0.8),inset_6px_6px_16px_rgba(0,0,0,0.2)] mt-14 m-auto md:h-65 h-60">
                   <div className="flex flex-row justify-between border-b-2 border-gray-300 h-1/3">
                     <p className="mt-auto mb-auto mr-4 text-gray-600">متمایل هستم اعلان ها را به شکل ایمیل دریافت کنم.</p>
-                    
+                    <div className="flex flex-row mr-auto ml-30 gap-55 mt-auto mb-auto">
+                      <Switch /> 
+                      <Switch /> 
+                    </div>
                   </div>
                   <div className="flex flex-row justify-between border-b-2 border-gray-300 h-1/3">
                     <p className="mb-auto mt-auto mr-4 text-gray-600">متمایل هستم اعلان ها را به شکل ایمیل دریافت کنم.</p>
+                    <div className="flex flex-row mr-auto ml-30 gap-55 mt-auto mb-auto">
+                      <Switch /> 
+                      <Switch /> 
+                    </div>
                   </div>
                   <div className="flex flex-row justify-between  h-1/3">
                     <p className="mb-auto mt-auto mr-4 text-gray-600">متمایل هستم اعلان ها را به شکل ایمیل دریافت کنم.</p>
+                    <div className="flex flex-row mr-auto ml-30 gap-55 mt-auto mb-auto">
+                      <Switch /> 
+                      <Switch /> 
+                    </div>
                   </div>
               </div>
               <div className="md:w-3/10 w-6/10 mr-auto ml-auto mb-5">
