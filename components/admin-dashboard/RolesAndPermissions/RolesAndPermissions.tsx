@@ -1,6 +1,11 @@
+"use client";
 import React from "react";
 import styles from "./RolesAndPermissions.module.css";
 import { User, SquareCheckBig, Trash2, Pencil } from "lucide-react";
+import { useSelector } from "react-redux";
+import generateErrorMessage from "@/src/functions/handleAPIErrors";
+import { toast } from "sonner";
+import { useEffect, useState } from "react";
 
 const RolesAndPermissions = () => {
   type Permission = {
@@ -9,6 +14,32 @@ const RolesAndPermissions = () => {
     description: string;
     category: string;
   };
+  const accessToken = useSelector((state: RootState) => state.user.accessToken);
+  const [roles, setRoles] = useState<any[]>([]);
+  
+
+  const fetchRoles = () => {
+      fetch("http://46.249.99.69:8080/v1/admin/roles", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setRoles(data.data);
+        })
+        .catch((err) => {
+          const errMsg =
+            generateErrorMessage(err) || "مشکلی در دریافت نقش ها رخ داد.";
+          toast.error(errMsg);
+        });
+    };
+
+  useEffect(() => {
+      fetchRoles();
+    }, []);
 
   const Roles = ({
     id,
@@ -54,7 +85,7 @@ const RolesAndPermissions = () => {
               </div>
               <button
                 className="cursor-pointer"
-                // onClick={() => resolveReport(id)}
+                // onClick={() => resolverole(id)}
               >
                 تغییر
               </button>
@@ -67,7 +98,7 @@ const RolesAndPermissions = () => {
               </div>
               <button
                 className="cursor-pointer"
-                // onClick={() => resolveReport(id)}
+                // onClick={() => resolverole(id)}
               >
                 حذف
               </button>
@@ -88,43 +119,20 @@ const RolesAndPermissions = () => {
           نقش های فعلی
         </h2>
 
-        <Roles
-          id="1"
-          name="Admin"
-          permissions={[
-            {
-              id: 1,
-              name: "general.all",
-              description: "دسترسی کامل به سیستم",
-              category: "general",
-            },
-          ]}
-        />
-        <Roles
-          id="2"
-          name="Manager"
-          permissions={[
-            {
-              id: 2,
-              name: "users.view",
-              description: "مشاهده کاربران",
-              category: "users",
-            },
-            {
-              id: 3,
-              name: "users.edit",
-              description: "ویرایش کاربران",
-              category: "users",
-            },
-            {
-              id: 3,
-              name: "users.add",
-              description: "افزودن کاربران",
-              category: "users",
-            },
-          ]}
-        />
-        <Roles id="3" name="Viewer" permissions={[]} />
+        <div className="space-y-6">
+          {roles.length > 0 ? (
+            roles.map((role) => (
+              <Roles
+                key={role.id}
+                id={role.id}
+                name={role.name}
+                permissions={role.permissions}
+              />
+            ))
+          ) : (
+            <p className="text-gray-500 text-right">هیچ گزارشی موجود نیست.</p>
+          )}
+        </div>
       </div>
     </div>
   );
