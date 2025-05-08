@@ -11,6 +11,16 @@ import {
 } from "@/components/ui/pagination";
 import { useState } from "react";
 import MessageCard from "@/components/Messages/message-card";
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import style from "./style.module.css"
 import panelNotFound from "../../public/images/panelNotFound/panelNotFound.png";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
@@ -55,6 +65,66 @@ export default function CorpMessagesPagination() {
       ) : history?.length > 0 ? ( */}
       <>
         <div className="flex flex-col text-white md:px-14 bg-transparent px-2 w-full">
+            <div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] md:h-20 h-30 mb-5">
+                <div className={`${style.citypro} flex flex-row mr-4 justify-between m-auto md:w-4/10 w-8/10`}>
+                  <Select
+                    name="filter1">
+                    <SelectTrigger
+                      className={style.CustomInput}
+                      id="filter1"
+                      // style={{ width: "25vw" }}
+                    >
+                      <SelectValue placeholder="فیلتر1" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>فیلتر</SelectLabel>
+                        
+                              <SelectItem                            
+                                value="آیتم 1"
+                              >
+                                آیتم 1
+                              </SelectItem>
+                              <SelectItem                            
+                                value="آیتم 2"
+                              >
+                                آیتم 2
+                              </SelectItem>
+                            
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+
+                  <Select
+                    name="filter2">
+                    <SelectTrigger
+                      className={style.CustomInput}
+                      id="filter2"
+                      // style={{ width: "25vw" }}
+                    >
+                      <SelectValue placeholder="فیلتر2" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>فیلتر</SelectLabel>
+                        
+                              <SelectItem                            
+                                value="آیتم 1"
+                              >
+                                آیتم 1
+                              </SelectItem>
+                              <SelectItem                            
+                                value="آیتم 2"
+                              >
+                                آیتم 2
+                              </SelectItem>
+                            
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+              </div>
+
+            </div>
           <div className="flex flex-col text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
             <MessageCard
               from={from}
