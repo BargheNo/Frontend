@@ -2,6 +2,8 @@ import AnnounceBoard from "@/components/Announcement/AnnounceBoard/AnnounceBoard
 import AnnouncementBox from "@/components/Announcement/AnnouncementBox/AnnouncementBox";
 import { Plus } from "lucide-react";
 import AnnounceCard from "@/components/Announcement/AnnounceCard/AnnounceCard";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import AnnounceEditor from "@/components/Announcement/AnnounceEditor/AnnounceEditor";
 export default function page() {
   return (
 
@@ -72,9 +74,19 @@ export default function page() {
             date={new Date().getTime()} />
         {/* </AnnounceBoard> */}
       </AnnouncementBox>
-      <button className="flex items-center justify-center w-full h-24 bg-[#F0EDEF] rounded-full neo-btn">
-        <Plus color="#EA6639" size={50}/>
-      </button>
+      <Dialog>
+        <DialogTrigger asChild>
+          <button className="flex items-center justify-center w-full h-24 bg-[#F0EDEF] rounded-full neo-btn">
+            <Plus color="#EA6639" size={50}/>
+          </button>
+        </DialogTrigger>
+        <DialogContent className="w-[80vw]! max-w-none! h-[80vh]! rtl p-8">
+          <DialogHeader className="hidden">
+            <DialogTitle></DialogTitle>
+          </DialogHeader> 
+          <AnnounceEditor />
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

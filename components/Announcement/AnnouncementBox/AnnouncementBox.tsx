@@ -2,9 +2,9 @@
 import { cn } from "@/lib/utils";
 import {useRef, useEffect, useState, useReducer} from "react";
 import { createContext} from 'react';
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
-import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+// import gsap from "gsap";
+// import ScrollTrigger from "gsap/ScrollTrigger";
+// import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { any } from "cypress/types/bluebird";
 
 type State = {
@@ -47,7 +47,7 @@ export const AnnounceContex = createContext<{
 
 export default function AnnouncementBox({children, className, insideClassName}: {children: React.ReactNode, className?: string, insideClassName?: string}) {
     const holder = useRef<HTMLDivElement>(null);
-    const scrollTween = useRef<gsap.core.Tween | null>(null);
+    // const scrollTween = useRef<gsap.core.Tween | null>(null);
     const [selectMode, setSelectMode] = useState(false);
     const [state, dispatch] = useReducer(reducer, { selectedCount: 0 });
     const [currentPos, setCurrentPos] = useState(0);
@@ -63,59 +63,59 @@ export default function AnnouncementBox({children, className, insideClassName}: 
         }
     }, [state.selectedCount]);
 
-    useEffect(() => {
-        gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
-        const panels = gsap.utils.toArray('.panel');
+    // useEffect(() => {
+    //     gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+    //     const panels = gsap.utils.toArray('.panel');
         
-        panels.forEach((panel, i) => {
-            ScrollTrigger.create({
-                scroller: holder.current,
-                trigger: panel as Element,
-                start: 'top top',
-                end: 'bottom top',
-                scrub: true,
-                // pin: true,
-                // snap: 1,
-                onEnter: (self) =>
-                {
-                    console.log("Enter:", i)
-                    self.isActive && !scrollTween.current && goToSection_down(i)
-                },
-                onEnterBack: (self) =>
-                {
-                    console.log("Enter Back:", i)
-                    self.isActive && !scrollTween.current && goToSection_up(i)
-                },
-                // onLeave: (self) =>
-                // {
-                //     console.log("Leave:", i)
-                //     // self.isActive && !scrollTween.current && goToSection(i)
-                // },
-                // onLeaveBack: (self) =>
-                // {
-                //     console.log("Leave Back:", i)
-                //     // self.isActive && !scrollTween.current && goToSection(i)
-                // },
-                // onToggle: (self) =>
-                // {
-                //     console.log("Toggle:", i)
-                // },
-                id: 'panel-' + i,
-                // markers: true,
-            });
-        });
+    //     panels.forEach((panel, i) => {
+    //         ScrollTrigger.create({
+    //             scroller: holder.current,
+    //             trigger: panel as Element,
+    //             start: 'top top',
+    //             end: 'bottom top',
+    //             scrub: true,
+    //             // pin: true,
+    //             // snap: 1,
+    //             onEnter: (self) =>
+    //             {
+    //                 console.log("Enter:", i)
+    //                 self.isActive && !scrollTween.current && goToSection_down(i)
+    //             },
+    //             onEnterBack: (self) =>
+    //             {
+    //                 console.log("Enter Back:", i)
+    //                 self.isActive && !scrollTween.current && goToSection_up(i)
+    //             },
+    //             // onLeave: (self) =>
+    //             // {
+    //             //     console.log("Leave:", i)
+    //             //     // self.isActive && !scrollTween.current && goToSection(i)
+    //             // },
+    //             // onLeaveBack: (self) =>
+    //             // {
+    //             //     console.log("Leave Back:", i)
+    //             //     // self.isActive && !scrollTween.current && goToSection(i)
+    //             // },
+    //             // onToggle: (self) =>
+    //             // {
+    //             //     console.log("Toggle:", i)
+    //             // },
+    //             id: 'panel-' + i,
+    //             // markers: true,
+    //         });
+    //     });
 
-        ScrollTrigger.create({
-            start: 0,
-            end: 'max',
-            snap: 1 / (panels.length - 1),
-            // markers: true,
-        });
+    //     ScrollTrigger.create({
+    //         start: 0,
+    //         end: 'max',
+    //         snap: 1 / (panels.length - 1),
+    //         // markers: true,
+    //     });
 
-        return () => {
-            ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-        };
-    }, []);
+    //     return () => {
+    //         ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    //     };
+    // }, []);
 
     // useEffect(() => {
     //     setScrollable(true)
@@ -154,59 +154,59 @@ export default function AnnouncementBox({children, className, insideClassName}: 
     // }
     // ,[scrollable])
 
-    const goToSection_down = (i: number) => {
-        const target = (holder.current?.offsetHeight??0) * (i+1)-1;
-        console.log("goto: ", target, "currentPos: ", currentPos);
-        if (target) {
-            setScrollable(false);
-            scrollTween.current = gsap.to(holder.current, {
-                scrollTo: target,
-                duration: 1.5,
-                ease: 'power2.inOut',
-                id: 'scrollTween',
-                onStart: () => {
-                    if (holder.current) {
-                        holder.current.style.overflow = 'hidden';
-                    }
-                },
-                onComplete: () => {
-                    if (holder.current) {
-                        holder.current.style.overflow = 'auto';
-                    }
-                    scrollTween.current = null;
-                    setScrollable(true);
-                },
-                overwrite: true,
-            });
-        }
-    };
+    // const goToSection_down = (i: number) => {
+    //     const target = (holder.current?.offsetHeight??0) * (i+1)-1;
+    //     console.log("goto: ", target, "currentPos: ", currentPos);
+    //     if (target) {
+    //         setScrollable(false);
+    //         scrollTween.current = gsap.to(holder.current, {
+    //             scrollTo: target,
+    //             duration: 1.5,
+    //             ease: 'power2.inOut',
+    //             id: 'scrollTween',
+    //             onStart: () => {
+    //                 if (holder.current) {
+    //                     holder.current.style.overflow = 'hidden';
+    //                 }
+    //             },
+    //             onComplete: () => {
+    //                 if (holder.current) {
+    //                     holder.current.style.overflow = 'auto';
+    //                 }
+    //                 scrollTween.current = null;
+    //                 setScrollable(true);
+    //             },
+    //             overwrite: true,
+    //         });
+    //     }
+    // };
 
-    const goToSection_up = (i: number) => {
-        const target = (i) * (holder.current?.offsetHeight??0)+1;
-        console.log("goto: ", target, "currentPos: ", currentPos);
-        if (target) {
-            setScrollable(false);
-            scrollTween.current = gsap.to(holder.current, {
-                scrollTo: target,
-                duration: 1.5,
-                ease: 'power2.inOut',
-                id: 'scrollTween',
-                onStart: () => {
-                    if (holder.current) {
-                        holder.current.style.overflow = 'hidden';
-                    }
-                },
-                onComplete: () => {
-                    if (holder.current) {
-                        holder.current.style.overflow = 'auto';
-                    }
-                    scrollTween.current = null;
-                    setScrollable(true);
-                },
-                overwrite: true,
-            });
-        }
-    };
+    // const goToSection_up = (i: number) => {
+    //     const target = (i) * (holder.current?.offsetHeight??0)+1;
+    //     console.log("goto: ", target, "currentPos: ", currentPos);
+    //     if (target) {
+    //         setScrollable(false);
+    //         scrollTween.current = gsap.to(holder.current, {
+    //             scrollTo: target,
+    //             duration: 1.5,
+    //             ease: 'power2.inOut',
+    //             id: 'scrollTween',
+    //             onStart: () => {
+    //                 if (holder.current) {
+    //                     holder.current.style.overflow = 'hidden';
+    //                 }
+    //             },
+    //             onComplete: () => {
+    //                 if (holder.current) {
+    //                     holder.current.style.overflow = 'auto';
+    //                 }
+    //                 scrollTween.current = null;
+    //                 setScrollable(true);
+    //             },
+    //             overwrite: true,
+    //         });
+    //     }
+    // };
     
     return (
         <AnnounceContex.Provider value={{ 

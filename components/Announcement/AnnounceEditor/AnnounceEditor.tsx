@@ -1,73 +1,95 @@
 'use client'
 import React, { useRef, useState } from "react";
-import styles from "./Editor.module.scss";
-import EditorJS from "@editorjs/editorjs";
+import "./Editor.css";
+import EditorJS, { OutputData } from "@editorjs/editorjs";
+import Header from "@editorjs/header";
+import List from "@editorjs/list";
+import Paragraph from "@editorjs/paragraph";
 import FaTranslation from "./FaTranslation.ts";
 import { useEffect } from "react";
-export default function AnnounceEditor() {
-    const editorRef = useRef(null);
-    const holderRef = useRef(null);
-    const [data, setData] = useState();
-    useEffect(() => {
-    console.log("effectdata: ", data);
-    console.log("holder: ", holderRef.current);
-    if (holderRef.current) {
-      const editor = new EditorJS({
-        holder: "editorjs",
-        autofocus: true,
-        data: data,
-        // tools: EditorTools(),
-        i18n: FaTranslation(),
-      });
+import { cn } from "@/lib/utils.ts";
+import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner.tsx";
 
-      editorRef.current = editor;
-      return () => {
-        editor.isReady
-          .then(() => editor.destroy())
-          .catch((error) => console.log(error));
-      };
-    }
-  }, [data, editorRef, holderRef]);
+export default function AnnounceEditor() {
+    const editorRef = useRef<EditorJS | null>(null);
+    const holderRef = useRef<HTMLDivElement>(null);
+    const [data, setData] = useState<OutputData>();
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+      console.log("editor1: ", editorRef.current);
+      if(editorRef.current == null)
+      {
+        setTimeout(() => {
+          if (!holderRef.current) return;
+          // console.log("editor2: ", editorRef.current);
+          console.log("add editor ...")
+          const editor = new EditorJS({
+            holder: holderRef.current!,
+            autofocus: true,
+            data: data,
+            tools: {
+              header: {
+                class: Header,
+                inlineToolbar: ["link"],
+                config: {
+                  placeholder: "یک عنوان وارد کنید", // Placeholder text
+                  levels: [1, 2, 3, 4, 5, 6], // Available heading levels
+                  defaultLevel: 3, // Default heading level
+                },
+              },
+              list: {
+                  class: List,
+                  inlineToolbar: true
+              },
+              paragraph: {
+                  class: Paragraph,
+                  inlineToolbar: true
+              }
+          } as any,
+            i18n: FaTranslation(),
+          });
+
+          editorRef.current = editor;
+
+          editor.isReady.then(() => {setLoading(false)})
+
+
+          }, 1000)
+        }
+
+        // return () => {
+        //   if(editorRef.current)
+        //   {
+        //   editorRef.current.isReady
+        //     .then(() => editorRef.current?.destroy())
+        //     .catch((error) => console.log(error));
+        //   }
+        // };
+    }, [data, holderRef, loading, editorRef]);
+
+    const handelSave = async () => {
+    const savedData = await editorRef.current?.save();
+      // editorRef.current?.destroy();
+    // console.log("id: ", projectId);
+    console.log("data:", savedData);
+    setData(savedData);
+    };
 
 
   return (
     <>
-      <div className=" bg-bombCreme">
-        <div className="pt-8 px-6 pb-4 relative">
-          {/* <ArrowBackIosNewIcon
-            className="absolute left-[8vw] top-10 text-2xl text-gray-600 hover:text-bomborange hover:animate-kreep cursor-pointer"
-            onClick={() => {
-              window.scrollTo(0, 0);
-              navigate(`/projectDashboard/${projectId}`);
-            }}
-          /> */}
-          <div className="text-3xl text-gray-600 pl-5 StartTour">
-            :ویرایشگر
+      {loading && <LoadingSpinner className="absolute top-0 left-0 right-0 bottom-0 bg-red-800 z-50"/>}
+      <div className="flex flex-col items-center gap-3">
+        <div className="overflow-y-scroll overflow-x-hiden w-[70vw]! h-[60vh]! bg-gray-100 mt-5 rounded-md p-2">
+        <div
+          ref={holderRef}
+          id="editorjs"
+          className={cn("rtl h-full w-full")}
+          >
+        </div>
           </div>
-        </div>
-        <div className={`${styles.holder}`}>
-          <div
-            ref={holderRef}
-            id="editorjs"
-            className={`${styles.editor} EditorTour`}
-          >
-            {""}
-          </div>
-        </div>
-        <div className="h-24 bg-bombBlue sticky bottom-0 right-0 left-0 z-[3] flex justify-center items-center gap-10">
-          <button
-            className="SaveTour btn bg-bomborange text-white hover:bg-white hover:text-black animate-kreep hover:animate-none"
-            // onClick={handelSave}
-          >
-            ذخیره
-          </button>
-          <button
-            className="btn bg-bomborange text-white hover:bg-white hover:text-black hover:animate-none"
-            // onClick={handelDiscard}
-          >
-            فراموشی
-          </button>
-        </div>
+        <button className="bg-red-500" onClick={handelSave}>Save</button>
       </div>
     </>
   )

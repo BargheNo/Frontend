@@ -13,6 +13,11 @@
 	},
 	"dependencies": {
 		"@editorjs/editorjs": "^2.30.8",
+		"@editorjs/header": "^2.8.8",
+		"@editorjs/image": "^2.10.2",
+		"@editorjs/list": "^2.0.8",
+		"@editorjs/paragraph": "^2.11.7",
+		"@editorjs/table": "^2.4.4",
 		"@hookform/resolvers": "^5.0.1",
 		"@ijavad805/react-datepicker": "^2.2.18",
 		"@radix-ui/react-avatar": "^1.1.3",
