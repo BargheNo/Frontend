@@ -28,6 +28,7 @@ import SignupButton from "../SignupButton/SignupButton";
 import { Switch } from "@/components/ui/switch"
 import { notificationSetting, notifType } from "@/src/types/notificationTypes";
 import notificationService from "@/src/services/notificationService";
+import { skip } from "node:test";
 
 
 // import { RootState } from "@/src/store/types";
@@ -76,7 +77,6 @@ export default function CorpMessagesPagination() {
       setNameFields(values);
     }
   }, [notifSetting]);
-  console.log(nameFields);
   
   return (
     <>
@@ -114,7 +114,7 @@ export default function CorpMessagesPagination() {
                   
               </div>
               <div className="md:w-3/10 w-6/10 mr-auto ml-auto mb-5">
-                <SignupButton onClick={()=>setDisable(!disable)} className="bg-[#FA682D]  text-white">{disable?"تنظیمات اعلان ها":"ذخیرۀ تغییرات"}{disable?<Settings/>:<Save/>}</SignupButton>
+                <SignupButton onClick={()=>{disable==false?(nameFields.map((item,index)=>(notificationService.changeNotificationSetting(item.id,{isPushEnabled:item.isPushEnabled,isEmailEnabled:item.isEmailEnabled})))):''; setDisable(!disable);}} className="bg-[#FA682D]  text-white">{disable?"تنظیمات اعلان ها":"ذخیرۀ تغییرات"}{disable?<Settings/>:<Save/>}</SignupButton>
               </div>
           </div>
       </div>
