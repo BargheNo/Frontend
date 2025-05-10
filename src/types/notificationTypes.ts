@@ -25,4 +25,9 @@ interface Notification{
       
 }
 
-export type {notifType,notificationSetting,changeNotificationSetting,Notification};
+interface page {
+	page: string;
+	pageSize: string;
+}
+
+export type {notifType,notificationSetting,changeNotificationSetting,Notification,page};
