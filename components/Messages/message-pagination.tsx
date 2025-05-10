@@ -38,7 +38,7 @@ export default function CorpMessagesPagination() {
   const[notifTypes,setNotifTypes]=useState<notifType[]>([]);
   const[notifSetting,setNotifSetting]=useState<notificationSetting[]>([]);
   const[disable,setDisable]=useState(true);
-  const [nameFields, setNameFields] = useState<{ name: string, isPushEnabled: boolean, isEmailEnabled: boolean}[]>([]);
+  const [nameFields, setNameFields] = useState<{ id:number,name: string, isPushEnabled: boolean, isEmailEnabled: boolean}[]>([]);
   //   const [isLoading, setIsLoading] = useState(true);
   //   const accessToken = useSelector((state: RootState) => state.user.accessToken);
   //   const handelHistory = (page: string, pageSize: string) => {
@@ -68,6 +68,7 @@ export default function CorpMessagesPagination() {
   useEffect(() => {
     if (notifSetting && notifSetting.length > 0) {
       const values = notifSetting.map(item => ({
+        id:item.id,
         name: item.notificationType.name,
         isPushEnabled: item.isPushEnabled,
         isEmailEnabled: item.isEmailEnabled

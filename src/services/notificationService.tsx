@@ -1,4 +1,6 @@
-import { baseURL, getData,putData, postData } from "./apiHub";
+import { data } from "cypress/types/jquery";
+import { baseURL, getData,putData } from "./apiHub";
+import { changeNotificationSetting } from "../types/notificationTypes";
 
 class notification{
     getNotificationType(){
@@ -10,6 +12,13 @@ class notification{
     getNotificationSetting(){
         return getData({
             endPoint:`${baseURL}/v1/user/notifications/setting`
+        })
+    }
+
+    changeNotificationSetting(id:number,changeinfo:changeNotificationSetting){
+        return putData({
+                endPoint:`${baseURL}/v1/user/notifications/setting/${id}`,
+                data:changeinfo,
         })
     }
 }

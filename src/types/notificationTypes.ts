@@ -12,4 +12,9 @@ interface notificationSetting{
     isPushEnabled:boolean,
 }
 
-export type {notifType,notificationSetting};
+interface changeNotificationSetting{
+    isEmailEnabled:boolean;
+    isPushEnabled:boolean,
+}
+
+export type {notifType,notificationSetting,changeNotificationSetting};
