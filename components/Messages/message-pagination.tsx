@@ -1,6 +1,6 @@
 "use client";
 
-import { Save } from "lucide-react";
+import { Save,Settings } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -10,7 +10,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MessageCard from "@/components/Messages/message-card";
 import {
 	Select,
@@ -26,7 +26,7 @@ import panelNotFound from "../../public/images/panelNotFound/panelNotFound.png";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import SignupButton from "../SignupButton/SignupButton";
 import { Switch } from "@/components/ui/switch"
-import { notifType } from "@/src/types/notificationTypes";
+import { notificationSetting, notifType } from "@/src/types/notificationTypes";
 import notificationService from "@/src/services/notificationService";
 
 
@@ -36,6 +36,9 @@ export default function CorpMessagesPagination() {
   //   const [history, sethistory] = useState<Orderhistory[]>([]);
   const [currpage, Setcurrpage] = useState<string>("1");
   const[notifTypes,setNotifTypes]=useState<notifType[]>([]);
+  const[notifSetting,setNotifSetting]=useState<notificationSetting[]>([]);
+  const[disable,setDisable]=useState(true);
+  const [nameFields, setNameFields] = useState<{ name: string, isPushEnabled: boolean, isEmailEnabled: boolean}[]>([]);
   //   const [isLoading, setIsLoading] = useState(true);
   //   const accessToken = useSelector((state: RootState) => state.user.accessToken);
   //   const handelHistory = (page: string, pageSize: string) => {
@@ -50,21 +53,30 @@ export default function CorpMessagesPagination() {
   //   useEffect(() => {
   //     handelHistory(currpage, "3");
   //   }, [currpage]);
-  // const address = {
-  //   ID: 2,
-  //   province: "mazandaran",
-  //   city: "amol",
-  //   streetAddress: "khiaban haraz",
-  //   postalCode: "9473647546",
-  //   houseNumber: "1",
-  //   unit: 1,
-  // };
+
   const from = { firstName: "تینا", lastName: "محمدپور" };
   const topic = "این یک پیام خیلی خیلی مهم است";
   const body =
     "ابزارهای کاربردی می باشد، کتابهای زیادی در شصت و سه درصد گذشته حال و آیندلورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد.";
   const date = "1404/2/12";
-  notificationService.getNotificationType().then(res=>{setNotifTypes(res.data)}).catch(err=>console.log(err.message));
+  useEffect(()=>{
+    notificationService.getNotificationType().then(res=>{setNotifTypes(res.data)}).catch(err=>console.log(err.message));
+    notificationService.getNotificationSetting().then(res=>setNotifSetting(res.data)).catch(err=>console.log(err.message));
+  },[])
+
+  
+  useEffect(() => {
+    if (notifSetting && notifSetting.length > 0) {
+      const values = notifSetting.map(item => ({
+        name: item.notificationType.name,
+        isPushEnabled: item.isPushEnabled,
+        isEmailEnabled: item.isEmailEnabled
+      }));
+      setNameFields(values);
+    }
+  }, [notifSetting]);
+  console.log(nameFields);
+  
   return (
     <>
       {/* {false ? (
@@ -81,19 +93,27 @@ export default function CorpMessagesPagination() {
                     
               </div>
               <div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-90/100 rounded-2xl overflow-auto shadow-[inset_-6px_-6px_16px_rgba(255,255,255,0.8),inset_6px_6px_16px_rgba(0,0,0,0.2)] mt-14 m-auto md:h-65 h-60">
-                  {notifTypes.map((item,index)=>(
-                    <div className="flex flex-row justify-between border-b-2 border-gray-300 h-1/3">
-                    <p className="mt-auto mb-auto mr-4 text-gray-600">{item.name}</p>
+                  {notifSetting.map((item,index)=>(
+                    <div key={index} className="flex flex-row justify-between border-b-2 border-gray-300 h-1/3">
+                    <p className="mt-auto mb-auto mr-4 text-gray-600">{item.notificationType.name}</p>
                     <div className="flex flex-row mr-auto ml-30 gap-55 mt-auto mb-auto">
-                      <Switch disabled={!item.supportsPush}/> 
-                      <Switch disabled={!item.supportsEmail}/> 
+                      <Switch onClick={()=>{setNameFields(prev =>
+                      prev.map(Item =>
+                        Item.name === item.notificationType.name
+                          ? { ...Item, isPushEnabled: !Item.isPushEnabled }
+                          : Item))}}  disabled={disable} checked={nameFields.find(Item => Item.name === item.notificationType.name)?.isPushEnabled} /> 
+                      <Switch onClick={()=>{setNameFields(prev =>
+                      prev.map(Item =>
+                        Item.name === item.notificationType.name
+                          ? { ...Item, isEmailEnabled: !Item.isEmailEnabled }
+                          : Item))}} disabled={disable} checked={nameFields.find(Item => Item.name === item.notificationType.name)?.isEmailEnabled}/> 
                     </div>
                   </div>
                   ))}
                   
               </div>
               <div className="md:w-3/10 w-6/10 mr-auto ml-auto mb-5">
-                <SignupButton className="bg-[#FA682D]  text-white">ذخیرۀ تغییرات<Save/></SignupButton>
+                <SignupButton onClick={()=>setDisable(!disable)} className="bg-[#FA682D]  text-white">{disable?"تنظیمات اعلان ها":"ذخیرۀ تغییرات"}{disable?<Settings/>:<Save/>}</SignupButton>
               </div>
           </div>
       </div>
