@@ -26,6 +26,8 @@ import panelNotFound from "../../public/images/panelNotFound/panelNotFound.png";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import SignupButton from "../SignupButton/SignupButton";
 import { Switch } from "@/components/ui/switch"
+import { notifType } from "@/src/types/notifTypeType";
+import notificationService from "@/src/services/notificationService";
 
 
 // import { RootState } from "@/src/store/types";
@@ -33,6 +35,7 @@ import { Switch } from "@/components/ui/switch"
 export default function CorpMessagesPagination() {
   //   const [history, sethistory] = useState<Orderhistory[]>([]);
   const [currpage, Setcurrpage] = useState<string>("1");
+  const[notifTypes,setNotifTypes]=useState<notifType[]>([]);
   //   const [isLoading, setIsLoading] = useState(true);
   //   const accessToken = useSelector((state: RootState) => state.user.accessToken);
   //   const handelHistory = (page: string, pageSize: string) => {
@@ -61,7 +64,7 @@ export default function CorpMessagesPagination() {
   const body =
     "ابزارهای کاربردی می باشد، کتابهای زیادی در شصت و سه درصد گذشته حال و آیندلورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد.";
   const date = "1404/2/12";
-
+  notificationService.getNotificationType().then(res=>{setNotifTypes(res.data)}).catch(err=>console.log(err.message));
   return (
     <>
       {/* {false ? (
@@ -78,27 +81,16 @@ export default function CorpMessagesPagination() {
                     
               </div>
               <div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-90/100 rounded-2xl overflow-auto shadow-[inset_-6px_-6px_16px_rgba(255,255,255,0.8),inset_6px_6px_16px_rgba(0,0,0,0.2)] mt-14 m-auto md:h-65 h-60">
-                  <div className="flex flex-row justify-between border-b-2 border-gray-300 h-1/3">
-                    <p className="mt-auto mb-auto mr-4 text-gray-600">متمایل هستم اعلان ها را به شکل ایمیل دریافت کنم.</p>
+                  {notifTypes.map((item,index)=>(
+                    <div className="flex flex-row justify-between border-b-2 border-gray-300 h-1/3">
+                    <p className="mt-auto mb-auto mr-4 text-gray-600">{item.name}</p>
                     <div className="flex flex-row mr-auto ml-30 gap-55 mt-auto mb-auto">
-                      <Switch /> 
-                      <Switch /> 
+                      <Switch disabled={!item.supportsPush}/> 
+                      <Switch disabled={!item.supportsEmail}/> 
                     </div>
                   </div>
-                  <div className="flex flex-row justify-between border-b-2 border-gray-300 h-1/3">
-                    <p className="mb-auto mt-auto mr-4 text-gray-600">متمایل هستم اعلان ها را به شکل ایمیل دریافت کنم.</p>
-                    <div className="flex flex-row mr-auto ml-30 gap-55 mt-auto mb-auto">
-                      <Switch /> 
-                      <Switch /> 
-                    </div>
-                  </div>
-                  <div className="flex flex-row justify-between  h-1/3">
-                    <p className="mb-auto mt-auto mr-4 text-gray-600">متمایل هستم اعلان ها را به شکل ایمیل دریافت کنم.</p>
-                    <div className="flex flex-row mr-auto ml-30 gap-55 mt-auto mb-auto">
-                      <Switch /> 
-                      <Switch /> 
-                    </div>
-                  </div>
+                  ))}
+                  
               </div>
               <div className="md:w-3/10 w-6/10 mr-auto ml-auto mb-5">
                 <SignupButton className="bg-[#FA682D]  text-white">ذخیرۀ تغییرات<Save/></SignupButton>
@@ -109,36 +101,32 @@ export default function CorpMessagesPagination() {
       <h1 className="font-bold text-xl mb-4  md:mr-14 mr-4">اعلان ها</h1>
         <div className="flex flex-col text-white md:px-14 bg-transparent px-2 w-full">
             <div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] md:h-20 h-30 mb-5">
-                <div className={`${style.citypro} flex flex-row mr-4 justify-between m-auto md:w-4/10 w-8/10`}>
+                <div className={`${style.citypro} flex flex-row mr-4 justify-between m-auto md:w-2/10 w-5/10`}>
                   <Select
-                    name="filter1">
+                    name="notiftype">
                     <SelectTrigger
                       className={style.CustomInput}
-                      id="filter1"
+                      id="notiftype"
                       // style={{ width: "25vw" }}
                     >
-                      <SelectValue placeholder="فیلتر1" />
+                      <SelectValue placeholder="دسته بندی اعلان ها" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectLabel>فیلتر</SelectLabel>
-                        
-                              <SelectItem                            
-                                value="آیتم 1"
+                        <SelectLabel>اعلان ها</SelectLabel>
+                              {notifTypes.map((item,index)=>
+                                (<SelectItem                            
+                                value={item?.name}
+                                key={index}
                               >
-                                آیتم 1
-                              </SelectItem>
-                              <SelectItem                            
-                                value="آیتم 2"
-                              >
-                                آیتم 2
-                              </SelectItem>
-                            
+                                {item?.name}
+                              </SelectItem>)
+                              )}    
                       </SelectGroup>
                     </SelectContent>
                   </Select>
 
-                  <Select
+                  {/* <Select
                     name="filter2">
                     <SelectTrigger
                       className={style.CustomInput}
@@ -164,7 +152,7 @@ export default function CorpMessagesPagination() {
                             
                       </SelectGroup>
                     </SelectContent>
-                  </Select>
+                  </Select> */}
               </div>
 
             </div>
