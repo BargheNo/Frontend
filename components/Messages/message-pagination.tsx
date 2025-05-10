@@ -26,7 +26,7 @@ import panelNotFound from "../../public/images/panelNotFound/panelNotFound.png";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import SignupButton from "../SignupButton/SignupButton";
 import { Switch } from "@/components/ui/switch"
-import { notifType } from "@/src/types/notifTypeType";
+import { notifType } from "@/src/types/notificationTypes";
 import notificationService from "@/src/services/notificationService";
 
 
