@@ -340,6 +340,7 @@ function Signup() {
 											}}
 										>
 											<SignupButton
+											    className="text-[#FA682D]"
 												type="submit"
 												disabled={!check}
 											>
