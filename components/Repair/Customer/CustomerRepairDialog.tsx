@@ -243,7 +243,7 @@ const RepairDetailsDialog = ({
                     </button>
                     <button 
                       onClick={() => {
-                        // TODO: Add your override request logic here
+                        // TODO: Add your override request logic heree
                         setShowConfirmation(false);
                       }}
                       className="cursor-pointer
