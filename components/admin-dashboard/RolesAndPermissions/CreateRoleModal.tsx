@@ -1,10 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  X,
-  Loader2,
-  Vote
-} from "lucide-react";
+import { X, Loader2, Vote } from "lucide-react";
 import { toast } from "sonner";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { useSelector } from "react-redux";
@@ -19,23 +15,15 @@ type Permission = {
   category: string;
 };
 
-type Role = {
-  id: string;
-  name: string;
-  permissions: Permission[];
-};
-
-interface EditRoleModalProps {
+interface CreateRoleModalProps {
   isOpen: boolean;
   onClose: () => void;
-  role: Role | null;
   onSaveSuccess: () => void;
 }
 
-const EditRoleModal: React.FC<EditRoleModalProps> = ({
+const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
   isOpen,
   onClose,
-  role,
   onSaveSuccess,
 }) => {
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
@@ -43,13 +31,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
   const [selectedPermissions, setSelectedPermissions] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [roleName, setRoleName] = useState(role?.name || "");
-
-  useEffect(() => {
-    if (role) {
-      setRoleName(role.name);
-    }
-  }, [role]);
+  const [roleName, setRoleName] = useState("");
 
   // Fetch all available permissions
   const getAllPermissions = async () => {
@@ -73,31 +55,6 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
     }
   };
 
-  // Fetch permissions for the current role
-  const getRolePermissions = async (roleId: string) => {
-    try {
-      const response = await fetch(
-        `http://46.249.99.69:8080/v1/admin/roles/${roleId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      const data = await response.json();
-      setSelectedPermissions(
-        data.data.permissions.map((p: Permission) => p.id)
-      );
-    } catch (err: any) {
-      console.log(err);
-      const errMsg =
-        generateErrorMessage(err) || "مشکلی در دریافت مجوزهای نقش رخ داد.";
-      toast.error(errMsg);
-    }
-  };
-
   // Handle checkbox changes
   const handlePermissionChange = (permissionId: number) => {
     setSelectedPermissions((prev) => {
@@ -109,53 +66,54 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
     });
   };
 
-  // Save updated permissions
-  const savePermissions = async () => {
-    if (!role) return;
+  // Create new role
+  const createRole = async () => {
+    if (!roleName.trim()) {
+      toast.error("نام نقش نمی‌تواند خالی باشد");
+      return;
+    }
+
     setIsSaving(true);
 
     try {
-      const response = await fetch(
-        `http://46.249.99.69:8080/v1/admin/roles/${role.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({
-            name: roleName,
-            permissionIDs: selectedPermissions,
-          }),
-        }
-      );
+      const response = await fetch("http://46.249.99.69:8080/v1/admin/roles", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          name: roleName,
+          permissionIDs: selectedPermissions,
+        }),
+      });
 
       if (!response.ok) {
-        throw new Error("Failed to update role");
+        throw new Error("Failed to create role");
       }
 
       const result = await response.json();
       toast.success(result.message);
       onSaveSuccess();
       onClose();
+      setRoleName("");
+      setSelectedPermissions([]);
     } catch (error: any) {
       const errMsg =
-        generateErrorMessage(error) || "هنگام به‌روزرسانی نقش مشکلی پیش آمد.";
+        generateErrorMessage(error) || "هنگام ایجاد نقش مشکلی پیش آمد.";
       toast.error(errMsg);
     } finally {
       setIsSaving(false);
     }
   };
 
-  // Load data when modal opens or role changes
+  // Load permissions when modal opens
   useEffect(() => {
-    if (isOpen && role) {
+    if (isOpen) {
       setIsLoading(true);
-      Promise.all([getAllPermissions(), getRolePermissions(role.id)]).finally(
-        () => setIsLoading(false)
-      );
+      getAllPermissions().finally(() => setIsLoading(false));
     }
-  }, [isOpen, role]);
+  }, [isOpen]);
 
   // Group permissions by category
   const permissionsByCategory = allPermissions.reduce((acc, permission) => {
@@ -166,22 +124,24 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
     return acc;
   }, {} as Record<string, Permission[]>);
 
-  if (!isOpen || !role) return null;
+  if (!isOpen) return null;
 
   return ReactDOM.createPortal(
-    <div className={`fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 rtl ${vazir.className}`}>
+    <div
+      className={`fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 rtl ${vazir.className}`}
+    >
       <div className="bg-white rounded-xl p-6 w-full max-w-4xl max-h-[80vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-bold text-blue-800">
-              ویرایش دسترسی‌های نقش:
-            </h3>
+          <div className="flex items-center gap-2">
+            <h3 className="text-xl font-bold text-blue-800">ایجاد نقش جدید:</h3>
             <input
               type="text"
               value={roleName}
               onChange={(e) => setRoleName(e.target.value)}
-              placeholder={role.name}
-                className="p-1 border-b border-blue-800 focus:outline-none focus:border-orange-500 text-lg font-bold text-blue-800 w-50 text-center mx-auto block ltr"
+              placeholder="نام نقش"
+              className="p-1 border-b border-blue-800 focus:outline-none focus:border-orange-500 text-lg font-bold text-blue-800 w-50 text-center mx-auto block ltr"
             />
+          </div>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
@@ -244,12 +204,12 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
             انصراف
           </button>
           <button
-            onClick={savePermissions}
+            onClick={createRole}
             disabled={isLoading || isSaving}
             className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50 flex items-center gap-2"
           >
             {isSaving && <Loader2 className="animate-spin" size={18} />}
-            ذخیره تغییرات
+            ایجاد نقش
           </button>
         </div>
       </div>
@@ -258,4 +218,4 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
   );
 };
 
-export default EditRoleModal;
+export default CreateRoleModal;
