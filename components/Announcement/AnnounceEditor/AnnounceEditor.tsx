@@ -9,11 +9,23 @@ import FaTranslation from "./FaTranslation.ts";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils.ts";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner.tsx";
+import { Newspaper, Save } from "lucide-react";
+import CustomInput from "@/components/Custom/CustomInput/CustomInput.tsx";
+import { Form, Formik } from "formik";
 
 export default function AnnounceEditor() {
     const editorRef = useRef<EditorJS | null>(null);
     const holderRef = useRef<HTMLDivElement>(null);
-    const [data, setData] = useState<OutputData>();
+    const [data, setData] = useState<OutputData>({
+        blocks: [
+            {
+                type: "paragraph",
+                data: {
+                    text: "متن اعلان خود را اینجا بنویسید..."
+                }
+            }
+        ]
+    });
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -73,24 +85,48 @@ export default function AnnounceEditor() {
       // editorRef.current?.destroy();
     // console.log("id: ", projectId);
     console.log("data:", savedData);
-    setData(savedData);
+    if(savedData)
+      setData(savedData);
     };
 
 
   return (
     <>
-      {loading && <LoadingSpinner className="absolute top-0 left-0 right-0 bottom-0 bg-red-800 z-50"/>}
+      {loading && <LoadingSpinner className="absolute top-0 left-0 right-0 bottom-0 bg-white z-50"/>}
+      <div className="flex flex-col items-center gap-3 w-[70vw] mx-auto">
+      <div className="text-bold text-2xl self-start">ویرایشگر: </div>
+      <Formik<{name: string}>
+        initialValues={{
+          name:"",
+        }}
+        onSubmit={()=>{}}
+        >
+        <CustomInput
+                  containerClassName="w-full lg:self-start lg:w-1/4!"
+                  name="name"
+                  type="text"
+                  icon={Newspaper}
+                  placeholder="عنوان خبر"
+                  />
+      </Formik>
       <div className="flex flex-col items-center gap-3">
-        <div className="overflow-y-scroll overflow-x-hiden w-[70vw]! h-[60vh]! bg-gray-100 mt-5 rounded-md p-2">
-        <div
-          ref={holderRef}
-          id="editorjs"
-          className={cn("rtl h-full w-full")}
-          >
-        </div>
+        <div className="overflow-y-auto overflow-x-hiden w-[70vw]! h-[55vh]! bg-gray-100 rounded-md p-2">
+          <div
+            ref={holderRef}
+            id="editorjs"
+            className={cn("rtl h-full w-full")}
+            >
           </div>
-        <button className="bg-red-500" onClick={handelSave}>Save</button>
+        </div>
+        <button 
+        className="flex gap-5 items-center bg-fire-orange px-10 py-3 rounded-full! neo-btn text-white font-bold text-lg">
+          <span>
+            ذخیره
+          </span>
+          <Save />
+        </button>
       </div>
+            </div>
     </>
   )
 }
