@@ -25,7 +25,7 @@
     position: absolute;
     height: 186px;
     width: 220px;
-    animation: rotate 3s linear infinite;
+    animation: rotate 3s infinite;
 }
 
 @keyframes rotate {
