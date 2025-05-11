@@ -133,7 +133,7 @@ export default function CorpMessagesPagination() {
                               )
                             );
                           }}
-                          disabled={disable}
+                          disabled={item.notificationType.supportsEmail==false?true:disable}
                           checked={
                             nameFields.find(Item => Item.name === item.notificationType.name)?.isEmailEnabled
                           }
