@@ -481,19 +481,19 @@ export default function Page() {
 				CustomToast("آدرس را وارد کنید");
 				return false;
 			}
-			if (!address.postalCode) {
+			if (address.postalCode === "") {
 				CustomToast("کد پستی را وارد کنید");
 				return false;
 			}
-			if (address.postalCode.length !== 10) {
+			if (String(address.postalCode).length !== 10) {
 				CustomToast("فرمت کد پستی صحیح نمی‌باشد");
 				return false;
 			}
-			if (!address.houseNumber) {
+			if (address.houseNumber === "") {
 				CustomToast("پلاک را وارد کنید");
 				return false;
 			}
-			if (!address.unit) {
+			if (address.unit === "") {
 				CustomToast("واحد را وارد کنید");
 				return false;
 			}
@@ -526,127 +526,142 @@ export default function Page() {
 	};
 	if (!isClient) return <LoadingSpinner />;
 	return (
-		<div className="w-screen min-h-screen h-fit place-items-center flex place-content-center items-center transition-all duration-300 ease-in-out bg-[#F0EDEF]">
-			<div className="space-y-4 rtl vazir m-auto sm:pb-6 h-2/3 sm:w-2/3 md:w-2/3 lg:w-3/5 w-5/6 my-20">
-				<div className="flex items-center justify-center">
-					{Array.from({ length: steps.length }).map((_, index) => (
-						<div key={index} className={`flex items-center`}>
-							<Badge
-								data-test={`step-${index}`}
-								className={cn(
-									"rounded-full sm:w-12 md:w-36 lg:w-42 transition-all duration-300 ease-in-out text-md neu-shadow gap-2 p-2 bg-gradient-to-r",
-									index === step
-										? "from-[#A55FDA] to-[#F37240] text-black/80"
-										: index > step
-										? "from-[#A55FDA]/30 to-[#F37240]/30 text-black"
-										: "from-[#A55FDA] to-[#F37240] text-white"
-								)}
-								key={index}
-							>
-								{isTablet && steps[index]}
-								{/* <p className="lg:visible md:hidden sm:hidden hidden">{steps[index]}</p> */}
-								<div className="">{icons[index]}</div>
-							</Badge>
-							{index < steps.length - 1 && (
+		<>
+			<div className="w-screen min-h-screen h-fit place-items-center flex place-content-center items-center transition-all duration-300 ease-in-out bg-[#F0EDEF]">
+				<div className="space-y-4 rtl vazir m-auto sm:pb-6 h-2/3 sm:w-2/3 md:w-2/3 lg:w-3/5 w-5/6 my-20">
+					<div className="flex items-center justify-center">
+						{Array.from({ length: steps.length }).map(
+							(_, index) => (
 								<div
-									className={cn(
-										"w-8 h-0.5 transition-all duration-500 ease-in-out",
-										index < step
-											? "bg-primary"
-											: "bg-primary/30"
-									)}
-								/>
-							)}
-						</div>
-					))}
-				</div>
-				{!isTablet && (
-					<div className="text-center text-xl font-bold mt-7">
-						{steps[step]}
-					</div>
-				)}
-
-				<Formik
-					initialValues={initialValuesForm}
-					validationSchema={validationSchemaForm}
-					onSubmit={(values, { setFieldValue, validateForm }) =>
-						onSubmit(values, setFieldValue, validateForm)
-					}
-				>
-					{({ setFieldValue, values, validateForm }) => (
-						<Card className="justify-between neu-shadow border-0">
-							{loading ? <TransparentLoading /> : <></>}
-							<CardHeader>
-								<CardTitle className="text-lg">
-									لطفا اطلاعات شرکت خود را وارد کنید
-								</CardTitle>
-								<CardDescription>
-									مرحله فعلی: {steps[step]}
-								</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<div>
-									{step === 0 && (
-										<CorpInfoForm
-											values={values}
-											setFieldValue={setFieldValue}
-											// screenType={screenType}
-										/>
-									)}
-									{step === 1 && (
-										<ContactInfoForm
-											values={values}
-											setFieldValue={setFieldValue}
-										/>
-									)}
-									{step === 2 && (
-										<AddressesForm
-											values={values}
-											setFieldValue={setFieldValue}
-										/>
-									)}
-									{step === 3 && (
-										<CertificatesForm
-											values={values}
-											setFieldValue={setFieldValue}
+									key={index}
+									className={`flex items-center`}
+								>
+									<Badge
+										data-test={`step-${index}`}
+										className={cn(
+											"rounded-full sm:w-12 md:w-36 lg:w-42 transition-all duration-300 ease-in-out text-md neu-shadow gap-2 p-2 bg-gradient-to-r",
+											index === step
+												? "from-[#A55FDA] to-[#F37240] text-black/80"
+												: index > step
+												? "from-[#A55FDA]/30 to-[#F37240]/30 text-black"
+												: "from-[#A55FDA] to-[#F37240] text-white"
+										)}
+										key={index}
+									>
+										{isTablet && steps[index]}
+										{/* <p className="lg:visible md:hidden sm:hidden hidden">{steps[index]}</p> */}
+										<div className="">{icons[index]}</div>
+									</Badge>
+									{index < steps.length - 1 && (
+										<div
+											className={cn(
+												"w-8 h-0.5 transition-all duration-500 ease-in-out",
+												index < step
+													? "bg-primary"
+													: "bg-primary/30"
+											)}
 										/>
 									)}
 								</div>
-							</CardContent>
-							<CardFooter className="flex justify-between align-bottom ltr">
-								<button
-									type="submit"
-									className="hover:cursor-pointer cta-neu-button w-1/4"
-									data-test="submit-button"
-									onClick={() => {
-										onSubmit(
-											values,
-											setFieldValue,
-											validateForm
-										);
-									}}
-								>
-									{step === steps.length - 1
-										? "تایید"
-										: "بعدی"}
-								</button>
-								{step > 0 && (
+							)
+						)}
+					</div>
+					{!isTablet && (
+						<div className="text-center text-xl font-bold mt-7">
+							{steps[step]}
+						</div>
+					)}
+
+					<Formik
+						initialValues={initialValuesForm}
+						validationSchema={validationSchemaForm}
+						onSubmit={(values, { setFieldValue, validateForm }) =>
+							onSubmit(values, setFieldValue, validateForm)
+						}
+					>
+						{({ setFieldValue, values, validateForm }) => (
+							<Card className="justify-between neu-shadow border-0">
+								{/* {loading ? (
+								<TransparentLoading />
+							) : (
+								<> */}
+								<CardHeader>
+									<CardTitle className="text-lg">
+										لطفا اطلاعات شرکت خود را وارد کنید
+									</CardTitle>
+									<CardDescription>
+										مرحله فعلی: {steps[step]}
+									</CardDescription>
+								</CardHeader>
+								<CardContent>
+									<div>
+										{step === 0 && (
+											<CorpInfoForm
+												values={values}
+												setFieldValue={setFieldValue}
+												// screenType={screenType}
+											/>
+										)}
+										{step === 1 && (
+											<ContactInfoForm
+												values={values}
+												setFieldValue={setFieldValue}
+											/>
+										)}
+										{step === 2 && (
+											<AddressesForm
+												values={values}
+												setFieldValue={setFieldValue}
+											/>
+										)}
+										{step === 3 && (
+											<CertificatesForm
+												values={values}
+												setFieldValue={setFieldValue}
+											/>
+										)}
+									</div>
+									
+									{loading && <TransparentLoading className="w-full" />}
+								</CardContent>
+								<CardFooter className="flex justify-between align-bottom ltr">
 									<button
-										type="button"
+										type="submit"
 										className="hover:cursor-pointer cta-neu-button w-1/4"
+										data-test="submit-button"
 										onClick={() => {
-											handleBack();
-											resetFormValues(setFieldValue);
+											onSubmit(
+												values,
+												setFieldValue,
+												validateForm
+											);
 										}}
 									>
-										قبلی
+										{step === steps.length - 1
+											? "تایید"
+											: "بعدی"}
 									</button>
-								)}
-							</CardFooter>
-						</Card>
-					)}
-				</Formik>
+									{step > 0 && (
+										<button
+											type="button"
+											className="hover:cursor-pointer cta-neu-button w-1/4"
+											onClick={() => {
+												handleBack();
+												resetFormValues(setFieldValue);
+											}}
+										>
+											قبلی
+										</button>
+									)}
+								</CardFooter>
+
+								{/* </>
+							)} */}
+							</Card>
+						)}
+					</Formik>
+				</div>
 			</div>
-		</div>
+		</>
 	);
 }

@@ -181,7 +181,7 @@ export default function AddressesForm({
 								placeholder="آدرس"
 								icon={MapPin}
 							/>
-							<div className="flex flex-row sm:flex-col md:flex-col gap-4">
+							<div className="flex flex-col sm:flex-col md:flex-row lg:flex-row gap-4">
 								<CustomInput
 									name={`postalCode`}
 									value={address.postalCode}
@@ -199,7 +199,7 @@ export default function AddressesForm({
 									icon={Building}
 								/>
 								<CustomInput
-									name={`addresses.[${index}].unit`}
+									name={`unit`}
 									value={address.unit}
 									disabled
 									// name="unit"
