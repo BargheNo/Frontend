@@ -180,7 +180,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
               value={roleName}
               onChange={(e) => setRoleName(e.target.value)}
               placeholder={role.name}
-              className="p-1 border-b border-blue-800 focus:outline-none focus:border-orange-500 text-lg font-bold text-blue-800 w-30"
+                className="p-1 border-b border-blue-800 focus:outline-none focus:border-orange-500 text-lg font-bold text-blue-800 w-50 text-center mx-auto block ltr"
             />
           <button
             onClick={onClose}

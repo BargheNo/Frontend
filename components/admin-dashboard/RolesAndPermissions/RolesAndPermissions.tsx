@@ -7,6 +7,7 @@ import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import EditRoleModal from "./EditRoleModal";
+import CreateRoleModal from "./CreateRoleModal";
 
 const RolesAndPermissions = () => {
   type Permission = {
@@ -25,6 +26,7 @@ const RolesAndPermissions = () => {
   const [roles, setRoles] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentRole, setCurrentRole] = useState<Role | null>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const getRoles = () => {
     fetch("http://46.249.99.69:8080/v1/admin/roles", {
@@ -101,7 +103,6 @@ const RolesAndPermissions = () => {
             <div className="text-orange-500">
               <User />
             </div>
-            <p className="text-start content-start  text-xl ">{id}-</p>
             <p className="text-start content-start  text-xl ">{name}</p>
           </div>
           <div className="flex flex-row gap-2 w-5/7 ">
@@ -126,11 +127,7 @@ const RolesAndPermissions = () => {
               <div className="text-orange-500">
                 <Pencil />
               </div>
-              <button
-                className="cursor-pointer"
-              >
-                تغییر
-              </button>
+              <button className="cursor-pointer">تغییر</button>
             </div>
             <div
               className={`cta-neu-button flex ${styles.button} items-center content-center justify-center h-1/2 w-1/2 cursor-pointer`}
@@ -158,13 +155,14 @@ const RolesAndPermissions = () => {
           </h2>
           <div
             className={`cta-neu-button flex flex-row ${styles.button} items-center content-center justify-center h-15 w-1/5 text-2xl `}
+            onClick={() => setIsCreateModalOpen(true)}
           >
             <div className="text-orange-500">
               <Plus />
             </div>
             <button
               className="cursor-pointer"
-              // onClick={() => resolverole(id)}
+              
             >
               افزودن نقش
             </button>
@@ -190,6 +188,11 @@ const RolesAndPermissions = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         role={currentRole}
+        onSaveSuccess={getRoles}
+      />
+       <CreateRoleModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
         onSaveSuccess={getRoles}
       />
     </div>
