@@ -25,7 +25,7 @@ export default function AnnounceCard({title, content, writer, date}: {title: str
         <div
          className={cn(
             "",
-            selected && "bg-gray-300 hover:bg-gray-300 py-2 rounded transition-all duration-300 ease-in-out relative",
+            selected && "bg-[#EA6639] hover:bg-gray-300 py-2 rounded transition-all duration-300 ease-in-out relative",
             selectMode && "cursor-pointer")}
          onClick={() => {selectMode && handleSelect()}}
          >
@@ -42,24 +42,24 @@ export default function AnnounceCard({title, content, writer, date}: {title: str
             <div className="flex justify-between items-center">
                 <div>نویسنده: {writer}</div>
                 <div className="flex items-center gap-1">
-                    <Calendar size={24} />
                     {new Date(date).toLocaleDateString('fa-IR', { year: 'numeric', month: 'numeric', day: 'numeric' })}
+                    <Calendar size={24} color="#EA6639"/>
                 </div>
             </div>
         </div>
         </div>
         </ContextMenuTrigger>
-        <ContextMenuContent className="border-0 neo-card p-2 flex flex-col gap-2 rtl">
-            <ContextMenuItem className="neo-btn" onClick={() => {
+        <ContextMenuContent className="border-0 p-4 flex flex-col gap-2 rtl bg-[#F0EDEF]">
+            <ContextMenuItem className="neo-btn bg-white" onClick={() => {
                 setSelectMode(true);
                 handleSelect();
             }}>
                 انتخاب
             </ContextMenuItem>
-            <ContextMenuItem className="neo-btn">
+            <ContextMenuItem className="neo-btn bg-white">
                 ویرایش
             </ContextMenuItem>
-            <ContextMenuItem className="neo-btn">
+            <ContextMenuItem className="neo-btn bg-white">
                 حذف
             </ContextMenuItem>
         </ContextMenuContent>
