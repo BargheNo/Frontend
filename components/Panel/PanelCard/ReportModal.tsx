@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import ReactDOM from "react-dom";
+import { vazir } from "@/lib/fonts";
 
 interface ModalProps {
   isOpen: boolean;
@@ -11,7 +12,7 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
   if (!isOpen) return null;
 
   return ReactDOM.createPortal(
-    <div className="fixed inset-0 z-[9999] bg-black/60 flex items-center justify-center">
+    <div className={`fixed inset-0 z-[9999] bg-black/60 flex items-center justify-center ${vazir.className}`}>
       <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6 relative">
         <button
           onClick={onClose}
