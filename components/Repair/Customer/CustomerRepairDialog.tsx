@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -50,8 +50,11 @@ const RepairDetailsDialog = ({
   onClose,
   repairItem,
 }: RepairDetailsDialogProps) => {
-  if (!repairItem) return null;
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
+
+  if (!repairItem) return null;
+
   const handleSubmit = async (values: { problem: string }) => {
     try {
       console.log(values);
@@ -178,19 +181,8 @@ const RepairDetailsDialog = ({
               <p className="text-gray-700">{repairItem.Description}</p>
             </div>
 
-            {/* Override Request */}
-            <div className="w-full flex flex-col items-start mt-5 border-t border-gray-300 pt-5">
-              <button className="self-end cursor-pointer
-                                bg-gradient-to-br from-[#ef3f3f] to-[#d00202]
-                                hover:from-[#e33333] hover:to-[#bd0000]
-                                active:from-[#bd0000] active:to-[#e33333]
-                                text-white py-2 px-4 rounded-md transition-all duration-300">
-                لغو گزارش
-              </button>
-            </div>
-
             {/* Problem Report Form */}
-            {/* <div className="w-full mt-5 border-t border-gray-300 pt-5">
+            <div className="w-full mt-5 border-t border-gray-300 pt-5">
               <h4 className="text-lg font-semibold text-navy-blue">
                 گزارش مشکل
               </h4>
@@ -222,7 +214,49 @@ const RepairDetailsDialog = ({
                   </Form>
                 )}
               </Formik>
-            </div> */}
+            </div>
+
+            {/* Override Request */}
+            <div className="w-full flex flex-col sm:flex-row gap-2 justify-between items-start mt-5 border-t border-gray-300 pt-5">
+              <span>میتوانید از این بخش درخواست خود را حذف کنید.</span>
+              <div className="flex gap-2">
+                {!showConfirmation ? (
+                  <button 
+                    onClick={() => setShowConfirmation(true)}
+                    className="cursor-pointer
+                    bg-gradient-to-br from-[#ef3f3f] to-[#d00202]
+                    hover:from-[#e33333] hover:to-[#bd0000]
+                    active:from-[#bd0000] active:to-[#e33333]
+                    text-white py-2 px-4 rounded-md transition-all duration-300">
+                    لغو درخواست
+                  </button>
+                ) : (
+                  <>
+                    <button 
+                      onClick={() => setShowConfirmation(false)}
+                      className="cursor-pointer
+                      bg-gradient-to-br from-gray-400 to-gray-500
+                      hover:from-gray-500 hover:to-gray-600
+                      active:from-gray-600 active:to-gray-500
+                      text-white py-2 px-4 rounded-md transition-all duration-300">
+                      انصراف
+                    </button>
+                    <button 
+                      onClick={() => {
+                        // TODO: Add your override request logic here
+                        setShowConfirmation(false);
+                      }}
+                      className="cursor-pointer
+                      bg-gradient-to-br from-[#ef3f3f] to-[#d00202]
+                      hover:from-[#e33333] hover:to-[#bd0000]
+                      active:from-[#bd0000] active:to-[#e33333]
+                      text-white py-2 px-4 rounded-md transition-all duration-300">
+                      بله، مطمئنم
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </DialogContent>
