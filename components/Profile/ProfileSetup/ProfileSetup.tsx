@@ -9,7 +9,7 @@ import styles from '../../Auth/Signup/signup.module.css'
 import { ArrowLeft, IdCard, Mail } from "lucide-react";
 import { toast } from "sonner";
 import ProfilePicPicker from "@/components/Custom/ProfilePicPicker/ProfilePicPicker";
-import { baseURL, putData } from "@/src/services/apiHub";
+import { baseURL, postData, putData } from "@/src/services/apiHub";
 
 interface FormValues {
   email: string;
@@ -39,8 +39,9 @@ const ProfileSetup = () => {
     try {
       console.log(values);
 
-      const response = await putData({
-        endPoint: `${baseURL}/v1/user/profile`,
+      const response = await postData({
+        endPoint: `${baseURL}/v1/user/profile/complete`,
+        headers: {"Content-Type": "multipart/form-data"},
         data: values,
       });
       

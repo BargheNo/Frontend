@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react'
-import { Plus, Calendar, NotebookPen, ChevronDown, Check } from 'lucide-react'
+import { Plus, NotebookPen, ChevronDown, Check, Tag } from 'lucide-react'
 import {
     Dialog,
     DialogContent,
@@ -224,7 +224,7 @@ const CustomerRepairRequest = () => {
                     </button>
                     
                     {isPanelOpen && (
-                      <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      <div className="absolute z-10 mt-1 w-[99%] neu-shadow rounded-2xl !bg-[#FEFEFE] py-1 text-base ring-2 ring-gray-300 ring-opacity-5 focus:outline-2">
                         {panels.map(panel => (
                           <div
                             key={panel.id}
@@ -247,7 +247,7 @@ const CustomerRepairRequest = () => {
                     <div className="flex-1">
                       <CustomInput
                         name="title"
-                        icon={Calendar}
+                        icon={Tag}
                         type="text"
                         inputClassName='!bg-[#FEFEFE]'
                       >
@@ -283,7 +283,7 @@ const CustomerRepairRequest = () => {
                     </button>
                     
                     {isUrgencyOpen && (
-                      <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      <div className="absolute z-10 mt-1 w-[99%] neu-shadow rounded-2xl !bg-[#FEFEFE] py-1 text-base ring-2 ring-gray-300 ring-opacity-5 focus:outline-2">
                         {urgencyOptions.map(option => (
                           <div
                             key={option.value}
