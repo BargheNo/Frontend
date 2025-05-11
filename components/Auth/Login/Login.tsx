@@ -19,11 +19,11 @@ const validationSchema = Yup.object({
 		.matches(/^[0-9]{10}$/, "شماره تلفن باید ۱۰ رقم باشد")
 		.required("شماره تلفن الزامی است"),
 	password: Yup.string()
-		.min(8, "رمز عبور باید حداقل 8 کاراکتر باشد.")
-		.matches(/[a-z]/, ".رمز عبور باید شامل حداقل یک حرف کوچک باشد")
-		.matches(/[A-Z]/, ".رمز عبور باید شامل حداقل یک حرف بزرگ باشد")
-		.matches(/\d/, ".رمز عبور باید شامل حداقل یک عدد باشد")
-		.matches(/[\W_]/, ".رمز عبور باید شامل حداقل یک نماد باشد")
+		// .min(8, "رمز عبور باید حداقل 8 کاراکتر باشد.")
+		// .matches(/[a-z]/, ".رمز عبور باید شامل حداقل یک حرف کوچک باشد")
+		// .matches(/[A-Z]/, ".رمز عبور باید شامل حداقل یک حرف بزرگ باشد")
+		// .matches(/\d/, ".رمز عبور باید شامل حداقل یک عدد باشد")
+		// .matches(/[\W_]/, ".رمز عبور باید شامل حداقل یک نماد باشد")
 		.required("رمز عبور الزامی است"),
 });
 
@@ -110,9 +110,9 @@ const Login = () => {
 										readOnly={true}
 										icon={Smartphone}
 										type="text"
-										value="+98"
+										// value="+98"
 									>
-										+98
+										98+
 									</CustomInput>
 								</div>
 							</div>
@@ -136,7 +136,7 @@ const Login = () => {
 					</Formik>
 
 					<p className="flex gap-5 justify-center text-center text-sm text-blue-600">
-						<a href="/forgot-password">فراموشی رمز عبور</a>
+						<a href="/forgot-password" data-test="forget-password">فراموشی رمز عبور</a>
 						<Link href="/signup">ثبت نام نکرده ام</Link>
 					</p>
 				</div>

@@ -79,6 +79,7 @@ const TicketSupportPage = () => {
     image: File | null;
   }) => {
     const formData = new FormData();
+    setImagePreview(null);
     formData.append("subject", values.subject);
     console.log(values.subject);
     formData.append("description", values.description);
@@ -336,15 +337,18 @@ const TicketSupportPage = () => {
               name="subject"
               value={formik.values.subject}
               onChange={formik.handleChange}
-              className={`bg-transparent text-right outline-none w-full  text-bold text-xl appearance-none`}
+              className="bg-white text-right outline-none w-full px-4 py-3 rounded-lg shadow-md border border-gray-300 text-xl focus:ring-2 focus:ring-orange-400 focus:border-orange-400 appearance-none transition-all duration-300"
             >
-              <option value="">انتخاب عنوان</option>
+              <option value="" className="text-gray-500">
+                انتخاب عنوان
+              </option>
               {subjectOptions.map((item) => (
-                <option key={item.label} value={item.id} className="text-black">
+                <option key={item.id} value={item.id} className="text-black">
                   {item.label}
                 </option>
               ))}
             </select>
+
             <div className="text-orange-500">
               <List />
             </div>
@@ -445,7 +449,7 @@ const TicketSupportPage = () => {
               image={ticket.image}
             />
 
-            {activeCommentTicketId && (
+            {activeCommentTicketId === ticket.id && (
               <div className="flex items-center justify-center">
                 <div className="bg-white px-10 rounded-lg w-full text-right space-y-4">
                   <h3 className="text-lg font-bold">ثبت نظر</h3>
@@ -457,7 +461,6 @@ const TicketSupportPage = () => {
                       onChange={(e) => setCommentInput(e.target.value)}
                       rows={3}
                       className={`w-full p-2 resize-none outline-none focus:ring-0 focus:outline-none`}
-
                       placeholder="متن نظر..."
                     />
                   </div>
@@ -524,5 +527,3 @@ const TicketSupportPage = () => {
 };
 
 export default TicketSupportPage;
-
-

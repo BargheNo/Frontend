@@ -37,7 +37,7 @@ const CorpMessageCard=  ({
                                     <span className=" mr-2 whitespace-nowrap">
                                          نام پنل :
                                     </span> */}
-                                    <span className="text-2xl font-bold text-gray-800 mr-2 whitespace-nowrap">
+                                    <span className="md:text-2xl text-xl font-bold text-gray-800 mr-2 whitespace-nowrap">
                                         {topic}
                                     </span>
                                 </div>

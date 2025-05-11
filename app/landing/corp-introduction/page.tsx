@@ -15,7 +15,11 @@ export default function Page() {
 	const checkUser = () => {
 		if (!accessToken) {
 			router.push("/login");
-			toast("برای ثبت شرکت ابتدا باید وارد حساب کاربری خود شوید!");
+			toast(
+				<div data-test="sonner-toast">
+					برای ثبت شرکت ابتدا باید وارد حساب کاربری خود شوید!
+				</div>
+			);
 		}
 	};
 	return (
@@ -36,8 +40,15 @@ export default function Page() {
 				<p className="vazir text-xl flex place-self-center place-content-center w-full text-right rtl">
 					تنها در برق نو به همه نقاط ایران خدمات رسانی کنید
 				</p>
-				<Link href="/register-corp" className="w-full" onClick={checkUser}>
-					<button className="rtl w-2/5 place-self-center rounded-full flex justify-center gap-2 hover:cursor-pointer shadow-md hover:scale-105 items-center place-content-center cursor-pointer hover:shadow-lg transition duration-300 text-white p-4 font-bold bg-gradient-to-r from-[#EB4132] to-[#DD392B]">
+				<Link
+					href="/register-corp"
+					className="w-full"
+					onClick={() => checkUser()}
+				>
+					<button
+						data-test="register-corp"
+						className="rtl w-2/5 place-self-center rounded-full flex justify-center gap-2 hover:cursor-pointer shadow-md hover:scale-105 items-center place-content-center cursor-pointer hover:shadow-lg transition duration-300 text-white p-4 font-bold bg-gradient-to-r from-[#EB4132] to-[#DD392B]"
+					>
 						<span className={`vazir text-2xl`}>ثبت نام شرکت</span>
 						<ArrowLeft />
 					</button>

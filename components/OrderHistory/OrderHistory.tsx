@@ -51,7 +51,7 @@ const OrderHistory = ({ name, status, address, createdTime }: Orderhistory) => {
         <div className="flex md:flex-col flex-row-reverse justify-center lg:-mb-0 -mb-80 gap-2 items-center z-10 min-w-48 -mr-43">
           <Link href="">
             <div className="flex items-center justify-between cursor-pointer rounded-full  ">
-              <SignupButton>
+              <SignupButton className="text-[#FA682D]">
                 <MoveLeft className="w-9 h-9"></MoveLeft>
               </SignupButton>
             </div>

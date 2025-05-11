@@ -2,13 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Formik } from "formik";
+import { Formik, useFormikContext } from "formik";
 import * as Yup from "yup";
 
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import CorpInfoForm from "@/components/Auth/RegisterCorp/CorpInfoForm/CorpInfoForm";
 import AddressesForm from "@/components/Auth/RegisterCorp/AddressesForm/AddressesForm";
+import { useMediaQuery } from "react-responsive";
 import { useSelector } from "react-redux";
 import { setCorp } from "@/src/store/slices/corpSlice";
 import { useDispatch } from "react-redux";
@@ -30,9 +31,12 @@ import {
 	putData,
 	putDataFile,
 } from "@/src/services/apiHub";
-import { toast } from "sonner";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { setUser } from "@/src/store/slices/userSlice";
+import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
+import useClientCheck from "@/src/hooks/useClientCheck";
+import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 
 const steps = ["اطلاعات شرکت", "اطلاعات تماس", "آدرس", "مدارک"];
 const icons = [
@@ -87,12 +91,12 @@ const validationSchemaForm = Yup.object({
 		Yup.object().shape({
 			provinceID: Yup.number().required("این فیلد الزامی است"),
 			cityID: Yup.number().required("این فیلد الزامی است"),
-			streetAddress: Yup.string().required("این فیلد الزامی است"),
+			streetAddress: Yup.string().required("آدرس الزامی است"),
 			postalCode: Yup.string()
 				.required("کد پستی الزامی است")
 				.length(10, "کد پستی باید 10 رقم باشد"),
-			houseNumber: Yup.string().optional(),
-			unit: Yup.number().optional(),
+			houseNumber: Yup.string().required("پلاک الزامی است"),
+			unit: Yup.number().required("واحد الزامی است"),
 		})
 	),
 	contactInformation: Yup.array().of(
@@ -109,23 +113,32 @@ const validationSchemaForm = Yup.object({
 			.required("استعلام مودیان مالیات بر ارزش افزوده الزامی است")
 			.test("fileType", "فرمت فایل معتبر نیست", (value) => {
 				const file = value as File;
-				return (
-					value && ["image/jpeg", "image/png"].includes(file.type)
-				);
+				return value && ["image/jpeg", "image/png"].includes(file.type);
 			}),
 		officialNewspaperAD: Yup.mixed()
 			.required("تصویر آگهی روزنامه رسمی آخرین تغییرات الزامی است")
 			.test("fileType", "فرمت فایل معتبر نیست", (value) => {
 				const file = value as File;
-				return (
-					value && ["image/jpeg", "image/png"].includes(file.type)
-				);
+				return value && ["image/jpeg", "image/png"].includes(file.type);
 			}),
 	}),
 });
 
+// function getScreenType() {
+// 	const width = window.innerWidth;
+// 	if (width < 768) return "mobile";
+// 	if (width < 1024) return "tablet";
+// 	return "desktop";
+// }
+
 export default function Page() {
+	const isClient = useClientCheck();
+	const isMobile = useMediaQuery({ minWidth: 640 });
+	const isTablet = useMediaQuery({ minWidth: 768 });
+	const isDesktop = useMediaQuery({ minWidth: 1024 });
+	// const [screenType, setScreenType] = useState(getScreenType());
 	// const [corpId, setCorpId] = useState(0);
+	const [loading, setLoading] = useState<boolean>(false);
 	const dispatch = useDispatch();
 	const router = useRouter();
 	const [step, setStep] = useState<number>(0);
@@ -135,13 +148,19 @@ export default function Page() {
 		(state: RootState) => state.user.accessToken
 	);
 	const corpId = useSelector((state: RootState) => state.user.corpId);
-	const onSubmit = async (values: corpData, setFieldValue: any) => {
-		// await handleFormSubmit(values);
+	const onSubmit = async (
+		values: corpData,
+		setFieldValue: any,
+		validateForm: any
+	) => {
+		// Validate the form values
+		await validateForm(values);
+
 		if (step === 0) {
 			if (corpId) {
 				getData({
 					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
-				}).then((res) => {
+				}).then(async (res) => {
 					const formData: corpData = {};
 					if (values.name != res.data.name) {
 						formData["name"] = values.name;
@@ -167,8 +186,6 @@ export default function Page() {
 						JSON.stringify(values.signatories) !==
 							JSON.stringify(res.data.signatories)
 					) {
-						// console.log("new signatory", values.signatories);
-						// console.log(res.data.signatories);
 						formData["signatories"] = values.signatories;
 					}
 					// formData["signatories"]?.map((signatory) => {
@@ -183,49 +200,60 @@ export default function Page() {
 					// 	}
 					// });
 					console.log("formData in step 0", formData);
-					checkNationalCardNumber(formData).then(
-						(nationalCardNumberOk) => {
-							if (
-								Object.keys(formData).length !== 0 &&
-								nationalCardNumberOk
-							) {
+					if (
+						values.name === "" ||
+						values.registrationNumber === "" ||
+						values.nationalID === "" ||
+						values.iban === ""
+					) {
+						CustomToast("اطلاعات خواسته شده را پر کنید");
+					} else {
+						const signatoriesOk = await checkSignatories(formData);
+						if (signatoriesOk) {
+							if (Object.keys(formData).length !== 0) {
 								putData({
 									endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/basic`,
 									data: formData,
-									// data: {
-									// 	name: values.name,
-									// 	registrationNumber: String(
-									// 		values.registrationNumber
-									// 	),
-									// 	nationalID: String(values.nationalID),
-									// 	iban: String(values.iban),
-									// 	// signatories: values.signatories,
-									// },
 								})
 									.then((res) => {
-										toast(res.message);
-										// toast(generateErrorMessage(res));
+										CustomToast(res.message);
 										if (step < steps.length - 1) {
 											setStep(step + 1);
 										}
+										resetFormValues(setFieldValue);
 									})
 									.catch((err) => {
-										toast(generateErrorMessage(err));
+										console.log(err);
+										const message =
+											generateErrorMessage(err);
+										if (message) {
+											CustomToast(message);
+										}
 									});
-							} else if (step < steps.length - 1) {
-								setStep(step + 1);
+							} else {
+								if (step < steps.length - 1) {
+									setStep(step + 1);
+								}
 							}
 						}
-					);
+					}
 				});
 			} else {
-				console.log("post", values);
-				// getData({ endPoint: `${baseURL}/v1/contact/types` }).then((res) =>
-				// 	console.log(res)
-				// );
 				console.log("formData in step 0", values);
-				checkNationalCardNumber(values).then((nationalCardNumberOk) => {
-					if (nationalCardNumberOk) {
+				if (
+					values.name === "" ||
+					values.registrationNumber === "" ||
+					values.nationalID === "" ||
+					values.iban === ""
+				) {
+					CustomToast("اطلاعات خواسته شده را پر کنید");
+					return;
+				} else if (values.signatories?.length === 0) {
+					CustomToast("افزودن حداقل یک صاحب امضا الزامی است");
+					return;
+				} else {
+					const signatoriesOk = await checkSignatories(values);
+					if (signatoriesOk) {
 						postData({
 							endPoint: `${baseURL}/v1/user/corps/registration/basic`,
 							data: {
@@ -247,81 +275,132 @@ export default function Page() {
 										corpId: res.data.id,
 									})
 								);
-								toast(res.message);
+								CustomToast(res.message);
 								if (step < steps.length - 1) {
 									setStep(step + 1);
 								}
+
+								resetFormValues(setFieldValue);
 							})
 							.catch((err) => {
-								toast(generateErrorMessage(err));
+								CustomToast(generateErrorMessage(err));
 							});
 					}
-				});
+				}
 			}
 		} else if (step === 1) {
 			if (corpId) {
 				getData({
 					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
-				}).then((res) => {
-					const formData: corpData = {};
-					if (values.contactInformation != res.data.contactInfo) {
-						formData["contactInformation"] =
-							values.contactInformation;
-					}
-					console.log("formData in step 1", formData);
-					checkContactInformationOk(formData).then(
-						(contactInformationOk) => {
-							if (
-								Object.keys(formData).length !== 0 &&
-								contactInformationOk
-							)
+				})
+					.then(async (res) => {
+						const formData: corpData = {};
+						if (values.contactInformation != res.data.contactInfo) {
+							formData["contactInformation"] =
+								values.contactInformation;
+						}
+						if (
+							values.contactInformation?.length === 0 &&
+							res.data.contactInfo.length === 0
+						) {
+							CustomToast(
+								"افزودن حداقل یک راه ارتباطی الزامی است"
+							);
+							return;
+						}
+						console.log("formData in step 1", formData);
+						const contactInformationOk =
+							await checkContactInformationOk(formData);
+						if (contactInformationOk) {
+							if (formData?.contactInformation?.length !== 0) {
 								postData({
 									endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts`,
 									data: formData,
 								})
 									.then((res) => {
-										console.log(res);
-										toast(res?.message);
+										console.log("res", res);
+										CustomToast(res?.message);
 										setFieldValue("contactInformation", []);
 										if (step < steps.length - 1) {
 											setStep(step + 1);
 										}
 									})
 									.catch((err) => {
-										toast(generateErrorMessage(err));
+										console.log("err", err);
+										CustomToast(generateErrorMessage(err));
 									});
-						}
-					);
-				});
-			} else {
-				toast("شرکتی برای شما ثبت نشده است.");
-			}
-		} else if (step === 2) {
-			if (corpId) {
-				console.log("formData in step 2", values.addresses);
-				postData({
-					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/address`,
-					// data: values.addresses,
-					data: {
-						addresses: values.addresses,
-					},
-				})
-					.then((res) => {
-						console.log("res", res);
-						toast(res?.message);
-						setFieldValue("addresses", []);
-						if (step < steps.length - 1) {
-							setStep(step + 1);
+							} else {
+								if (step < steps.length - 1) {
+									setStep(step + 1);
+								}
+							}
 						}
 					})
 					.catch((err) => {
-						toast(generateErrorMessage(err));
+						console.log("errr", err);
+						CustomToast(generateErrorMessage(err));
 					});
 			} else {
-				toast("شرکتی برای شما ثبت نشده است.");
+				CustomToast("شرکتی برای شما ثبت نشده است");
+			}
+		} else if (step === 2) {
+			if (corpId) {
+				getData({
+					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
+				}).then(async (res) => {
+					const formData: corpData = {};
+					if (
+						values.addresses?.length === 0 &&
+						res.data.addresses.length === 0
+					) {
+						CustomToast("افزودن حداقل یک آدرس الزامی است");
+						return;
+					}
+					if (values.addresses != res.data.addresses) {
+						formData["addresses"] = values.addresses;
+					}
+					console.log("formData in step 2", values.addresses);
+
+					const addressesOk = await checkAddressOk(formData);
+					if (addressesOk) {
+						if (formData?.addresses?.length !== 0) {
+							postData({
+								endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/address`,
+								data: {
+									addresses: values.addresses,
+								},
+							})
+								.then((res) => {
+									console.log("res", res);
+									CustomToast(res?.message);
+									setFieldValue("addresses", []);
+									if (step < steps.length - 1) {
+										setStep(step + 1);
+									}
+								})
+								.catch((err) => {
+									CustomToast(generateErrorMessage(err));
+								});
+						} else {
+							if (step < steps.length - 1) {
+								setStep(step + 1);
+							}
+						}
+					}
+				});
+			} else {
+				CustomToast("شرکتی برای شما ثبت نشده است");
 			}
 		} else if (step === 3) {
 			if (corpId) {
+				if (
+					!values.certificates?.vatTaxpayerCertificate ||
+					!values.certificates?.officialNewspaperAD
+				) {
+					CustomToast("لطفا مدرک خواسته شده را بارگذاری کنید.");
+					return;
+				}
+
 				const formData = new FormData();
 				formData.append(
 					"vatTaxpayerCertificate",
@@ -332,165 +411,257 @@ export default function Page() {
 					values.certificates?.officialNewspaperAD
 				);
 				console.log("formData in step 3", formData);
-				console.log("CHECKING FormData:");
-				for (const pair of formData.entries()) {
-					console.log(pair[0], pair[1]);
-				}
+				setLoading(true);
 				putDataFile({
 					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/certificates`,
 					formData: formData,
 				})
 					.then((res) => {
 						console.log("result file", res);
-						toast(res?.message);
+						CustomToast(res?.message);
 						router.push("/");
+						setLoading(false);
 					})
 					.catch((error) => {
 						console.log(error);
-						toast(generateErrorMessage(error));
+						CustomToast(generateErrorMessage(error));
+						setLoading(false);
 					});
 			} else {
 				console.log("meow");
 			}
 		}
-		resetFormValues(setFieldValue);
 	};
-	const checkNationalCardNumber = async (formData: corpData) => {
-		formData["signatories"]?.forEach((signatory) => {
-			if (signatory.nationalCardNumber?.length !== 10) {
-				toast("فرمت کد ملی صحیح نمی‌باشد");
+	const checkSignatories = async (formData: corpData) => {
+		for (const signatory of formData["signatories"] || []) {
+			// formData["signatories"]?.forEach((signatory) => {
+			if (
+				signatory.nationalCardNumber === "" ||
+				signatory.name === "" ||
+				signatory.position === ""
+			) {
+				CustomToast("اطلاعات صاحبان امضا را کامل وارد کنید");
 				return false;
 			}
-		});
+			if (signatory.nationalCardNumber.length !== 10) {
+				CustomToast("فرمت کد ملی صاحبان امضا صحیح نمی‌باشد");
+				return false;
+			}
+		}
 		return true;
 	};
 	const checkContactInformationOk = async (formData: corpData) => {
-		formData["contactInformation"]?.forEach((contact) => {
-			console.log(contact.contactValue);
-			if (!contact.contactValue) {
-				toast("مقدار راه ارتباطی را وارد کنید");
+		for (const contact of formData["contactInformation"] || []) {
+			if (!contact.contactTypeID) {
+				CustomToast("نوع راه ارتباطی را تعیین کنید");
 				return false;
 			}
-		});
+			if (!contact.contactValue) {
+				CustomToast("مقدار راه ارتباطی را وارد کنید");
+				return false;
+			}
+		}
+		return true;
+	};
+	const checkAddressOk = async (formData: corpData) => {
+		for (const address of formData["addresses"] || []) {
+			if (!address.provinceID) {
+				CustomToast("مقدار استان را انتخاب کنید");
+				return false;
+			}
+			if (!address.cityID) {
+				CustomToast("مقدار شهر را انتخاب کنید");
+				return false;
+			}
+			if (!address.cityID) {
+				CustomToast("مقدار شهر را انتخاب کنید");
+				return false;
+			}
+			if (!address.streetAddress) {
+				CustomToast("آدرس را وارد کنید");
+				return false;
+			}
+			if (address.postalCode === "") {
+				CustomToast("کد پستی را وارد کنید");
+				return false;
+			}
+			if (String(address.postalCode).length !== 10) {
+				CustomToast("فرمت کد پستی صحیح نمی‌باشد");
+				return false;
+			}
+			if (address.houseNumber === "") {
+				CustomToast("پلاک را وارد کنید");
+				return false;
+			}
+			if (address.unit === "") {
+				CustomToast("واحد را وارد کنید");
+				return false;
+			}
+		}
 		return true;
 	};
 	useEffect(() => {
 		if (!accessToken) {
 			router.push("/login");
+			// toast(
+			// 	<div data-test="sonner-toast">
+			// 		برای ثبت شرکت ابتدا باید وارد حساب کاربری خود شوید!
+			// 	</div>
+			// );
 		}
 	}, [accessToken, router]);
+	// useEffect(() => {
+	// 	function handleResize() {
+	// 		setScreenType(getScreenType());
+	// 	}
+
+	// 	window.addEventListener("resize", handleResize);
+	// 	return () => window.removeEventListener("resize", handleResize);
+	// }, []);
 	const handleBack = () => {
 		// resetFormValues(setFieldValue);
 		if (step > 0) {
 			setStep(step - 1);
 		}
 	};
-
+	if (!isClient) return <LoadingSpinner />;
 	return (
-		<div className="w-screen min-h-screen h-fit place-items-center flex place-content-center items-center bg-[#F0EDEF]">
-			<div className="space-y-4 rtl vazir m-auto h-2/3 w-1/2 my-20">
-				<div className="flex items-center justify-center">
-					{Array.from({ length: steps.length }).map((_, index) => (
-						<div key={index} className="flex items-center">
-							<Badge
-								className={cn(
-									"rounded-full w-42 transition-all duration-300 ease-in-out text-md neu-shadow gap-2 p-2 bg-gradient-to-r ",
-									index <= step
-										? "from-[#A55FDA] to-[#F37240] text-black/80"
-										: "from-[#A55FDA]/30 to-[#F37240]/30 text-black",
-									index < step &&
-										"from-[#A55FDA] to-[#F37240] text-white"
-								)}
-								key={index}
-							>
-								{steps[index]}
-								<div className="">{icons[index]}</div>
-							</Badge>
-							{index < steps.length - 1 && (
+		<>
+			<div className="w-screen min-h-screen h-fit place-items-center flex place-content-center items-center transition-all duration-300 ease-in-out bg-[#F0EDEF]">
+				<div className="space-y-4 rtl vazir m-auto sm:pb-6 h-2/3 sm:w-2/3 md:w-2/3 lg:w-3/5 w-5/6 my-20">
+					<div className="flex items-center justify-center">
+						{Array.from({ length: steps.length }).map(
+							(_, index) => (
 								<div
-									className={cn(
-										"w-8 h-0.5 transition-all duration-500 ease-in-out",
-										index < step
-											? "bg-primary"
-											: "bg-primary/30"
-									)}
-								/>
-							)}
-						</div>
-					))}
-				</div>
-				<Formik
-					initialValues={initialValuesForm}
-					validationSchema={validationSchemaForm}
-					onSubmit={onSubmit}
-				>
-					{({ setFieldValue, values }) => (
-						<Card className="justify-between neu-shadow border-0">
-							<CardHeader>
-								<CardTitle className="text-lg">
-									لطفا اطلاعات شرکت خود را وارد کنید
-								</CardTitle>
-								<CardDescription>
-									مرحله فعلی: {steps[step]}
-								</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<div>
-									{step === 0 && (
-										<CorpInfoForm
-											values={values}
-											setFieldValue={setFieldValue}
-										/>
-									)}
-									{step === 1 && (
-										<ContactInfoForm
-											values={values}
-											setFieldValue={setFieldValue}
-										/>
-									)}
-									{step === 2 && (
-										<AddressesForm
-											values={values}
-											setFieldValue={setFieldValue}
-										/>
-									)}
-									{step === 3 && (
-										<CertificatesForm
-											values={values}
-											setFieldValue={setFieldValue}
+									key={index}
+									className={`flex items-center`}
+								>
+									<Badge
+										data-test={`step-${index}`}
+										className={cn(
+											"rounded-full sm:w-12 md:w-36 lg:w-42 transition-all duration-300 ease-in-out text-md neu-shadow gap-2 p-2 bg-gradient-to-r",
+											index === step
+												? "from-[#A55FDA] to-[#F37240] text-black/80"
+												: index > step
+												? "from-[#A55FDA]/30 to-[#F37240]/30 text-black"
+												: "from-[#A55FDA] to-[#F37240] text-white"
+										)}
+										key={index}
+									>
+										{isTablet && steps[index]}
+										{/* <p className="lg:visible md:hidden sm:hidden hidden">{steps[index]}</p> */}
+										<div className="">{icons[index]}</div>
+									</Badge>
+									{index < steps.length - 1 && (
+										<div
+											className={cn(
+												"w-8 h-0.5 transition-all duration-500 ease-in-out",
+												index < step
+													? "bg-primary"
+													: "bg-primary/30"
+											)}
 										/>
 									)}
 								</div>
-							</CardContent>
-							<CardFooter className="flex justify-between align-bottom ltr">
-								<button
-									type="submit"
-									className="hover:cursor-pointer cta-neu-button w-1/4"
-									onClick={() =>
-										onSubmit(values, setFieldValue)
-									}
-								>
-									{step === steps.length - 1
-										? "تایید"
-										: "بعدی"}
-								</button>
-								{step > 0 && (
+							)
+						)}
+					</div>
+					{!isTablet && (
+						<div className="text-center text-xl font-bold mt-7">
+							{steps[step]}
+						</div>
+					)}
+
+					<Formik
+						initialValues={initialValuesForm}
+						validationSchema={validationSchemaForm}
+						onSubmit={(values, { setFieldValue, validateForm }) =>
+							onSubmit(values, setFieldValue, validateForm)
+						}
+					>
+						{({ setFieldValue, values, validateForm }) => (
+							<Card className="justify-between neu-shadow border-0">
+								{/* {loading ? (
+								<TransparentLoading />
+							) : (
+								<> */}
+								<CardHeader>
+									<CardTitle className="text-lg">
+										لطفا اطلاعات شرکت خود را وارد کنید
+									</CardTitle>
+									<CardDescription>
+										مرحله فعلی: {steps[step]}
+									</CardDescription>
+								</CardHeader>
+								<CardContent>
+									<div>
+										{step === 0 && (
+											<CorpInfoForm
+												values={values}
+												setFieldValue={setFieldValue}
+												// screenType={screenType}
+											/>
+										)}
+										{step === 1 && (
+											<ContactInfoForm
+												values={values}
+												setFieldValue={setFieldValue}
+											/>
+										)}
+										{step === 2 && (
+											<AddressesForm
+												values={values}
+												setFieldValue={setFieldValue}
+											/>
+										)}
+										{step === 3 && (
+											<CertificatesForm
+												values={values}
+												setFieldValue={setFieldValue}
+											/>
+										)}
+									</div>
+									
+									{loading && <TransparentLoading className="w-full" />}
+								</CardContent>
+								<CardFooter className="flex justify-between align-bottom ltr">
 									<button
-										type="button"
+										type="submit"
 										className="hover:cursor-pointer cta-neu-button w-1/4"
+										data-test="submit-button"
 										onClick={() => {
-											handleBack();
-											resetFormValues(setFieldValue);
+											onSubmit(
+												values,
+												setFieldValue,
+												validateForm
+											);
 										}}
 									>
-										قبلی
+										{step === steps.length - 1
+											? "تایید"
+											: "بعدی"}
 									</button>
-								)}
-							</CardFooter>
-						</Card>
-					)}
-				</Formik>
+									{step > 0 && (
+										<button
+											type="button"
+											className="hover:cursor-pointer cta-neu-button w-1/4"
+											onClick={() => {
+												handleBack();
+												resetFormValues(setFieldValue);
+											}}
+										>
+											قبلی
+										</button>
+									)}
+								</CardFooter>
+
+								{/* </>
+							)} */}
+							</Card>
+						)}
+					</Formik>
+				</div>
 			</div>
-		</div>
+		</>
 	);
 }
