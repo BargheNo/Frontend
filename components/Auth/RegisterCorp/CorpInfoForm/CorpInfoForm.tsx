@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Form, FieldArray } from "formik";
-// import * as Yup from "yup";
-// import { v4 as uuidv4 } from "uuid";
 import {
 	Building2,
 	CircleUserRound,
@@ -17,51 +15,15 @@ import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 import { useSelector } from "react-redux";
-// import { setCorp } from "@/src/store/slices/corpSlice";
-// import { useDispatch } from "react-redux";
-// import {
-// 	Card,
-// 	CardContent,
-// 	CardDescription,
-// 	CardFooter,
-// 	CardHeader,
-// 	CardTitle,
-// } from "@/components/ui/card";
-// import { useSelector } from "react-redux";
+import { useMediaQuery } from "react-responsive";
+
 interface SignatoriesProps {
-	// signatories: string[];
-	// setSignatories: React.Dispatch<React.SetStateAction<string[]>>;
 	values: corpData;
 }
-// const validationSchemaForm = Yup.object({
-// 	name: Yup.string().required("نام شرکت الزامی است"),
-// 	registrationNumber: Yup.string().required("شماره ثبت الزامی است"),
-// 	nationalID: Yup.string().required("شناسه ملی الزامی است"),
-// 	iban: Yup.string().required("شماره شبا الزامی است"),
-// 	signatories: Yup.array().of(
-// 		Yup.object().shape({
-// 			name: Yup.string().required("نام صاحب امضا الزامی است"),
-// 			nationalID: Yup.string()
-// 				.required("کد ملی صاحب امضا الزامی است")
-// 				.length(10, "کد ملی باید 10 رقم باشد"),
-// 			position: Yup.string(),
-// 		})
-// 	),
-// });
 export default function CorpInfoForm({
-	// step,
-	// setStep,
-	// steps,
-	// signatories,
-	// setSignatories,
 	values,
 	setFieldValue,
 }: {
-	// step: number;
-	// setStep: (step: number) => void;
-	// steps: string[];
-	// signatories: string[];
-	// setSignatories: React.Dispatch<React.SetStateAction<string[]>>;
 	values: corpData;
 	setFieldValue: any;
 }) {
@@ -74,19 +36,19 @@ export default function CorpInfoForm({
 				endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
 			})
 				.then((res) => {
-					// console.log("res", res);
+					console.log("res", res);
 					setFieldValue("name", res.data.name);
 					setFieldValue(
 						"registrationNumber",
 						res.data.registrationNumber
 					);
-					// setFieldValue("nationalCardNumber", res.data.nationalCardNumber);
 					setFieldValue("nationalID", res.data.nationalID);
 					setFieldValue("iban", res.data.iban);
 					setFieldValue("signatories", res.data.signatories);
 					setLoading(false);
 				})
 				.catch((err) => {
+					console.log(err);
 					CustomToast(generateErrorMessage(err));
 					setLoading(false);
 				});
@@ -102,7 +64,7 @@ export default function CorpInfoForm({
 	return (
 		<Form>
 			<div className="flex flex-col w-full">
-				<div className="flex w-full justify-between gap-3">
+				<div className="flex lg:flex-row md:flex-row sm:flex-col w-full justify-between gap-3">
 					<CustomInput
 						name="name"
 						placeholder="نام شرکت"
@@ -116,7 +78,7 @@ export default function CorpInfoForm({
 						type="number"
 					/>
 				</div>
-				<div className="flex w-full justify-between gap-3">
+				<div className="flex lg:flex-row md:flex-row sm:flex-col w-full justify-between gap-3">
 					<CustomInput
 						name="nationalID"
 						placeholder="شناسه ملی"
@@ -131,74 +93,63 @@ export default function CorpInfoForm({
 					/>
 				</div>
 				<h2 className="mt-8 text-xl">صاحبان امضا</h2>
-				<Signatories
-					values={values}
-					// signatories={signatories}
-					// setSignatories={setSignatories}
-				/>
+				<Signatories values={values} />
 			</div>
 		</Form>
 	);
 }
 
 const Signatories: React.FC<SignatoriesProps> = ({
-	// signatories,
-	// setSignatories,
 	values,
 }: SignatoriesProps) => {
-	// Add a new signatory
-	// const addSignatory = () => {
-	// 	setSignatories((pre) => [...pre, uuidv4()]);
-	// };
-
-	// Remove a signatory by ID
-	// const removeSignatory = (id: string) => {
-	// 	setSignatories(signatories.filter((item) => item !== id));
-	// };
+	const isMobile = useMediaQuery({ minWidth: 640 });
+	const isTablet = useMediaQuery({ minWidth: 768 });
+	const isDesktop = useMediaQuery({ minWidth: 1024 });
 	return (
 		<FieldArray name="signatories">
 			{({ push, remove }) => (
 				<>
 					{values?.signatories?.map((id, index) => (
-						<div
-							key={index}
-							className="flex gap-3 items-end w-full"
-						>
-							<div className="flex w-[95%] gap-3">
-								<CustomInput
-									name={`signatories.[${index}].name`}
-									placeholder="نام"
-									icon={UserRound}
-									// key={`name-${id}`}
-								/>
-								<CustomInput
-									name={`signatories.[${index}].nationalCardNumber`}
-									// name={`signatories.[${index}].nationalID`}
-									placeholder="کد ملی"
-									icon={IdCard}
-									// key={`national-${id}`}
-								/>
-								<CustomInput
-									name={`signatories.[${index}].position`}
-									placeholder="موقعیت"
-									icon={CircleUserRound}
-									// key={`position-${id}`}
+						<>
+							{index > 0 && !isDesktop && (
+								<div className="mt-6 border-solid border-1 border-gray-200 rounded-full" />
+							)}
+							<div
+								key={index}
+								className="flex gap-3 items-end w-full"
+							>
+								<div className="flex flex-col lg:flex-row sm:flex-col w-[95%] gap-3">
+									<CustomInput
+										name={`signatories.[${index}].name`}
+										placeholder="نام"
+										icon={UserRound}
+									/>
+									<CustomInput
+										name={`signatories.[${index}].nationalCardNumber`}
+										placeholder="کد ملی"
+										icon={IdCard}
+									/>
+									<CustomInput
+										name={`signatories.[${index}].position`}
+										placeholder="موقعیت"
+										icon={CircleUserRound}
+									/>
+								</div>
+								<XIcon
+									className="text-fire-orange rounded-sm hover:cursor-pointer flex mb-3 w-fit"
+									onClick={() => {
+										CustomToast(
+											"صاحب امضا با موفقیت حذف شد"
+										);
+										remove(index);
+									}}
 								/>
 							</div>
-							<XIcon
-								className="text-fire-orange rounded-sm hover:cursor-pointer flex mb-3 w-fit"
-								// onClick={() => removeSignatory(id)}
-								onClick={() => {
-									CustomToast("صاحب امضا با موفقیت حذف شد");
-									remove(index);
-									// removeSignatory(id);
-								}}
-							/>
-						</div>
+						</>
 					))}
 
 					<button
-						className="place-self-start cta-neu-button w-1/3 mt-8"
+						className="place-self-start cta-neu-button w-full sm:w-1/2 lg:w-1/3 mt-8"
 						data-test="addSignatory"
 						onClick={() => {
 							push({

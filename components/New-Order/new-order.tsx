@@ -96,19 +96,20 @@ export default function Neworder() {
 		orderService
 			.orderRequest(orderinfo, token)
 			.then((res) => {
-				toast(res?.message);
+				toast(<div id="toast-success">{res?.message}</div>);
 				setOpen(false);
 			})
 			.catch((err) => {
 				console.log(err);
-				toast(generateErrorMessage(err));
+				toast(<div id="toast-fail">{generateErrorMessage(err)}</div>);
 				// setOpen(false);
 			});
 	};
+	// console.log(cityid);
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<SignupButton type="button">
+				<SignupButton type="button"  id="plus">
 					<Plus className={style.icon} />
 				</SignupButton>
 			</DialogTrigger>
@@ -202,6 +203,7 @@ export default function Neworder() {
 								className={`${style.citypro} flex md:flex-row flex-col justify-between w-full mt-2`}
 							>
 								<Select
+								
 									name="province"
 									onValueChange={(value) => {
 										Setdisable(false);
@@ -217,6 +219,7 @@ export default function Neworder() {
 								>
 									<SelectTrigger
 										className={style.CustomInput}
+										id="province"
 										// style={{ width: "25vw" }}
 									>
 										<SelectValue placeholder="استان" />
@@ -228,6 +231,7 @@ export default function Neworder() {
 												provinces.map(
 													(provincearr, index) => (
 														<SelectItem
+														   id={String(index)}
 															key={index}
 															value={
 																provincearr.name
@@ -255,6 +259,7 @@ export default function Neworder() {
 									<SelectTrigger
 										disabled={disable}
 										className={style.CustomInput}
+										id="city"
 										// style={{ width: "25vw" }}
 									>
 										<SelectValue placeholder="شهر" />
@@ -267,6 +272,8 @@ export default function Neworder() {
 													<SelectItem
 														key={index}
 														value={city.name}
+														id={String(index)}
+														
 													>
 														{Object.values(
 															city.name
@@ -284,6 +291,7 @@ export default function Neworder() {
 								<CustomTextArea
 									icon={MapPinHouse}
 									name="address"
+									id="address"
 									placeholder="آدرس"
 								>
 									{" "}
@@ -380,6 +388,7 @@ export default function Neworder() {
 									}
 								>
 									<SelectTrigger
+									id="building"
 										className={`${style.CustomInput} mt-[27px] min-h-[43px]`}
 										
 									>
@@ -390,19 +399,19 @@ export default function Neworder() {
 											<SelectLabel>
 												نوع ساختمان
 											</SelectLabel>
-											<SelectItem value="residential">
+											<SelectItem id="0" value="residential">
 												مسکونی
 											</SelectItem>
-											<SelectItem value="commercial">
+											<SelectItem id="1" value="commercial">
 												تجاری
 											</SelectItem>
-											<SelectItem value="industrial">
+											<SelectItem id="2" value="industrial">
 												صنعتی
 											</SelectItem>
-											<SelectItem value="argiculture">
+											<SelectItem id="3" value="argiculture">
 												کشاورزی
 											</SelectItem>
-											<SelectItem value="more">
+											<SelectItem id="4" value="more">
 												سایر
 											</SelectItem>
 										</SelectGroup>
@@ -412,6 +421,8 @@ export default function Neworder() {
 
 							<div className="flex flex-row w-80 justify-center items-center self-center">
 								<SignupButton
+								   className="text-[#FA682D]"
+								   id="newOrderBtn"
 									type="submit"
 									style={{
 										marginTop: "10px",
