@@ -2,6 +2,7 @@
 import style from "./CustomInput.module.css";
 import { LucideIcon } from "lucide-react";
 import { useField } from "formik";
+import { cn } from "@/lib/utils";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 	name?: string;
@@ -42,7 +43,7 @@ export default function CustomInput({
 	const value = field.value || "";
 
 	return (
-		<div className={`${containerClassName} ${style.Conter}`}>
+		<div className={cn(style.Conter, containerClassName)}>
 			<div className={style.inputWrapper}>
 				{Icon && (
 					<Icon

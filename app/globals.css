@@ -194,6 +194,14 @@ body {
 		scrollbar-width: none; /* Firefox */
 	}
 
+	.short-par {
+		display: -webkit-box;
+		-webkit-line-clamp: 1; /* Number of lines to show */
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
 	.inset-input {
 		@apply rounded-lg focus:outline-none focus:ring focus:ring-blue-300 shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)] duration-200;
 	}
