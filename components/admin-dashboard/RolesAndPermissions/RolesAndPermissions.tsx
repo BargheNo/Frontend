@@ -121,12 +121,12 @@ const RolesAndPermissions = () => {
           <div className="flex flex-row w-1/3 px-3 justify-center ">
             <div
               className={`cta-neu-button flex flex-row ${styles.button} items-center content-center justify-center h-1/2 w-1/2`}
+              onClick={() => openEditModal({ id, name, permissions })}
             >
               <div className="text-orange-500">
                 <Pencil />
               </div>
               <button
-                onClick={() => openEditModal({ id, name, permissions })}
                 className="cursor-pointer"
               >
                 تغییر

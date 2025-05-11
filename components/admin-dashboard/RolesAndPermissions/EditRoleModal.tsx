@@ -1,10 +1,28 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { X, Loader2 } from "lucide-react";
+import {
+  X,
+  Loader2,
+  Vote,
+  User,
+  Headset,
+  CircleAlert,
+  Settings,
+  Newspaper,
+  Megaphone,
+  Sun,
+  MessageSquareMore,
+  Laptop,
+  Hammer,
+  ChartColumnIncreasing,
+  UserRoundPen,
+  School,
+} from "lucide-react";
 import { toast } from "sonner";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { useSelector } from "react-redux";
 import ReactDOM from "react-dom";
+import styles from "./RolesAndPermissions.module.css";
 
 type Permission = {
   id: number;
@@ -37,6 +55,13 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
   const [selectedPermissions, setSelectedPermissions] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [roleName, setRoleName] = useState(role?.name || "");
+
+  useEffect(() => {
+    if (role) {
+      setRoleName(role.name);
+    }
+  }, [role]);
 
   // Fetch all available permissions
   const getAllPermissions = async () => {
@@ -74,7 +99,9 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
         }
       );
       const data = await response.json();
-      setSelectedPermissions(data.data.permissions.map((p: Permission) => p.id));
+      setSelectedPermissions(
+        data.data.permissions.map((p: Permission) => p.id)
+      );
     } catch (err: any) {
       console.log(err);
       const errMsg =
@@ -101,7 +128,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 
     try {
       const response = await fetch(
-        `http://46.249.99.69:8080/v1/admin/roles/${role.id}/permissions`,
+        `http://46.249.99.69:8080/v1/admin/roles/${role.id}`,
         {
           method: "PUT",
           headers: {
@@ -109,13 +136,14 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
             Authorization: `Bearer ${accessToken}`,
           },
           body: JSON.stringify({
-            permission_ids: selectedPermissions,
+            name: roleName,
+            permissionIDs: selectedPermissions,
           }),
         }
       );
 
       if (!response.ok) {
-        throw new Error("Failed to update permissions");
+        throw new Error("Failed to update role");
       }
 
       const result = await response.json();
@@ -124,8 +152,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
       onClose();
     } catch (error: any) {
       const errMsg =
-        generateErrorMessage(error) ||
-        "هنگام به‌روزرسانی مجوزها مشکلی پیش آمد.";
+        generateErrorMessage(error) || "هنگام به‌روزرسانی نقش مشکلی پیش آمد.";
       toast.error(errMsg);
     } finally {
       setIsSaving(false);
@@ -154,10 +181,10 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
   if (!isOpen || !role) return null;
 
   return ReactDOM.createPortal(
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 rtl">
       <div className="bg-white rounded-xl p-6 w-full max-w-4xl max-h-[80vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-bold">
+          <h3 className="text-xl font-bold text-blue-800">
             ویرایش دسترسی‌های نقش: {role.name}
           </h3>
           <button
@@ -177,8 +204,14 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
           <div className="space-y-6">
             {Object.entries(permissionsByCategory).map(
               ([category, permissions]) => (
-                <div key={category} className="border-b pb-4">
-                  <h4 className="text-lg font-semibold mb-3">{category}</h4>
+                <div
+                  key={category}
+                  className={`bg-white p-4 rounded-xl w-full shadow-sm items-center gap-3 rtl ${styles.shadow} min-h-[140px]`}
+                >
+                  <h4 className="text-lg text-orange-500 font-semibold mb-3 flex items-center gap-2">
+                    <Vote />
+                    {category}
+                  </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {permissions.map((permission) => (
                       <div
