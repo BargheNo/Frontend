@@ -13,7 +13,7 @@ interface Address {
 	streetAddress: string;
 	postalCode: string;
 	houseNumber: string;
-	unit: number;
+	unit: string;
 }
 
 interface contactInformation {
