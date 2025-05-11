@@ -17,12 +17,18 @@ interface changeNotificationSetting{
     isPushEnabled:boolean,
 }
 
+
 interface Notification{
-    Name :string ;
-    Description :string ;
-    SupportsEmail: boolean;    
-    SupportsPush:boolean;   
-      
+    id: number;
+    type: {
+        id: number,
+        name: string,
+        description: string,
+        supportsEmail: boolean,
+        supportsPush: boolean,
+        },
+    additionalData: string,
+    isRead: boolean   
 }
 
 interface page {
