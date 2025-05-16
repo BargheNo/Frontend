@@ -1,10 +1,11 @@
 "use client";
 import { ArrowLeft } from "lucide-react";
-import React from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import BidCard from "@/components/CorpDashboard/Bids/BidCard";
 import { toast } from "sonner";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
+import InteractiveGrid from "@/components/InteractiveGrid/InteractiveGrid";
 
 /**
  * Style Showcase Page
@@ -184,12 +185,20 @@ const StyleShowcase = () => {
 
 			<section>
 				<div className="relative inline-block rounded-2xl">
-					<button className="bg-red-500 p-4 neu-shadow rounded-2xl">
+					<button className="bg-red-100 p-4 neu-shadow rounded-2xl">
 						Click me
 					</button>
-					<TransparentLoading size="sm" />
+					{/* <TransparentLoading size="sm" /> */}
 				</div>
 			</section>
+
+			<InteractiveGrid rows={3} cols={15} size={32} />
+
+			<div>
+				<br />
+				<br />
+				<br />
+			</div>
 		</div>
 	);
 };
