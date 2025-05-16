@@ -1,0 +1,16 @@
+.cursorGlow {
+    height: 300px;
+    width: 300px;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle at center,
+        rgb(255, 250, 231, 0.4) 0%,
+        rgba(255, 250, 231, 0) 60%
+    );
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+    opacity: 50%;
+    transition: opacity 0.2s ease;
+}
