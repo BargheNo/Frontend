@@ -12,7 +12,7 @@ export default function Page() {
 		return <LoadingSpinner />;
 	}
 	return (
-		<div className="flex flex-col items-center gap-12 p-12 w-full bg-[#F0EDEF] min-h-[100vh]">
+		<div className="flex flex-col items-center gap-12 p-12 w-full bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] min-h-[100vh]">
 			<FilterSection />
 			<Users />
 		</div>

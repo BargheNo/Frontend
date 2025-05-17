@@ -13,7 +13,7 @@ export default function MobileNavbarSlider({
 	const pathname = usePathname();
 	return (
 		<Sidebar side="right">
-			<SidebarContent className="neo-card! bg-[#F0EDEF]!">
+			<SidebarContent className="neo-card! bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]!">
 				<div className="flex flex-col items-start gap-4 p-4 w-full rtl">
 					<h2 className="text-xl font-semibold">منو</h2>
 

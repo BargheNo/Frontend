@@ -218,7 +218,7 @@ export default function AnnouncementBox({children, className, insideClassName}: 
             resetCount
         }}>
             <div className="flex flex-col items-center">
-                    <div className={cn("self-end px-1 pt-1 flex neo-card rounded-t-lg bg-[#F0EDEF] transition-all duration-500 ease-in-out transform translate-y-full z-0", 
+                    <div className={cn("self-end px-1 pt-1 flex neo-card rounded-t-lg bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] transition-all duration-500 ease-in-out transform translate-y-full z-0", 
                         selectMode && "translate-y-0"
                     )}>
                     <div className="neo-card-rev mx-2 mt-2 p-3 rounded-md bg-white cursor-pointer hover:bg-gray-50">

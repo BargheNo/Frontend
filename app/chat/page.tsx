@@ -30,7 +30,7 @@ export default function Page() {
       <>
         <SidebarProvider>
           <Sidebar side="right">
-            <SidebarContent className="neo-card! bg-[#F0EDEF]! rtl">
+            <SidebarContent className="neo-card! bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]! rtl">
               <ChatList className="w-full h-full" conditionWidth={100} />
             </SidebarContent>
           </Sidebar>

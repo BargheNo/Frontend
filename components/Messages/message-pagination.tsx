@@ -88,13 +88,13 @@ export default function CorpMessagesPagination() {
       
       <h1 className="font-bold text-xl mb-4  md:mr-14 mr-4"> تنظیمات اعلان ها</h1>
       <div className="flex flex-col text-white md:px-14 bg-transparent px-2 w-full">
-          <div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]  mb-5">
+          <div className="flex flex-col bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]  mb-5">
               <div className="flex flex-row mr-auto md:ml-30 m-auto md:gap-17 gap-6">
                     <p className="mt-8 whitespace-nowrap">دریافت از طریق وبسایت</p>
                     <p className="mt-8 whitespace-nowrap">دریافت از طریق ایمیل</p>
                     
               </div>
-              <div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-90/100 rounded-2xl  shadow-[inset_-6px_-6px_16px_rgba(255,255,255,0.8),inset_6px_6px_16px_rgba(0,0,0,0.2)] mt-14 m-auto md:h-65 h-60">
+              <div className="flex flex-col bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] text-gray-800 w-90/100 rounded-2xl  shadow-[inset_-6px_-6px_16px_rgba(255,255,255,0.8),inset_6px_6px_16px_rgba(0,0,0,0.2)] mt-14 m-auto md:h-65 h-60">
               {notifSetting.length <= 0 ? (
                 <div className="flex flex-1 items-center justify-center h-full">
                 <LoadingSpinner />
@@ -171,7 +171,7 @@ export default function CorpMessagesPagination() {
 
       <h1 className="font-bold text-xl mb-4  md:mr-14 mr-4">اعلان ها</h1>
         <div className="flex flex-col text-white md:px-14 bg-transparent px-2 w-full">
-            <div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] h-20 mb-5">
+            <div className="flex flex-col bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] h-20 mb-5">
                 <div className={`${style.citypro} flex flex-row mr-4 justify-between m-auto md:w-2/10 w-5/10`}>
                   <Select
                     name="notiftype">

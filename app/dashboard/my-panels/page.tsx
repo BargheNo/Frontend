@@ -5,7 +5,7 @@ const Settings = () => {
   return (
     <div className="min-h-full flex flex-col text-white py-8 px-14 bg-transparent">
       <Header header="پنل‌های من" />
-      <div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+      <div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden border-1 border-gray-200 shadow-[-6px_-6px_16px_rgba(255,255,255,1),6px_6px_16px_rgba(0,0,0,0.3)]">
         <PanelCard
           id="1"
           panelName="پنل باغ 1"

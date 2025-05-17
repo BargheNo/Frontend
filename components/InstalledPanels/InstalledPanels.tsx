@@ -18,7 +18,7 @@ const InstalledPanel=  ({
         0 ? "h-64" : ""
       } border-t-1  md:border-gray-300 border-gray-400 first:border-t-0 w-full `}
     >
-      <div className="flex flex-row justify-between  h-full bg-[#F0EDEF] p-4 rtl md:pb-5 pb-28 overflow-hidden relative ">
+      <div className="flex flex-row justify-between  h-full bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] p-4 rtl md:pb-5 pb-28 overflow-hidden relative ">
         <div className="flex flex-col justify-between w-full z-10 space-x-0">
           <div className="w-full ">
 						{/* <h2 className="text-2xl font-bold text-gray-800"> */}

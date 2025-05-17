@@ -49,7 +49,7 @@ export default function AnnounceCard({title, content, writer, date}: {title: str
         </div>
         </div>
         </ContextMenuTrigger>
-        <ContextMenuContent className="border-0 p-4 flex flex-col gap-2 rtl bg-[#F0EDEF]">
+        <ContextMenuContent className="border-0 p-4 flex flex-col gap-2 rtl bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]">
             <ContextMenuItem className="neo-btn bg-white" onClick={() => {
                 setSelectMode(true);
                 handleSelect();

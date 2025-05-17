@@ -527,7 +527,7 @@ export default function Page() {
 	if (!isClient) return <LoadingSpinner />;
 	return (
 		<>
-			<div className="w-screen min-h-screen h-fit place-items-center flex place-content-center items-center transition-all duration-300 ease-in-out bg-[#F0EDEF]">
+			<div className="w-screen min-h-screen h-fit place-items-center flex place-content-center items-center transition-all duration-300 ease-in-out bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]">
 				<div className="space-y-4 rtl vazir m-auto sm:pb-6 h-2/3 sm:w-2/3 md:w-2/3 lg:w-3/5 w-5/6 my-20">
 					<div className="flex items-center justify-center">
 						{Array.from({ length: steps.length }).map(

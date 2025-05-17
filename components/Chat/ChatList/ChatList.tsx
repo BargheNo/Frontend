@@ -15,7 +15,7 @@ export default function ChatList({
   return (
     <div
       className={cn(
-        "neo-card bg-[#F0EDEF] flex flex-col items-center rounded-md py-2 w-full px-1",
+        "neo-card bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] flex flex-col items-center rounded-md py-2 w-full px-1",
         className
       )}
     >

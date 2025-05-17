@@ -108,7 +108,7 @@ const CorpRepairCard = ({
                 0 ? "h-64" : ""
             } border-b-1 border-gray-300`}
         >
-            <div className="flex flex-col md:flex-row justify-between gap-6 w-full h-full bg-[#F0EDEF] p-5 overflow-hidden relative" dir="rtl">
+            <div className="flex flex-col md:flex-row justify-between gap-6 w-full h-full bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] p-5 overflow-hidden relative" dir="rtl">
                 {/* Left Section: Panel Details */}
                 <div className="flex flex-col justify-between w-full md:w-2/3 z-10">
                     <div className="space-y-3 w-full">

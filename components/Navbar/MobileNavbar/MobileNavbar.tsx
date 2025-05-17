@@ -37,7 +37,7 @@ export default function MobileNavbar() {
     <>
       <MobileNavbarSlider navItems={navItems} />
       <div className="fixed bottom-3 w-full flex justify-center items-center z-50">
-        <div className="h-[70px] flex justify-evenly items-center bg-[#F0EDEF] p-2 w-[90%] rounded-full mx-auto neo-oval">
+        <div className="h-[70px] flex justify-evenly items-center bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] p-2 w-[90%] rounded-full mx-auto neo-oval">
           {MobileNavItems.map((select) => {
             console.log(select);
             if (select.name === "بیشتر") {

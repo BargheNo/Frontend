@@ -39,7 +39,7 @@ const PanelCard = ({
 
 	return (
 		<div className="w-full h-64 border-t-1 border-gray-300 first:border-t-0">
-			<div className="flex flex-row justify-between w-full h-full bg-[#F0EDEF] p-5 overflow-hidden relative">
+			<div className="flex flex-row justify-between w-full h-full bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] p-5 overflow-hidden relative">
 				{/* Left Section: Panel Details */}
 				<div className="flex flex-col justify-between w-2/3 z-10">
 					<div className="space-y-3">

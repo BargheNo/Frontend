@@ -53,7 +53,7 @@ const CustomerRepairCard = ({
         <div
             className={`${className} w-full border-t-1 border-gray-300 first:border-t-0`}
         >
-            <div className="flex flex-col md:flex-row justify-between gap-6 w-full h-full bg-[#F0EDEF] p-5 overflow-hidden relative">
+            <div className="flex flex-col md:flex-row justify-between gap-6 w-full h-full bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] p-5 overflow-hidden relative">
                 {/* Left Section: Repair Details */}
                 <div className="flex flex-col justify-between w-full z-10">
                     <div className="space-y-3 w-full">

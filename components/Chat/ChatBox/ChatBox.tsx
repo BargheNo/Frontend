@@ -69,7 +69,7 @@ export default function ChatBox({ className }: { className?: string }) {
   return (
     <div
       ref={boxRef}
-      className={cn("neo-card bg-[#F0EDEF] rounded-lg relative", className)}
+      className={cn("neo-card bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] rounded-lg relative", className)}
     >
       <div className=" flex flex-row-reverse justify-between gap-2 px-6 items-center absolute top-0 right-0 left-0 h-20 rounded-t-md bg-white shadow-[2px_2px_5px_rgba(0,0,0,0.3)]">
         <div className="cursor-pointer hover:bg-gray-400 rounded-full flex items-center justify-center">

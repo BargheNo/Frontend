@@ -51,16 +51,16 @@ const PanelAside = ({
   return (
     <SidebarProvider open={sideOpen}>
       <div
-        className={`flex fixed h-full w-full bg-[#F0EDEF] under-navbar-content ${myFont.className}`}
+        className={`flex fixed h-full w-full bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] under-navbar-content ${myFont.className}`}
         dir="rtl"
       >
         {/* Sidebar */}
         {/* shadow-[-4px_-4px_5px_rgba(255,255,255,1),2px_2px_5px_rgba(0,0,0,0.3)] */}
         <Sidebar
           side="right"
-          className="w-64 bg-[#F0EDEF] text-white p-2 z-10 under-navbar-content border-0!"
+          className="w-64 bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] text-white p-2 z-10 under-navbar-content border-0!"
         >
-          <SidebarContent className="bg-[#F0EDEF]">
+          <SidebarContent className="bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]">
             <nav className="space-y-2 bg-transparent">
               {navItems.map((item: NavItem) => (
                 <Link key={item.path} href={item.path}>
@@ -123,7 +123,7 @@ const PanelAside = ({
           </span>
         </div>
         <main className="rounded-xl ml-3 mb-2 flex-1 bg-white relative">
-          <div className="absolute no-scrollbar overflow-y-auto top-0 left-0 right-0 bottom-0 rounded-xl bg-white z-10">
+          <div className="absolute no-scrollbar overflow-y-auto top-0 left-0 right-0 bottom-0 rounded-xl bg-[#e6e6e9] z-10">
             {children}
           </div>
           <div className="absolute inset-0 rounded-xl pointer-events-none shadow-[inset_-4px_-4px_5px_rgba(255,255,255,1),inset_4px_4px_5px_rgba(0,0,0,0.3)] z-20"></div>
