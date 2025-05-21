@@ -91,45 +91,58 @@ const PanelCard = ({
           <div className="flex flex-col justify-between w-full z-10">
             <div className="space-y-3 w-full">
               <h2 className="text-2xl font-bold text-gray-800">{panelName}</h2>
-              <div className="space-y-2 w-full">
-                <div className="flex text-sm text-gray-700 justify-between w-[28%] items-center">
-                  <div className="flex items-center w-1/2">
-                    <IconWithBackground icon={Battery} color="#6B7280" />
-                    <span className="font-medium mr-2">ظرفیت:</span>
-                  </div>
-                  <div className="w-1/2">
-                    <span className="mr-1">
-                      {formatNumber(technicalDetails.capacity)} کیلووات
-                    </span>
-                  </div>
-                </div>
-                <div className="flex text-sm text-gray-700 justify-between w-[28%] items-center">
-                  <div className="flex items-center w-1/2">
-                    <IconWithBackground icon={Sun} color="#F59E0B" />
-                    <span className="font-medium mr-2">تولید امروز:</span>
-                  </div>
-                  <div className="w-1/2">
-                    <span className="mr-1">
-                      {formatNumber(technicalDetails.todayProduction)} کیلووات
-                      ساعت
-                    </span>
+              <div className="flex space-x-2 w-full">
+                <div className="flex gap-3 text-sm text-gray-700 w-[32%] items-start">
+                  <div className="w-fit rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
+                    <div className="flex items-center">
+                      <IconWithBackground icon={Battery} className="w-full justify-between" text={"طرفیت"} color="#6B7280" />
+                      {/* <span className="mx-2">ظرفیت</span> */}
+                    </div>
+                    <div className="flex flex-col m-3 items-center justify-center">
+                      <div className="flex flex-row-reverse items-center gap-1">
+                        <span className="text-3xl font-bold">
+                          {formatNumber(technicalDetails.capacity)}
+                        </span>
+                        <span>kW</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className="flex text-sm text-gray-700 justify-between w-[28%] items-center">
-                  <div className="flex items-center w-1/2">
-                    <IconWithBackground icon={TrendingUp} color="#3B82F6" />
-                    <span className="font-medium mr-2">بازدهی:</span>
+                <div className="flex gap-3 text-sm text-gray-700 justify-between w-[32%] items-start">
+                  <div className="w-fit rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
+                    <div className="flex items-center">
+                      <IconWithBackground icon={Sun} className="w-full justify-between" text={"تولید امروز"} color="#F59E0B" />
+                      {/* <span className="mx-2">تولید امروز</span> */}
+                    </div>
+                    <div className="flex flex-col m-3 items-center justify-center">
+                      <div className="flex flex-row-reverse items-center gap-1">
+                        <span className="text-3xl font-bold">
+                          {formatNumber(technicalDetails.todayProduction)}
+                        </span>
+                        <span>kW/h</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="w-1/2">
-                    <span className="mr-1">{technicalDetails.efficiency}%</span>
+                </div>
+                <div className="flex flex-col gap-3 text-sm text-gray-700 justify-between w-[32%] items-start">
+                  <div className="w-fit rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
+                    <div className="flex items-center">
+                      <IconWithBackground icon={TrendingUp} className="w-full justify-between" text={"بازدهی"} color="#3B82F6" />
+                      {/* <span className="mx-2">بازدهی</span> */}
+                    </div>
+                    <div className="flex flex-col m-3 items-center justify-center">
+                      <div className="flex flex-row-reverse items-center gap-1">
+                        <span className="text-3xl font-bold">{technicalDetails.efficiency}</span>
+                        <span>%</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="flex items-start text-sm text-gray-700 mt-6">
+            <div className="flex flex-col items-start text-sm text-gray-700 mt-6">
               <div className="flex flex-row items-center">
-                <IconWithBackground icon={MapPin} color="#6B7280" />
-                <div className="font-medium mx-2">آدرس:</div>
+                <IconWithBackground text="آدرس" icon={MapPin} color="#6B7280" />
               </div>
               <div className="flex flex-row mt-[6px]">
                 <span className="mr-1">{address}</span>
