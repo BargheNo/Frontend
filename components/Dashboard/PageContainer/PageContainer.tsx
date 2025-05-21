@@ -5,7 +5,7 @@ export default function PageContainer({
 	children,
 }: {
 	className?: string;
-	children: React.ReactNode;
+	children?: React.ReactNode;
 }) {
 	return <div className={`${className} ${styles.Container} min-h-full flex flex-col text-black py-8 px-14 gap-4`}>{children}</div>;
 }

@@ -12,6 +12,7 @@ import React from "react";
 import styles from "./CustomerTickets.module.css";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { toast } from "sonner";
+import Header from "@/components/Header/Header";
 
 interface Ticket {
   id: string;
@@ -319,7 +320,8 @@ const TicketSupportPage = () => {
 
   return (
     <div className="flex flex-col p-6 space-y-6 gap-10">
-      <h2 className="text-right text-2xl font-bold text-blue-800">ثبت تیکت</h2>
+      {/* <h2 className="text-right text-2xl font-bold text-blue-800">ثبت تیکت</h2> */}
+      <Header header="ثبت تیکت" />
 
       {/* Ticket Creation Form */}
       <form
@@ -429,9 +431,10 @@ const TicketSupportPage = () => {
           </div>
         </div>
       </form>
-      <h2 className="text-right text-2xl font-bold text-blue-800">
+      <Header header="تیکت‌های قبلی" />
+      {/* <h2 className="text-right text-2xl font-bold text-blue-800">
         تیکت های قبلی
-      </h2>
+      </h2> */}
       {/* Ticket List */}
       <div className="space-y-4">
         {tickets.map((ticket) => (
