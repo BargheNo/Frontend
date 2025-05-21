@@ -15,11 +15,14 @@ export default function page() {
 			{/* <CorpMessageCard from={from} date={date} topic={topic} body={body}></CorpMessageCard> */}
 			<PageContainer>
 				{/* <div className="flex flex-wrap w-full rtl mt-20 "> */}
-					{/* <Head>
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          </Head> */}
-					{/* <h1 className="font-bold text-xl mb-4  md:mr-14 mr-4">اعلان ها</h1> */}
-					<MessagesPagination />
+				<Head>
+					<meta
+						name="viewport"
+						content="width=device-width, initial-scale=1"
+					/>
+				</Head>
+				{/* <h1 className="font-bold text-xl mb-4  md:mr-14 mr-4">اعلان ها</h1> */}
+				<MessagesPagination />
 				{/* </div> */}
 			</PageContainer>
 		</>
