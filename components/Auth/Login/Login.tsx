@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { setUser } from "@/src/store/slices/userSlice";
 import { useDispatch } from "react-redux";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
+import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
 
 const validationSchema = Yup.object({
 	phoneNumber: Yup.string()
@@ -48,7 +49,7 @@ const Login = () => {
 		password: string;
 	}) => {
 		const { phoneNumber, password } = values;
-
+		setLoading(true);
 		try {
 			console.log(localStorage.getItem("user"));
 			const response = await postData({
@@ -70,6 +71,7 @@ const Login = () => {
 						refreshToken: response.data.accessToken,
 					})
 				);
+				setLoading(false);
 				window.location.href = "/dashboard";
 			}
 		} catch (error: any) {
@@ -81,9 +83,9 @@ const Login = () => {
 					{generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد."}
 				</div>
 			);
+			setLoading(false);
 		}
 	};
-
 	return (
 		<div className={`${vazir.className} w-full`}>
 			<div dir="rtl" className={`${styles.mainbg} w-full`}>
@@ -136,9 +138,12 @@ const Login = () => {
 					</Formik>
 
 					<p className="flex gap-5 justify-center text-center text-sm text-blue-600">
-						<a href="/forgot-password" data-test="forget-password">فراموشی رمز عبور</a>
+						<a href="/forgot-password" data-test="forget-password">
+							فراموشی رمز عبور
+						</a>
 						<Link href="/signup">ثبت نام نکرده ام</Link>
 					</p>
+					{loading && <TransparentLoading />}
 				</div>
 			</div>
 		</div>
