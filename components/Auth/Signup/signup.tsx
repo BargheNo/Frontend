@@ -22,6 +22,8 @@ import { Form, Formik } from "formik";
 import registerService from "@/src/services/registerService";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 // import useClientCheck from "@/src/hooks/useClientCheck";
 
 function Signup() {
@@ -79,20 +81,24 @@ function Signup() {
 			})
 			.then((res) => {
 				setOpen(true);
-				toast(<div id="sonner-toast">{res?.data?.message}</div>);
+				// toast(<div id="sonner-toast">{res?.data?.message}</div>);
+				CustomToast(res?.data?.message);
 				setLoading(false);
 			})
 			.catch((err) => {
 				setLoading(false);
-				toast(
-					<div id="sonner-toast">
-						{
-							err?.response?.data?.messages?.phone[
-								"alreadyRegistered"
-							]
-						}
-					</div>
+				CustomToast(
+					err?.response?.data?.messages?.phone["alreadyRegistered"]
 				);
+				// toast(
+				// 	<div id="sonner-toast">
+				// 		{
+				// 			err?.response?.data?.messages?.phone[
+				// 				"alreadyRegistered"
+				// 			]
+				// 		}
+				// 	</div>
+				// );
 				// toast(
 				// 	err?.response?.data?.messages?.phone["alreadyRegistered"]
 				// );
@@ -283,6 +289,7 @@ function Signup() {
 									</div>
 								</Form>
 							</Formik>
+							{loading && <TransparentLoading />}
 						</div>
 					</div>
 				</div>
