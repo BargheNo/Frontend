@@ -8,6 +8,7 @@ import styles from "./Tickets.module.css";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { toast } from "sonner";
 import Header from "@/components/Header/Header";
+import Image from "next/image";
 
 interface Ticket {
 	id: string;
@@ -201,9 +202,9 @@ const TicketSupportPage = () => {
 		};
 	}) => {
 		return (
-			<div className="flex flex-row justify-between w-full h-full gap-10 py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 min-h-[250px]">
+			<div className="flex flex-row justify-between w-full h-full py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 min-h-[250px]">
 				{/* Right section */}
-				<div className="w-5/6 flex flex-col gap-3 justify-between">
+				<div className="w-5/6 flex flex-col justify-between">
 					<div className="flex flex-col gap-3">
 						<p className="text-start content-start w-full text-2xl font-bold">
 							{translateSubjectToPersian(subject)}
@@ -216,58 +217,55 @@ const TicketSupportPage = () => {
 							{description}
 						</p>
 					</div>
-					<div className="flex flex-row w-100">
+					<div className="flex flex-row w-100 gap-4">
 						<div
 							className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
+							onClick={() => setActiveCommentTicketId(id)}
 						>
-							<button
-								onClick={() => setActiveCommentTicketId(id)}
-								className="cursor-pointer"
-							>
+							<button className="cursor-pointer">
 								افزودن نظر
 							</button>
 							<MessageCirclePlus />
 						</div>
 						<div
 							className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
-						>
-							<div className="flex gap-2 justify-end mt-2">
-								<button
-									className="cursor-pointer"
-									onClick={() => {
-										const nextValue =
-											showCommentBoxFor === id
-												? null
-												: id;
-										setShowCommentBoxFor(nextValue);
+							onClick={() => {
+								const nextValue =
+									showCommentBoxFor === id ? null : id;
+								setShowCommentBoxFor(nextValue);
 
-										// Only fetch comments if we're opening the box
-										if (nextValue !== null) {
-											getComments(nextValue);
-										}
-									}}
-								>
-									{showCommentBoxFor === id
-										? "بستن نظرات"
-										: "مشاهده نظرات"}
-								</button>
-								<MessageCircleMore />
-							</div>
+								// Only fetch comments if we're opening the box
+								if (nextValue !== null) {
+									getComments(nextValue);
+								}
+							}}
+						>
+							{/* <div className="flex gap-2 justify-end"> */}
+							<button className="cursor-pointer">
+								{showCommentBoxFor === id
+									? "بستن نظرات"
+									: "مشاهده نظرات"}
+							</button>
+							<MessageCircleMore />
+							{/* </div> */}
 						</div>
 					</div>
 				</div>
-				{image && (
-					<img
-						src={image}
-						className="w-32 h-32 object-cover rounded-xl "
-						alt="تصویر تیکت"
-					/>
-				)}
+				<div className="flex items-center ">
+					{/* {image && <Image src={image} alt="تصویر تیکت" width={500} height={500} className="object-cover h-32 w-32 rounded-xl" />} */}
+					{image && (
+						<img
+							src={image}
+							className="object-cover rounded-xl "
+							alt="تصویر تیکت"
+						/>
+					)}
+				</div>
 				{/* Left section */}
-				<div className="w-50 min-w-[50px] pr-5 flex flex-col gap-4">
+				<div className="w-50 min-w-[50px] pr-5 flex flex-col justify-around">
 					{/* status */}
 					<div
-						className={`flex flex-col items-center ${styles.status} py-4 gap-2`}
+						className={`flex flex-col  items-center ${styles.status} py-4 gap-2`}
 					>
 						<span className="text-[#636363] font-bold">
 							{created_at}{" "}
@@ -333,11 +331,8 @@ const TicketSupportPage = () => {
 	};
 
 	return (
-		<div className="flex flex-col py-6 space-y-6 gap-10 w-full">
+		<div className="flex flex-col py-6 space-y-6 w-full">
 			<Header header="تیکت‌های قبلی" />
-			{/* <h2 className="text-right text-2xl font-bold text-blue-800">
-        تیکت های قبلی
-      </h2> */}
 			{/* Ticket List */}
 			<div className="space-y-4">
 				{tickets.length === 0 ? (
