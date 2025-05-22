@@ -188,7 +188,9 @@ const StyleShowcase = () => {
 					<button className="bg-red-100 p-4 neu-shadow rounded-2xl">
 						Click me
 					</button>
-					{/* <TransparentLoading size="sm" /> */}
+					<TransparentLoading size="sm" />
+					<span className="text-sm text-gray-500">Loading...</span>
+					<span className="text-sm text-gray-500">Loading...</span>
 				</div>
 			</section>
 
