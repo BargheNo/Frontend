@@ -30,6 +30,65 @@ interface RepairHistoryItem {
         area: number;
     };
 }
+
+// Mock data for testing
+const mockRepairItems: RepairHistoryItem[] = [
+    {
+        ID: 1,
+        Subject: "تعمیر پنل خورشیدی شماره 1",
+        Description: "پنل خورشیدی نیاز به تعمیر و نگهداری دارد",
+        Status: "در انتظار بررسی",
+        UrgencyLevel: "بالا",
+        CreatedAt: new Date().toISOString(),
+        OwnerID: 1,
+        CorporationID: 1,
+        PanelID: 1,
+        Panel: {
+            id: 1,
+            panelName: "پنل خورشیدی A",
+            corporationName: "شرکت انرژی خورشیدی",
+            power: 100,
+            area: 50
+        }
+    },
+    {
+        ID: 2,
+        Subject: "بازرسی دوره‌ای پنل‌ها",
+        Description: "نیاز به بازرسی دوره‌ای پنل‌های خورشیدی",
+        Status: "در حال انجام",
+        UrgencyLevel: "متوسط",
+        CreatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        OwnerID: 1,
+        CorporationID: 1,
+        PanelID: 2,
+        Panel: {
+            id: 2,
+            panelName: "پنل خورشیدی B",
+            corporationName: "شرکت انرژی خورشیدی",
+            power: 150,
+            area: 75
+        }
+    },
+    {
+        ID: 3,
+        Subject: "تعویض قطعات فرسوده",
+        Description: "نیاز به تعویض برخی قطعات فرسوده",
+        Status: "تکمیل شده",
+        UrgencyLevel: "پایین",
+        CreatedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+        OwnerID: 1,
+        CorporationID: 1,
+        PanelID: 3,
+        Panel: {
+            id: 3,
+            panelName: "پنل خورشیدی C",
+            corporationName: "شرکت انرژی خورشیدی",
+            power: 200,
+            area: 100
+        }
+    }
+];
+
 const Page = () => {
 	// State for the dialog
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -50,6 +109,12 @@ const Page = () => {
 	};
 
 	useEffect(() => {		
+		// For testing, use mock data instead of API call
+		setRepairItems(mockRepairItems);
+		setIsLoading(false);
+
+		// Comment out the actual API call for now ////////////////////////////////////////////////////////////////////////////////////////
+		/*
 		getData({
 			endPoint: `${baseURL}/v1/user/maintenance/request/list`,
 		})
@@ -62,6 +127,7 @@ const Page = () => {
 			setError(err instanceof Error ? err : new Error('Failed to fetch repair items'));
 			setIsLoading(false);
 		});
+		*/ //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	}, []);
 
 

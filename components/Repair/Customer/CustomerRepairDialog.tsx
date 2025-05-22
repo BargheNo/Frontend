@@ -14,6 +14,7 @@ import moment from "jalali-moment";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
+import { baseURL, postData } from "@/src/services/apiHub";
 
 interface RepairHistoryItem {
   ID: number;
@@ -87,6 +88,22 @@ const RepairDetailsDialog = ({
       toast.error(errMsg);
     }
   };
+
+
+  postData({
+    endPoint: `${baseURL}/v1/user/report/maintenance/${repairItem.ID}/finalize`,
+    data: {
+      description: values.problem,
+    },
+  }).then(res => {
+    toast.success("تعمیرات با موفقیت به پایان رسید");
+    onClose();
+    // console.log(res);
+  }).catch(err => {
+    const errMsg = generateErrorMessage(err) || "هنگام نهایی کردن تعمیرات مشکلی پیش آمد.";
+    toast.error(errMsg);
+    // console.log(err);
+  });
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -204,16 +221,35 @@ const RepairDetailsDialog = ({
                       type="submit"
                       disabled={isSubmitting}
                       className="self-end
-                                                    bg-gradient-to-br from-[#34C759] to-[#00A92B]
-                                                    hover:from-[#2AAE4F] hover:to-[#008C25]
-                                                    active:from-[#008C25] active:to-[#2AAE4F]
-                                                    text-white py-2 px-4 rounded-md transition-all duration-300"
+                        bg-gradient-to-br from-[#34C759] to-[#00A92B]
+                        hover:from-[#2AAE4F] hover:to-[#008C25]
+                        active:from-[#008C25] active:to-[#2AAE4F]
+                        text-white py-2 px-4 rounded-md transition-all duration-300"
                     >
                       ارسال گزارش
                     </button>
                   </Form>
                 )}
               </Formik>
+            </div>
+
+            {/* Finalize Maintenance Section */}
+            <div className="w-full mt-5 border-t border-gray-300 pt-5">
+              <h4 className="text-lg font-semibold text-navy-blue mb-4">
+                نهایی کردن تعمیرات
+              </h4>
+              <p className="text-gray-700 mb-4">
+                در صورتی که تعمیرات پنل به پایان رسیده است، می‌توانید با کلیک روی دکمه زیر، تعمیرات را نهایی کنید.
+              </p>
+              <button
+                onClick={handleFinalizeMaintenance}
+                className="bg-gradient-to-br from-[#34C759] to-[#00A92B]
+                  hover:from-[#2AAE4F] hover:to-[#008C25]
+                  active:from-[#008C25] active:to-[#2AAE4F]
+                  text-white py-2 px-4 rounded-md transition-all duration-300"
+              >
+                نهایی کردن تعمیرات
+              </button>
             </div>
 
             {/* Override Request */}
@@ -251,7 +287,7 @@ const RepairDetailsDialog = ({
                       hover:from-[#e33333] hover:to-[#bd0000]
                       active:from-[#bd0000] active:to-[#e33333]
                       text-white py-2 px-4 rounded-md transition-all duration-300">
-                      بله، مطمئنم
+                      از لغو درخواست خود مطمئنم
                     </button>
                   </>
                 )}
