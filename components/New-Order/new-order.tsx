@@ -109,7 +109,7 @@ export default function Neworder() {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<SignupButton type="button"  id="plus">
+				<SignupButton className=" relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]" type="button"  id="plus">
 					<Plus className={style.icon} />
 				</SignupButton>
 			</DialogTrigger>
