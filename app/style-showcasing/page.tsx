@@ -5,6 +5,7 @@ import BidCard from "@/components/CorpDashboard/Bids/BidCard";
 import { toast } from "sonner";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
+import Header from "@/components/Header/Header";
 
 /**
  * Style Showcase Page
@@ -15,9 +16,10 @@ const StyleShowcase = () => {
 		toast("سلام شب بخیر");
 	};
 	return (
-		<div className="!w-full p-6 space-y-8 shadow-2xl bg-[#f1f4fc]">
+		<div className="!w-full p-6 space-y-8 shadow-2xl bg-[#f1f4fc] vazir mt-12 rtl">
 			<section className="space-y-4">
 				<br />
+				<Header header="این یک کامپوننت Header است، از آن برای تایتل صفحات در داشبورد استفاده کنید" />
 				<br />
 				<h2 className="text-xl font-bold">Form Elements</h2>
 
@@ -187,7 +189,7 @@ const StyleShowcase = () => {
 					<button className="bg-red-500 p-4 neu-shadow rounded-2xl">
 						Click me
 					</button>
-					<TransparentLoading size="sm" />
+					{/* <TransparentLoading size="sm" /> */}
 				</div>
 			</section>
 		</div>

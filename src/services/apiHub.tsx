@@ -139,6 +139,7 @@ export const getData = async ({ endPoint, headers, params }: getParams) => {
 		return response.data;
 	} catch (error) {
 		throw error;
+
 	}
 };
 
