@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 
 import { useSelector } from "react-redux";
-import { MessageCirclePlus, MessageCircleMore, ArrowLeft } from "lucide-react";
+import { MessageCirclePlus, MessageCircleMore, ArrowLeft, XIcon } from "lucide-react";
 import React from "react";
 import styles from "./Tickets.module.css";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
@@ -204,7 +204,7 @@ const TicketSupportPage = () => {
 		return (
 			<div className="w-full border-t-1 border-gray-300 first:border-t-0">
 				{/* <div className="flex flex-row justify-between w-full h-full py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 min-h-[250px]"> */}
-				<div className="flex flex-row justify-between w-full h-full bg-[#F0EDEF] p-5 overflow-hidden relative]">
+				<div className="flex flex-row justify-between w-full h-full bg-[#F0EDEF] p-5 overflow-hidden relative min-h-[250px]">
 					{/* Right section */}
 					<div className="w-5/6 flex flex-col justify-between">
 						<div className="flex flex-col gap-3">
@@ -215,11 +215,11 @@ const TicketSupportPage = () => {
 								از طرف {Owner.firstName} {Owner.lastName}
 							</p>
 
-							<p className="max-w-[600px] break-words">
+							<p className="break-words">
 								{description}
 							</p>
 						</div>
-						<div className="flex flex-row w-100 gap-4 mt-4">
+						<div className="flex flex-row w-150 gap-4 mt-4">
 							<div
 								className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
 								onClick={() => setActiveCommentTicketId(id)}
@@ -251,50 +251,63 @@ const TicketSupportPage = () => {
 								<MessageCircleMore />
 								{/* </div> */}
 							</div>
+							<div
+								className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
+							>
+								<button
+									className="cursor-pointer"
+									onClick={() => {
+										resolveTicket(id);
+									}}
+								>
+									بستن تیکت
+								</button>
+								<XIcon />
+							</div>
 						</div>
 					</div>
-					<div className="flex items-center">
+					{/* Left section */}
+					<div className="min-w-[50px] pr-5 flex flex-row">
+						{/* status */}
 						{/* {image && <Image src={image} alt="تصویر تیکت" width={500} height={500} className="object-cover h-32 w-32 rounded-xl" />} */}
 						{image && (
 							<img
 								src={image}
-								className="h-32 w-32 object-cover rounded-xl"
+								className="h-full w-48 object-cover rounded-xl"
 								alt="تصویر تیکت"
 							/>
 						)}
-					</div>
-					{/* Left section */}
-					<div className="w-50 min-w-[50px] pr-5 flex flex-col justify-around">
-						{/* status */}
-						<div
-							className={`flex flex-col  items-center ${styles.status} py-4 gap-2`}
-						>
-							<span className="text-[#636363] font-bold">
-								{created_at}{" "}
-							</span>
-							<div className="flex items-center gap-2">
-								<span className="font-bold">{status}</span>
-								<div
-									className={`h-4 w-4 rounded-full ${
-										status === "پاسخ دادید"
-											? "green"
-											: "red"
-									}-status shadow-md`}
-								/>
+						<div className="w-46 pr-5 flex flex-col gap-4 justify-between">
+							
+							<div
+								className={`flex flex-col items-center w-full align-middle h-full ${styles.status} py-8 justify-center gap-2`}
+							>	
+								<span className="text-[#636363] font-bold">
+									{created_at}{" "}
+								</span>
+								<div className="flex items-center gap-2">
+									<span className="font-bold">{status}</span>
+									<div
+										className={`h-4 w-4 rounded-full ${
+											status === "پاسخ دادید"
+												? "green"
+												: "red"
+										}-status shadow-md`}
+									/>
+								</div>
 							</div>
-						</div>
-						<div
-							className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
-						>
-							<button
-								className="cursor-pointer"
-								onClick={() => {
-									resolveTicket(id);
-								}}
+							{/* <div
+								className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
 							>
-								پاسخ
-							</button>
-							<ArrowLeft />
+								<button
+									className="cursor-pointer"
+									onClick={() => {
+										resolveTicket(id);
+									}}
+								>
+									بستن تیکت
+								</button>
+							</div> */}
 						</div>
 					</div>
 				</div>
