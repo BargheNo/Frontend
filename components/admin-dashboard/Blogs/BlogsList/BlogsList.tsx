@@ -11,7 +11,7 @@ const BlogItem = ({
 	date: string;
 }) => {
 	return (
-		<div className="flex flex-row justify-between w-full h-full bg-white py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0">
+		<div className="flex flex-row justify-between w-full h-full py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0">
 			<div className="flex flex-col gap-5">
 				{/* Right section */}
 				<p className="text-start content-start w-full text-2xl font-bold">
@@ -28,7 +28,7 @@ const BlogItem = ({
 			</div>
 			{/* Left section */}
 			<div className="flex items-center">
-                <button className="font-bold text-[#FA682D] cta-neu-button flex gap-2">
+                <button className="font-bold bg-white text-[#FA682D] cta-neu-button flex gap-2">
                     <span>ویرایش</span>
                     <FilePenLine className="font-bold" />
                 </button>

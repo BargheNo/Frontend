@@ -258,7 +258,7 @@ const TicketSupportPage = () => {
 						{image && (
 							<img
 								src={image}
-								className="object-cover rounded-xl "
+								className="h-32 w-32 object-cover rounded-xl"
 								alt="تصویر تیکت"
 							/>
 						)}
@@ -365,8 +365,8 @@ const TicketSupportPage = () => {
 							/>
 
 							{activeCommentTicketId === ticket.id && (
-								<div className="flex items-center justify-center">
-									<div className="bg-white px-10 rounded-lg w-full text-right space-y-4">
+								<div className="flex bg-[#F0EDEF] pb-4 items-center justify-center">
+									<div className="px-10 rounded-lg w-full text-right space-y-4">
 										<h3 className="text-lg font-bold">
 											ثبت نظر
 										</h3>
@@ -381,7 +381,7 @@ const TicketSupportPage = () => {
 													)
 												}
 												rows={3}
-												className={`w-full p-2 resize-none outline-none focus:ring-0 focus:outline-none `}
+												className={`w-full p-2 resize-none outline-none focus:ring-0 focus:outline-none bg-white`}
 												placeholder="متن نظر..."
 											/>
 										</div>
@@ -393,7 +393,7 @@ const TicketSupportPage = () => {
 														null
 													)
 												}
-												className="text-gray-500 hover:underline"
+												className={`text-gray-500 cta-neu-button cursor-pointer w-1/9 ${styles.button}`}
 											>
 												لغو
 											</button>
@@ -418,41 +418,36 @@ const TicketSupportPage = () => {
 							)}
 							{/* Comments */}
 							{showCommentBoxFor === ticket.id && (
-								<div className="bg-gray-100 p-3 rounded text-sm space-y-2 mt-2">
+								<div className="bg-[#F0EDEF] p-8 rounded text-sm flex flex-col gap-4">
 									<h2 className="text-right text-2xl font-bold text-blue-800 pr-7">
 										نظرات
 									</h2>
 									{comments.length > 0 ? (
-										comments.map((comment, i) => (
-											<div
-												key={i}
-												className="pb-1 border-t border-gray-400"
-											>
+										<div className="flex flex-col text-gray-800 rounded-md overflow-hidden">
+											{/* <div className="pb-1 border-t border-gray-400"> */}
+											{comments.map((comment, index) => (
 												<Comment
+													key={index}
 													id={ticket.id}
 													Author={comment.Author}
 													body={comment.body}
 												/>
-											</div>
-										))
+											))}
+										</div>
 									) : (
 										<div className="text-gray-400 pr-7">
 											نظری ثبت نشده است
 										</div>
 									)}
-									<div
-										className={`text-left cta-neu-button flex ${styles.button} items-center content-center justify-center w-1/9`}
+									<button
+										className={`text-left cursor-pointer cta-neu-button flex ${styles.button} self-end justify-center w-1/9`}
+										onClick={() => {
+											setShowCommentBoxFor(null);
+											setComments([]);
+										}}
 									>
-										<button
-											onClick={() => {
-												setShowCommentBoxFor(null);
-												setComments([]);
-											}}
-											className="cursor-pointer"
-										>
-											بستن
-										</button>
-									</div>
+										بستن
+									</button>
 								</div>
 							)}
 						</>

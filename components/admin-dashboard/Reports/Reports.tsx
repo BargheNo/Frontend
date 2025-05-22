@@ -280,13 +280,12 @@ const Reports = () => {
 	};
 
 	return (
-		<div className="space-y-12 mt-10">
+		<div className="space-y-12 ">
 			{/* Maintenance Reports Section */}
 			<Header header="گزارش‌های تعمیر و نگهداری" />
-			<section className="flex flex-col bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]  mb-5">
-				{/* <h2 className="text-right text-2xl font-bold text-blue-800 mb-6  pb-4">
-					گزارش‌های تعمیر و نگهداری
-          </h2> */}
+			<section
+				className={`no-scrollbar flex flex-col bg-[#F0EDEF] max-h-[80vh] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] mb-5`}
+			>
 				<div className="">
 					{maintenanceReports.length > 0 ? (
 						maintenanceReports.map((report) => (
@@ -311,8 +310,8 @@ const Reports = () => {
 			</section>
 
 			{/* Panel Reports Section */}
-			<Header header="گزارش‌های پنل" />
-			<section className="flex flex-col bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] mb-5">
+			<Header header="گزارش‌های پنل" className="mt-8" />
+			<section className="no-scrollbar flex flex-col bg-[#F0EDEF] max-h-[80vh] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] mb-5">
 				{/* <h2 className="text-right text-2xl font-bold text-blue-800 mb-6  pb-4">
 					گزارش‌های پنل
 				</h2> */}
