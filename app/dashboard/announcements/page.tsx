@@ -77,7 +77,7 @@ export default function page() {
       </AnnouncementBox>
       <Dialog>
         <DialogTrigger asChild>
-          <button className="flex items-center justify-center w-full h-18 bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] rounded-full neo-btn">
+          <button className="relative flex items-center justify-center w-full h-18 bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] rounded-full neo-btn">
             <Plus color="#EA6639" size={50}/>
           </button>
         </DialogTrigger>

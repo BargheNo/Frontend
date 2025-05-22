@@ -324,7 +324,7 @@ const TicketSupportPage = () => {
       {/* Ticket Creation Form */}
       <form
         onSubmit={formik.handleSubmit}
-        className={`space-y-4 min-h-[400px]`}
+        className={`space-y-4 min-h-[400px] relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]`}
       >
         <div
           className={`${styles.outsideShadow} 

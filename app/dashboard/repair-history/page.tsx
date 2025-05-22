@@ -12,8 +12,65 @@ import { baseURL, getData } from '@/src/services/apiHub';
 import LoadingSpinner from '@/components/LoadingSpinner/LoadingSpinner';
 import { toast } from 'sonner';
 
-interface RepairHistoryItem {
+// Mock data for testing
+const mockRepairItems: RepairHistoryItem[] = [
+    {
+        ID: 1,
+        Subject: "تعمیر پنل خورشیدی شماره 1",
+        Description: "پنل خورشیدی نیاز به تعمیر و نگهداری دارد",
+        Status: "در انتظار",
+        UrgencyLevel: "بالا",
+        CreatedAt: "2024-03-15T10:30:00Z",
+        OwnerID: 1,
+        CorporationID: 1,
+        PanelID: 1,
+        Panel: {
+            id: 1,
+            panelName: "پنل A1",
+            corporationName: "شرکت انرژی خورشیدی",
+            power: 400,
+            area: 2.5
+        }
+    },
+    {
+        ID: 2,
+        Subject: "بازرسی دوره‌ای پنل‌ها",
+        Description: "نیاز به بازرسی دوره‌ای پنل‌های خورشیدی",
+        Status: "در حال انجام",
+        UrgencyLevel: "متوسط",
+        CreatedAt: "2024-03-10T14:20:00Z",
+        OwnerID: 1,
+        CorporationID: 1,
+        PanelID: 2,
+        Panel: {
+            id: 2,
+            panelName: "پنل B2",
+            corporationName: "شرکت انرژی خورشیدی",
+            power: 350,
+            area: 2.0
+        }
+    },
+    {
+        ID: 3,
+        Subject: "تعویض اینورتر",
+        Description: "اینورتر نیاز به تعویض دارد",
+        Status: "تکمیل شده",
+        UrgencyLevel: "بالا",
+        CreatedAt: "2024-02-28T09:15:00Z",
+        OwnerID: 1,
+        CorporationID: 1,
+        PanelID: 3,
+        Panel: {
+            id: 3,
+            panelName: "پنل C3",
+            corporationName: "شرکت انرژی خورشیدی",
+            power: 450,
+            area: 3.0
+        }
+    }
+];
 
+interface RepairHistoryItem {
 	ID: number;
     Subject: string;
     Description: string;
@@ -51,11 +108,12 @@ const Page = () => {
 	};
 
 	useEffect(() => {		
+		// Comment out the API call for now and use mock data
+		/* ////////////////////////////////////////////////////////////////////////////////////
 		getData({
 			endPoint: `${baseURL}/v1/user/maintenance/request/list`,
 		})
 		.then((res) => {
-			// console.log(res);
 			setRepairItems(res.data);
 			setIsLoading(false);
 		})
@@ -63,6 +121,11 @@ const Page = () => {
 			setError(err instanceof Error ? err : new Error('Failed to fetch repair items'));
 			setIsLoading(false);
 		});
+		*/ ///////////////////////////////////////////////////////////////////////////////////
+
+		// Use mock data instead
+		setRepairItems(mockRepairItems);
+		setIsLoading(false);
 	}, []);
 
 

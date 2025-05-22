@@ -182,7 +182,7 @@ const CustomerRepairRequest = () => {
       <DialogTrigger asChild>
         <div className="flex flex-col items-center gap-4">
           <button 
-            className="cta-neu-button !w-fit !rounded-4xl" 
+            className="cta-neu-button !w-fit !rounded-4xl relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]" 
             aria-label="درخواست تعمیرات فوری"
           >
             <Plus className='w-28 h-28' />
