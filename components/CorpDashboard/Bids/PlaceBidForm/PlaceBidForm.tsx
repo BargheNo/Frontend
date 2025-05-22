@@ -20,6 +20,7 @@ import React from "react";
 import { BidFormProps } from "@/src/types/RequestCardTypes";
 import wordExpression from "@/src/functions/Calculations";
 import { useSelector } from "react-redux";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 // import { RootState } from "@/src/store/types";
 
 const Item = ({
@@ -85,7 +86,8 @@ export default function PlaceBidForm({
 		})
 			.then((response) => response.json()) // Parse the JSON response
 			.then((data) => {
-				toast(data?.message);
+				CustomToast(data?.message, "success");
+				// toast(data?.message);
 				console.log("Success:", data); // Handle the response data
 			})
 			.catch((error) => {

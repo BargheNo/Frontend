@@ -188,17 +188,6 @@ export default function Page() {
 					) {
 						formData["signatories"] = values.signatories;
 					}
-					// formData["signatories"]?.map((signatory) => {
-					// 	if (
-					// 		signatory.name === "" ||
-					// 		signatory.nationalCardNumber === ""
-					// 	) {
-					// 		toast(
-					// 			"اطلاعات مورد نیاز صاحبان امضا را کامل وارد کنید"
-					// 		);
-					// 		return;
-					// 	}
-					// });
 					console.log("formData in step 0", formData);
 					if (
 						values.name === "" ||
@@ -206,7 +195,7 @@ export default function Page() {
 						values.nationalID === "" ||
 						values.iban === ""
 					) {
-						CustomToast("اطلاعات خواسته شده را پر کنید");
+						CustomToast("اطلاعات خواسته شده را پر کنید", "warning");
 					} else {
 						const signatoriesOk = await checkSignatories(formData);
 						if (signatoriesOk) {
@@ -216,7 +205,7 @@ export default function Page() {
 									data: formData,
 								})
 									.then((res) => {
-										CustomToast(res.message);
+										CustomToast(res.message, "success");
 										if (step < steps.length - 1) {
 											setStep(step + 1);
 										}
@@ -224,11 +213,10 @@ export default function Page() {
 									})
 									.catch((err) => {
 										console.log(err);
-										const message =
-											generateErrorMessage(err);
-										if (message) {
-											CustomToast(message);
-										}
+										CustomToast(
+											generateErrorMessage(err),
+											"error"
+										);
 									});
 							} else {
 								if (step < steps.length - 1) {
@@ -246,10 +234,13 @@ export default function Page() {
 					values.nationalID === "" ||
 					values.iban === ""
 				) {
-					CustomToast("اطلاعات خواسته شده را پر کنید");
+					CustomToast("اطلاعات خواسته شده را پر کنید", "warning");
 					return;
 				} else if (values.signatories?.length === 0) {
-					CustomToast("افزودن حداقل یک صاحب امضا الزامی است");
+					CustomToast(
+						"افزودن حداقل یک صاحب امضا الزامی است",
+						"warning"
+					);
 					return;
 				} else {
 					const signatoriesOk = await checkSignatories(values);
@@ -275,7 +266,7 @@ export default function Page() {
 										corpId: res.data.id,
 									})
 								);
-								CustomToast(res.message);
+								CustomToast(res?.message, "success");
 								if (step < steps.length - 1) {
 									setStep(step + 1);
 								}
@@ -283,7 +274,7 @@ export default function Page() {
 								resetFormValues(setFieldValue);
 							})
 							.catch((err) => {
-								CustomToast(generateErrorMessage(err));
+								CustomToast(generateErrorMessage(err), "error");
 							});
 					}
 				}
@@ -304,7 +295,8 @@ export default function Page() {
 							res.data.contactInfo.length === 0
 						) {
 							CustomToast(
-								"افزودن حداقل یک راه ارتباطی الزامی است"
+								"افزودن حداقل یک راه ارتباطی الزامی است",
+								"warning"
 							);
 							return;
 						}
@@ -319,7 +311,7 @@ export default function Page() {
 								})
 									.then((res) => {
 										console.log("res", res);
-										CustomToast(res?.message);
+										CustomToast(res?.message, "success");
 										setFieldValue("contactInformation", []);
 										if (step < steps.length - 1) {
 											setStep(step + 1);
@@ -327,7 +319,10 @@ export default function Page() {
 									})
 									.catch((err) => {
 										console.log("err", err);
-										CustomToast(generateErrorMessage(err));
+										CustomToast(
+											generateErrorMessage(err),
+											"error"
+										);
 									});
 							} else {
 								if (step < steps.length - 1) {
@@ -338,10 +333,10 @@ export default function Page() {
 					})
 					.catch((err) => {
 						console.log("errr", err);
-						CustomToast(generateErrorMessage(err));
+						CustomToast(generateErrorMessage(err), "error");
 					});
 			} else {
-				CustomToast("شرکتی برای شما ثبت نشده است");
+				CustomToast("شرکتی برای شما ثبت نشده است", "info");
 			}
 		} else if (step === 2) {
 			if (corpId) {
@@ -353,7 +348,10 @@ export default function Page() {
 						values.addresses?.length === 0 &&
 						res.data.addresses.length === 0
 					) {
-						CustomToast("افزودن حداقل یک آدرس الزامی است");
+						CustomToast(
+							"افزودن حداقل یک آدرس الزامی است",
+							"warning"
+						);
 						return;
 					}
 					if (values.addresses != res.data.addresses) {
@@ -379,7 +377,7 @@ export default function Page() {
 									}
 								})
 								.catch((err) => {
-									CustomToast(generateErrorMessage(err));
+									CustomToast(generateErrorMessage(err), "error");
 								});
 						} else {
 							if (step < steps.length - 1) {
@@ -389,7 +387,7 @@ export default function Page() {
 					}
 				});
 			} else {
-				CustomToast("شرکتی برای شما ثبت نشده است");
+				CustomToast("شرکتی برای شما ثبت نشده است", "info");
 			}
 		} else if (step === 3) {
 			if (corpId) {
@@ -397,7 +395,7 @@ export default function Page() {
 					!values.certificates?.vatTaxpayerCertificate ||
 					!values.certificates?.officialNewspaperAD
 				) {
-					CustomToast("لطفا مدرک خواسته شده را بارگذاری کنید.");
+					CustomToast("لطفا مدرک خواسته شده را بارگذاری کنید.", "warning");
 					return;
 				}
 
@@ -418,13 +416,13 @@ export default function Page() {
 				})
 					.then((res) => {
 						console.log("result file", res);
-						CustomToast(res?.message);
+						CustomToast(res?.message, "success");
 						router.push("/");
 						setLoading(false);
 					})
 					.catch((error) => {
 						console.log(error);
-						CustomToast(generateErrorMessage(error));
+						CustomToast(generateErrorMessage(error), "error");
 						setLoading(false);
 					});
 			} else {
@@ -440,11 +438,11 @@ export default function Page() {
 				signatory.name === "" ||
 				signatory.position === ""
 			) {
-				CustomToast("اطلاعات صاحبان امضا را کامل وارد کنید");
+				CustomToast("اطلاعات صاحبان امضا را کامل وارد کنید", "warning");
 				return false;
 			}
 			if (signatory.nationalCardNumber.length !== 10) {
-				CustomToast("فرمت کد ملی صاحبان امضا صحیح نمی‌باشد");
+				CustomToast("فرمت کد ملی صاحبان امضا صحیح نمی‌باشد", "warning");
 				return false;
 			}
 		}
@@ -453,11 +451,11 @@ export default function Page() {
 	const checkContactInformationOk = async (formData: corpData) => {
 		for (const contact of formData["contactInformation"] || []) {
 			if (!contact.contactTypeID) {
-				CustomToast("نوع راه ارتباطی را تعیین کنید");
+				CustomToast("نوع راه ارتباطی را تعیین کنید", "warning");
 				return false;
 			}
 			if (!contact.contactValue) {
-				CustomToast("مقدار راه ارتباطی را وارد کنید");
+				CustomToast("مقدار راه ارتباطی را وارد کنید", "warning");
 				return false;
 			}
 		}
@@ -466,35 +464,35 @@ export default function Page() {
 	const checkAddressOk = async (formData: corpData) => {
 		for (const address of formData["addresses"] || []) {
 			if (!address.provinceID) {
-				CustomToast("مقدار استان را انتخاب کنید");
+				CustomToast("مقدار استان را انتخاب کنید", "warning");
 				return false;
 			}
 			if (!address.cityID) {
-				CustomToast("مقدار شهر را انتخاب کنید");
+				CustomToast("مقدار شهر را انتخاب کنید", "warning");
 				return false;
 			}
 			if (!address.cityID) {
-				CustomToast("مقدار شهر را انتخاب کنید");
+				CustomToast("مقدار شهر را انتخاب کنید", "warning");
 				return false;
 			}
 			if (!address.streetAddress) {
-				CustomToast("آدرس را وارد کنید");
+				CustomToast("آدرس را وارد کنید", "warning");
 				return false;
 			}
 			if (address.postalCode === "") {
-				CustomToast("کد پستی را وارد کنید");
+				CustomToast("کد پستی را وارد کنید", "warning");
 				return false;
 			}
 			if (String(address.postalCode).length !== 10) {
-				CustomToast("فرمت کد پستی صحیح نمی‌باشد");
+				CustomToast("فرمت کد پستی صحیح نمی‌باشد", "warning");
 				return false;
 			}
 			if (address.houseNumber === "") {
-				CustomToast("پلاک را وارد کنید");
+				CustomToast("پلاک را وارد کنید", "warning");
 				return false;
 			}
 			if (address.unit === "") {
-				CustomToast("واحد را وارد کنید");
+				CustomToast("واحد را وارد کنید", "warning");
 				return false;
 			}
 		}
@@ -503,23 +501,9 @@ export default function Page() {
 	useEffect(() => {
 		if (!accessToken) {
 			router.push("/login");
-			// toast(
-			// 	<div data-test="sonner-toast">
-			// 		برای ثبت شرکت ابتدا باید وارد حساب کاربری خود شوید!
-			// 	</div>
-			// );
 		}
 	}, [accessToken, router]);
-	// useEffect(() => {
-	// 	function handleResize() {
-	// 		setScreenType(getScreenType());
-	// 	}
-
-	// 	window.addEventListener("resize", handleResize);
-	// 	return () => window.removeEventListener("resize", handleResize);
-	// }, []);
 	const handleBack = () => {
-		// resetFormValues(setFieldValue);
 		if (step > 0) {
 			setStep(step - 1);
 		}
@@ -621,8 +605,10 @@ export default function Page() {
 											/>
 										)}
 									</div>
-									
-									{loading && <TransparentLoading className="w-full" />}
+
+									{loading && (
+										<TransparentLoading className="w-full" />
+									)}
 								</CardContent>
 								<CardFooter className="flex justify-between align-bottom ltr">
 									<button

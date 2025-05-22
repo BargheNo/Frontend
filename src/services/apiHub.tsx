@@ -5,6 +5,7 @@ import { getParams, postParams } from "../types/apiHubType";
 // import { RootState } from "../store/types";
 import { toast } from "sonner";
 import generateErrorMessage from "../functions/handleAPIErrors";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 export const baseURL = "http://46.249.99.69:8080";
 // export const baseURL = "https://8993-2a0d-5940-54-11-00.ngrok-free.app";
@@ -139,7 +140,6 @@ export const getData = async ({ endPoint, headers, params }: getParams) => {
 		return response.data;
 	} catch (error) {
 		throw error;
-
 	}
 };
 
@@ -257,7 +257,8 @@ export const handleLogin = async (phoneNumber: string, password: string) => {
 		};
 	} catch (error: any) {
 		// console.log("error", error);
-		toast(generateErrorMessage(error));
+		CustomToast(generateErrorMessage(error), "error");
+		// toast(generateErrorMessage(error));
 		// if (axios.isAxiosError(error)) {
 		// 	return {
 		// 		success: false,

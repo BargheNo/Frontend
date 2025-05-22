@@ -1,4 +1,0 @@
-.Container {
-	/* @apply w-full px-12 my-7 flex flex-col gap-8; */
-	@apply min-h-full flex flex-col text-white py-8 px-14 bg-transparent;
-}

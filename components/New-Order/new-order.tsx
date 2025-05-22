@@ -45,6 +45,7 @@ import { useSelector } from "react-redux";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
 import TransparentLoading from "../LoadingSpinner/TransparentLoading";
+import CustomToast from "../Custom/CustomToast/CustomToast";
 export default function Neworder() {
 	const [loading, setLoading] = useState(false);
 	const [open, setOpen] = useState(false);
@@ -99,13 +100,15 @@ export default function Neworder() {
 		orderService
 			.orderRequest(orderinfo, token)
 			.then((res) => {
-				toast(<div id="toast-success">{res?.message}</div>);
+				CustomToast(res?.message, "success");
+				// toast(<div id="toast-success">{res?.message}</div>);
 				setLoading(false);
 				setOpen(false);
 			})
 			.catch((err) => {
 				console.log(err);
-				toast(<div id="toast-fail">{generateErrorMessage(err)}</div>);
+				CustomToast(generateErrorMessage(err), "error");
+				// toast(<div id="toast-fail">{generateErrorMessage(err)}</div>);
 				setLoading(false);
 				// setOpen(false);
 			});

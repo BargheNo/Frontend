@@ -120,5 +120,5 @@ export default function generateErrorMessage<T extends object>(
 		);
 	});
 
-	return errorMessage;
+	return errorMessage || "خطایی رخ داده است";
 }
