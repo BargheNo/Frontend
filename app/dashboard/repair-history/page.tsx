@@ -10,6 +10,7 @@ import RepairDetailsDialog from '@/components/Repair/Customer/CustomerRepairDial
 
 import { baseURL, getData } from '@/src/services/apiHub';
 import LoadingSpinner from '@/components/LoadingSpinner/LoadingSpinner';
+import { toast } from 'sonner';
 
 interface RepairHistoryItem {
 
@@ -90,9 +91,15 @@ const Page = () => {
 	}
 
 	if (error) {
+		// toast.error("مشکلی در دریافت سوابق تعمیرات پیش آمد!");
+		// console.log(error.message);
 		return (
-			<div className="min-h-full flex items-center justify-center text-white py-8 px-14 bg-transparent">
-				<p>Error loading repair items: {error.message}</p>
+			<div className="min-h-[90vh] w-full flex items-center justify-center">
+				<div className="w-3xl flex flex-col items-center justify-center rounded-2xl text-center space-y-2 sm:space-y-2 place-items-center py-6 sm:py-10 relative z-20 bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] neu-container">
+					<p dir='ltr' className='text-navy-blue text-2xl sm:text-5xl font-black'>¯\_(ツ)_/¯</p>
+					<p className="mt-4 sm:mt-6 text-navy-blue text-2xl sm:text-3xl font-bold rtl">مشکلی پیش آمد!</p>
+					<p className='mt-4'>{error.message}</p>
+				</div>
 			</div>
 		);
 	}
