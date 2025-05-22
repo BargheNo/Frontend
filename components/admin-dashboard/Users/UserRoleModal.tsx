@@ -109,7 +109,7 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
             Authorization: `Bearer ${accessToken}`,
           },
           body: JSON.stringify({
-            role_ids: userRoles,
+            roleIDs: userRoles,
           }),
         }
       );
