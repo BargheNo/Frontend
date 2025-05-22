@@ -95,11 +95,11 @@ const PanelCard = ({
       <div
         className={`${className} w-full border-t-1 border-gray-300 first:border-t-0`}
       >
-        <div className="flex flex-col w-full h-full bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] p-5 overflow-hidden relative">
+        <div className="flex flex-col w-full h-full bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] p-3 sm:p-5 overflow-hidden relative">
           {/* MAIN CONTENT DIV */}
-          <div className="flex flex-row-reverse justify-between w-full mb-6">
+          <div className="flex flex-col-reverse sm:flex-row-reverse justify-between w-full mb-6 gap-4">
             {/* LEFT SIDE - BUTTONS */}
-            <div className="flex flex-col gap-3 w-[15%]">
+            <div className="flex flex-row sm:flex-col gap-3 w-full sm:w-[15%]">
               <button
                 onClick={() => setModalOpen(true)}
                 className="w-full flex items-center justify-between bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105"
@@ -107,7 +107,7 @@ const PanelCard = ({
                 <span className="font-medium">گزارش مشکل</span>
                 <AlertCircle className="mr-2 w-4 h-4" />
               </button>
-              <Link href={`my-panels/123`}>
+              <Link href={`my-panels/123`} className="w-full">
                 <button className="w-full flex items-center justify-between bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
                   <span className="font-medium">مدیریت پنل</span>
                   <MoveLeft className="mr-2 w-4 h-4" />
@@ -116,14 +116,14 @@ const PanelCard = ({
             </div>
 
             {/* RIGHT SIDE - STATS */}
-            <div className="flex justify-between w-[70%]">
-              <div className="w-fit rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full sm:w-[70%]">
+              <div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
                 <div className="flex items-center">
                   <IconWithBackground icon={Battery} className="w-full justify-between" text={"ظرفیت"} color="#6B7280" />
                 </div>
-                <div className="flex flex-col m-3 items-center justify-center">
+                <div className="flex flex-col m-2 sm:m-3 items-center justify-center">
                   <div className="flex flex-row-reverse items-center gap-1">
-                    <span className="text-3xl font-bold">
+                    <span className="text-xl sm:text-3xl font-bold">
                       {formatNumber(technicalDetails.capacity)}
                     </span>
                     <span>kW</span>
@@ -131,13 +131,13 @@ const PanelCard = ({
                 </div>
               </div>
 
-              <div className="w-fit rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
+              <div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
                 <div className="flex items-center">
                   <IconWithBackground icon={Sun} className="w-full justify-between" text={"تولید امروز"} color="#F59E0B" />
                 </div>
-                <div className="flex flex-col m-3 items-center justify-center">
+                <div className="flex flex-col m-2 sm:m-3 items-center justify-center">
                   <div className="flex flex-row-reverse items-center gap-1">
-                    <span className="text-3xl font-bold">
+                    <span className="text-xl sm:text-3xl font-bold">
                       {formatNumber(technicalDetails.todayProduction)}
                     </span>
                     <span>kWh</span>
@@ -145,23 +145,23 @@ const PanelCard = ({
                 </div>
               </div>
 
-              <div className="w-fit rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
+              <div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
                 <div className="flex items-center">
                   <IconWithBackground icon={TrendingUp} className="w-full justify-between" text={"بازدهی"} color="#3B82F6" />
                 </div>
-                <div className="flex flex-col m-3 items-center justify-center">
+                <div className="flex flex-col m-2 sm:m-3 items-center justify-center">
                   <div className="flex flex-row-reverse items-center gap-1">
-                    <span className="text-3xl font-bold">{technicalDetails.efficiency}</span>
+                    <span className="text-xl sm:text-3xl font-bold">{technicalDetails.efficiency}</span>
                     <span>%</span>
                   </div>
                 </div>
               </div>
 
-              <div className="w-fit rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
+              <div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
                 <div className="flex items-center">
                   <IconWithBackground icon={AlertCircle} className="w-full justify-between" text={"وضعیت پنل"} color="#6B7280" />
                 </div>
-                <div className="flex flex-col m-3 items-center justify-center">
+                <div className="flex flex-col m-2 sm:m-3 items-center justify-center">
                   <div className="flex flex-row-reverse items-center gap-1">
                     <div
                       className={`h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
