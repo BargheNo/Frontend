@@ -24,6 +24,12 @@ export default function DesktopNavbar() {
             >
               داشبورد
             </Link>
+            <Link
+              className={[pathname?.startsWith("/corpdashboard") ? "text-[#FA682D]" : "", vazirBold.className].join(" ")}
+              href={"/corpdashboard/installed-panels"}
+            >
+              داشبورد شرکت
+            </Link>
             <Link className={`vazir-bold rtl ${pathname === "/landing/corp-introduction" ? "text-[#FA682D]" : ""}`} href={"/landing/corp-introduction"}
             >
               در برق نو بفروشید!
