@@ -16,6 +16,7 @@ export default function Page() {
 			{/* <div className="page"> */}
 			<Header header="تیکت‌ها" />
 			<FilterSection />
+			<Header header="تیکت‌های قبلی" className="mt-4" />
 			<Tickets />
 			{/* </div> */}
 		</PageContainer>

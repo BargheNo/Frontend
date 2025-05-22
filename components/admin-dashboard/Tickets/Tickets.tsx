@@ -202,95 +202,100 @@ const TicketSupportPage = () => {
 		};
 	}) => {
 		return (
-			<div className="flex flex-row justify-between w-full h-full py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 min-h-[250px]">
-				{/* Right section */}
-				<div className="w-5/6 flex flex-col justify-between">
-					<div className="flex flex-col gap-3">
-						<p className="text-start content-start w-full text-2xl font-bold">
-							{translateSubjectToPersian(subject)}
-						</p>
-						<p className="text-start content-start w-full text-lg ">
-							از طرف {Owner.firstName} {Owner.lastName}
-						</p>
+			<div className="w-full border-t-1 border-gray-300 first:border-t-0">
+				{/* <div className="flex flex-row justify-between w-full h-full py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 min-h-[250px]"> */}
+				<div className="flex flex-row justify-between w-full h-full bg-[#F0EDEF] p-5 overflow-hidden relative]">
+					{/* Right section */}
+					<div className="w-5/6 flex flex-col justify-between">
+						<div className="flex flex-col gap-3">
+							<p className="text-start content-start w-full text-2xl font-bold">
+								{translateSubjectToPersian(subject)}
+							</p>
+							<p className="text-start content-start w-full text-lg ">
+								از طرف {Owner.firstName} {Owner.lastName}
+							</p>
 
-						<p className="max-w-[600px] break-words">
-							{description}
-						</p>
-					</div>
-					<div className="flex flex-row w-100 gap-4">
-						<div
-							className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
-							onClick={() => setActiveCommentTicketId(id)}
-						>
-							<button className="cursor-pointer">
-								افزودن نظر
-							</button>
-							<MessageCirclePlus />
+							<p className="max-w-[600px] break-words">
+								{description}
+							</p>
 						</div>
-						<div
-							className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
-							onClick={() => {
-								const nextValue =
-									showCommentBoxFor === id ? null : id;
-								setShowCommentBoxFor(nextValue);
-
-								// Only fetch comments if we're opening the box
-								if (nextValue !== null) {
-									getComments(nextValue);
-								}
-							}}
-						>
-							{/* <div className="flex gap-2 justify-end"> */}
-							<button className="cursor-pointer">
-								{showCommentBoxFor === id
-									? "بستن نظرات"
-									: "مشاهده نظرات"}
-							</button>
-							<MessageCircleMore />
-							{/* </div> */}
-						</div>
-					</div>
-				</div>
-				<div className="flex items-center ">
-					{/* {image && <Image src={image} alt="تصویر تیکت" width={500} height={500} className="object-cover h-32 w-32 rounded-xl" />} */}
-					{image && (
-						<img
-							src={image}
-							className="object-cover rounded-xl "
-							alt="تصویر تیکت"
-						/>
-					)}
-				</div>
-				{/* Left section */}
-				<div className="w-50 min-w-[50px] pr-5 flex flex-col justify-around">
-					{/* status */}
-					<div
-						className={`flex flex-col  items-center ${styles.status} py-4 gap-2`}
-					>
-						<span className="text-[#636363] font-bold">
-							{created_at}{" "}
-						</span>
-						<div className="flex items-center gap-2">
-							<span className="font-bold">{status}</span>
+						<div className="flex flex-row w-100 gap-4 mt-4">
 							<div
-								className={`h-4 w-4 rounded-full ${
-									status === "پاسخ دادید" ? "green" : "red"
-								}-status shadow-md`}
-							/>
+								className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
+								onClick={() => setActiveCommentTicketId(id)}
+							>
+								<button className="cursor-pointer">
+									افزودن نظر
+								</button>
+								<MessageCirclePlus />
+							</div>
+							<div
+								className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
+								onClick={() => {
+									const nextValue =
+										showCommentBoxFor === id ? null : id;
+									setShowCommentBoxFor(nextValue);
+
+									// Only fetch comments if we're opening the box
+									if (nextValue !== null) {
+										getComments(nextValue);
+									}
+								}}
+							>
+								{/* <div className="flex gap-2 justify-end"> */}
+								<button className="cursor-pointer">
+									{showCommentBoxFor === id
+										? "بستن نظرات"
+										: "مشاهده نظرات"}
+								</button>
+								<MessageCircleMore />
+								{/* </div> */}
+							</div>
 						</div>
 					</div>
-					<div
-						className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
-					>
-						<button
-							className="cursor-pointer"
-							onClick={() => {
-								resolveTicket(id);
-							}}
+					<div className="flex items-center">
+						{/* {image && <Image src={image} alt="تصویر تیکت" width={500} height={500} className="object-cover h-32 w-32 rounded-xl" />} */}
+						{image && (
+							<img
+								src={image}
+								className="object-cover rounded-xl "
+								alt="تصویر تیکت"
+							/>
+						)}
+					</div>
+					{/* Left section */}
+					<div className="w-50 min-w-[50px] pr-5 flex flex-col justify-around">
+						{/* status */}
+						<div
+							className={`flex flex-col  items-center ${styles.status} py-4 gap-2`}
 						>
-							پاسخ
-						</button>
-						<ArrowLeft />
+							<span className="text-[#636363] font-bold">
+								{created_at}{" "}
+							</span>
+							<div className="flex items-center gap-2">
+								<span className="font-bold">{status}</span>
+								<div
+									className={`h-4 w-4 rounded-full ${
+										status === "پاسخ دادید"
+											? "green"
+											: "red"
+									}-status shadow-md`}
+								/>
+							</div>
+						</div>
+						<div
+							className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
+						>
+							<button
+								className="cursor-pointer"
+								onClick={() => {
+									resolveTicket(id);
+								}}
+							>
+								پاسخ
+							</button>
+							<ArrowLeft />
+						</div>
 					</div>
 				</div>
 			</div>
@@ -313,6 +318,7 @@ const TicketSupportPage = () => {
 	}) => {
 		return (
 			<div className="flex flex-row justify-between w-full h-full bg-white gap-10 py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 ">
+				{/* <div className="w-full border-t-1 border-gray-300 first:border-t-0"> */}
 				{/* Right section */}
 				<div className="w-5/6 flex flex-col gap-3 justify-between">
 					<div className="flex flex-col gap-3">
@@ -331,17 +337,17 @@ const TicketSupportPage = () => {
 	};
 
 	return (
-		<div className="flex flex-col py-6 space-y-6 w-full">
-			<Header header="تیکت‌های قبلی" />
+		<>
+			{/* <div className="flex flex-col py-6 w-full"> */}
 			{/* Ticket List */}
-			<div className="space-y-4">
-				{tickets.length === 0 ? (
-					<div className="text-center py-8 text-gray-500">
-						هیچ تیکتی موجود نیست
-					</div>
-				) : (
-					tickets.map((ticket) => (
-						<div key={ticket.id} className="list">
+			{tickets.length === 0 ? (
+				<div className="text-center py-8 text-gray-500">
+					هیچ تیکتی موجود نیست
+				</div>
+			) : (
+				<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+					{tickets.map((ticket) => (
+						<>
 							<Ticket
 								id={ticket.id}
 								subject={ticket.subject}
@@ -449,11 +455,12 @@ const TicketSupportPage = () => {
 									</div>
 								</div>
 							)}
-						</div>
-					))
-				)}
-			</div>
-		</div>
+						</>
+					))}
+				</div>
+			)}
+			{/* </div> */}
+		</>
 	);
 };
 
