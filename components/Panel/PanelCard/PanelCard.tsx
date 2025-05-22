@@ -32,7 +32,7 @@ const PanelCard = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
 
-  const MAXLENGTH: number = 70;
+  const MAXLENGTH: number = 135;
   const truncateText = (text: string, maxLength: number = MAXLENGTH) => {
     if (text.length <= maxLength) return text;
     return text.slice(0, maxLength) + "...";
@@ -73,16 +73,17 @@ const PanelCard = ({
   };
 
   const validationSchema = Yup.object({
-    problem: Yup.string().required("وارد کردن توضیحات ضروری است."),
+    problem: Yup.string().required("وارد کردن توضیحات ضروری است"),
   });
 
   const getStatusColor = () => {
-    const efficiency = technicalDetails.efficiency;
-    if (efficiency >= 80)
+    const status = technicalDetails.status;
+    if (status === "فعال")
       return "bg-gradient-to-br from-green-400 to-green-500 border-1 border-gray-100/50 shadow-sm shadow-green-500";
-    if (efficiency >= 60)
+    if (status === "در حال نصب")
       return "bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-yellow-500";
-    return "bg-gradient-to-br from-red-400 to-red-500 shadow-red-500";
+    if (status === "غیر فعال")
+      return "bg-gradient-to-br from-red-400 to-red-500 shadow-red-500";
   };
 
   const formatNumber = (num: number): string =>
@@ -165,7 +166,7 @@ const PanelCard = ({
                     <div
                       className={`h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
                     ></div>
-                    <span className="text-sm font-medium text-gray-600">فعال</span>
+                    <span className="text-sm font-medium text-gray-600">{technicalDetails.status}</span>
                   </div>
                 </div>
               </div>
@@ -202,13 +203,14 @@ const PanelCard = ({
       </div>
 
       <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
-        <h4 className="text-lg font-semibold text-navy-blue mb-4">
+        <h4 className="text-lg font-semibold text-navy-blue mb-4" dir="rtl">
           گزارش مشکل
         </h4>
         <Formik
           initialValues={{ problem: "" }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
+          dir="rtl"
         >
           {({ isSubmitting }) => (
             <Form className="flex flex-col space-y-4">
@@ -222,7 +224,7 @@ const PanelCard = ({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="self-end bg-gradient-to-br from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white py-2 px-4 rounded-md transition-all duration-300"
+                className="self-end bg-gradient-to-br mt-2 from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white py-2 px-4 rounded-md transition-all duration-300"
               >
                 ارسال گزارش
               </button>

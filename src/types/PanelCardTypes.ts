@@ -2,6 +2,7 @@ interface TechnicalDetails {
 	efficiency: number;
 	capacity: number;
 	todayProduction: number;
+	status: string;
 }
 
 export interface PanelCardProps {
