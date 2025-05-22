@@ -17,7 +17,7 @@ export default function NewBlog() {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<SignupButton type="button" className="bg-white">
+				<SignupButton type="button" className="bg-white ">
 					<Plus className={styles.icon} />
 				</SignupButton>
 			</DialogTrigger>

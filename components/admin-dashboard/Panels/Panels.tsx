@@ -46,7 +46,7 @@ const Panel = ({
 	customerName: string;
 }) => {
 	return (
-		<div className="flex flex-row justify-between w-full h-full bg-white py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 items-stretch">
+		<div className="flex flex-row justify-between w-full h-full py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 items-stretch">
 			{/* Right section */}
 			<div className="flex flex-col gap-3">
 				<p className="text-start content-start w-full text-2xl font-bold">
