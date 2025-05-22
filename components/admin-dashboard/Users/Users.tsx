@@ -77,7 +77,7 @@ export default function Users() {
 
   const CustomIcon = ({ icon: Icon }: { icon: React.ElementType }) => {
   return (
-    <div className={`${styles.icon} bg-[#F4F1F3] text-[#FA682D]`}>
+    <div className={`${styles.icon} bg-[#F0EDEF] text-[#FA682D]`}>
       <Icon className="m-1" />
     </div>
   );
@@ -86,7 +86,7 @@ export default function Users() {
 const UserItem = ({ firstName, lastName, phone, status, id }: UserType) => {
   const normalizedStatus = status === "block" ? "blocked" : status;
   return (
-    <div className="flex flex-row justify-between w-full h-full bg-[#F4F1F3] p-5 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 items-center">
+    <div className="flex flex-row justify-between w-full h-full bg-[#F0EDEF] p-5 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 items-center">
       <div className="flex items-center gap-3 w-1/4">
         <CustomIcon icon={User} />
         <p>

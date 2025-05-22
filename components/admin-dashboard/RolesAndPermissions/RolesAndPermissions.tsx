@@ -135,23 +135,21 @@ const RolesAndPermissions = () => {
 								openEditModal({ id, name, permissions })
 							}
 						>
-							<div className="text-orange-500">
-								<Pencil />
-							</div>
 							<button className="cursor-pointer">تغییر</button>
+							<Pencil className="text-orange-500" />
+
 						</div>
 						<div
 							className={`cta-neu-button flex ${styles.button} items-center content-center justify-center h-1/2 w-1/2 cursor-pointer`}
 						>
-							<div className="text-orange-500">
-								<Trash2 />
-							</div>
+
 							<button
 								onClick={() => deleteRole(id)}
 								className="cursor-pointer"
 							>
 								حذف
 							</button>
+							<Trash2 className="text-orange-500" />
 						</div>
 					</div>
 				</div>

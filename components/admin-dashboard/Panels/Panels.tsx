@@ -81,7 +81,7 @@ const Panel = ({
 };
 export default function Panels() {
 	return (
-		<div className="flex flex-col w-full bg-[#F4F1F3] text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+		<div className="flex flex-col w-full bg-[#F0EDEF] text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
 			<Panel
 				name="پنل خانه تهرانپارس"
 				status="3 پیشنهاد ثبت شده"

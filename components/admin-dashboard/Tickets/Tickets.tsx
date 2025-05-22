@@ -201,7 +201,7 @@ const TicketSupportPage = () => {
 		};
 	}) => {
 		return (
-			<div className="flex flex-row justify-between w-full h-full bg-white gap-10 py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 min-h-[250px]">
+			<div className="flex flex-row justify-between w-full h-full gap-10 py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 min-h-[250px]">
 				{/* Right section */}
 				<div className="w-5/6 flex flex-col gap-3 justify-between">
 					<div className="flex flex-col gap-3">
