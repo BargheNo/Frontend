@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { deleteData } from "@/src/services/apiHub";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRef, useEffect, useState, useReducer } from "react";
 import { createContext } from "react";
 import { toast } from "sonner";
@@ -246,19 +247,25 @@ export default function AnnouncementBox({
   //     }
   // };
 
-  const handleDelete = async () => {
-    try {
-      const responce = await deleteData({
+  const queryClient = useQueryClient();
+  const handleDelete = useMutation({
+    mutationFn: () =>
+      deleteData({
         endPoint: "/v1/admin/news",
         data: { newsIDs: state.selectedIds },
-      });
-      if (responce.statusCode == 200) {
-        toast.success("خبر با موفقیت حذف شد.");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+      }),
+    onSuccess: (responce) => {
+      console.log("Mutation successful, response:", responce);
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["news"] });
+      toast.success("خبر با موفقیت حذف شد.");
+    },
+    onError: (error) => {
+      console.error("Mutation error:", error);
+      toast.error("خطایی رخ داده است");
+    },
+  });
+
   return (
     <AnnounceContex.Provider
       value={{
@@ -293,7 +300,7 @@ export default function AnnouncementBox({
           <div
             onClick={(e) => {
               e.preventDefault();
-              handleDelete();
+              handleDelete.mutate();
             }}
             className="neo-card-rev mx-2 mt-2 p-3 rounded-md bg-white cursor-pointer hover:bg-gray-50"
           >

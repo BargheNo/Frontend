@@ -15,7 +15,7 @@ import ImageTool from "ert-image";
 import { getData, postData, putData } from "@/src/services/apiHub.tsx";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function AnnounceEditor({
   newsID,
@@ -82,6 +82,39 @@ export default function AnnounceEditor({
       };
     }
   };
+
+  const queryClient = useQueryClient();
+  const handelSave = useMutation({
+    mutationFn: async () => {
+      console.log("push");
+      const savedData = await editorRef.current?.save();
+      // editorRef.current?.destroy();
+      // console.log("id: ", projectId);
+      console.log("data:", savedData);
+      if (savedData) {
+        setData(savedData);
+        const responce = await putData({
+          endPoint: `/v1/admin/news/${newsID}`,
+          data: {
+            content: JSON.stringify(savedData),
+            title: title,
+            status: 1,
+          },
+        });
+        return responce;
+      }
+    },
+    onSuccess: (responce) => {
+      console.log("Mutation successful, response:", responce);
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["news"] });
+      toast.success("خبر با موفقیت ذخیره شد");
+    },
+    onError: (error) => {
+      console.error("Mutation error:", error);
+      toast.error("خطایی رخ داده است");
+    },
+  });
 
   useEffect(() => {
     const getNews = async () => {
@@ -182,31 +215,6 @@ export default function AnnounceEditor({
     // };
   }, [data, holderRef, loading, editorRef]);
 
-  const handelSave = async () => {
-    try {
-      console.log("push");
-      const savedData = await editorRef.current?.save();
-      // editorRef.current?.destroy();
-      // console.log("id: ", projectId);
-      console.log("data:", savedData);
-      if (savedData) {
-        setData(savedData);
-        const responce = await putData({
-          endPoint: `/v1/admin/news/${newsID}`,
-          data: {
-            content: JSON.stringify(savedData),
-            title: title,
-            status: 1,
-          },
-        });
-        if (responce.statusCode == 200) toast.success("خبر با موفقیت ذخیره شد");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("خطایی رخ داده است");
-    }
-  };
-
   return (
     <>
       {loading && (
@@ -237,7 +245,9 @@ export default function AnnounceEditor({
             </div>
             <button
               className="flex gap-5 items-center bg-fire-orange px-10 py-3 rounded-full! neo-btn text-white font-bold text-lg"
-              onClick={handelSave}
+              onClick={() => {
+                handelSave.mutate();
+              }}
             >
               <span>ذخیره</span>
               <Save />

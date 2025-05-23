@@ -20,6 +20,7 @@ import {
 import AnnounceEditor from "../AnnounceEditor/AnnounceEditor";
 import { deleteData } from "@/src/services/apiHub";
 import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 // export default function AnnounceCard({ title, }: { title: string, content: string, writer: string, date: number }) {
 export default function AnnounceCard({
   title,
@@ -55,20 +56,24 @@ export default function AnnounceCard({
       removeId(id);
     }
   };
-
-  const handleDelete = async () => {
-    try {
-      const responce = await deleteData({
+  const queryClient = useQueryClient();
+  const handleDelete = useMutation({
+    mutationFn: () =>
+      deleteData({
         endPoint: "/v1/admin/news",
-          data: { newsIDs: [id]},
-      });
-      if (responce.statusCode == 200) {
-        toast.success("خبر با موفقیت حذف شد.");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+        data: { newsIDs: [id] },
+      }),
+    onSuccess: (responce) => {
+      console.log("Mutation successful, response:", responce);
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["news"] });
+      toast.success("خبر با موفقیت حذف شد.");
+    },
+    onError: (error) => {
+      console.error("Mutation error:", error);
+      toast.error("خطایی رخ داده است");
+    },
+  });
 
   return (
     <>
@@ -129,7 +134,7 @@ export default function AnnounceCard({
             <ContextMenuItem
               onClick={(e) => {
                 e.preventDefault();
-                handleDelete();
+                handleDelete.mutate();
               }}
               className="neo-btn bg-white"
             >

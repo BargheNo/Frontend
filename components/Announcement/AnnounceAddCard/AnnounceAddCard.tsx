@@ -10,14 +10,16 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { DialogTitle } from "@/components/ui/dialog";
 import { DialogHeader } from "@/components/ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function AnnounceAddCard() {
   const [step, setStep] = useState(0);
   const [id, setId] = useState<string>("");
 
-  const createNews = async (values: { name: string }) => {
-    try {
-      const response = await postData({
+  const queryClient = useQueryClient();
+  const createNews = useMutation({
+    mutationFn: (values: { name: string }) =>
+      postData({
         endPoint: "/v1/admin/news/draft",
         data: {
           title: values.name,
@@ -25,16 +27,35 @@ export default function AnnounceAddCard() {
           //   writer: "",
           //   date: new Date().getTime(),
         },
-      });
-      setId(response.data.id);
+      }),
+    onSuccess: (responce) => {
+      console.log("Mutation successful, response:", responce);
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["news"] });
+      console.log("Query invalidated");
+      setId(responce.data.id);
       setStep((step) => step + 1);
-      console.log(response);
       toast.success("خبر با موفقیت ساخته شد");
-    } catch (error) {
-      console.log(error);
+    },
+    onError: (error) => {
+      console.error("Mutation error:", error);
       toast.error("خطایی رخ داده است");
-    }
-  };
+    },
+  });
+
+  //   const createNews = async (values: { name: string }) => {
+  //     try {
+  //       const response = await postData({
+  //         endPoint: "/v1/admin/news/draft",
+  //         data: {
+  //           title: values.name,
+  //           content: "",
+  //           //   writer: "",
+  //           //   date: new Date().getTime(),
+  //         },
+  //       });
+  //     } catch (error) {}
+  //   };
 
   switch (step) {
     case 0:
@@ -60,7 +81,9 @@ export default function AnnounceAddCard() {
               initialValues={{
                 name: "",
               }}
-              onSubmit={createNews}
+              onSubmit={(values) => {
+                createNews.mutate(values);
+              }}
             >
               <Form className="flex flex-col items-center justify-center gap-16">
                 <CustomInput
