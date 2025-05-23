@@ -5,9 +5,10 @@ import { getData } from "@/src/services/apiHub";
 import { useQuery } from "@tanstack/react-query";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 import { toast } from "sonner";
-import AnnounceAddCard from "../AnnounceAddCard/AnnounceAddCard";
+
 import Image from "next/image";
 import panelNotFound from "@/public/images/panelNotFound/panelNotFound.png";
+import AnnounceAddCard from "../AnnounceAddCard/AnnounceAddCard";
 
 interface News {
   id: string;
@@ -29,7 +30,7 @@ export default function AnnounceView({
         return await getData({ endPoint: "/v1/admin/news?statuses=1" });
       } else {
         const r1 = await getData({ endPoint: "/v1/admin/news?statuses=2" });
-        console.log("r1: ", r1)
+        console.log("r1: ", r1);
         const r2 = await getData({ endPoint: "/v1/admin/news?statuses=1" });
         console.log("r2: ", r2);
         r1.data?.push(...r2.data);
@@ -46,7 +47,7 @@ export default function AnnounceView({
     return (
       <>
         <div className="flex flex-row w-full items-center justify-between">
-          <h1 className="text-3xl self-start">اخبار و اطلاعیه‌ها</h1>
+          <span className="text-3xl self-start">اخبار و اطلاعیه‌ها</span>
           {!onlyView && <AnnounceAddCard />}
         </div>
         <AnnouncementBox

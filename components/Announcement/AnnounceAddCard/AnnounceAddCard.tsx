@@ -1,6 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import AnnounceEditor from "../AnnounceEditor/AnnounceEditor";
+   import dynamic from "next/dynamic";
+   const AnnounceEditor = dynamic(
+     () => import("@/components/Announcement/AnnounceEditor/AnnounceEditor"),
+     { ssr: false }
+   );
 import { toast } from "sonner";
 import { postData } from "@/src/services/apiHub";
 import { Form, Formik } from "formik";

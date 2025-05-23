@@ -1,5 +1,4 @@
 "use client";
-
 import { cn } from "@/lib/utils";
 import { deleteData } from "@/src/services/apiHub";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

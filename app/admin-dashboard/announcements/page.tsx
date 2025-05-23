@@ -1,3 +1,4 @@
+"use client";
 import AnnounceView from "@/components/Announcement/AnnounceView/AnnounceView";
 export default function page() {
   return (

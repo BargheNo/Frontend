@@ -17,7 +17,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import AnnounceEditor from "../AnnounceEditor/AnnounceEditor";
+import dynamic from "next/dynamic";
+const AnnounceEditor = dynamic(
+  () => import("@/components/Announcement/AnnounceEditor/AnnounceEditor"),
+  { ssr: false }
+);
 import { deleteData } from "@/src/services/apiHub";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

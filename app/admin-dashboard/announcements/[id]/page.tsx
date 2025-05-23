@@ -1,8 +1,13 @@
 "use client";
-import AnnounceEditor from "@/components/Announcement/AnnounceEditor/AnnounceEditor";
+import dynamic from "next/dynamic";
 import { ChevronLeft } from "lucide-react";
 // import AnnounceView from "@/components/Announcement/AnnounceView/AnnounceView";
 import { useParams, useRouter } from "next/navigation";
+
+const AnnounceEditor = dynamic(
+  () => import("@/components/Announcement/AnnounceEditor/AnnounceEditor"),
+  { ssr: false }
+);
 
 export default function Page() {
   const params = useParams();

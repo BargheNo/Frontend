@@ -1,13 +1,12 @@
 "use client";
 
 import { Dialog, DialogHeader } from "@/components/ui/dialog";
-import {
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "@radix-ui/react-dialog";
-import { Plus } from "lucide-react";
-import AnnounceEditor from "../AnnounceEditor/AnnounceEditor";
+import { DialogContent, DialogTitle } from "@radix-ui/react-dialog";
+import dynamic from "next/dynamic";
+const AnnounceEditor = dynamic(
+  () => import("@/components/Announcement/AnnounceEditor/AnnounceEditor"),
+  { ssr: false }
+);
 
 export default function AnnounceEditCard({ id }: { id: string }) {
   return (
