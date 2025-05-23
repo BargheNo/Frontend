@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - ops/ci
+      - develop
   pull_request:
     branches:
       - develop
