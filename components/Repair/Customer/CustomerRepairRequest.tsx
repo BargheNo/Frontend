@@ -209,12 +209,12 @@ const CustomerRepairRequest = () => {
 				className="w-full sm:min-w-[950px] max-w-xl mx-auto p-6 overflow-auto max-h-[90vh] overflow-y-auto"
 			>
 				<DialogHeader>
-					<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
+					<DialogTitle className="flex justify-center items-end font-bold mt-3.5 cursor-pointer">
 						ثبت درخواست تعمیر
 					</DialogTitle>
 				</DialogHeader>
 
-				<div className="overflow-y-auto max-h-[calc(80vh-100px)]">
+				<div className="overflow-y-auto max-h-[calc(80vh-100px)] no-scrollbar">
 					<div dir="rtl" className="flex flex-col">
 						<Formik
 							initialValues={{
@@ -479,7 +479,7 @@ const CustomerRepairRequest = () => {
 														}
 													}
 												}}
-												className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+												className="h-4 w-4 text-blue-600 cursor-pointer focus:ring-blue-500 border-gray-300 rounded"
 											/>
 											<label
 												htmlFor="repairByManufacturer"
@@ -491,7 +491,7 @@ const CustomerRepairRequest = () => {
 										</div>
 
 										{!repairByManufacturer && (
-											<div className="ml-6 space-y-2 h-28 p-5 inset-neu-container overflow-y-scroll w-full !bg-[#FEFEFE]">
+											<div className="ml-6 space-y-2 h-28 p-5 inset-neu-container no-scrollbar overflow-y-scroll w-full !bg-[#FEFEFE]">
 												{isLoading || loadingPanels ? (
 													<LoadingSpinner />
 												) : (
@@ -535,7 +535,7 @@ const CustomerRepairRequest = () => {
 											className="bg-gradient-to-br from-[#34C759] to-[#00A92B]
                                 hover:from-[#2AAE4F] hover:to-[#008C25]
                                 active:from-[#008C25] active:to-[#2AAE4F]
-                                text-white py-2 px-4 rounded-md transition-all duration-300"
+                                text-white py-2 px-4 rounded-md transition-all duration-300 cursor-pointer"
 										>
 											{buttonLoading && (
 												<TransparentLoading />

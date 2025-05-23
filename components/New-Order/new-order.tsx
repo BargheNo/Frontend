@@ -123,7 +123,7 @@ export default function Neworder() {
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}
-				className="w-full sm:min-w-[750px] max-w-xl mx-auto p-4 overflow-auto py-4 max-h-[90vh] overflow-y-auto"
+				className="w-full sm:min-w-[750px] max-w-xl mx-auto no-scrollbar p-4 overflow-auto py-4 max-h-[90vh] overflow-y-auto"
 			>
 				<DialogHeader>
 					<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
