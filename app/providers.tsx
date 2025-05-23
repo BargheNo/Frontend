@@ -11,18 +11,18 @@ export function Providers({ children }: { children: React.ReactNode }) {
     () =>
       new QueryClient({
         defaultOptions: {
-          queries: {
-            staleTime: 60 * 1000, // 1 minute
-            retry: 1,
-          },
+          // queries: {
+          //   staleTime: 60 * 1000, // 1 minute
+          //   retry: 1,
+          // },
         },
       })
   );
   return (
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
-        <SidebarProvider>{children}</SidebarProvider> 
-        </Provider>
+        <SidebarProvider>{children}</SidebarProvider>
+      </Provider>
     </QueryClientProvider>
   );
 }
