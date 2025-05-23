@@ -242,6 +242,7 @@ export default function Neworder() {
 														<SelectItem
 															id={String(index)}
 															key={index}
+															className="cursor-pointer"
 															value={
 																provincearr.name
 															}
@@ -281,6 +282,7 @@ export default function Neworder() {
 													<SelectItem
 														key={index}
 														value={city.name}
+														className="cursor-pointer"
 														id={String(index)}
 													>
 														{Object.values(
@@ -408,29 +410,37 @@ export default function Neworder() {
 											</SelectLabel>
 											<SelectItem
 												id="0"
+												className="cursor-pointer"
 												value="residential"
 											>
 												مسکونی
 											</SelectItem>
 											<SelectItem
 												id="1"
+												className="cursor-pointer"
 												value="commercial"
 											>
 												تجاری
 											</SelectItem>
 											<SelectItem
 												id="2"
+												className="cursor-pointer"
 												value="industrial"
 											>
 												صنعتی
 											</SelectItem>
 											<SelectItem
 												id="3"
+												className="cursor-pointer"
 												value="argiculture"
 											>
 												کشاورزی
 											</SelectItem>
-											<SelectItem id="4" value="more">
+											<SelectItem
+												id="4"
+												value="more"
+												className="cursor-pointer"
+											>
 												سایر
 											</SelectItem>
 										</SelectGroup>
@@ -438,7 +448,7 @@ export default function Neworder() {
 								</Select>
 							</div>
 
-							<div className="flex flex-row w-80 justify-center items-center self-center">
+							<div className="flex flex-row w-80 font-bold justify-center items-center self-center">
 								<SignupButton
 									className="text-[#FA682D]"
 									id="newOrderBtn"
@@ -447,7 +457,6 @@ export default function Neworder() {
 										marginTop: "10px",
 									}}
 								>
-									{" "}
 									ثبت سفارش
 								</SignupButton>
 							</div>
