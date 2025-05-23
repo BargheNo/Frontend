@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useFormik } from "formik";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector } from "react-redux";
@@ -26,6 +25,8 @@ import {
 } from "@/components/ui/select";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
+import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 interface Ticket {
 	id: string;
 	subject: string;
@@ -57,10 +58,11 @@ interface Comment {
 const validationSchemaForm = Yup.object({
 	subject: Yup.string().required("موضوع تیکت الزامی است"),
 	description: Yup.string().required("توضیحات تیکت الزامی است"),
-	image: Yup.mixed().test("fileType", "فرمت فایل معتبر نیست", (value) => {
-		const file = value as File;
-		return value && ["image/jpeg", "image/png"].includes(file.type);
-	}),
+	// image: Yup.mixed().optional(),
+	// image: Yup.mixed().test("fileType", "فرمت فایل معتبر نیست", (value) => {
+	// 	const file = value as File;
+	// 	return value && ["image/jpeg", "image/png"].includes(file.type);
+	// }),
 });
 
 const initialValuesForm = {
@@ -68,8 +70,25 @@ const initialValuesForm = {
 	description: "",
 	image: null,
 };
+
+const initialCommentValuesForm = { comment: "" };
+
+const commentValidationSchemaForm = Yup.object({
+	comment: Yup.string().required("نظر الزامی است"),
+});
+
+const resetFormValues = (
+	setFieldValue: (field: string, value: any) => void
+) => {
+	setFieldValue("subject", "");
+	setFieldValue("description", "");
+	setFieldValue("image", null);
+};
+
 const TicketSupportPage = () => {
+	const [loading, setLoading] = useState(false);
 	const [isLoadingComments, setIsLoadingComments] = useState(false);
+	const [loadingTickets, setLoadingTickets] = useState(true);
 	const [tickets, setTickets] = useState<Ticket[]>([]);
 	const [comments, setComments] = useState<Comment[]>([]);
 	const [activeCommentTicketId, setActiveCommentTicketId] = useState<
@@ -79,7 +98,6 @@ const TicketSupportPage = () => {
 		null
 	);
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
-	const [commentInput, setCommentInput] = useState("");
 	const accessToken = useSelector(
 		(state: RootState) => state.user.accessToken
 	);
@@ -102,11 +120,15 @@ const TicketSupportPage = () => {
 		return translations[subject.toLowerCase()] || subject;
 	};
 
-	const createTicket = async (values: {
-		subject: string;
-		description: string;
-		image: File | null;
-	}) => {
+	const createTicket = async (
+		values: {
+			subject: string;
+			description: string;
+			image?: File | null;
+		},
+		setFieldValue: (field: string, value: any) => void
+	) => {
+		setLoading(true);
 		console.log("values", values);
 		const formData = new FormData();
 		setImagePreview(null);
@@ -128,14 +150,18 @@ const TicketSupportPage = () => {
 			});
 
 			const data = await res.json();
+			resetFormValues(setFieldValue);
 			CustomToast(data?.message, "success");
 			// toast.success(data?.message);
 			fetchTickets();
+			setLoading(false);
 		} catch (error: any) {
+			console.log(error);
 			const errMsg =
 				generateErrorMessage(error) ||
 				"هنگام ایجاد تیکت جدید مشکلی پیش آمد.";
 			CustomToast(errMsg, "error");
+			setLoading(false);
 			// toast.error(errMsg);
 		}
 	};
@@ -202,6 +228,7 @@ const TicketSupportPage = () => {
 	};
 
 	const fetchTickets = () => {
+		setLoadingTickets(true);
 		fetch("http://46.249.99.69:8080/v1/user/ticket/list", {
 			method: "GET",
 			headers: {
@@ -212,12 +239,14 @@ const TicketSupportPage = () => {
 			.then((res) => res.json())
 			.then((data) => {
 				setTickets(data.data);
+				setLoadingTickets(false);
 			})
 			.catch((err) => {
 				const errMsg =
 					generateErrorMessage(err) ||
 					"هنگام گردآوری تیکت ها مشکلی پیش آمد.";
 				CustomToast(errMsg, "error");
+				setLoadingTickets(false);
 				// toast.error(errMsg);
 			});
 	};
@@ -255,39 +284,82 @@ const TicketSupportPage = () => {
 		image: string;
 	}) => {
 		return (
-			<div className="">
-				{/* <div className="flex flex-row justify-between w-full h-full bg-white gap-10 py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 min-h-[250px]"> */}
-				{/* <div className="list-item"> */}
-				{/* Right section */}
-				{/* <div className="list-item"> */}
-				<div className="w-5/6 flex flex-col gap-3 justify-between">
-					<div className="flex flex-col gap-3">
-						<p className="text-start content-start w-full text-2xl font-bold">
-							{translateSubjectToPersian(subject)}
-						</p>
+			<div className="w-full border-t-1 border-gray-300 first:border-t-0">
+				{/* <div className="flex flex-row justify-between w-full h-full py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 min-h-[250px]"> */}
+				<div className="flex flex-col p-5 bg-[#F0EDEF] w-full h-full relative min-h-[250px]">
+					{/* Top section */}
+					<div className="flex flex-row justify-between overflow-hidden">
+						{/* Right section */}
+						<div className="w-5/6 flex flex-col justify-between">
+							<div className="flex flex-col gap-3">
+								<p className="text-start content-start w-full text-2xl font-bold">
+									{translateSubjectToPersian(subject)}
+								</p>
 
-						<p className="max-w-[600px] break-words">
-							{description}
-						</p>
-					</div>
-					<div className="flex flex-row w-100">
-						<div
-							className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
-						>
-							<button
-								onClick={() => setActiveCommentTicketId(id)}
-								className="cursor-pointer"
-							>
-								افزودن نظر
-							</button>
-							<MessageCirclePlus />
+								<p className="break-words">{description}</p>
+							</div>
 						</div>
-						<div
-							className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
-						>
-							<div className="flex gap-2 justify-end mt-2">
+						{/* Left section */}
+						<div className="min-w-[50px] pr-5 flex flex-row">
+							{/* status */}
+							{/* {image && <Image src={image} alt="تصویر تیکت" width={500} height={500} className="object-cover h-32 w-32 rounded-xl" />} */}
+							{image && (
+								<img
+									src={image}
+									className="h-full w-48 object-cover rounded-xl"
+									alt="تصویر تیکت"
+								/>
+							)}
+							<div className="w-64 pr-5 flex flex-col gap-4 justify-between">
+								<div
+									className={`flex flex-col items-center w-full align-middle h-full ${styles.status} py-8 justify-center gap-2`}
+								>
+									<span className="text-[#636363] font-bold">
+										{created_at}{" "}
+									</span>
+									<div className="flex items-center gap-2">
+										<span className="font-bold">
+											{status}
+										</span>
+										<div
+											className={`h-4 w-4 rounded-full ${
+												status === "پاسخ داده شده"
+													? "green"
+													: "red"
+											}-status shadow-md`}
+										/>
+									</div>
+								</div>
+								{/* <div
+								className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
+							>
 								<button
 									className="cursor-pointer"
+									onClick={() => {
+										resolveTicket(id);
+									}}
+								>
+									بستن تیکت
+								</button>
+							</div> */}
+							</div>
+						</div>
+					</div>
+					{/* Bottom section */}
+					<div>
+						<div className="flex flex-row justify-between w-full gap-4 mt-4">
+							<div className="flex flex-row w-100 gap-4 mt-4">
+								<div
+									className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
+									onClick={() => setActiveCommentTicketId(id)}
+								>
+									<button className="cursor-pointer">
+										افزودن نظر
+									</button>
+									<MessageCirclePlus />
+								</div>
+								<div
+									className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
 									onClick={() => {
 										const nextValue =
 											showCommentBoxFor === id
@@ -301,38 +373,16 @@ const TicketSupportPage = () => {
 										}
 									}}
 								>
-									{showCommentBoxFor === id
-										? "بستن نظرات"
-										: "مشاهده نظرات"}
-								</button>
-								<MessageCircleMore />
+									{/* <div className="flex gap-2 justify-end"> */}
+									<button className="cursor-pointer">
+										{showCommentBoxFor === id
+											? "بستن نظرات"
+											: "مشاهده نظرات"}
+									</button>
+									<MessageCircleMore />
+									{/* </div> */}
+								</div>
 							</div>
-						</div>
-					</div>
-				</div>
-				{image && (
-					<img
-						src={image}
-						className="w-32 h-32 object-cover rounded-xl "
-						alt="تصویر تیکت"
-					/>
-				)}
-				{/* Left section */}
-				<div className="w-1/5 pr-5 flex flex-col gap-4">
-					{/* status */}
-					<div
-						className={`flex flex-col items-center ${styles.status} py-4 gap-2`}
-					>
-						<span className="text-[#636363] font-bold">
-							{created_at}{" "}
-						</span>
-						<div className="flex items-center gap-2">
-							<span className="font-bold">{status}</span>
-							<div
-								className={`h-4 w-4 rounded-full ${
-									status === "پاسخ داده شده" ? "green" : "red"
-								}-status shadow-md`}
-							/>
 						</div>
 					</div>
 				</div>
@@ -382,19 +432,23 @@ const TicketSupportPage = () => {
 			<Formik
 				initialValues={initialValuesForm}
 				validationSchema={validationSchemaForm}
-				onSubmit={(values) => createTicket(values)}
+				onSubmit={(values, { setFieldValue }) =>
+					createTicket(values, setFieldValue)
+				}
 			>
 				{({ setFieldValue, values }) => (
 					<Form
 						// onSubmit={formik.handleSubmit}
 						className={`flex flex-row w-full p-5 gap-5 bg-[#F0EDEF] text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]`}
 					>
+						{loading && <TransparentLoading />}
 						<CustomTextArea
 							name="description"
 							rows="7"
 							placeholder="متن تیکت"
 							// value={formik.values.description}
 							// onChange={formik.handleChange}
+							textareaClassName="bg-white"
 							containerClassName={`-translate-y-6 w-5/7`}
 						/>
 						<div
@@ -406,6 +460,7 @@ const TicketSupportPage = () => {
 						> */}
 							<Select
 								name="subject"
+								value={values.subject}
 								onValueChange={async (value) => {
 									console.log(value);
 									await setFieldValue(
@@ -479,11 +534,11 @@ const TicketSupportPage = () => {
 								{/* </div> */}
 
 								<div
-									className={`bg-white p-4 rounded-xl shadow-sm text-right h-fit flex flex-col justify-between w-full ${styles.shadow}`}
+									className={`p-4 rounded-xl shadow-sm text-right h-fit flex flex-col justify-between w-full ${styles.shadow}`}
 								>
 									<label
 										htmlFor="image-upload"
-										className="block mb-2 text-sm text-gray-600 text-center py-3"
+										className="block mb-2 text-sm text-gray-600 text-center py-3 cursor-pointer"
 									>
 										بارگذاری تصویر (اختیاری)
 									</label>
@@ -491,10 +546,10 @@ const TicketSupportPage = () => {
 									{/* Custom Styled Button */}
 									<label
 										htmlFor="image-upload"
-										className={`cursor-pointer bg-white cta-neu-button flex ${styles.button} items-center content-center justify-center gap-2 w-full py-2`}
+										className={`cursor-pointer bg-[#f0edef] cta-neu-button flex rounded-lg items-center content-center justify-center gap-2 w-full py-2`}
 									>
-										<ImagePlus className="w-5 h-5" />
 										<span>انتخاب تصویر</span>
+										<ImagePlus className="w-5 h-5" />
 									</label>
 
 									{/* Hidden File Input */}
@@ -505,10 +560,9 @@ const TicketSupportPage = () => {
 										accept="image/*"
 										onChange={(e) => {
 											const file =
-												e.currentTarget.files?.[0];
-											if (!file) return;
-											setFieldValue(`image`, file);
+												e?.currentTarget?.files?.[0];
 											if (file) {
+												setFieldValue(`image`, file);
 												const previewUrl =
 													URL.createObjectURL(file);
 												setImagePreview(previewUrl);
@@ -547,109 +601,174 @@ const TicketSupportPage = () => {
 			<Header header="تیکت‌های قبلی" />
 			{/* Ticket List */}
 			<div className="space-y-4">
-				{tickets.map((ticket) => (
-					<div key={ticket.id} className="list">
-						<Ticket
-							id={ticket.id}
-							subject={ticket.subject}
-							description={ticket.description}
-							status={
-								ticket.status === "resolved"
-									? "پاسخ داده شده"
-									: "بررسی نشده"
-							}
-							created_at={new Date(
-								ticket.created_at
-							).toLocaleDateString("fa-IR")}
-							image={ticket.image}
-						/>
-
-						{activeCommentTicketId === ticket.id && (
-							<div className="flex items-center justify-center">
-								<div className="bg-white px-10 rounded-lg w-full text-right space-y-4">
-									<h3 className="text-lg font-bold">
-										ثبت نظر
-									</h3>
-									<div
-										className={`bg-white p-6 rounded-xl shadow-md  ${styles.shadow}`}
+				{loadingTickets ? (
+					<LoadingSpinner />
+				) : tickets.length === 0 ? (
+					<div className="text-center py-8 text-gray-500">
+						هیچ تیکتی موجود نیست
+					</div>
+				) : (
+					<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+						{tickets.map((ticket, index) => (
+							<>
+								<Ticket
+									id={ticket.id}
+									key={index}
+									subject={ticket.subject}
+									description={ticket.description}
+									status={
+										ticket.status === "resolved"
+											? "پاسخ داده شده"
+											: "بررسی نشده"
+									}
+									created_at={new Date(
+										ticket.created_at
+									).toLocaleDateString("fa-IR")}
+									image={ticket.image}
+								/>
+								{activeCommentTicketId === ticket.id && (
+									<Formik
+										initialValues={initialCommentValuesForm}
+										validationSchema={
+											commentValidationSchemaForm
+										}
+										onSubmit={(values) => {
+											createComment(
+												values.comment,
+												activeCommentTicketId
+											);
+											setActiveCommentTicketId(null);
+										}}
 									>
-										<textarea
-											value={commentInput}
-											onChange={(e) =>
-												setCommentInput(e.target.value)
-											}
-											rows={3}
-											className={`w-full p-2 resize-none outline-none focus:ring-0 focus:outline-none`}
-											placeholder="متن نظر..."
-										/>
-									</div>
-									<div className="flex justify-between">
+										{({ setFieldValue, values }) => (
+											<Form>
+												<div className="flex bg-[#F0EDEF] pb-4 items-center justify-center">
+													<div className="px-10 rounded-lg w-full text-right space-y-8">
+														<h3 className="text-lg font-bold">
+															ثبت نظر
+														</h3>
+														<CustomTextArea
+															name="comment"
+															rows={3}
+															textareaClassName="bg-white"
+															placeholder="متن نظر..."
+														/>
+
+														<div className="flex justify-between">
+															<button
+																onClick={() =>
+																	setActiveCommentTicketId(
+																		null
+																	)
+																}
+																className={`text-gray-500 cta-neu-button cursor-pointer w-1/9 ${styles.button}`}
+															>
+																لغو
+															</button>
+															<button
+																className={`text-left cta-neu-button flex ${styles.button} items-center content-center justify-center w-1/9`}
+															>
+																ثبت نظر
+															</button>
+														</div>
+													</div>
+												</div>
+											</Form>
+										)}
+									</Formik>
+									// <div className="flex bg-[#F0EDEF] pb-4 items-center justify-center">
+									// 	<div className="px-10 rounded-lg w-full text-right space-y-4">
+									// 		<h3 className="text-lg font-bold">
+									// 			ثبت نظر
+									// 		</h3>
+									// 		<div
+									// 			className={`bg-white p-6 rounded-xl shadow-xl ${styles.shadow}`}
+									// 		>
+									// 			<textarea
+									// 				value={commentInput}
+									// 				onChange={(e) =>
+									// 					setCommentInput(
+									// 						e.target.value
+									// 					)
+									// 				}
+									// 				rows={3}
+									// 				className={`w-full p-2 resize-none outline-none focus:ring-0 focus:outline-none bg-white`}
+									// 				placeholder="متن نظر..."
+									// 			/>
+									// 		</div>
+
+									// 		<div className="flex justify-between">
+									// 			<button
+									// 				onClick={() =>
+									// 					setActiveCommentTicketId(
+									// 						null
+									// 					)
+									// 				}
+									// 				className={`text-gray-500 cta-neu-button cursor-pointer w-1/9 ${styles.button}`}
+									// 			>
+									// 				لغو
+									// 			</button>
+									// 			<button
+									// 				onClick={() => {
+									// 					createComment(
+									// 						commentInput,
+									// 						activeCommentTicketId
+									// 					);
+									// 					setActiveCommentTicketId(
+									// 						null
+									// 					);
+									// 					setCommentInput("");
+									// 				}}
+									// 				className={`text-left cta-neu-button flex ${styles.button} items-center content-center justify-center w-1/9`}
+									// 			>
+									// 				ثبت نظر
+									// 			</button>
+									// 		</div>
+									// 	</div>
+									// </div>
+								)}
+								{/* Comments */}
+								{showCommentBoxFor === ticket.id && (
+									<div className="bg-[#F0EDEF] p-8 rounded text-sm flex flex-col gap-4">
+										<h2 className="text-right text-2xl font-bold text-blue-800 pr-7">
+											نظرات
+										</h2>
+										{comments.length > 0 ? (
+											<div className="flex flex-col text-gray-800 rounded-md overflow-hidden">
+												{/* <div className="pb-1 border-t border-gray-400"> */}
+												{comments.map(
+													(comment, index) => (
+														<Comment
+															key={index}
+															id={ticket.id}
+															Author={
+																comment.Author
+															}
+															body={comment.body}
+														/>
+													)
+												)}
+											</div>
+										) : (
+											<div className="text-gray-400 pr-7">
+												نظری ثبت نشده است
+											</div>
+										)}
 										<button
-											onClick={() =>
-												setActiveCommentTicketId(null)
-											}
-											className="text-gray-500 hover:underline"
-										>
-											لغو
-										</button>
-										<button
+											className={`text-left cursor-pointer cta-neu-button flex ${styles.button} self-end justify-center w-1/9`}
 											onClick={() => {
-												createComment(
-													commentInput,
-													activeCommentTicketId
-												);
-												setActiveCommentTicketId(null);
-												setCommentInput("");
+												setShowCommentBoxFor(null);
+												setComments([]);
 											}}
-											className={`text-left cta-neu-button flex ${styles.button} items-center content-center justify-center w-1/9`}
 										>
-											ثبت نظر
+											بستن
 										</button>
-									</div>
-								</div>
-							</div>
-						)}
-						{/* Comments */}
-						{showCommentBoxFor === ticket.id && (
-							<div className="bg-gray-100 p-3 rounded text-sm space-y-2 mt-2">
-								<h2 className="text-right text-2xl font-bold text-blue-800 pr-7">
-									نظرات
-								</h2>
-								{comments.length > 0 ? (
-									comments.map((comment, i) => (
-										<div
-											key={i}
-											className="pb-1 border-t border-gray-400"
-										>
-											<Comment
-												id="1"
-												Author={comment.Author}
-												body={comment.body}
-											/>
-										</div>
-									))
-								) : (
-									<div className="text-gray-400 pr-7">
-										نظری ثبت نشده است
 									</div>
 								)}
-								<div
-									className={`text-left cta-neu-button flex ${styles.button} items-center content-center justify-center w-1/9`}
-								>
-									<button
-										onClick={() => {
-											setShowCommentBoxFor(null);
-											setComments([]);
-										}}
-										className="cursor-pointer"
-									>
-										بستن
-									</button>
-								</div>
-							</div>
-						)}
+							</>
+						))}
 					</div>
-				))}
+				)}
 			</div>
 		</div>
 	);

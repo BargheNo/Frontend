@@ -7,6 +7,7 @@ import {
 	MessageCircleMore,
 	ArrowLeft,
 	XIcon,
+	MessageCircle,
 } from "lucide-react";
 import React from "react";
 import styles from "./Tickets.module.css";
@@ -15,6 +16,9 @@ import { toast } from "sonner";
 import Header from "@/components/Header/Header";
 import Image from "next/image";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import { Form, Formik } from "formik";
+import * as Yup from "yup";
+import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 
 interface Ticket {
 	id: string;
@@ -44,6 +48,12 @@ interface Comment {
 	body: string;
 }
 
+const initialValuesForm = { comment: "" };
+
+const commentValidationSchemaForm = Yup.object({
+	comment: Yup.string().required("نظر الزامی است"),
+});
+
 const TicketSupportPage = () => {
 	const [isLoadingComments, setIsLoadingComments] = useState(false);
 	const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -54,7 +64,6 @@ const TicketSupportPage = () => {
 	const [showCommentBoxFor, setShowCommentBoxFor] = useState<string | null>(
 		null
 	);
-	const [commentInput, setCommentInput] = useState("");
 	const accessToken = useSelector(
 		(state: RootState) => state.user.accessToken
 	);
@@ -94,6 +103,7 @@ const TicketSupportPage = () => {
 
 			// Optionally refresh ticket list or update UI
 		} catch (error: any) {
+			console.log(error);
 			const errMsg =
 				generateErrorMessage(error) ||
 				"هنگام بررسی تیکت مشکلی پیش آمد.";
@@ -156,7 +166,7 @@ const TicketSupportPage = () => {
 					"هنگام گردآوری نظرات مشکلی به وجود آمد.";
 				// toast.error(errMsg);
 				CustomToast(errMsg, "error");
-			}).finally;
+			});
 		{
 			setIsLoadingComments(false);
 		}
@@ -380,10 +390,11 @@ const TicketSupportPage = () => {
 				</div>
 			) : (
 				<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
-					{tickets.map((ticket) => (
+					{tickets.map((ticket, index) => (
 						<>
 							<Ticket
 								id={ticket.id}
+								key={index}
 								subject={ticket.subject}
 								description={ticket.description}
 								status={
@@ -399,56 +410,54 @@ const TicketSupportPage = () => {
 							/>
 
 							{activeCommentTicketId === ticket.id && (
-								<div className="flex bg-[#F0EDEF] pb-4 items-center justify-center">
-									<div className="px-10 rounded-lg w-full text-right space-y-4">
-										<h3 className="text-lg font-bold">
-											ثبت نظر
-										</h3>
-										<div
-											className={`bg-white p-6 rounded-xl shadow-xl ${styles.shadow}`}
-										>
-											<textarea
-												value={commentInput}
-												onChange={(e) =>
-													setCommentInput(
-														e.target.value
-													)
-												}
-												rows={3}
-												className={`w-full p-2 resize-none outline-none focus:ring-0 focus:outline-none bg-white`}
-												placeholder="متن نظر..."
-											/>
-										</div>
+								<Formik
+									initialValues={initialValuesForm}
+									validationSchema={
+										commentValidationSchemaForm
+									}
+									onSubmit={(values) => {
+										createComment(
+											values.comment,
+											activeCommentTicketId
+										);
+										setActiveCommentTicketId(null);
+									}}
+								>
+									{({ setFieldValue, values }) => (
+										<Form>
+											<div className="flex bg-[#F0EDEF] pb-4 items-center justify-center">
+												<div className="px-10 rounded-lg w-full text-right space-y-8">
+													<h3 className="text-lg font-bold">
+														ثبت نظر
+													</h3>
+													<CustomTextArea
+														name="comment"
+														rows={3}
+														placeholder="متن نظر..."
+													/>
 
-										<div className="flex justify-between">
-											<button
-												onClick={() =>
-													setActiveCommentTicketId(
-														null
-													)
-												}
-												className={`text-gray-500 cta-neu-button cursor-pointer w-1/9 ${styles.button}`}
-											>
-												لغو
-											</button>
-											<button
-												onClick={() => {
-													createComment(
-														commentInput,
-														activeCommentTicketId
-													);
-													setActiveCommentTicketId(
-														null
-													);
-													setCommentInput("");
-												}}
-												className={`text-left cta-neu-button flex ${styles.button} items-center content-center justify-center w-1/9`}
-											>
-												ثبت نظر
-											</button>
-										</div>
-									</div>
-								</div>
+													<div className="flex justify-between">
+														<button
+															onClick={() =>
+																setActiveCommentTicketId(
+																	null
+																)
+															}
+															className={`text-gray-500 cta-neu-button cursor-pointer w-1/9 ${styles.button}`}
+														>
+															لغو
+														</button>
+														<button
+															className={`text-left cta-neu-button flex ${styles.button} items-center content-center justify-center w-1/9`}
+														>
+															ثبت نظر
+														</button>
+													</div>
+												</div>
+											</div>
+										</Form>
+									)}
+								</Formik>
 							)}
 							{/* Comments */}
 							{showCommentBoxFor === ticket.id && (
