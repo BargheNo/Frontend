@@ -42,33 +42,13 @@ export default function AnnounceAddCard() {
       toast.error("خطایی رخ داده است");
     },
   });
-
-  //   const createNews = async (values: { name: string }) => {
-  //     try {
-  //       const response = await postData({
-  //         endPoint: "/v1/admin/news/draft",
-  //         data: {
-  //           title: values.name,
-  //           content: "",
-  //           //   writer: "",
-  //           //   date: new Date().getTime(),
-  //         },
-  //       });
-  //     } catch (error) {}
-  //   };
-
   switch (step) {
     case 0:
       return (
         <Dialog>
           <DialogTrigger asChild>
-            <button className="flex items-center justify-center w-[80%] h-18 bg-[#F0EDEF] rounded-full neo-btn">
-              <div className="flex items-center justify-center w-full h-full gap-4">
-                <span className="text-fire-orange text-xl">
-                  اضافه کردن اطلاعیه
-                </span>
-                <Plus className="text-fire-orange" size={30} />
-              </div>
+            <button className="flex items-center justify-center w-16 h-16 bg-fire-orange rounded-full! neo-btn border-none!">
+              <Plus className="text-white" size={30} />
             </button>
           </DialogTrigger>
 
@@ -116,7 +96,7 @@ export default function AnnounceAddCard() {
           }}
         >
           <DialogTrigger asChild>
-            <button className="flex items-center justify-center w-[80%] h-18 bg-[#F0EDEF] rounded-full neo-btn">
+            <button className="flex items-center justify-center w-[80%] h-18 bg-warm-white rounded-full neo-btn">
               <div className="flex items-center justify-center w-full h-full gap-4">
                 <span className="text-fire-orange text-xl">
                   اضافه کردن اطلاعیه

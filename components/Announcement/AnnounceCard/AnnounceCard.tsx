@@ -23,11 +23,15 @@ import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 // export default function AnnounceCard({ title, }: { title: string, content: string, writer: string, date: number }) {
 export default function AnnounceCard({
+  onlyView = false,
   title,
   id,
+  status = 2,
 }: {
   title: string;
   id: string;
+  onlyView?: boolean;
+  status?: number;
 }) {
   const {
     selectMode,
@@ -77,79 +81,123 @@ export default function AnnounceCard({
 
   return (
     <>
-      <Dialog>
-        <ContextMenu>
-          <ContextMenuTrigger asChild>
-            <div
-              className={cn(
-                "cursor-pointer",
-                selected &&
-                  "bg-[#EA6639] hover:bg-gray-300 py-2 rounded transition-all duration-300 ease-in-out relative",
-                selectMode && ""
-              )}
-              onClick={(e) => {
-                e.preventDefault();
-                if (selectMode) {
-                  handleSelect();
-                } else {
-                  router.push(`./announcements/${id}`);
-                }
-              }}
-            >
-              {/* <CircleCheckBig className={cn("opacity-0",selected &&"absolute top-2 left-2 cursor-pointer opacity-100 transition-all duration-1000 ease-in-out")} /> */}
+      {!onlyView ? (
+        <Dialog>
+          <ContextMenu>
+            <ContextMenuTrigger asChild>
               <div
                 className={cn(
-                  "flex flex-col gap-2 w-[70vw]! neo-card-rev  bg-white p-6 rounded-lg transition-all duration-300 ease-in-out",
-                  selected && "scale-95"
+                  "cursor-pointer",
+                  selected &&
+                    "bg-sunset-orange hover:opacity-80 py-2 rounded transition-all duration-300 ease-in-out relative",
+                  selectMode && ""
                 )}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (selectMode) {
+                    handleSelect();
+                  } else {
+                    router.push(`./announcements/${id}`);
+                  }
+                }}
               >
-                <div className="text-xl font-bold ">{title}</div>
-                {/* <div className="short-par">
+                {/* <CircleCheckBig className={cn("opacity-0",selected &&"absolute top-2 left-2 cursor-pointer opacity-100 transition-all duration-1000 ease-in-out")} /> */}
+                <div
+                  className={cn(
+                    "flex flex-col gap-2 w-[70vw]! neo-card-rev  bg-white p-6 rounded-lg transition-all duration-300 ease-in-out",
+                    selected && "scale-95"
+                  )}
+                >
+                  <div className="text-xl font-bold ">{title}</div>
+                  {status == 1 ? (
+                    <span className="text-green-600">منتشر شده </span>
+                  ) : (
+                    <span className="text-red-600">منتشر نشده </span>
+                  )}
+                  {/* <div className="short-par">
                 {content}
                 </div> */}
-                {/* <div className="flex justify-between items-center">
+                  {/* <div className="flex justify-between items-center">
                 <div>نویسنده: {writer}</div>
                 <div className="flex items-center gap-1">
                 {new Date(date).toLocaleDateString('fa-IR', { year: 'numeric', month: 'numeric', day: 'numeric' })}
                 <Calendar size={24} color="#EA6639"/>
                 </div>
                 </div> */}
+                </div>
               </div>
-            </div>
-          </ContextMenuTrigger>
-          <ContextMenuContent className="border-0 p-4 flex flex-col gap-2 rtl bg-[#F0EDEF]">
-            <ContextMenuItem
-              className="neo-btn bg-white"
-              onClick={(e) => {
-                e.preventDefault();
-                setSelectMode(true);
-                handleSelect();
-              }}
-            >
-              انتخاب
-            </ContextMenuItem>
-            <ContextMenuItem className="neo-btn bg-white">
-              <DialogTrigger>ویرایش</DialogTrigger>
-            </ContextMenuItem>
-            <ContextMenuItem
-              onClick={(e) => {
-                e.preventDefault();
-                handleDelete.mutate();
-              }}
-              className="neo-btn bg-white"
-            >
-              حذف
-            </ContextMenuItem>
-          </ContextMenuContent>
-        </ContextMenu>
-        <DialogContent className="w-[80vw]! max-w-none! h-[80vh]! rtl p-8">
-          <DialogHeader className="hidden">
-            <DialogTitle></DialogTitle>
-          </DialogHeader>
-          <AnnounceEditor newsID={id} onlyView={false} />
-          <DialogDescription className="hidden" />
-        </DialogContent>
-      </Dialog>
+            </ContextMenuTrigger>
+            <ContextMenuContent className="border-0 p-4 flex flex-col gap-2 rtl bg-warm-white">
+              <ContextMenuItem
+                className="neo-btn bg-white"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setSelectMode(true);
+                  handleSelect();
+                }}
+              >
+                انتخاب
+              </ContextMenuItem>
+              <ContextMenuItem className="neo-btn bg-white">
+                <DialogTrigger>ویرایش</DialogTrigger>
+              </ContextMenuItem>
+              <ContextMenuItem
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleDelete.mutate();
+                }}
+                className="neo-btn bg-white"
+              >
+                حذف
+              </ContextMenuItem>
+            </ContextMenuContent>
+          </ContextMenu>
+          <DialogContent className="w-[80vw]! max-w-none! h-[80vh]! rtl p-8">
+            <DialogHeader className="hidden">
+              <DialogTitle></DialogTitle>
+            </DialogHeader>
+            <AnnounceEditor newsID={id} onlyView={false} />
+            <DialogDescription className="hidden" />
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <div
+          className={cn(
+            "cursor-pointer",
+            selected &&
+              "bg-sunset-orange hover:opacity-80 py-2 rounded transition-all duration-300 ease-in-out relative",
+            selectMode && ""
+          )}
+          onClick={(e) => {
+            e.preventDefault();
+            if (selectMode) {
+              handleSelect();
+            } else {
+              router.push(`./announcements/${id}`);
+            }
+          }}
+        >
+          {/* <CircleCheckBig className={cn("opacity-0",selected &&"absolute top-2 left-2 cursor-pointer opacity-100 transition-all duration-1000 ease-in-out")} /> */}
+          <div
+            className={cn(
+              "flex flex-col gap-2 w-[70vw]! neo-card-rev  bg-white p-6 rounded-lg transition-all duration-300 ease-in-out",
+              selected && "scale-95"
+            )}
+          >
+            <div className="text-xl font-bold ">{title}</div>
+            {/* <div className="short-par">
+                {content}
+                </div> */}
+            {/* <div className="flex justify-between items-center">
+                <div>نویسنده: {writer}</div>
+                <div className="flex items-center gap-1">
+                {new Date(date).toLocaleDateString('fa-IR', { year: 'numeric', month: 'numeric', day: 'numeric' })}
+                <Calendar size={24} color="#EA6639"/>
+                </div>
+                </div> */}
+          </div>
+        </div>
+      )}
     </>
   );
 }

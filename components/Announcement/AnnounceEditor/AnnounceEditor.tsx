@@ -9,13 +9,13 @@ import FaTranslation from "./FaTranslation.ts";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils.ts";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner.tsx";
-import { Save } from "lucide-react";
+import { FileUp, Save } from "lucide-react";
 
 import ImageTool from "ert-image";
 import { getData, postData, putData } from "@/src/services/apiHub.tsx";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export default function AnnounceEditor({
   newsID,
@@ -28,6 +28,7 @@ export default function AnnounceEditor({
   const holderRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<OutputData | null>(null);
   const [title, setTitle] = useState("");
+  const [status, setStatus] = useState(2);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -86,11 +87,7 @@ export default function AnnounceEditor({
   const queryClient = useQueryClient();
   const handelSave = useMutation({
     mutationFn: async () => {
-      console.log("push");
       const savedData = await editorRef.current?.save();
-      // editorRef.current?.destroy();
-      // console.log("id: ", projectId);
-      console.log("data:", savedData);
       if (savedData) {
         setData(savedData);
         const responce = await putData({
@@ -98,15 +95,13 @@ export default function AnnounceEditor({
           data: {
             content: JSON.stringify(savedData),
             title: title,
-            status: 1,
+            status: 2,
           },
         });
         return responce;
       }
     },
-    onSuccess: (responce) => {
-      console.log("Mutation successful, response:", responce);
-      // Invalidate and refetch
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["news"] });
       toast.success("خبر با موفقیت ذخیره شد");
     },
@@ -115,9 +110,34 @@ export default function AnnounceEditor({
       toast.error("خطایی رخ داده است");
     },
   });
-
-  useEffect(() => {
-    const getNews = async () => {
+  const handelPublish = useMutation({
+    mutationFn: async () =>
+      putData({ endPoint: `/v1/admin/news/${newsID}/publish` }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["news"] });
+      toast.success("خبر با موفقیت منتشر شد");
+    },
+    onError: (error) => {
+      console.error("Mutation error:", error);
+      toast.error("خطایی رخ داده است");
+    },
+  });
+  const handelUnpublish = useMutation({
+    mutationFn: async () =>
+      putData({ endPoint: `/v1/admin/news/${newsID}/unpublish` }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["news"] });
+      toast.success("خبر با موفقیت از انتشار خارج شد");
+    },
+    onError: (error) => {
+      console.error("Mutation error:", error);
+      toast.error("خطایی رخ داده است");
+    },
+  });
+  ///v1/admin/news/1/unpublish
+  const {} = useQuery({
+    queryKey: ["news", newsID],
+    queryFn: async () => {
       try {
         const responce = await getData({
           endPoint: `/v1/admin/news/${newsID}`,
@@ -125,6 +145,7 @@ export default function AnnounceEditor({
         console.log(responce);
         if (responce.statusCode == 200) {
           setTitle(responce.data.title);
+          setStatus(responce.data.status);
           if (responce.data.content != "") {
             setData(JSON.parse(responce.data.content));
           } else {
@@ -140,14 +161,13 @@ export default function AnnounceEditor({
             });
           }
         }
+        return responce
       } catch (error) {
         console.error(error);
         router.push("/not-found");
       }
-    };
-
-    getNews();
-  }, [newsID]);
+    },
+  });
 
   useEffect(() => {
     console.log("editor1: ", editorRef.current);
@@ -226,32 +246,59 @@ export default function AnnounceEditor({
         )}
         {onlyView ? (
           <div className="flex flex-col justify-center items-center p-5 h-[80vh]">
-            <div className="overflow-y-auto overflow-x-hiden w-[90vw]! h-full bg-gray-100 rounded-md p-2">
-              <div
-                ref={holderRef}
-                id="editorjs"
-                className={cn("rtl h-full w-full")}
-              ></div>
+            <div className=" w-[90vw]! h-full bg-warm-white neo-card rounded-md p-2 ">
+              <div className="overflow-y-auto overflow-x-hidden no-scrollbar neo-card-rev w-full h-full rounded-md p-3">
+                <div
+                  ref={holderRef}
+                  id="editorjs"
+                  className={cn("rtl h-full w-full")}
+                ></div>
+              </div>
             </div>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-3">
-            <div className="overflow-y-auto overflow-x-hiden w-[70vw]! h-[55vh]! bg-gray-100 rounded-md p-2">
-              <div
-                ref={holderRef}
-                id="editorjs"
-                className={cn("rtl h-full w-full")}
-              ></div>
+            <div className=" w-[70vw]! h-[60vh]! bg-warm-white neo-card rounded-md p-2 ">
+              <div className="overflow-y-auto overflow-x-hidden no-scrollbar neo-card-rev w-full h-full rounded-md p-3">
+                <div
+                  ref={holderRef}
+                  id="editorjs"
+                  className={cn("rtl h-full w-full")}
+                ></div>
+              </div>
             </div>
-            <button
-              className="flex gap-5 items-center bg-fire-orange px-10 py-3 rounded-full! neo-btn text-white font-bold text-lg"
-              onClick={() => {
-                handelSave.mutate();
-              }}
-            >
-              <span>ذخیره</span>
-              <Save />
-            </button>
+            <div className="flex items-center gap-10 mt-2">
+              <button
+                className="flex gap-3 items-center bg-fire-orange px-8 py-2 rounded-full! neo-btn text-white font-bold text-lg"
+                onClick={() => {
+                  handelSave.mutate();
+                }}
+              >
+                <span>ذخیره</span>
+                <Save />
+              </button>
+              {status == 2 ? (
+                <button
+                  className="flex gap-3 items-center bg-fire-orange px-8 py-2 rounded-full! neo-btn text-white font-bold text-lg"
+                  onClick={() => {
+                    handelPublish.mutate();
+                  }}
+                >
+                  <span>انتشار</span>
+                  <FileUp />
+                </button>
+              ) : (
+                <button
+                  className="flex gap-3 items-center bg-fire-orange px-8 py-2 rounded-full! neo-btn text-white font-bold text-lg"
+                  onClick={() => {
+                    handelUnpublish.mutate();
+                  }}
+                >
+                  <span>پیش نویس</span>
+                  <FileUp />
+                </button>
+              )}
+            </div>
           </div>
         )}
       </div>
