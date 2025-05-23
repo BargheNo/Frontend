@@ -94,7 +94,8 @@ const UserProfile = () => {
 			});
 
 			if (response) {
-				toast.success("اطلاعات با موفقیت ذخیره شد");
+				// toast.success("اطلاعات با موفقیت ذخیره شد");
+				CustomToast("اطلاعات با موفقیت ذخیره شد", "success");
 			}
 		} catch (err) {
 			console.log(err);
@@ -115,7 +116,8 @@ const UserProfile = () => {
 			setIsEditable(false);
 		} catch (error) {
 			console.error("Error updating profile:", error);
-			toast.error("خطا در بروزرسانی اطلاعات");
+			// toast.error("خطا در بروزرسانی اطلاعات");
+			CustomToast("خطا در بروزرسانی اطلاعات", "error");
 		}
 	};
 

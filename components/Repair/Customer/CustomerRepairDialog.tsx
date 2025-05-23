@@ -14,6 +14,7 @@ import moment from "jalali-moment";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 interface RepairHistoryItem {
 	ID: number;
@@ -81,13 +82,15 @@ const RepairDetailsDialog = ({
 
 			// Handle success
 			const data = await response.json();
-			toast.success(data?.message);
+			CustomToast(data?.message, "success");
+			// toast.success(data?.message);
 			onClose();
 		} catch (error: any) {
 			const errMsg =
 				generateErrorMessage(error) ||
 				"هنگام ایجاد گزارش جدید مشکلی پیش آمد.";
-			toast.error(errMsg);
+			CustomToast(errMsg, "error");
+			// toast.error(errMsg);
 		}
 	};
 

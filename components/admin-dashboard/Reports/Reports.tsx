@@ -16,6 +16,7 @@ import {
 	School,
 } from "lucide-react";
 import Header from "@/components/Header/Header";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 const Reports = () => {
 	const [panelReports, setPanelReports] = useState<any[]>([]);
@@ -39,7 +40,8 @@ const Reports = () => {
 				const errMsg =
 					generateErrorMessage(err) ||
 					"مشکلی در دریافت گزارش‌های پنل رخ داد.";
-				toast.error(errMsg);
+				CustomToast(errMsg, "error");
+				// toast.error(errMsg);
 			});
 	};
 
@@ -59,7 +61,8 @@ const Reports = () => {
 				const errMsg =
 					generateErrorMessage(err) ||
 					"مشکلی در دریافت گزارش‌های تعمیر و نگهداری رخ داد.";
-				toast.error(errMsg);
+				CustomToast(errMsg, "error");
+				// toast.error(errMsg);
 			});
 	};
 
@@ -80,7 +83,8 @@ const Reports = () => {
 			if (!response.ok) throw new Error("Failed to resolve report");
 
 			const result = await response.json();
-			toast.success(result?.message);
+			CustomToast(result?.message, "success");
+			// toast.success(result?.message);
 
 			// Refresh both lists, or only one if you're tracking origin
 			fetchPanelReports();
@@ -89,7 +93,8 @@ const Reports = () => {
 			const errMsg =
 				generateErrorMessage(error) ||
 				"هنگام بررسی گزارش مشکلی پیش آمد.";
-			toast.error(errMsg);
+			CustomToast(errMsg, "error");
+			// toast.error(errMsg);
 		}
 	};
 

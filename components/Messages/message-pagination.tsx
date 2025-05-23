@@ -31,6 +31,7 @@ import notificationService from "@/src/services/notificationService";
 import { skip } from "node:test";
 import { toast } from "sonner";
 import Header from "../Header/Header";
+import CustomToast from "../Custom/CustomToast/CustomToast";
 
 // import { RootState } from "@/src/store/types";
 
@@ -226,11 +227,19 @@ export default function CorpMessagesPagination() {
 											const successMessage =
 												responses[responses.length - 1]
 													?.message;
-											toast.success(successMessage);
-										} catch (error) {
-											toast.error(
-												"خطا در ذخیره‌سازی تنظیمات"
+											CustomToast(
+												successMessage,
+												"success"
 											);
+											// toast.success(successMessage);
+										} catch (error) {
+											CustomToast(
+												"خطا در ذخیره‌سازی تنظیمات",
+												"error"
+											);
+											// toast.error(
+											// 	"خطا در ذخیره‌سازی تنظیمات"
+											// );
 											console.error(error);
 										}
 									}
@@ -311,19 +320,19 @@ export default function CorpMessagesPagination() {
 							date={date}
 							topic={topic}
 							body={body}
-						></MessageCard>
+						/>
 						<MessageCard
 							from={from}
 							date={date}
 							topic={topic}
 							body={body}
-						></MessageCard>
+						/>
 						<MessageCard
 							from={from}
 							date={date}
 							topic={topic}
 							body={body}
-						></MessageCard>
+						/>
 						{/* {history.map((order: Orderhistory, index) => (
                             <OrderHistory
                             key={index}

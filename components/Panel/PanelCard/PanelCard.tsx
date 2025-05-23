@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/dialog";
 import SignupButton from "@/components/SignupButton/SignupButton";
 import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 const PanelCard = ({
 	id,
@@ -70,7 +71,8 @@ const PanelCard = ({
 			);
 
 			const data = await response.json();
-			toast.success(data?.message);
+			// toast.success(data?.message);
+			CustomToast(data?.message, "success");
 			// setModalOpen(false);
 			setOpen(false);
 			setLoading(false);
@@ -81,7 +83,8 @@ const PanelCard = ({
 			const errMsg =
 				generateErrorMessage(error) ||
 				"هنگام ایجاد گزارش جدید مشکلی پیش آمد.";
-			toast.error(errMsg);
+			// toast.error(errMsg);
+			CustomToast(errMsg, "error");
 			setLoading(false);
 		}
 	};

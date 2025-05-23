@@ -58,7 +58,8 @@ export default function Users() {
     } catch (err: any) {
       const errMsg =
         generateErrorMessage(err) || "مشکلی در دریافت کاربران رخ داد.";
-      toast.error(errMsg);
+      // toast.error(errMsg);
+      CustomToast(errMsg, "error");
     } finally {
       setLoading(false);
     }

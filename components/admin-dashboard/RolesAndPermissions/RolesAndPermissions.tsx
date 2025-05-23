@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import EditRoleModal from "./EditRoleModal";
 import CreateRoleModal from "./CreateRoleModal";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 const RolesAndPermissions = () => {
 	type Permission = {
@@ -46,7 +47,8 @@ const RolesAndPermissions = () => {
 				const errMsg =
 					generateErrorMessage(err) ||
 					"مشکلی در دریافت نقش ها رخ داد.";
-				toast.error(errMsg);
+				// toast.error(errMsg);
+				CustomToast(errMsg, "error");
 			});
 	};
 	const deleteRole = async (roleToDeleteId: string) => {
@@ -68,14 +70,16 @@ const RolesAndPermissions = () => {
 			}
 
 			const result = await response.json();
-			toast.success(result.message);
+			// toast.success(result.message);
+			CustomToast(result?.message, "success");
 			getRoles();
 
 			// Optionally refresh ticket list or update UI
 		} catch (error: any) {
 			const errMsg =
 				generateErrorMessage(error) || "هنگام حذف نقش مشکلی پیش آمد.";
-			toast.error(errMsg);
+			// toast.error(errMsg);
+			CustomToast(errMsg, "error");
 		}
 	};
 

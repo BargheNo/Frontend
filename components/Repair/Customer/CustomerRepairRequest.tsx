@@ -29,6 +29,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 const urgencyOptions = [
 	{ value: 1, label: "اولویت پایین" },
@@ -162,11 +163,13 @@ const CustomerRepairRequest = () => {
 			.PostCustomerRepairRequest(formData)
 			.then((res) => {
 				console.log(res);
-				toast.success("درخواست تعمیر با موفقیت ثبت شد!");
+				CustomToast("درخواست تعمیر با موفقیت ثبت شد!", "success");
+				// toast.success("درخواست تعمیر با موفقیت ثبت شد!");
 				setButtonLoading(false);
 			})
 			.catch((res) => {
-				toast.error("مشکلی در ثبت درخواست پیش آمد!");
+				CustomToast("مشکلی در ثبت درخواست پیش آمد!", "error");
+				// toast.error("مشکلی در ثبت درخواست پیش آمد!");
 				setButtonLoading(false);
 			});
 

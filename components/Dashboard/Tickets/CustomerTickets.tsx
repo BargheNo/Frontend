@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
+import { Form, Formik } from "formik";
+import * as Yup from "yup";
 import { useSelector } from "react-redux";
 import {
 	MessageCirclePlus,
@@ -13,7 +15,17 @@ import styles from "./CustomerTickets.module.css";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { toast } from "sonner";
 import Header from "@/components/Header/Header";
-
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 interface Ticket {
 	id: string;
 	subject: string;
@@ -42,6 +54,20 @@ interface Comment {
 	body: string;
 }
 
+const validationSchemaForm = Yup.object({
+	subject: Yup.string().required("موضوع تیکت الزامی است"),
+	description: Yup.string().required("توضیحات تیکت الزامی است"),
+	image: Yup.mixed().test("fileType", "فرمت فایل معتبر نیست", (value) => {
+		const file = value as File;
+		return value && ["image/jpeg", "image/png"].includes(file.type);
+	}),
+});
+
+const initialValuesForm = {
+	subject: "",
+	description: "",
+	image: null,
+};
 const TicketSupportPage = () => {
 	const [isLoadingComments, setIsLoadingComments] = useState(false);
 	const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -81,6 +107,7 @@ const TicketSupportPage = () => {
 		description: string;
 		image: File | null;
 	}) => {
+		console.log("values", values);
 		const formData = new FormData();
 		setImagePreview(null);
 		formData.append("subject", values.subject);
@@ -101,19 +128,21 @@ const TicketSupportPage = () => {
 			});
 
 			const data = await res.json();
-			toast.success(data?.message);
+			CustomToast(data?.message, "success");
+			// toast.success(data?.message);
 			fetchTickets();
 		} catch (error: any) {
 			const errMsg =
 				generateErrorMessage(error) ||
 				"هنگام ایجاد تیکت جدید مشکلی پیش آمد.";
-			toast.error(errMsg);
+			CustomToast(errMsg, "error");
+			// toast.error(errMsg);
 		}
 	};
 
 	const createComment = async (
 		comment: string,
-		activeCommentTicketId: string
+		activeCommentTicketId: string | null
 	) => {
 		try {
 			console.log("comment", comment);
@@ -130,13 +159,16 @@ const TicketSupportPage = () => {
 			);
 
 			const result = await response.json();
-			toast.success(result?.message);
+			// toast.success(result?.message);
+			console.log(result);
+			CustomToast(result?.message, "success");
 			getComments(activeCommentTicketId);
 		} catch (error: any) {
 			const errMsg =
 				generateErrorMessage(error) ||
 				"هنگام ایجاد نظر جدید مشکلی پیش آمد.";
-			toast.error(errMsg);
+			CustomToast(errMsg, "error");
+			// toast.error(errMsg);
 		}
 	};
 
@@ -161,8 +193,9 @@ const TicketSupportPage = () => {
 				const errMsg =
 					generateErrorMessage(err) ||
 					"هنگام گردآوری نظرات مشکلی به وجود آمد.";
-				toast.error(errMsg);
-			}).finally;
+				// toast.error(errMsg);
+				CustomToast(errMsg, "error");
+			});
 		{
 			setIsLoadingComments(false);
 		}
@@ -184,7 +217,8 @@ const TicketSupportPage = () => {
 				const errMsg =
 					generateErrorMessage(err) ||
 					"هنگام گردآوری تیکت ها مشکلی پیش آمد.";
-				toast.error(errMsg);
+				CustomToast(errMsg, "error");
+				// toast.error(errMsg);
 			});
 	};
 
@@ -192,18 +226,18 @@ const TicketSupportPage = () => {
 		fetchTickets();
 	}, []);
 
-	const formik = useFormik({
-		initialValues: {
-			subject: "",
-			description: "",
-			image: null as File | null,
-		},
-		onSubmit: (values) => {
-			createTicket(values);
-			console.log(values);
-			formik.resetForm();
-		},
-	});
+	// const formik = useFormik({
+	// 	initialValues: {
+	// 		subject: "",
+	// 		description: "",
+	// 		image: null as File | null,
+	// 	},
+	// 	onSubmit: (values) => {
+	// 		createTicket(values);
+	// 		console.log(values);
+	// 		// formik.resetForm();
+	// 	},
+	// });
 
 	const Ticket = ({
 		id,
@@ -221,7 +255,7 @@ const TicketSupportPage = () => {
 		image: string;
 	}) => {
 		return (
-			<div className="list">
+			<div className="">
 				{/* <div className="flex flex-row justify-between w-full h-full bg-white gap-10 py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 min-h-[250px]"> */}
 				{/* <div className="list-item"> */}
 				{/* Right section */}
@@ -340,28 +374,76 @@ const TicketSupportPage = () => {
 	};
 
 	return (
-		<div className="flex flex-col p-6 space-y-6 gap-10">
+		<div className="flex flex-col p-6 space-y-6">
 			{/* <h2 className="text-right text-2xl font-bold text-blue-800">ثبت تیکت</h2> */}
 			<Header header="ثبت تیکت" />
 
 			{/* Ticket Creation Form */}
-			<form
-				onSubmit={formik.handleSubmit}
-				className={`space-y-4 min-h-[400px]`}
+			<Formik
+				initialValues={initialValuesForm}
+				validationSchema={validationSchemaForm}
+				onSubmit={(values) => createTicket(values)}
 			>
-				<div
-					className={`${styles.outsideShadow} 
-        flex flex-col gap-10 py-3 px-7`}
-				>
-					<div
-						className={`bg-white p-4 rounded-xl shadow-sm flex items-center gap-3   ${styles.shadow}`}
+				{({ setFieldValue, values }) => (
+					<Form
+						// onSubmit={formik.handleSubmit}
+						className={`flex flex-row w-full p-5 gap-5 bg-[#F0EDEF] text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]`}
 					>
-						<select
+						<CustomTextArea
+							name="description"
+							rows="7"
+							placeholder="متن تیکت"
+							// value={formik.values.description}
+							// onChange={formik.handleChange}
+							containerClassName={`-translate-y-6 w-5/7`}
+						/>
+						<div
+							className={`
+						flex flex-col gap-4 w-2/7`}
+						>
+							{/* <div
+							className={`bg-white rounded-xl flex items-center gap-3 rtl ${styles.shadow}`}
+						> */}
+							<Select
+								name="subject"
+								onValueChange={async (value) => {
+									console.log(value);
+									await setFieldValue(
+										"subject",
+										String(value)
+									);
+									console.log(values);
+								}}
+							>
+								<SelectTrigger
+									name="subject"
+									className={`${styles.CustomInput} cursor-pointer w-full rtl`}
+									id="subject"
+									// style={{ width: "25vw" }}
+								>
+									<SelectValue placeholder="انتخاب عنوان" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectGroup>
+										<SelectLabel>عنوان</SelectLabel>
+										{subjectOptions.map((item, index) => (
+											<SelectItem
+												key={index}
+												className="cursor-pointer"
+												value={String(item.id)}
+											>
+												{item.label}
+											</SelectItem>
+										))}
+									</SelectGroup>
+								</SelectContent>
+							</Select>
+							{/* <select
 							name="subject"
 							value={formik.values.subject}
 							onChange={formik.handleChange}
 							className="bg-white text-right outline-none w-full px-4 py-3 rounded-lg shadow-md border border-gray-300 text-xl focus:ring-2 focus:ring-orange-400 focus:border-orange-400 appearance-none transition-all duration-300"
-						>
+							>
 							<option value="" className="text-gray-500">
 								انتخاب عنوان
 							</option>
@@ -371,96 +453,98 @@ const TicketSupportPage = () => {
 									value={item.id}
 									className="text-black"
 								>
-									{item.label}
+								{item.label}
 								</option>
-							))}
-						</select>
+								))}
+								</select> */}
 
-						<div className="text-orange-500">
+							{/* <div className="text-orange-500">
 							<List />
-						</div>
-					</div>
-					<div className="flex flex-row justify-between gap-2 min-h-[250px]">
-						<div
-							className={`bg-white p-6 rounded-xl shadow-sm  w-5/7 ${styles.shadow}`}
-						>
-							<textarea
+						</div> */}
+							{/* </div> */}
+
+							<div className="flex flex-row justify-between gap-4">
+								{/* <div
+								className={`bg-white  rounded-xl shadow-sm  w-5/7 ${styles.shadow}`}
+							> */}
+
+								{/* <textarea
 								name="description"
 								placeholder="متن تیکت"
 								value={formik.values.description}
 								onChange={formik.handleChange}
 								rows={5}
-								className=" bg-transparent text-right outline-none min-h-[250px] min-w-[750px] resize-none px-3 w-11/12
-"
-							/>
-						</div>
+								className=" bg-transparent text-right outline-none min-h-[250px] min-w-[750px] resize-none px-3 w-11/12"
+								/> */}
+								{/* </div> */}
 
-						<div
-							className={`bg-white p-4 rounded-xl shadow-sm text-right w-2/7 ${styles.shadow}`}
-						>
-							<label
-								htmlFor="image-upload"
-								className="block mb-2 text-sm text-gray-600 text-center py-3"
-							>
-								بارگذاری تصویر (اختیاری)
-							</label>
+								<div
+									className={`bg-white p-4 rounded-xl shadow-sm text-right h-fit flex flex-col justify-between w-full ${styles.shadow}`}
+								>
+									<label
+										htmlFor="image-upload"
+										className="block mb-2 text-sm text-gray-600 text-center py-3"
+									>
+										بارگذاری تصویر (اختیاری)
+									</label>
 
-							{/* Custom Styled Button */}
-							<label
-								htmlFor="image-upload"
-								className={`cursor-pointer cta-neu-button flex ${styles.button} items-center content-center justify-center gap-2 w-full py-2`}
-							>
-								<ImagePlus className="w-5 h-5" />
-								<span>انتخاب تصویر</span>
-							</label>
+									{/* Custom Styled Button */}
+									<label
+										htmlFor="image-upload"
+										className={`cursor-pointer bg-white cta-neu-button flex ${styles.button} items-center content-center justify-center gap-2 w-full py-2`}
+									>
+										<ImagePlus className="w-5 h-5" />
+										<span>انتخاب تصویر</span>
+									</label>
 
-							{/* Hidden File Input */}
-							<input
-								id="image-upload"
-								name="image"
-								type="file"
-								accept="image/*"
-								onChange={(e) => {
-									const file = e.currentTarget.files?.[0];
-									formik.setFieldValue("image", file ?? null);
-									if (file) {
-										const previewUrl =
-											URL.createObjectURL(file);
-										setImagePreview(previewUrl);
-									} else {
-										setImagePreview(null);
-									}
-								}}
-								className="hidden"
-							/>
-
-							{/* Image Preview */}
-							{imagePreview && (
-								<div className="mt-4">
-									<img
-										src={imagePreview}
-										alt="پیش‌نمایش تصویر"
-										className="max-w-full h-auto rounded-lg shadow-md"
+									{/* Hidden File Input */}
+									<input
+										id="image-upload"
+										name="image"
+										type="file"
+										accept="image/*"
+										onChange={(e) => {
+											const file =
+												e.currentTarget.files?.[0];
+											if (!file) return;
+											setFieldValue(`image`, file);
+											if (file) {
+												const previewUrl =
+													URL.createObjectURL(file);
+												setImagePreview(previewUrl);
+											} else {
+												setImagePreview(null);
+											}
+										}}
+										className="hidden"
 									/>
-								</div>
-							)}
-						</div>
-					</div>
 
-					<div className="flex justify-end p-5">
-						<button
-							type="submit"
-							className={`cta-neu-button flex ${styles.button} items-center justify-end w-20`}
-						>
-							ارسال
-						</button>
-					</div>
-				</div>
-			</form>
+									{/* Image Preview */}
+									{imagePreview && (
+										<div className="mt-4">
+											<img
+												src={imagePreview}
+												alt="پیش‌ نمایش تصویر"
+												className="max-w-full h-auto rounded-lg shadow-md"
+											/>
+										</div>
+									)}
+								</div>
+							</div>
+
+							<div className="flex justify-end">
+								<button
+									type="submit"
+									className={`cta-neu-button flex ${styles.button} items-center justify-center w-32 bg-white`}
+								>
+									ارسال
+								</button>
+							</div>
+						</div>
+					</Form>
+				)}
+			</Formik>
 			<Header header="تیکت‌های قبلی" />
-			{/* <h2 className="text-right text-2xl font-bold text-blue-800">
-        تیکت های قبلی
-      </h2> */}
 			{/* Ticket List */}
 			<div className="space-y-4">
 				{tickets.map((ticket) => (

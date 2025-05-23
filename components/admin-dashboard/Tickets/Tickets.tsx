@@ -14,6 +14,7 @@ import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { toast } from "sonner";
 import Header from "@/components/Header/Header";
 import Image from "next/image";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 interface Ticket {
 	id: string;
@@ -87,7 +88,8 @@ const TicketSupportPage = () => {
 			}
 
 			const result = await response.json();
-			toast.success(result?.message);
+			// toast.success(result?.message);
+			CustomToast(result?.message, "success");
 			fetchTickets();
 
 			// Optionally refresh ticket list or update UI
@@ -95,7 +97,8 @@ const TicketSupportPage = () => {
 			const errMsg =
 				generateErrorMessage(error) ||
 				"هنگام بررسی تیکت مشکلی پیش آمد.";
-			toast.error(errMsg);
+			// toast.error(errMsg);
+			CustomToast(errMsg, "error");
 		}
 	};
 
@@ -118,13 +121,15 @@ const TicketSupportPage = () => {
 			);
 
 			const result = await response.json();
-			toast.success(result?.message);
+			// toast.success(result?.message);
+			CustomToast(result?.message, "success");
 			getComments(activeCommentTicketId);
 		} catch (error: any) {
 			const errMsg =
 				generateErrorMessage(error) ||
 				"هنگام ایجاد نظر جدید مشکلی پیش آمد.";
-			toast.error(errMsg);
+			// toast.error(errMsg);
+			CustomToast(errMsg, "error");
 		}
 	};
 
@@ -149,7 +154,8 @@ const TicketSupportPage = () => {
 				const errMsg =
 					generateErrorMessage(err) ||
 					"هنگام گردآوری نظرات مشکلی به وجود آمد.";
-				toast.error(errMsg);
+				// toast.error(errMsg);
+				CustomToast(errMsg, "error");
 			}).finally;
 		{
 			setIsLoadingComments(false);
@@ -172,7 +178,8 @@ const TicketSupportPage = () => {
 				const errMsg =
 					generateErrorMessage(err) ||
 					"هنگام گردآوری تیکت ها مشکلی پیش آمد.";
-				toast.error(errMsg);
+				// toast.error(errMsg);
+				CustomToast(errMsg, "error");
 			});
 	};
 
