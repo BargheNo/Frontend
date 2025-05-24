@@ -40,6 +40,7 @@
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"cmdk": "^1.0.0",
+		"ert-image": "^0.4.5",
 		"formik": "^2.4.6",
 		"input-otp": "^1.4.2",
 		"jalali-moment": "^3.3.11",

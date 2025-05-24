@@ -108,20 +108,20 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 	const saveRoles = async () => {
 		setIsSaving(true);
 
-		try {
-			const response = await fetch(
-				`http://46.249.99.69:8080/v1/admin/users/${userId}/roles`,
-				{
-					method: "PUT",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${accessToken}`,
-					},
-					body: JSON.stringify({
-						role_ids: userRoles,
-					}),
-				}
-			);
+    try {
+      const response = await fetch(
+        `http://46.249.99.69:8080/v1/admin/users/${userId}/roles`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            roleIDs: userRoles,
+          }),
+        }
+      );
 
 			if (!response.ok) {
 				throw new Error("Failed to update user roles");
