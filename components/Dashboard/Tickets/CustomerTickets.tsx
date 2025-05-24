@@ -444,7 +444,7 @@ const TicketSupportPage = () => {
 						{loading && <TransparentLoading />}
 						<CustomTextArea
 							name="description"
-							rows="7"
+							rows={7}
 							placeholder="متن تیکت"
 							// value={formik.values.description}
 							// onChange={formik.handleChange}

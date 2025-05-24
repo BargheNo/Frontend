@@ -3,6 +3,7 @@ interface userData {
 	lastName: string;
 	accessToken: string;
 	refreshToken: string;
+	permissions: any;
 	isAuth: boolean;
 	corpId?: number;
 }

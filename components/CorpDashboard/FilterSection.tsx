@@ -59,6 +59,7 @@ export default function FilterSection() {
 							icon={Search}
 							type="text"
 							containerClassName="-translate-y-[11px]"
+							inputClassName="bg-white"
 						>
 							{" "}
 						</CustomInput>
@@ -73,7 +74,7 @@ export default function FilterSection() {
 						>
 							<SelectTrigger
 								dir="rtl"
-								className="w-40 cursor-pointer bg-[#f1f4fc] h-16"
+								className="w-40 cursor-pointer bg-white"
 							>
 								<SelectValue placeholder="جدیدترین" />
 							</SelectTrigger>
@@ -102,7 +103,7 @@ export default function FilterSection() {
 						>
 							<SelectTrigger
 								dir="rtl"
-								className="w-18 cursor-pointer bg-[#f1f4fc]"
+								className="w-18 cursor-pointer bg-white"
 							>
 								<SelectValue placeholder="20" />
 							</SelectTrigger>

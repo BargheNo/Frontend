@@ -6,6 +6,7 @@ import styles from "./Users.module.css";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { toast } from "sonner";
 import UserRolesModal from "./UserRoleModal";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 type UserType = {
   id: number;

@@ -62,6 +62,7 @@ const Login = () => {
 			});
 
 			if (response?.statusCode === 200) {
+				console.log(response);
 				CustomToast(response?.message, "success");
 				// toast(<div id="sonner-toast">{response?.message}</div>);
 				// toast.success(response?.message);
@@ -69,6 +70,7 @@ const Login = () => {
 					setUser({
 						firstName: response.data.firstName,
 						lastName: response.data.lastName,
+						permissions: response.data.permissions,
 						accessToken: response.data.accessToken,
 						refreshToken: response.data.accessToken,
 					})
