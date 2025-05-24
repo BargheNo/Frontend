@@ -82,13 +82,14 @@ function Signup() {
 			.then((res) => {
 				setOpen(true);
 				// toast(<div id="sonner-toast">{res?.data?.message}</div>);
-				CustomToast(res?.data?.message);
+				CustomToast(res?.data?.message, "success");
 				setLoading(false);
 			})
 			.catch((err) => {
 				setLoading(false);
 				CustomToast(
-					err?.response?.data?.messages?.phone["alreadyRegistered"]
+					err?.response?.data?.messages?.phone["alreadyRegistered"],
+					"error"
 				);
 				// toast(
 				// 	<div id="sonner-toast">
@@ -110,11 +111,16 @@ function Signup() {
 			.phonenumberVerification({ phone: phone, otp: otp })
 			.then((res) => {
 				route.push("/login");
-				toast(res.data.message);
+				CustomToast(res?.data?.message, "success");
+				// toast(res?.data?.message);
 			})
-			.catch((err) =>
-				toast(err.response.data.messages.otp["invalidOTP"])
-			);
+			.catch((err) => {
+				CustomToast(
+					err?.response?.data?.messages?.otp["invalidOTP"],
+					"error"
+				);
+				// toast(err.response.data.messages.otp["invalidOTP"]);
+			});
 	};
 
 	useEffect(() => {

@@ -12,7 +12,15 @@ const nextConfig: NextConfig = {
 		return config;
 	},
 	images: {
-		domains: ['barghe-no-profile-pic.s3.ir-thr-at1.arvanstorage.ir'],
+		domains: [
+			"barghe-no-profile-pic.s3.ir-thr-at1.arvanstorage.ir",
+			"barghe-no-ticket-image.s3.ir-thr-at1.arvanstorage.ir",
+		],
+		remotePatterns: [
+			new URL(
+				"https://barghe-no-ticket-image.s3.ir-thr-at1.arvanstorage.ir"
+			),
+		],
 	},
 };
 

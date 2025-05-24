@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import panel from "@/public/images/corplanding/6ec5a885-aaf7-4aaf-8266-6026e76e5701.png";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 export default function Page() {
 	const router = useRouter();
 	const accessToken = useSelector(
@@ -15,10 +16,9 @@ export default function Page() {
 	const checkUser = () => {
 		if (!accessToken) {
 			router.push("/login");
-			toast(
-				<div data-test="sonner-toast">
-					برای ثبت شرکت ابتدا باید وارد حساب کاربری خود شوید!
-				</div>
+			CustomToast(
+				"برای ثبت شرکت ابتدا باید وارد حساب کاربری خود شوید!",
+				"info"
 			);
 		}
 	};

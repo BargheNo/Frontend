@@ -1,6 +1,7 @@
 "use client";
 import Tickets from "@/components/admin-dashboard/Tickets/Tickets";
 import FilterSection from "@/components/CorpDashboard/FilterSection";
+import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 import Header from "@/components/Header/Header";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 import useClientCheck from "@/src/hooks/useClientCheck";
@@ -10,9 +11,14 @@ export default function Page() {
 	if (!useClientCheck()) {
 		return <LoadingSpinner />;
 	}
-	return <div className="page">
-		<Header header="تیکت‌ها" />
-		<FilterSection />
-		<Tickets />
-	</div>;
+	return (
+		<PageContainer>
+			{/* <div className="page"> */}
+			<Header header="تیکت‌ها" />
+			<FilterSection />
+			<Header header="تیکت‌های قبلی" className="mt-4" />
+			<Tickets />
+			{/* </div> */}
+		</PageContainer>
+	);
 }

@@ -4,6 +4,7 @@ const initialState: userData = {
 	firstName: "",
 	lastName: "",
 	accessToken: "",
+	permissions: {},
 	refreshToken: "",
 	isAuth: false,
 	corpId: 0,
@@ -21,6 +22,7 @@ export const userSlice = createSlice({
 			state.firstName = action.payload.firstName;
 			state.lastName = action.payload.lastName;
 			state.accessToken = action.payload.accessToken;
+			state.permissions = action.payload.permissions;
 			state.refreshToken = action.payload.refreshToken;
 			state.corpId = action.payload.corpId;
 		},
@@ -28,6 +30,7 @@ export const userSlice = createSlice({
 			state.isAuth = false;
 			state.firstName = "";
 			state.lastName = "";
+			state.permissions = {};
 			state.accessToken = "";
 			state.refreshToken = "";
 			state.corpId = 0;

@@ -1,9 +1,13 @@
+import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 import AnnounceView from "@/components/Announcement/AnnounceView/AnnounceView";
-export default function page() {
-  return (
-    <div className="flex flex-col gap-4 items-center p-14">
+import Header from "@/components/Header/Header";
+import React from "react";
+
+export default function Page() {
+	return (
+		<PageContainer>
+      {/*<header="اخبار و اطلاعیه‌ها" />*/}
       <AnnounceView onlyView={true} />
-      {/* <AnnounceAddCard /> */}
-    </div>
-  );
+		</PageContainer>
+	);
 }

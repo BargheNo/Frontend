@@ -14,6 +14,7 @@ import { setUser } from "@/src/store/slices/userSlice";
 import { useDispatch } from "react-redux";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 const validationSchema = Yup.object({
 	phoneNumber: Yup.string()
@@ -61,12 +62,15 @@ const Login = () => {
 			});
 
 			if (response?.statusCode === 200) {
-				toast(<div id="sonner-toast">{response?.message}</div>);
+				console.log(response);
+				CustomToast(response?.message, "success");
+				// toast(<div id="sonner-toast">{response?.message}</div>);
 				// toast.success(response?.message);
 				dispatch(
 					setUser({
 						firstName: response.data.firstName,
 						lastName: response.data.lastName,
+						permissions: response.data.permissions,
 						accessToken: response.data.accessToken,
 						refreshToken: response.data.accessToken,
 					})
@@ -78,11 +82,15 @@ const Login = () => {
 			// toast.error(
 			// 	generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد."
 			// );
-			toast(
-				<div id="sonner-toast">
-					{generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد."}
-				</div>
+			CustomToast(
+				generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد.",
+				"error"
 			);
+			// toast(
+			// 	<div id="sonner-toast">
+			// 		{generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد."}
+			// 	</div>
+			// );
 			setLoading(false);
 		}
 	};
@@ -133,6 +141,7 @@ const Login = () => {
 							<LoginButton>
 								ورود
 								<MoveLeft />
+								{loading && <TransparentLoading />}
 							</LoginButton>
 						</Form>
 					</Formik>
@@ -143,7 +152,6 @@ const Login = () => {
 						</a>
 						<Link href="/signup">ثبت نام نکرده ام</Link>
 					</p>
-					{loading && <TransparentLoading />}
 				</div>
 			</div>
 		</div>

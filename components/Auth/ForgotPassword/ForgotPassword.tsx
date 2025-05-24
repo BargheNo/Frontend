@@ -85,6 +85,7 @@ const ForgotPassword = () => {
 						firstName: response.data.firstName,
 						lastName: response.data.lastName,
 						accessToken: response.data.accessToken,
+						permissions: {},
 						refreshToken: response.data.accessToken,
 					})
 				);

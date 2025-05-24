@@ -1,6 +1,7 @@
 "use client";
 import NewNews from "@/components/admin-dashboard/News/NewNews/NewNews";
 import NewsList from "@/components/admin-dashboard/News/NewsList/NewsList";
+import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 import Header from "@/components/Header/Header";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 import useClientCheck from "@/src/hooks/useClientCheck";
@@ -11,11 +12,10 @@ export default function Page() {
 		return <LoadingSpinner />;
 	}
 	return (
-		<div className="page">
-			<div
-				className={`flex justify-center items-center mt-15`}
-			>
-				<div className="w-full">
+		<PageContainer>
+			{/* <div className="page"> */}
+			<div className={`flex justify-center items-center mt-15`}>
+				<div>
 					<NewNews />
 
 					<div className="mt-3 text-navy-blue font-bold text-center">
@@ -25,6 +25,7 @@ export default function Page() {
 			</div>
 			<Header header="اخبار قبلی" />
 			<NewsList />
-		</div>
+			{/* </div> */}
+		</PageContainer>
 	);
 }

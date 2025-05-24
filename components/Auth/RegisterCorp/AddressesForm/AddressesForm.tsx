@@ -31,6 +31,7 @@ import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { baseURL, deleteData, getData, postData } from "@/src/services/apiHub";
 import { useSelector } from "react-redux";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 // import { setCorp } from "@/src/store/slices/corpSlice";
 // import { useDispatch } from "react-redux";
 // import { useSelector } from "react-redux";
@@ -85,7 +86,8 @@ export default function AddressesForm({
 				setLoading(false);
 			})
 			.catch((err) => {
-				toast(generateErrorMessage(err));
+				CustomToast(generateErrorMessage(err), "error");
+				// toast(generateErrorMessage(err));
 				setLoading(false);
 			});
 	}, []);
@@ -115,7 +117,8 @@ export default function AddressesForm({
 									endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/address/${address.ID}`,
 									// endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/0`,
 								}).then((res) => {
-									toast(res.message);
+									CustomToast(res?.message, "success");
+									// toast(res.message);
 								});
 								// removeAddress(id);
 							}}
@@ -198,7 +201,12 @@ export default function AddressesForm({
 										<XIcon className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-x-[3px] -translate-y-[10px]" />
 									</div>
 									<div className="flex flex-col w-full">
-										<ProvinceAndCity values={values} index={index} setFieldValue={setFieldValue} address={address} />
+										<ProvinceAndCity
+											values={values}
+											index={index}
+											setFieldValue={setFieldValue}
+											address={address}
+										/>
 										{/* <div className="flex w-full h-full gap-4">
 											<Select
 												value={String(
@@ -402,9 +410,10 @@ export default function AddressesForm({
 											unit: "",
 										});
 									} else {
-										toast(
-											"شما حداکثر مقدار آدرس را اضافه کرده‌اید"
-										);
+										// toast(
+										// 	"شما حداکثر مقدار آدرس را اضافه کرده‌اید"
+										// );
+										CustomToast("شما حداکثر مقدار آدرس را اضافه کرده‌اید", "warning")
 									}
 								}}
 							>
@@ -422,7 +431,7 @@ function ProvinceAndCity({
 	values,
 	index,
 	setFieldValue,
-	address
+	address,
 }: {
 	values: corpData;
 	index: number;

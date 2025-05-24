@@ -1,13 +1,18 @@
-import React from 'react'
-import RolesAndPermissions from '@/components/admin-dashboard/RolesAndPermissions/RolesAndPermissions'
+import React from "react";
+import RolesAndPermissions from "@/components/admin-dashboard/RolesAndPermissions/RolesAndPermissions";
+import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
+import Header from "@/components/Header/Header";
 
 const page = () => {
-  return (
-    <div>
-      <RolesAndPermissions/>
+	return (
+		<PageContainer>
+			{/* <div> */}
+      <Header header="نقش‌ها و دسترسی‌ها" />
+			<RolesAndPermissions />
 
-    </div>
-  )
-}
+			{/* </div> */}
+		</PageContainer>
+	);
+};
 
-export default page
+export default page;

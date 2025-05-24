@@ -49,7 +49,7 @@ export default function CorpInfoForm({
 				})
 				.catch((err) => {
 					console.log(err);
-					CustomToast(generateErrorMessage(err));
+					CustomToast(generateErrorMessage(err), "error");
 					setLoading(false);
 				});
 		}
@@ -139,7 +139,8 @@ const Signatories: React.FC<SignatoriesProps> = ({
 									className="text-fire-orange rounded-sm hover:cursor-pointer flex mb-3 w-fit"
 									onClick={() => {
 										CustomToast(
-											"صاحب امضا با موفقیت حذف شد"
+											"صاحب امضا با موفقیت حذف شد",
+											"success"
 										);
 										remove(index);
 									}}

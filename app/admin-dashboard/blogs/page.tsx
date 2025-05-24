@@ -2,6 +2,7 @@
 
 import BlogsList from "@/components/admin-dashboard/Blogs/BlogsList/BlogsList";
 import NewBlog from "@/components/admin-dashboard/Blogs/NewBlog/NewBlog";
+import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 import Header from "@/components/Header/Header";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 import useClientCheck from "@/src/hooks/useClientCheck";
@@ -12,11 +13,11 @@ export default function Page() {
 		return <LoadingSpinner />;
 	}
 	return (
-		<div className="page">
+		<PageContainer>
+			{/* <div className="page"> */}
 			<div className={`flex justify-center items-center mt-15`}>
-				<div className="w-full">
+				<div>
 					<NewBlog />
-
 					<div className="mt-3 text-navy-blue font-bold text-center">
 						<p>ثبت مطلب جدید</p>
 					</div>
@@ -24,6 +25,7 @@ export default function Page() {
 			</div>
 			<Header header="مطالب قبلی" />
 			<BlogsList />
-		</div>
+			{/* </div> */}
+		</PageContainer>
 	);
 }

@@ -56,13 +56,13 @@ export default function CustomTextArea({
 					</label>
 				)}
 				<textarea
-                    {...field}
-                    {...props}
+					{...field}
+					{...props}
 					dir={isRTL(field.value) ? "rtl" : "ltr"}
 					autoFocus={autoFocus}
 					className={`${style.CustomInput} ${
 						style.numberInput
-					} ${inputClassName} ${textareaClassName} min-h-12 w-full ${
+					} ${inputClassName} ${textareaClassName} min-h-12 bg-[#f1f4fc] w-full ${
 						isRTL(field.value) ? "text-right rtl" : "text-left ltr"
 					}`}
 					style={{ paddingLeft: Icon ? "42px" : "12px" }}

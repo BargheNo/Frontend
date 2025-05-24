@@ -1,22 +1,43 @@
 .status {
-	background: #f4f1f3;
+	background: white;
+	/* background: #f0edef; */
 	box-shadow: 2px 2px 1.6px 0px #00000040 inset,
 		-1px -1px 5.5px 0px #ffffff inset;
 	border-radius: 8px;
 }
 
 .button {
+	background: white;
 	border-radius: 12px;
 }
 
-.shadow{
-	background: #f4f1f3;
+.shadow {
+	background: white;
+	/* background: #f0edef; */
 	box-shadow: 2px 2px 1.6px 0px #00000040 inset,
 		-1px -1px 5.5px 0px #ffffff inset;
-		border-radius: 8px;
+	border-radius: 8px;
 }
 
 .outsideShadow {
 	box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
-  }
-  
+}
+
+.icon {
+	position: relative;
+	color: #fa682d;
+	cursor: pointer;
+	width: 7rem;
+	height: auto;
+}
+
+.CustomInput {
+	box-shadow: inset 1px 2px 5px rgba(0, 0, 0, 0.2);
+	border-radius: 9px;
+	/* width: 95%; */
+	/* width: 100%; */
+	box-sizing: border-box;
+	text-align: right;
+	background-color: white;
+	/* background-color: #f1f4fc; */
+}

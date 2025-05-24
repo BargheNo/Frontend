@@ -45,6 +45,7 @@ import { useSelector } from "react-redux";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
 import TransparentLoading from "../LoadingSpinner/TransparentLoading";
+import CustomToast from "../Custom/CustomToast/CustomToast";
 export default function Neworder() {
 	const [loading, setLoading] = useState(false);
 	const [open, setOpen] = useState(false);
@@ -99,13 +100,15 @@ export default function Neworder() {
 		orderService
 			.orderRequest(orderinfo, token)
 			.then((res) => {
-				toast(<div id="toast-success">{res?.message}</div>);
+				CustomToast(res?.message, "success");
+				// toast(<div id="toast-success">{res?.message}</div>);
 				setLoading(false);
 				setOpen(false);
 			})
 			.catch((err) => {
 				console.log(err);
-				toast(<div id="toast-fail">{generateErrorMessage(err)}</div>);
+				CustomToast(generateErrorMessage(err), "error");
+				// toast(<div id="toast-fail">{generateErrorMessage(err)}</div>);
 				setLoading(false);
 				// setOpen(false);
 			});
@@ -120,7 +123,7 @@ export default function Neworder() {
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}
-				className="w-full sm:min-w-[750px] max-w-xl mx-auto p-4 overflow-auto py-4 max-h-[90vh] overflow-y-auto"
+				className="w-full sm:min-w-[750px] max-w-xl mx-auto no-scrollbar p-4 overflow-auto py-4 max-h-[90vh] overflow-y-auto"
 			>
 				<DialogHeader>
 					<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
@@ -239,6 +242,7 @@ export default function Neworder() {
 														<SelectItem
 															id={String(index)}
 															key={index}
+															className="cursor-pointer"
 															value={
 																provincearr.name
 															}
@@ -278,6 +282,7 @@ export default function Neworder() {
 													<SelectItem
 														key={index}
 														value={city.name}
+														className="cursor-pointer"
 														id={String(index)}
 													>
 														{Object.values(
@@ -405,29 +410,37 @@ export default function Neworder() {
 											</SelectLabel>
 											<SelectItem
 												id="0"
+												className="cursor-pointer"
 												value="residential"
 											>
 												مسکونی
 											</SelectItem>
 											<SelectItem
 												id="1"
+												className="cursor-pointer"
 												value="commercial"
 											>
 												تجاری
 											</SelectItem>
 											<SelectItem
 												id="2"
+												className="cursor-pointer"
 												value="industrial"
 											>
 												صنعتی
 											</SelectItem>
 											<SelectItem
 												id="3"
+												className="cursor-pointer"
 												value="argiculture"
 											>
 												کشاورزی
 											</SelectItem>
-											<SelectItem id="4" value="more">
+											<SelectItem
+												id="4"
+												value="more"
+												className="cursor-pointer"
+											>
 												سایر
 											</SelectItem>
 										</SelectGroup>
@@ -435,7 +448,7 @@ export default function Neworder() {
 								</Select>
 							</div>
 
-							<div className="flex flex-row w-80 justify-center items-center self-center">
+							<div className="flex flex-row w-80 font-bold justify-center items-center self-center">
 								<SignupButton
 									className="text-[#FA682D]"
 									id="newOrderBtn"
@@ -444,7 +457,6 @@ export default function Neworder() {
 										marginTop: "10px",
 									}}
 								>
-									{" "}
 									ثبت سفارش
 								</SignupButton>
 							</div>
