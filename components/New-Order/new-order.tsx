@@ -46,6 +46,7 @@ import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
 import TransparentLoading from "../LoadingSpinner/TransparentLoading";
 import CustomToast from "../Custom/CustomToast/CustomToast";
+import AddComponent from "../AddComponent/AddComponent";
 export default function Neworder() {
 	const [loading, setLoading] = useState(false);
 	const [open, setOpen] = useState(false);
@@ -117,9 +118,10 @@ export default function Neworder() {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<SignupButton type="button" id="plus">
+				{/* <SignupButton type="button" id="plus">
 					<Plus className={style.icon} />
-				</SignupButton>
+				</SignupButton> */}
+				<AddComponent title="ثبت سفارش جدید" />
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}

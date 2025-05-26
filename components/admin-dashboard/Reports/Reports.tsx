@@ -37,6 +37,7 @@ const Reports = () => {
 				setPanelReports(data.data);
 			})
 			.catch((err) => {
+				console.log(err);
 				const errMsg =
 					generateErrorMessage(err) ||
 					"مشکلی در دریافت گزارش‌های پنل رخ داد.";
@@ -55,9 +56,11 @@ const Reports = () => {
 		})
 			.then((res) => res.json())
 			.then((data) => {
+				console.log(data);
 				setMaintenanceReports(data.data);
 			})
 			.catch((err) => {
+				console.log(err);
 				const errMsg =
 					generateErrorMessage(err) ||
 					"مشکلی در دریافت گزارش‌های تعمیر و نگهداری رخ داد.";
@@ -105,25 +108,25 @@ const Reports = () => {
 
 	const MaintenanceReport = ({
 		id,
-		Description,
-		MaintenanceRecord,
+		description,
+		maintenanceRecord,
 		Status,
 	}: {
 		id: string;
-		Description: string;
+		description: string;
 		Status: string;
-		MaintenanceRecord: {
-			Customer: {
+		maintenanceRecord: {
+			customer: {
 				firstName: string;
 				lastName: string;
 			};
-			Operator: {
+			operator: {
 				firstName: string;
 				lastName: string;
 			};
 			Title: string;
-			Details: string;
-			Date: string;
+			details: string;
+			date: string;
 		};
 	}) => {
 		return (
@@ -133,36 +136,36 @@ const Reports = () => {
 					<div className="flex flex-col gap-3">
 						<p className="text-start content-start w-full text-2xl font-bold">
 							گزارش مربوط به سابقه تعمیر{" "}
-							{MaintenanceRecord?.Title}
+							{maintenanceRecord?.Title}
 						</p>
 						<div className="flex flex-row gap-2">
 							<User className="text-orange-500"></User>
 							<p className="text-start content-start w-full text-lg">
-								از طرف: {MaintenanceRecord?.Customer?.firstName}{" "}
-								{MaintenanceRecord?.Customer?.lastName}
+								از طرف: {maintenanceRecord?.customer?.firstName}{" "}
+								{maintenanceRecord?.customer?.lastName}
 							</p>
 						</div>
 						<div className="flex flex-row gap-2">
 							<Hammer className="text-orange-500"></Hammer>
 							<p className="text-start content-start w-full text-lg">
 								اپراتور :{" "}
-								{MaintenanceRecord?.Operator?.firstName}{" "}
-								{MaintenanceRecord?.Operator?.lastName}
+								{maintenanceRecord?.operator?.firstName}{" "}
+								{maintenanceRecord?.operator?.lastName}
 							</p>
 						</div>
 						<div className="flex flex-row gap-2">
 							<ReceiptText className="text-orange-500"></ReceiptText>
 							<p className="max-w-[600px] break-words">
-								شرح جزئیات : {MaintenanceRecord?.Details}
+								شرح جزئیات : {maintenanceRecord?.details}
 							</p>
 						</div>
 					</div>
 
-					{/* Bottom - Description */}
+					{/* Bottom - description */}
 					<div className="flex flex-row gap-2">
 						<CircleAlert className="text-orange-500"></CircleAlert>
 						<p className="max-w-[600px] break-words font-medium">
-							شرح گزارش : {Description}
+							شرح گزارش : {description}
 						</p>
 					</div>
 				</div>
@@ -174,7 +177,7 @@ const Reports = () => {
 					>
 						<span className="text-[#636363] font-bold">
 							{new Date(
-								MaintenanceRecord?.Date
+								maintenanceRecord?.date
 							).toLocaleDateString("fa-IR")}
 						</span>
 						<div className="flex items-center gap-2">
@@ -188,13 +191,9 @@ const Reports = () => {
 					</div>
 					<div
 						className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
+						onClick={() => resolveReport(id)}
 					>
-						<button
-							className="cursor-pointer"
-							onClick={() => resolveReport(id)}
-						>
-							بررسی
-						</button>
+						<button className="cursor-pointer">بررسی</button>
 						<ArrowLeft />
 					</div>
 				</div>
@@ -204,21 +203,21 @@ const Reports = () => {
 
 	const PanelReport = ({
 		id,
-		Description,
+		description,
 		Status,
 		Panel,
 	}: {
 		id: string;
-		Description: string;
+		description: string;
 		Status: string;
 		Panel: {
 			Name: string;
-			PanelName: string;
-			Customer: {
+			panelName: string;
+			customer: {
 				firstName: string;
 				lastName: string;
 			};
-			Corporation: {
+			corporation: {
 				name: string;
 			};
 		};
@@ -229,25 +228,25 @@ const Reports = () => {
 				<div className="w-5/6 flex flex-col gap-3 justify-between">
 					<div className="flex flex-col gap-3">
 						<p className="text-start w-full text-2xl font-bold">
-							گزارش مربوط به پنل: {Panel?.PanelName}
+							گزارش مربوط به پنل: {Panel?.panelName}
 						</p>
 						<div className="flex flex-row gap-2">
 							<User className="text-orange-500"></User>
 							<p className="text-start w-full text-lg">
-								از طرف: {Panel?.Customer?.firstName}{" "}
-								{Panel?.Customer?.lastName}
+								از طرف: {Panel?.customer?.firstName}{" "}
+								{Panel?.customer?.lastName}
 							</p>
 						</div>
 						<div className="flex flex-row gap-2">
 							<School className="text-orange-500"></School>
 							<p className="text-start w-full text-lg">
-								شرکت: {Panel?.Corporation?.name}
+								شرکت: {Panel?.corporation?.name}
 							</p>
 						</div>
 						<div className="flex flex-row gap-2">
 							<CircleAlert className="text-orange-500"></CircleAlert>
 							<p className="max-w-[600px] break-words">
-								شرح گزارش: {Description}
+								شرح گزارش: {description}
 							</p>
 						</div>
 					</div>
@@ -296,14 +295,14 @@ const Reports = () => {
 						maintenanceReports.map((report) => (
 							<MaintenanceReport
 								key={report.id}
-								id={report.ID}
-								Description={report.Description}
+								id={report.id}
+								description={report.description}
 								Status={
-									report.Status === "resolved"
+									report.status === "resolved"
 										? "بررسی شده"
 										: "بررسی نشده"
 								}
-								MaintenanceRecord={report.MaintenanceRecord}
+								maintenanceRecord={report.maintenanceRecord}
 							/>
 						))
 					) : (
@@ -325,14 +324,14 @@ const Reports = () => {
 						panelReports.map((report) => (
 							<PanelReport
 								key={report.id}
-								id={report.ID}
-								Description={report.Description}
+								id={report.id}
+								description={report.description}
 								Status={
-									report.Status === "resolved"
+									report.status === "resolved"
 										? "بررسی شده"
 										: "بررسی نشده"
 								}
-								Panel={report.Panel}
+								Panel={report.panel}
 							/>
 						))
 					) : (

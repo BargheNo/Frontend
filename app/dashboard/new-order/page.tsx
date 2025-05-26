@@ -20,9 +20,9 @@ export default function Page() {
 					<div>
 						<Neworder />
 
-						<div className="text-center lg:font-semibold mt-3 text-navy-blue">
+						{/* <div className="text-center lg:font-semibold mt-3 text-navy-blue">
 							<p>ثبت سفارش جدید</p>
-						</div>
+						</div> */}
 					</div>
 				</div>
 				<Header header="سابقه سفارشات" />

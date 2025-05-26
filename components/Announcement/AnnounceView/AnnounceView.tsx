@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import Image from "next/image";
 import panelNotFound from "@/public/images/panelNotFound/panelNotFound.png";
 import AnnounceAddCard from "../AnnounceAddCard/AnnounceAddCard";
+import Header from "@/components/Header/Header";
 
 interface News {
   id: string;
@@ -46,17 +47,17 @@ export default function AnnounceView({
     console.log("dd:", data?.data);
     return (
       <>
-        <div className="flex flex-row w-full items-center justify-between">
-          <span className="text-3xl self-start">اخبار و اطلاعیه‌ها</span>
+        {/* <div className="flex flex-row w-full items-center"> */}
+          {/* <span className="text-3xl self-start">اخبار و اطلاعیه‌ها</span> */}
           {!onlyView && <AnnounceAddCard />}
-        </div>
+        {/* </div> */}
         <AnnouncementBox
           className="p-5 bg-warm-white h-[60vh] w-[85vw]!"
           insideClassName="gap-5"
         >
           {isLoading && <LoadingSpinner />}
           {data?.data == 0 && (
-            <div className="text-center flex flex-col items-center justify-center mt-20 gap-4">
+            <div className="text-center flex flex-col items-center justify-center gap-4">
               <Image
                 className="w-1/3"
                 src={panelNotFound}
