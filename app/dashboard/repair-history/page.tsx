@@ -9,7 +9,7 @@ import CustomerRepairRequest from "@/components/Repair/Customer/CustomerRepairRe
 import RepairDetailsDialog from "@/components/Repair/Customer/CustomerRepairDialog";
 
 import { baseURL, getData } from "@/src/services/apiHub";
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import Header from "@/components/Header/Header";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 

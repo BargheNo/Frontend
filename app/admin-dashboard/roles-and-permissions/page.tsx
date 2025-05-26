@@ -7,7 +7,7 @@ const page = () => {
 	return (
 		<PageContainer>
 			{/* <div> */}
-      <Header header="نقش‌ها و دسترسی‌ها" />
+			<Header header="نقش‌ها و دسترسی‌ها" />
 			<RolesAndPermissions />
 
 			{/* </div> */}

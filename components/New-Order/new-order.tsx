@@ -44,7 +44,7 @@ import { useSelector } from "react-redux";
 // import { RootState } from "@/src/store/types";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
-import TransparentLoading from "../LoadingSpinner/TransparentLoading";
+import TransparentLoading from "../Loading/LoadingSpinner/TransparentLoading";
 import CustomToast from "../Custom/CustomToast/CustomToast";
 import AddComponent from "../AddComponent/AddComponent";
 export default function Neworder() {

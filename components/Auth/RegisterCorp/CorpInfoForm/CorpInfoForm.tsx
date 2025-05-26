@@ -13,7 +13,7 @@ import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { baseURL, getData } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import { useSelector } from "react-redux";
 import { useMediaQuery } from "react-responsive";
 

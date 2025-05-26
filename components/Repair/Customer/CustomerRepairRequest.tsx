@@ -16,9 +16,9 @@ import { Formik } from "formik";
 import CompaniesService from "@/src/services/getCompaniesService";
 import getCustomerMyPanels from "@/src/services/getCustomerMyPanels";
 import postRepairRequest from "@/src/services/postRepairRequest";
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import { toast } from "sonner";
-import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
+import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
 
 import {
 	Select,

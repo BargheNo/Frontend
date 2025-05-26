@@ -22,8 +22,9 @@ import { Form, Formik } from "formik";
 import registerService from "@/src/services/registerService";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
+import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 // import useClientCheck from "@/src/hooks/useClientCheck";
 
 function Signup() {
@@ -266,14 +267,18 @@ function Signup() {
 											type="submit"
 											disabled={!check}
 										>
-											<div
-												className={
-													styles.leftIconButton
-												}
-											>
-												<MoveLeft></MoveLeft>
-												<p id="signup">ثبت نام</p>
-											</div>
+											{loading ? (
+												<LoadingOnButton size={29} />
+											) : (
+												<div
+													className={
+														styles.leftIconButton
+													}
+												>
+													<MoveLeft />
+													<p id="signup">ثبت نام</p>
+												</div>
+											)}
 										</SignupButton>
 									</div>
 
@@ -295,7 +300,6 @@ function Signup() {
 									</div>
 								</Form>
 							</Formik>
-							{loading && <TransparentLoading />}
 						</div>
 					</div>
 				</div>

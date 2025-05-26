@@ -34,9 +34,9 @@ import {
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { setUser } from "@/src/store/slices/userSlice";
-import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
+import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
 import useClientCheck from "@/src/hooks/useClientCheck";
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 
 const steps = ["اطلاعات شرکت", "اطلاعات تماس", "آدرس", "مدارک"];
 const icons = [
@@ -377,7 +377,10 @@ export default function Page() {
 									}
 								})
 								.catch((err) => {
-									CustomToast(generateErrorMessage(err), "error");
+									CustomToast(
+										generateErrorMessage(err),
+										"error"
+									);
 								});
 						} else {
 							if (step < steps.length - 1) {
@@ -395,7 +398,10 @@ export default function Page() {
 					!values.certificates?.vatTaxpayerCertificate ||
 					!values.certificates?.officialNewspaperAD
 				) {
-					CustomToast("لطفا مدرک خواسته شده را بارگذاری کنید.", "warning");
+					CustomToast(
+						"لطفا مدرک خواسته شده را بارگذاری کنید.",
+						"warning"
+					);
 					return;
 				}
 

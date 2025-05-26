@@ -25,8 +25,8 @@ import {
 } from "@/components/ui/select";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
-import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 interface Ticket {
 	id: string;
 	subject: string;

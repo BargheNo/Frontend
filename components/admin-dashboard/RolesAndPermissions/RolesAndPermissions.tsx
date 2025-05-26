@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import EditRoleModal from "./EditRoleModal";
 import CreateRoleModal from "./CreateRoleModal";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 
 const RolesAndPermissions = () => {
 	type Permission = {
@@ -27,6 +28,7 @@ const RolesAndPermissions = () => {
 		(state: RootState) => state.user.accessToken
 	);
 	const [roles, setRoles] = useState<any[]>([]);
+	const [loading, setLoading] = useState<boolean>(true);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [currentRole, setCurrentRole] = useState<Role | null>(null);
 	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -42,6 +44,7 @@ const RolesAndPermissions = () => {
 			.then((res) => res.json())
 			.then((data) => {
 				setRoles(data.data);
+				setLoading(false);
 			})
 			.catch((err) => {
 				const errMsg =
@@ -49,6 +52,7 @@ const RolesAndPermissions = () => {
 					"مشکلی در دریافت نقش ها رخ داد.";
 				// toast.error(errMsg);
 				CustomToast(errMsg, "error");
+				setLoading(false);
 			});
 	};
 	const deleteRole = async (roleToDeleteId: string) => {
@@ -141,12 +145,10 @@ const RolesAndPermissions = () => {
 						>
 							<button className="cursor-pointer">تغییر</button>
 							<Pencil className="text-orange-500" />
-
 						</div>
 						<div
 							className={`cta-neu-button flex ${styles.button} items-center content-center justify-center h-1/2 w-1/2 cursor-pointer`}
 						>
-
 							<button
 								onClick={() => deleteRole(id)}
 								className="cursor-pointer"
@@ -160,6 +162,7 @@ const RolesAndPermissions = () => {
 			</div>
 		);
 	};
+	// if (loading) return <LoadingSpinner />;
 	return (
 		<div className="flex items-center justify-center">
 			<div
@@ -181,7 +184,9 @@ const RolesAndPermissions = () => {
 				</div>
 
 				<div className="space-y-6">
-					{roles.length > 0 ? (
+					{loading ? (
+						<LoadingSpinner />
+					) : roles.length > 0 ? (
 						roles.map((role) => (
 							<Roles
 								key={role.id}

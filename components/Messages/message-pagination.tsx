@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import style from "./style.module.css";
 import panelNotFound from "../../public/images/panelNotFound/panelNotFound.png";
-import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "../Loading/LoadingSpinner/LoadingSpinner";
 import SignupButton from "../SignupButton/SignupButton";
 import { Switch } from "@/components/ui/switch";
 import { notificationSetting, notifType } from "@/src/types/notificationTypes";

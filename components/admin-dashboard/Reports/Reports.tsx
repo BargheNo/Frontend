@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import Header from "@/components/Header/Header";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 
 const Reports = () => {
 	const [loadingRepair, setLoadingRepair] = useState<boolean>(true);

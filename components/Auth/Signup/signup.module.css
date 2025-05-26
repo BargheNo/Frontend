@@ -57,7 +57,7 @@
 }
 
 .leftIconButton{
-    @apply flex flex-row justify-center ;
+    @apply flex flex-row justify-center items-center;
     gap: 7px;
 }
 
