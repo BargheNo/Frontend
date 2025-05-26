@@ -13,18 +13,10 @@ export default function Page() {
 	}
 	return (
 		<PageContainer>
-			{/* <div className="page"> */}
-			<div className={`flex justify-center items-center mt-15`}>
-				<div>
-					<NewBlog />
-					<div className="mt-3 text-navy-blue font-bold text-center">
-						<p>ثبت مطلب جدید</p>
-					</div>
-				</div>
-			</div>
+			<Header header="بلاگ‌ها" />
+			<NewBlog />
 			<Header header="مطالب قبلی" />
 			<BlogsList />
-			{/* </div> */}
 		</PageContainer>
 	);
 }

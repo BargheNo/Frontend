@@ -45,6 +45,7 @@ import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
 import addpanelService from "@/src/services/addpanelService";
 import CustomToast from "../Custom/CustomToast/CustomToast";
+import AddComponent from "../AddComponent/AddComponent";
 export default function AddPanel() {
 	const [open, setOpen] = useState(false);
 	const [disable, Setdisable] = useState(true);
@@ -104,9 +105,10 @@ export default function AddPanel() {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<SignupButton type="button">
+				{/* <SignupButton type="button">
 					<Plus className={style.icon} />
-				</SignupButton>
+				</SignupButton> */}
+				<AddComponent title="ثبت پنل جدید" />
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}

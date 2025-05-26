@@ -12,14 +12,16 @@ import {
 } from "@/components/ui/dialog";
 import SignupButton from "@/components/SignupButton/SignupButton";
 import { Plus } from "lucide-react";
+import AddComponent from "@/components/AddComponent/AddComponent";
 export default function NewBlog() {
 	const [open, setOpen] = useState(false);
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<SignupButton type="button" className="bg-white ">
+				{/* <SignupButton type="button" className="bg-white ">
 					<Plus className={styles.icon} />
-				</SignupButton>
+				</SignupButton> */}
+				<AddComponent title="ثبت مطلب جدید" />
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}

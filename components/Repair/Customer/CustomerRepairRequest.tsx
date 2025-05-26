@@ -197,7 +197,7 @@ const CustomerRepairRequest = () => {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<div className="flex flex-col items-center gap-4">
+				{/* <div className="flex flex-col items-center gap-4">
 					<button
 						className="cta-neu-button !w-fit !rounded-4xl"
 						aria-label="درخواست تعمیرات فوری"
@@ -205,7 +205,7 @@ const CustomerRepairRequest = () => {
 						<Plus className="w-28 h-28" />
 					</button>
 					<span className="text-navy-blue">درخواست تعمیرات فوری</span>
-				</div>
+				</div> */}
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}
