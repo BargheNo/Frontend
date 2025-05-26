@@ -14,8 +14,8 @@ export default function Layout({ children }: Readonly<{ children: React.ReactNod
         { name: "مدیریت مالی", path: "/admin-dashboard/finance", icon: <DollarSign /> },
         { name: "پشتیبانی", path: "/admin-dashboard/support", icon: <Headset /> },
         { name: "بلاگ‌ها", path: "/admin-dashboard/blogs", icon: <BookOpen /> },
-        { name: "اخبار و اطلاعیه‌ها", path: "/admin-dashboard/news", icon: <Megaphone /> },
         { name: "گزارشات", path: "/admin-dashboard/reports", icon: <AlertCircle /> },
+        { name: "اخبار و اطلاعیه‌ها", path: "/admin-dashboard/announcements", icon: <Megaphone /> },
     ];
   return (
     <PanelAside navItems={navItems as NavItem[]} mode="admin" >
