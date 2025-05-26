@@ -226,15 +226,7 @@ export default function AddPanel() {
 								>
 									{" "}
 								</CustomInput>
-								<CustomInput
-									type="number"
-									dir="rtl"
-									icon={DatabaseZap}
-									placeholder="مجموع توان تولید شده(کیلووات)"
-									name="power"
-								>
-									{" "}
-								</CustomInput>
+
 								<Select
 									name="building"
 									onValueChange={(value) => {
@@ -252,26 +244,40 @@ export default function AddPanel() {
 											<SelectLabel>
 												نوع ساختمان
 											</SelectLabel>
-											<SelectItem value="residential" className="cursor-pointer">
+											<SelectItem
+												value="residential"
+												className="cursor-pointer"
+											>
 												مسکونی
 											</SelectItem>
-											<SelectItem value="commercial" className="cursor-pointer">
+											<SelectItem
+												value="commercial"
+												className="cursor-pointer"
+											>
 												تجاری
 											</SelectItem>
-											<SelectItem value="industrial" className="cursor-pointer">
+											<SelectItem
+												value="industrial"
+												className="cursor-pointer"
+											>
 												صنعتی
 											</SelectItem>
-											<SelectItem value="argiculture" className="cursor-pointer">
+											<SelectItem
+												value="argiculture"
+												className="cursor-pointer"
+											>
 												کشاورزی
 											</SelectItem>
-											<SelectItem value="more" className="cursor-pointer">
+											<SelectItem
+												value="more"
+												className="cursor-pointer"
+											>
 												سایر
 											</SelectItem>
 										</SelectGroup>
 									</SelectContent>
 								</Select>
 							</div>
-
 							<div
 								className="flex justify-end w-full -mt-4"
 								style={{ gap: "1vw" }}
@@ -279,18 +285,32 @@ export default function AddPanel() {
 								<CustomInput
 									type="number"
 									dir="rtl"
-									icon={TriangleRight}
-									name="angel"
-									placeholder="زاویه نصب(درجه)"
+									icon={DatabaseZap}
+									placeholder="مجموع توان تولید شده (کیلووات)"
+									name="power"
 								>
 									{" "}
 								</CustomInput>
 								<CustomInput
 									type="number"
+									dir="rtl"
+									icon={TriangleRight}
+									name="angel"
+									placeholder="زاویه نصب (درجه)"
+								>
+									{" "}
+								</CustomInput>
+							</div>
+							<div
+								className="flex justify-end w-full -mt-4"
+								style={{ gap: "1vw" }}
+							>
+								<CustomInput
+									type="number"
 									style={{ width: "12vw" }}
 									dir="rtl"
 									icon={Compass}
-									placeholder="جهت نصب(درجه)"
+									placeholder="جهت نصب (درجه)"
 									name="direction"
 								>
 									{" "}
@@ -300,7 +320,7 @@ export default function AddPanel() {
 									style={{ width: "12vw" }}
 									dir="rtl"
 									icon={LandPlot}
-									placeholder="مساحت(مترمربع)"
+									placeholder="مساحت (مترمربع)"
 									name="area"
 								>
 									{" "}
@@ -376,7 +396,7 @@ export default function AddPanel() {
 													<SelectItem
 														key={index}
 														value={city.name}
-															className="cursor-pointer"
+														className="cursor-pointer"
 													>
 														{Object.values(
 															city.name
