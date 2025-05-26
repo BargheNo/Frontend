@@ -17,8 +17,11 @@ import {
 } from "lucide-react";
 import Header from "@/components/Header/Header";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 
 const Reports = () => {
+	const [loadingRepair, setLoadingRepair] = useState<boolean>(true);
+	const [loadingPanel, setLoadingPanel] = useState<boolean>(true);
 	const [panelReports, setPanelReports] = useState<any[]>([]);
 	const [maintenanceReports, setMaintenanceReports] = useState<any[]>([]);
 	const accessToken = useSelector(
@@ -35,6 +38,7 @@ const Reports = () => {
 			.then((res) => res.json())
 			.then((data) => {
 				setPanelReports(data.data);
+				setLoadingPanel(false);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -42,6 +46,7 @@ const Reports = () => {
 					generateErrorMessage(err) ||
 					"مشکلی در دریافت گزارش‌های پنل رخ داد.";
 				CustomToast(errMsg, "error");
+				setLoadingPanel(false);
 				// toast.error(errMsg);
 			});
 	};
@@ -58,6 +63,7 @@ const Reports = () => {
 			.then((data) => {
 				console.log(data);
 				setMaintenanceReports(data.data);
+				setLoadingRepair(false);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -65,7 +71,7 @@ const Reports = () => {
 					generateErrorMessage(err) ||
 					"مشکلی در دریافت گزارش‌های تعمیر و نگهداری رخ داد.";
 				CustomToast(errMsg, "error");
-				// toast.error(errMsg);
+				setLoadingRepair(false);
 			});
 	};
 
@@ -287,60 +293,65 @@ const Reports = () => {
 		<div className="space-y-12 ">
 			{/* Maintenance Reports Section */}
 			<Header header="گزارش‌های تعمیر و نگهداری" />
-			<section
-				className={`no-scrollbar flex flex-col bg-[#F0EDEF] max-h-[80vh] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] mb-5`}
-			>
-				<div className="">
-					{maintenanceReports.length > 0 ? (
-						maintenanceReports.map((report) => (
-							<MaintenanceReport
-								key={report.id}
-								id={report.id}
-								description={report.description}
-								Status={
-									report.status === "resolved"
-										? "بررسی شده"
-										: "بررسی نشده"
-								}
-								maintenanceRecord={report.maintenanceRecord}
-							/>
-						))
-					) : (
-						<p className="text-gray-500 text-right p-5">
-							هیچ گزارشی موجود نیست.
-						</p>
-					)}
-				</div>
-			</section>
+			{loadingRepair ? (
+				<LoadingSpinner />
+			) : (
+				<section
+					className={`no-scrollbar flex flex-col bg-[#F0EDEF] max-h-[80vh] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] mb-5`}
+				>
+					<div>
+						{maintenanceReports.length === 0 ? (
+							<p className="text-gray-500 text-right p-5">
+								هیچ گزارشی موجود نیست.
+							</p>
+						) : (
+							maintenanceReports.map((report) => (
+								<MaintenanceReport
+									key={report.id}
+									id={report.id}
+									description={report.description}
+									Status={
+										report.status === "resolved"
+											? "بررسی شده"
+											: "بررسی نشده"
+									}
+									maintenanceRecord={report.maintenanceRecord}
+								/>
+							))
+						)}
+					</div>
+				</section>
+			)}
 
 			{/* Panel Reports Section */}
 			<Header header="گزارش‌های پنل" className="mt-8" />
-			<section className="no-scrollbar flex flex-col bg-[#F0EDEF] max-h-[80vh] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] mb-5">
-				{/* <h2 className="text-right text-2xl font-bold text-blue-800 mb-6  pb-4">
-					گزارش‌های پنل
-				</h2> */}
-				<div>
-					{panelReports.length > 0 ? (
-						panelReports.map((report) => (
-							<PanelReport
-								key={report.id}
-								id={report.id}
-								description={report.description}
-								Status={
-									report.status === "resolved"
-										? "بررسی شده"
-										: "بررسی نشده"
-								}
-								Panel={report.panel}
-							/>
-						))
-					) : (
-						<p className="text-gray-500 text-right p-5">
-							هیچ گزارشی موجود نیست.
-						</p>
-					)}
-				</div>
-			</section>
+			{loadingPanel ? (
+				<LoadingSpinner />
+			) : (
+				<section className="no-scrollbar flex flex-col bg-[#F0EDEF] max-h-[80vh] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] mb-5">
+					<div>
+						{panelReports.length > 0 ? (
+							panelReports.map((report) => (
+								<PanelReport
+									key={report.id}
+									id={report.id}
+									description={report.description}
+									Status={
+										report.status === "resolved"
+											? "بررسی شده"
+											: "بررسی نشده"
+									}
+									Panel={report.panel}
+								/>
+							))
+						) : (
+							<p className="text-gray-500 text-right p-5">
+								هیچ گزارشی موجود نیست.
+							</p>
+						)}
+					</div>
+				</section>
+			)}
 		</div>
 	);
 };

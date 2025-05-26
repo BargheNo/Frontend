@@ -112,7 +112,7 @@ export default function AddPanel() {
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}
-				className="w-full sm:min-w-[750px] max-w-xl mx-auto p-4  overflow-auto py-4"
+				className="w-full sm:min-w-[750px] max-w-xl max-h-[90vh] no-scrollbar mx-auto p-4 overflow-auto py-4"
 			>
 				<DialogHeader>
 					<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
@@ -326,7 +326,6 @@ export default function AddPanel() {
 									{" "}
 								</CustomInput>
 							</div>
-
 							<div
 								className={`${style.citypro} flex md:flex-row flex-col justify-between w-full mt-2`}
 							>
@@ -455,20 +454,20 @@ export default function AddPanel() {
 								</CustomInput>
 							</div>
 
-							<div className="flex flex-row justify-center items-center self-center">
-								<SignupButton
-									className="text-[#FA682D]"
-									type="submit"
-									style={{
-										marginTop: "10px",
-										width: "25vw",
-									}}
-								>
-									{" "}
-									ثبت پنل
-								</SignupButton>
-							</div>
-							<DialogFooter>
+							<DialogFooter className="flex flex-row justify-center items-center self-center">
+								{/* <div className="flex flex-row justify-center items-center self-center"> */}
+									<SignupButton
+										className="text-[#FA682D]"
+										type="submit"
+										style={{
+											marginTop: "10px",
+											width: "25vw",
+										}}
+									>
+										{" "}
+										ثبت پنل
+									</SignupButton>
+								{/* </div> */}
 								<DialogClose />
 							</DialogFooter>
 						</Form>
