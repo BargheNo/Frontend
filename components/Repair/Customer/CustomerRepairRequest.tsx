@@ -30,6 +30,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import AddComponent from "@/components/AddComponent/AddComponent";
 
 const urgencyOptions = [
 	{ value: 1, label: "اولویت پایین" },
@@ -206,6 +207,7 @@ const CustomerRepairRequest = () => {
 					</button>
 					<span className="text-navy-blue">درخواست تعمیرات فوری</span>
 				</div> */}
+				<AddComponent title="درخواست تعمیرات فوری" />
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}

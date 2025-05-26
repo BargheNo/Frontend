@@ -166,7 +166,7 @@ const RolesAndPermissions = () => {
 				className={`bg-[#F0EDEF] p-10 rounded-xl shadow-sm flex flex-col items-center gap-3 w-full justify-center ${styles.outsideShadow}`}
 			>
 				<div className="flex justify-between items-center w-full mb-6 pb-4">
-					<h2 className="text-right text-2xl font-bold text-blue-800 border-b">
+					<h2 className="text-right text-2xl font-bold text-blue-800">
 						نقش های فعلی
 					</h2>
 					<div

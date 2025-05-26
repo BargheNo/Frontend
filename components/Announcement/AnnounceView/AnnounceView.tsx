@@ -48,11 +48,10 @@ export default function AnnounceView({
     return (
       <>
         {/* <div className="flex flex-row w-full items-center"> */}
-          {/* <span className="text-3xl self-start">اخبار و اطلاعیه‌ها</span> */}
           {!onlyView && <AnnounceAddCard />}
         {/* </div> */}
         <AnnouncementBox
-          className="p-5 bg-warm-white h-[60vh] w-[85vw]!"
+          className="bg-warm-white h-[60vh] w-full"
           insideClassName="gap-5"
         >
           {isLoading && <LoadingSpinner />}

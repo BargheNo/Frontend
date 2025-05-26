@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { X, Loader2, Vote } from "lucide-react";
-import { toast } from "sonner";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { useSelector } from "react-redux";
 import ReactDOM from "react-dom";
