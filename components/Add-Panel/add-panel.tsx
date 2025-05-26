@@ -243,7 +243,7 @@ export default function AddPanel() {
 									}}
 								>
 									<SelectTrigger
-										className={`${style.CustomInput} mt-[27px] min-h-[43px]`}
+										className={`${style.CustomInput} mt-[27px] min-h-[43px] cursor-pointer`}
 									>
 										<SelectValue placeholder="نوع ساختمان" />
 									</SelectTrigger>
@@ -252,19 +252,19 @@ export default function AddPanel() {
 											<SelectLabel>
 												نوع ساختمان
 											</SelectLabel>
-											<SelectItem value="residential">
+											<SelectItem value="residential" className="cursor-pointer">
 												مسکونی
 											</SelectItem>
-											<SelectItem value="commercial">
+											<SelectItem value="commercial" className="cursor-pointer">
 												تجاری
 											</SelectItem>
-											<SelectItem value="industrial">
+											<SelectItem value="industrial" className="cursor-pointer">
 												صنعتی
 											</SelectItem>
-											<SelectItem value="argiculture">
+											<SelectItem value="argiculture" className="cursor-pointer">
 												کشاورزی
 											</SelectItem>
-											<SelectItem value="more">
+											<SelectItem value="more" className="cursor-pointer">
 												سایر
 											</SelectItem>
 										</SelectGroup>
@@ -341,6 +341,7 @@ export default function AddPanel() {
 															value={
 																provincearr.name
 															}
+															className="cursor-pointer"
 														>
 															{provincearr.name}
 														</SelectItem>
@@ -375,6 +376,7 @@ export default function AddPanel() {
 													<SelectItem
 														key={index}
 														value={city.name}
+															className="cursor-pointer"
 													>
 														{Object.values(
 															city.name
