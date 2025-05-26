@@ -88,9 +88,9 @@ const Page = () => {
 		date: item.CreatedAt,
 	}));
 
-	if (isLoading) {
-		return <LoadingSpinner />;
-	}
+	// if (isLoading) {
+	// 	return <LoadingSpinner />;
+	// }
 
 	if (error) {
 		return (
@@ -130,29 +130,30 @@ const Page = () => {
 			</div>
 			<div>
 				<Header header="سوابق تعمیرات" />
-				{/* <h1 className="text-navy-blue text-3xl mb-6 font-black">
-					سوابق تعمیرات
-					</h1> */}
-				<div className="flex flex-col neu-container">
-					{repairItems.length === 0 ? (
-						<div className="text-center py-8 text-gray-500">
-							هیچ سابقه تعمیراتی موجود نیست
-						</div>
-					) : (
-						repairItems.map(
-							(item: RepairHistoryItem, index: number) => (
-								<div key={item.ID || index}>
-									<CustomerRepairCard
-										repairItem={item}
-										onDetailsClick={() =>
-											handleOpenDialog(item)
-										}
-									/>
-								</div>
+				{isLoading ? (
+					<LoadingSpinner />
+				) : (
+					<div className="flex flex-col neu-container">
+						{repairItems.length === 0 ? (
+							<div className="text-center py-8 text-gray-500">
+								هیچ سابقه تعمیراتی موجود نیست
+							</div>
+						) : (
+							repairItems.map(
+								(item: RepairHistoryItem, index: number) => (
+									<div key={item.ID || index}>
+										<CustomerRepairCard
+											repairItem={item}
+											onDetailsClick={() =>
+												handleOpenDialog(item)
+											}
+										/>
+									</div>
+								)
 							)
-						)
-					)}
-				</div>
+						)}
+					</div>
+				)}
 			</div>
 
 			{/* Dialog for displaying repair details */}
