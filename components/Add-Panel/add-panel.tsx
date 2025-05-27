@@ -46,8 +46,10 @@ import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
 import addpanelService from "@/src/services/addpanelService";
 import CustomToast from "../Custom/CustomToast/CustomToast";
 import AddComponent from "../AddComponent/AddComponent";
+import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
 export default function AddPanel() {
 	const [open, setOpen] = useState(false);
+	const [loading, setLoading] = useState<boolean>(false);
 	const [disable, Setdisable] = useState(true);
 	const [provinceid, Setprovinceid] = useState<number>();
 	const [provinces, Setprovinces] = useState<Province[]>([]);
@@ -90,16 +92,19 @@ export default function AddPanel() {
 
 	const handelAddPanelrequest = (panel: InitPanel) => {
 		setOpen(false);
+		setLoading(true);
 		addpanelService
 			.AddPanel(panel)
 			.then((res) => {
 				CustomToast(res?.message, "success");
 				console.log(res);
 				setOpen(false);
+				setLoading(false);
 			})
 			.catch((err) => {
 				console.log(err);
 				CustomToast(generateErrorMessage(err), "error");
+				setLoading(false);
 			});
 	};
 	return (
@@ -456,17 +461,20 @@ export default function AddPanel() {
 
 							<DialogFooter className="flex flex-row justify-center items-center self-center">
 								{/* <div className="flex flex-row justify-center items-center self-center"> */}
-									<SignupButton
-										className="text-[#FA682D]"
-										type="submit"
-										style={{
-											marginTop: "10px",
-											width: "25vw",
-										}}
-									>
-										{" "}
-										ثبت پنل
-									</SignupButton>
+								<SignupButton
+									className="text-[#FA682D]"
+									type="submit"
+									style={{
+										marginTop: "10px",
+										width: "25vw",
+									}}
+								>
+									{loading ? (
+										<LoadingOnButton />
+									) : (
+										<p>ثبت پنل</p>
+									)}
+								</SignupButton>
 								{/* </div> */}
 								<DialogClose />
 							</DialogFooter>

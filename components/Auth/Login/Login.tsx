@@ -141,7 +141,7 @@ const Login = () => {
 							</div>
 							<LoginButton>
 								{loading ? (
-									<LoadingOnButton />
+									<LoadingOnButton size={28} />
 								) : (
 									<>
 										ورود

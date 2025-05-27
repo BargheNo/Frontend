@@ -5,7 +5,11 @@ interface LoginButtonProps {
 	children: React.ReactNode;
 }
 
-const LoginButton: React.FC<LoginButtonProps> = ({ children, disabled, ...props }) => {
+const LoginButton: React.FC<LoginButtonProps> = ({
+	children,
+	disabled,
+	...props
+}) => {
 	return (
 		<button
 			id="login"

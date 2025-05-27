@@ -5,7 +5,7 @@ export default function LoadingOnButton({ size, ...props }: { size?: number }) {
 	return (
 		<Loader2
 			className="animate-spin"
-			size={size ? size : 28}
+			size={size ? size : 24}
 			{...props}
 		></Loader2>
 	);

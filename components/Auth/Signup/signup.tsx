@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
+import LoginButton from "../Login/LoginButton";
 // import useClientCheck from "@/src/hooks/useClientCheck";
 
 function Signup() {
@@ -262,13 +263,13 @@ function Signup() {
 											fontWeight: "600",
 										}}
 									>
-										<SignupButton
-											className="text-[#FA682D]"
-											type="submit"
+										<LoginButton
+											// className="text-[#FA682D]"
+											// type="submit"
 											disabled={!check}
 										>
 											{loading ? (
-												<LoadingOnButton size={29} />
+												<LoadingOnButton size={28} />
 											) : (
 												<div
 													className={
@@ -279,7 +280,7 @@ function Signup() {
 													<p id="signup">ثبت نام</p>
 												</div>
 											)}
-										</SignupButton>
+										</LoginButton>
 									</div>
 
 									<PhoneVerification
