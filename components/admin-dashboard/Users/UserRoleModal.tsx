@@ -32,6 +32,7 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 	onClose,
 	userId,
 	onSaveSuccess,
+	userStatus
 }) => {
 	const accessToken = useSelector(
 		(state: RootState) => state.user.accessToken
@@ -41,9 +42,6 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 	const [isLoading, setIsLoading] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isBanning, setIsBanning] = useState(false);
-	const [currentUserStatus, setCurrentUserStatus] = useState<
-		"active" | "blocked"
-	>("active");
 
 	// Fetch all available roles
 	const getAllRoles = async () => {
@@ -145,7 +143,7 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 
 	const handleBanAction = async () => {
 		setIsBanning(true);
-		const action = currentUserStatus === "active" ? "ban" : "unban";
+		const action = userStatus === "active" ? "ban" : "unban";
 
 		try {
 			const response = await fetch(
@@ -168,9 +166,7 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 			// toast.success(result.message);
       CustomToast(result?.message, "success");
 			// Toggle the status
-			setCurrentUserStatus(
-				currentUserStatus === "active" ? "blocked" : "active"
-			);
+
 			onSaveSuccess(); // Refresh user list if needed
 		} catch (error: any) {
 			const errMsg =
@@ -252,7 +248,7 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 						onClick={handleBanAction}
 						disabled={isLoading || isBanning}
 						className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
-							currentUserStatus === "active"
+							userStatus === "active"
 								? "bg-red-500 text-white hover:bg-red-600"
 								: "bg-green-500 text-white hover:bg-green-600"
 						}`}
@@ -260,7 +256,7 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 						{isBanning && (
 							<Loader2 className="animate-spin" size={18} />
 						)}
-						{currentUserStatus === "active"
+						{userStatus === "active"
 							? "مسدود کردن"
 							: "رفع انسداد"}
 					</button>
