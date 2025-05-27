@@ -7,8 +7,8 @@ export default function NotificationBox({ children }: { children: ReactNode }) {
 				<div className="flex flex-col justify-between w-full z-10 space-x-0">
 					<div className="w-full">{children}</div>
 				</div>
-				<div className="flex flex-col lg:justify-center justify-end lg:mb-0 -mb-18 gap-2 items-center md:mb-10 md:mr-0 -mr-40 min-w-48">
-					<div className="flex flex-col h-full w-2/3 items-center justify-center gap-2 p-5 rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
+				<div className="flex flex-col lg:justify-center justify-end lg:mb-0 -mb-18 gap-2 items-center md:mb-10 md:mr-0 -mr-40 min-w-48 ">
+					<div className="flex flex-col  w-2/3 items-center justify-center gap-2 p-5 rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
 						<span className="text-sm font-medium text-gray-600">
 							{"1404-7-9"}
 						</span>

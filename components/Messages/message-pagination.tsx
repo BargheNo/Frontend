@@ -322,18 +322,14 @@ export default function CorpMessagesPagination() {
               <NotificationHeader topic={topic}/>
               <NotificationContent description={body} />
             </NotificationBox>
-						<MessageCard
-							from={from}
-							date={date}
-							topic={topic}
-							body={body}
-						/>
-						<MessageCard
-							from={from}
-							date={date}
-							topic={topic}
-							body={body}
-						/>
+						<NotificationBox>
+              <NotificationHeader topic={topic}/>
+              <NotificationContent description={body} />
+            </NotificationBox>
+            <NotificationBox>
+              <NotificationHeader topic={topic}/>
+              <NotificationContent description={body} />
+            </NotificationBox>
 						{/* {history.map((order: Orderhistory, index) => (
                             <OrderHistory
                             key={index}
