@@ -52,8 +52,9 @@ export default function CorpInfoForm({
 					CustomToast(generateErrorMessage(err), "error");
 					setLoading(false);
 				});
+		} else {
+			setLoading(false);
 		}
-		setLoading(false);
 	}, []);
 	if (loading)
 		return (
