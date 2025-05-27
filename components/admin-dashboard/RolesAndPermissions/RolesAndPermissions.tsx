@@ -12,6 +12,7 @@ import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import AddComponent from "@/components/AddComponent/AddComponent";
 import Header from "@/components/Header/Header";
+import { Badge } from "@/components/ui/badge";
 
 const RolesAndPermissions = () => {
 	type Permission = {
@@ -112,7 +113,7 @@ const RolesAndPermissions = () => {
 				className={`w-full border-t-1 border-gray-300 first:border-t-0`}
 				// className={`bg-white p-4 rounded-xl w-full shadow-sm flex items-center gap-3 rtl ${styles.shadow}`}
 			>
-				<div className="flex flex-row justify-between items-end content-center h-full gap-10 py-5 px-5 overflow-hidden relative border-t-1 border-gray-300 w-full first:border-t-0 min-h-[20px]">
+				<div className="flex flex-col rtl justify-between content-center h-full gap-5 py-5 px-5 overflow-hidden relative border-t-1 border-gray-300 w-full first:border-t-0 min-h-[20px]">
 					<div className="flex flex-col gap-4">
 						<div className="flex flex-row gap-2">
 							<div className="text-orange-500">
@@ -126,8 +127,8 @@ const RolesAndPermissions = () => {
 							<div className="text-orange-500">
 								<SquareCheckBig />
 							</div>
-							<p
-								className="content-start w-full text-xl text-gray-600"
+							<div
+								className="content-start w-full flex gap-2 text-xl"
 								dir="rtl"
 							>
 								<p>دسترسی‌ها:</p>
@@ -136,44 +137,44 @@ const RolesAndPermissions = () => {
 								) : (
 									permissions.map(
 										(permission, index) =>
-											index < 5 && (
+											index < 5 &&
+										 (
 												<div
-													className="flex"
+													className="flex flex-row"
 													key={index}
 												>
-													<Dot />
-													<p>
+													{/* <Dot /> */}
+													<Badge className="bg-fire-orange">
 														{permission.description}
-													</p>
+													</Badge>
+													{/* <span>
+														{permission.description}
+													</span> */}
 												</div>
 											)
 									)
 								)}
-								{permissions.length >= 5 && "..."}
-							</p>
+								{permissions.length >= 5 && <Badge className="bg-fire-orange">...</Badge>}
+							</div>
 						</div>
 					</div>
-					<div className="flex flex-row w-1/4 h-full px-3 gap-4">
-						<div
-							className={`cta-neu-button flex flex-row ${styles.button} items-center content-center justify-center h-1/2 w-1/2`}
+					<div className="flex flex-row w-full h-full px-4 gap-4 rtl justify-end">
+						<button
+							className={`cta-neu-button cursor-pointer w-1/8 flex flex-row ${styles.button} items-center content-center justify-center h-1/2 w-1/2`}
 							onClick={() =>
 								openEditModal({ id, name, permissions })
 							}
 						>
-							<button className="cursor-pointer">تغییر</button>
+							<p>تغییر</p>
 							<Pencil className="text-orange-500" />
-						</div>
-						<div
-							className={`cta-neu-button flex ${styles.button} items-center content-center justify-center h-1/2 w-1/2 cursor-pointer`}
+						</button>
+						<button
+							className={`cta-neu-button flex cursor-pointer w-1/8 ${styles.button} items-center content-center justify-center h-1/2 w-1/2 cursor-pointer`}
+							onClick={() => deleteRole(id)}
 						>
-							<button
-								onClick={() => deleteRole(id)}
-								className="cursor-pointer"
-							>
-								حذف
-							</button>
+							<p>حذف</p>
 							<Trash2 className="text-orange-500" />
-						</div>
+						</button>
 					</div>
 				</div>
 			</div>
@@ -182,9 +183,7 @@ const RolesAndPermissions = () => {
 	// if (loading) return <LoadingSpinner />;
 	return (
 		<>
-			<CreateRoleModal
-				onSaveSuccess={getRoles}
-			/>
+			<CreateRoleModal onSaveSuccess={getRoles} />
 			<Header header="نقش‌های فعلی" />
 			<div className="flex flex-col bg-[#F0EDEF] text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
 				{/* <div className="flex items-center justify-center"> */}

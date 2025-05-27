@@ -2,10 +2,8 @@
 import { useEffect, useState } from "react";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
-import SignupButton from "@/components/SignupButton/SignupButton";
 import PhoneVerification from "@/components/phoneVerification/phoneVerification";
 import styles from "./signup.module.css";
-import { Building2, IdCard } from "lucide-react";
 
 import {
 	MoveLeft,
@@ -14,19 +12,14 @@ import {
 	User,
 	Unlock,
 	Check,
-	ArrowLeft,
-	ArrowRight,
 } from "lucide-react";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
 import registerService from "@/src/services/registerService";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 import LoginButton from "../Login/LoginButton";
-// import useClientCheck from "@/src/hooks/useClientCheck";
 
 function Signup() {
 	const validationSchema = Yup.object({
