@@ -156,6 +156,7 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 						"Content-Type": "application/json",
 						Authorization: `Bearer ${accessToken}`,
 					},
+					body: JSON.stringify({}),
 				}
 			);
 
