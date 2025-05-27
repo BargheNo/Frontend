@@ -346,7 +346,13 @@ const TicketSupportPage = () => {
 							<div className="flex flex-row w-100 gap-4 mt-4">
 								<div
 									className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
-									onClick={() => setActiveCommentTicketId(id)}
+									onClick={() => {
+										if (activeCommentTicketId) {
+											setActiveCommentTicketId(null);
+										} else {
+											setActiveCommentTicketId(id);
+										}
+									}}
 								>
 									<button className="cursor-pointer">
 										افزودن نظر

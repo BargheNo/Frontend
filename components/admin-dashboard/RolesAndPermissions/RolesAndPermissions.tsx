@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import styles from "./RolesAndPermissions.module.css";
-import { User, SquareCheckBig, Trash2, Pencil, Plus } from "lucide-react";
+import { User, SquareCheckBig, Trash2, Pencil, Plus, Dot } from "lucide-react";
 import { useSelector } from "react-redux";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { toast } from "sonner";
@@ -10,6 +10,8 @@ import EditRoleModal from "./EditRoleModal";
 import CreateRoleModal from "./CreateRoleModal";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import AddComponent from "@/components/AddComponent/AddComponent";
+import Header from "@/components/Header/Header";
 
 const RolesAndPermissions = () => {
 	type Permission = {
@@ -107,36 +109,51 @@ const RolesAndPermissions = () => {
 	}) => {
 		return (
 			<div
-				className={`bg-white p-4 rounded-xl w-full shadow-sm flex items-center gap-3 rtl ${styles.shadow}`}
+				className={`w-full border-t-1 border-gray-300 first:border-t-0`}
+				// className={`bg-white p-4 rounded-xl w-full shadow-sm flex items-center gap-3 rtl ${styles.shadow}`}
 			>
-				<div className="bg-white flex flex-row justify-between items-center content-center h-full gap-10 py-5 px-5 overflow-hidden relative border-t-1 border-gray-300 w-full first:border-t-0 min-h-[20px]">
-					<div className="flex flex-row gap-2 w-1/3 ">
-						<div className="text-orange-500">
-							<User />
+				<div className="flex flex-row justify-between items-end content-center h-full gap-10 py-5 px-5 overflow-hidden relative border-t-1 border-gray-300 w-full first:border-t-0 min-h-[20px]">
+					<div className="flex flex-col gap-4">
+						<div className="flex flex-row gap-2">
+							<div className="text-orange-500">
+								<User />
+							</div>
+							<p className="text-start content-start  text-xl ">
+								{name}
+							</p>
 						</div>
-						<p className="text-start content-start  text-xl ">
-							{name}
-						</p>
-					</div>
-					<div className="flex flex-row gap-2 w-5/7 ">
-						<div className="text-orange-500">
-							<SquareCheckBig />
+						<div className="flex flex-row gap-2">
+							<div className="text-orange-500">
+								<SquareCheckBig />
+							</div>
+							<p
+								className="content-start w-full text-xl text-gray-600"
+								dir="rtl"
+							>
+								<p>دسترسی‌ها:</p>
+								{permissions.length === 0 ? (
+									<p>دسترسی موجود نیست</p>
+								) : (
+									permissions.map(
+										(permission, index) =>
+											index < 5 && (
+												<div
+													className="flex"
+													key={index}
+												>
+													<Dot />
+													<p>
+														{permission.description}
+													</p>
+												</div>
+											)
+									)
+								)}
+								{permissions.length >= 5 && "..."}
+							</p>
 						</div>
-						<p
-							className="content-start w-full text-xl text-gray-600"
-							dir="rtl"
-						>
-							دسترسی‌ها:{" "}
-							{permissions.length === 0
-								? "دسترسی موجود نیست"
-								: permissions
-										.slice(0, 2)
-										.map((p) => p.description)
-										.join("، ") +
-								  (permissions.length > 2 ? "، ..." : "")}
-						</p>
 					</div>
-					<div className="flex flex-row w-1/3 px-3 gap-4">
+					<div className="flex flex-row w-1/4 h-full px-3 gap-4">
 						<div
 							className={`cta-neu-button flex flex-row ${styles.button} items-center content-center justify-center h-1/2 w-1/2`}
 							onClick={() =>
@@ -164,15 +181,23 @@ const RolesAndPermissions = () => {
 	};
 	// if (loading) return <LoadingSpinner />;
 	return (
-		<div className="flex items-center justify-center">
-			<div
-				className={`bg-[#F0EDEF] p-10 rounded-xl shadow-sm flex flex-col items-center gap-3 w-full justify-center ${styles.outsideShadow}`}
-			>
-				<div className="flex justify-between items-center w-full mb-6 pb-4">
-					<h2 className="text-right text-2xl font-bold text-blue-800">
+		<>
+			<CreateRoleModal
+				onSaveSuccess={getRoles}
+			/>
+			<Header header="نقش‌های فعلی" />
+			<div className="flex flex-col bg-[#F0EDEF] text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+				{/* <div className="flex items-center justify-center"> */}
+				{/* <div
+						className={`w-full border-t-1 border-gray-300 first:border-t-0`}
+						// className={`bg-[#F0EDEF] p-10 rounded-xl shadow-sm flex flex-col items-center gap-3 w-full justify-center ${styles.outsideShadow}`}
+					> */}
+				{/* <div className="flex flex-col p-5 bg-[#F0EDEF] w-full h-full relative"> */}
+				{/* <div className="flex justify-between items-center w-full mb-6 pb-4"> */}
+				{/* <h2 className="text-right text-2xl font-bold text-blue-800">
 						نقش های فعلی
-					</h2>
-					<div
+					</h2> */}
+				{/* <div
 						className={`cta-neu-button bg-white flex flex-row ${styles.button} items-center content-center justify-center h-15 w-1/5 text-2xl `}
 						onClick={() => setIsCreateModalOpen(true)}
 					>
@@ -180,27 +205,24 @@ const RolesAndPermissions = () => {
 							<Plus />
 						</div>
 						<button className="cursor-pointer">افزودن نقش</button>
-					</div>
-				</div>
-
-				<div className="space-y-6">
-					{loading ? (
-						<LoadingSpinner />
-					) : roles.length > 0 ? (
-						roles.map((role) => (
-							<Roles
-								key={role.id}
-								id={role.id}
-								name={role.name}
-								permissions={role.permissions}
-							/>
-						))
-					) : (
-						<p className="text-gray-500 text-right">
-							هیچ نقشی موجود نیست.
-						</p>
-					)}
-				</div>
+					</div> */}
+				{/* </div> */}
+				{loading ? (
+					<LoadingSpinner />
+				) : roles.length > 0 ? (
+					roles.map((role) => (
+						<Roles
+							key={role.id}
+							id={role.id}
+							name={role.name}
+							permissions={role.permissions}
+						/>
+					))
+				) : (
+					<p className="text-gray-500 text-right">
+						هیچ نقشی موجود نیست.
+					</p>
+				)}
 			</div>
 			<EditRoleModal
 				isOpen={isModalOpen}
@@ -208,12 +230,10 @@ const RolesAndPermissions = () => {
 				role={currentRole}
 				onSaveSuccess={getRoles}
 			/>
-			<CreateRoleModal
-				isOpen={isCreateModalOpen}
-				onClose={() => setIsCreateModalOpen(false)}
-				onSaveSuccess={getRoles}
-			/>
-		</div>
+
+			{/* </div> */}
+			{/* </div> */}
+		</>
 	);
 };
 

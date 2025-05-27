@@ -119,63 +119,61 @@ export default function Users() {
 		};
 	}, [accessToken]);
 
-	const UserItem = React.memo(
-		({
-			firstName,
-			lastName,
-			phone,
-			status,
-			id,
-			onManageRoles,
-		}: UserType & {
-			onManageRoles: (id: number, status: "active" | "blocked") => void;
-		}) => {
-			const normalizedStatus = status === "block" ? "blocked" : status;
-			return (
-				<div className="flex flex-row justify-between w-full h-full bg-[#F4F1F3] p-5 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 items-center">
-					<div className="flex items-center gap-3 w-1/4">
-						<div
-							className={`${styles.icon} bg-[#F4F1F3] text-[#FA682D]`}
-						>
-							<User className="m-1" />
-						</div>
-						<p>
-							{firstName} {lastName}
-						</p>
-					</div>
-					<div className="flex items-center gap-3 w-1/4">
-						<div
-							className={`${styles.icon} bg-[#F4F1F3] text-[#FA682D]`}
-						>
-							<Phone className="m-1" />
-						</div>
-						<p>{phone.slice(-10)}</p>
-					</div>
-					<div className="flex items-center gap-3 w-1/4">
-						<div className="flex items-center gap-2">
-							<span className="font-bold">
-								{status === "active" ? "فعال" : "مسدود"}
-							</span>
-							<div
-								className={`h-4 w-4 rounded-full ${
-									status === "active"
-										? "bg-green-500"
-										: "bg-red-500"
-								} shadow-md`}
-							/>
-						</div>
-					</div>
-					<button
-						className={`${styles.button} text-[#FA682D] flex gap-2 items-center p-2 hover:cursor-pointer`}
-						onClick={() => onManageRoles(id, normalizedStatus)}
+	const UserItem = ({
+		firstName,
+		lastName,
+		phone,
+		status,
+		id,
+		onManageRoles,
+	}: UserType & {
+		onManageRoles: (id: number, status: "active" | "blocked") => void;
+	}) => {
+		const normalizedStatus = status === "block" ? "blocked" : status;
+		return (
+			<div className="flex flex-row justify-between w-full h-full bg-[#F4F1F3] p-5 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 items-center">
+				<div className="flex items-center gap-3 w-1/4">
+					<div
+						className={`${styles.icon} bg-[#F4F1F3] text-[#FA682D]`}
 					>
-						<p className="font-bold">جزئیات بیشتر و مدیریت</p>
-						<Settings />
-					</button>
+						<User className="m-1" />
+					</div>
+					<p>
+						{firstName} {lastName}
+					</p>
 				</div>
-			);
-		}
-	);
+				<div className="flex items-center gap-3 w-1/4">
+					<div
+						className={`${styles.icon} bg-[#F4F1F3] text-[#FA682D]`}
+					>
+						<Phone className="m-1" />
+					</div>
+					<p>{phone.slice(-10)}</p>
+				</div>
+				<div className="flex items-center gap-3 w-1/4">
+					<div className="flex items-center gap-2">
+						<span className="font-bold">
+							{status === "active" ? "فعال" : "مسدود"}
+						</span>
+						<div
+							className={`h-4 w-4 rounded-full ${
+								status === "active"
+									? "bg-green-500"
+									: "bg-red-500"
+							} shadow-md`}
+						/>
+					</div>
+				</div>
+				<button
+					className={`${styles.button} text-[#FA682D] flex gap-2 items-center p-2 hover:cursor-pointer`}
+					onClick={() => onManageRoles(id, normalizedStatus)}
+				>
+					<p className="font-bold">جزئیات بیشتر و مدیریت</p>
+					<Settings />
+				</button>
+			</div>
+		);
+	};
 
 	// if (loading) {
 	//   return (
@@ -237,17 +235,21 @@ export default function Users() {
 				setLoading={setLoading}
 			/>
 			<div className="flex flex-col w-full text-gray-800 rounded-2xl bg-[#F4F1F3] overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
-				{loading ? <LoadingSpinner /> : users.map((user) => (
-					<UserItem
-						key={`user-${user.id}-${user.phone}`}
-						id={user.id}
-						firstName={user.firstName}
-						lastName={user.lastName}
-						phone={user.phone}
-						status={user.status}
-						onManageRoles={handleManageRoles}
-					/>
-				))}
+				{loading ? (
+					<LoadingSpinner />
+				) : (
+					users.map((user) => (
+						<UserItem
+							key={`user-${user.id}-${user.phone}`}
+							id={user.id}
+							firstName={user.firstName}
+							lastName={user.lastName}
+							phone={user.phone}
+							status={user.status}
+							onManageRoles={handleManageRoles}
+						/>
+					))
+				)}
 				<UserRolesModal
 					isOpen={isRolesModalOpen}
 					onClose={() => setIsRolesModalOpen(false)}
