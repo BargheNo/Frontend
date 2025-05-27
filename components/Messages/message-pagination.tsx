@@ -110,7 +110,7 @@ export default function CorpMessagesPagination() {
       ) : history?.length > 0 ? ( */}
 			<>
 				{/* <h1 className="font-bold text-xl mb-4  md:mr-14 mr-4"> تنظیمات اعلان ها</h1> */}
-				<Header header="تنظیمات اعلان‌ها" />
+				<Header className="rtl" header="تنظیمات اعلان‌ها" />
 				<div className="flex flex-col text-white bg-transparent w-full">
 					<div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] mb-5">
 						<div className="flex flex-row mr-auto md:ml-30 m-auto md:gap-17 gap-6">
@@ -141,6 +141,7 @@ export default function CorpMessagesPagination() {
 										<div className="flex flex-col">
 											<div className="flex flex-row md:gap-37 gap-17 md:mt-0 mt-9 md:ml-23">
 												<Switch
+                          className="rtl"
 													onClick={() => {
 														setNameFields((prev) =>
 															prev.map((Item) =>
@@ -169,6 +170,7 @@ export default function CorpMessagesPagination() {
 													}
 												/>
 												<Switch
+                          className="rtl"
 													onClick={() => {
 														setNameFields((prev) =>
 															prev.map((Item) =>
@@ -258,11 +260,11 @@ export default function CorpMessagesPagination() {
 				</div>
 
 				{/* <h1 className="font-bold text-xl mb-4  md:mr-14 mr-4">اعلان ها</h1> */}
-				<Header header="اعلان‌ها" />
+				<Header className="rtl" header="اعلان‌ها" />
 				<div className="flex flex-col text-white bg-transparent w-full">
 					<div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] h-20 mb-5">
 						<div
-							className={`${style.citypro} flex flex-row mr-4 justify-between m-auto md:w-2/10 w-5/10`}
+							className={`${style.citypro} flex flex-row mr-4 justify-between m-auto md:w-2/10 w-5/10 `}
 						>
 							<Select name="notiftype">
 								<SelectTrigger
@@ -318,15 +320,15 @@ export default function CorpMessagesPagination() {
 						</div>
 					</div>
 					<div className="flex flex-col text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
-						<NotificationBox>
+						<NotificationBox date="1404-2-2">
               <NotificationHeader topic={topic}/>
               <NotificationContent description={body} />
             </NotificationBox>
-						<NotificationBox>
+						<NotificationBox date="1404-2-2">
               <NotificationHeader topic={topic}/>
               <NotificationContent description={body} />
             </NotificationBox>
-            <NotificationBox>
+            <NotificationBox date="1404-2-2">
               <NotificationHeader topic={topic}/>
               <NotificationContent description={body} />
             </NotificationBox>
