@@ -1,5 +1,6 @@
 import React from 'react'
 import WarrantyCard from './WarrantyCard'
+import TwoColsLayout from '@/components/Dashboard/PageContainer/TwoColsLayout'
 
 const mockData = [
     {
@@ -10,19 +11,28 @@ const mockData = [
     },
     {
         name: "گارانتی قهوه‌ای ملو"
+    },
+    {
+        name: "گارانتی سبز فسفری"
+    },
+    {
+        name: "گارانتی قرمز بدرنگ"
+    },
+    {
+        name: "گارانتی آبی حنایی"
     }
 ]
 
 const Warranties = () => {
   return (
-    <div className='flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F0EDEF] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]'>
+    <TwoColsLayout>
         {mockData.map((WarrantyItem, index) =>
             <WarrantyCard
                 key={index}
                 name={WarrantyItem.name}
             />
         )}
-    </div>
+    </TwoColsLayout>
   )
 }
 
