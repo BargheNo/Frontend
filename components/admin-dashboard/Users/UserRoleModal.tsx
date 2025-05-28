@@ -168,6 +168,7 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 			// Toggle the status
 
 			onSaveSuccess(); // Refresh user list if needed
+			onClose();
 		} catch (error: any) {
 			const errMsg =
 				generateErrorMessage(error) ||
