@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { Phone, Settings, User, Loader2 } from "lucide-react";
+import { Phone, Settings, User, Loader2, CircleX } from "lucide-react";
 import { useSelector } from "react-redux";
 import styles from "./Users.module.css";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
@@ -29,13 +29,18 @@ export default function Users() {
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
   const [isRolesModalOpen, setIsRolesModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
-  const [selectedUserStatus, setSelectedUserStatus] = useState<'active' | 'blocked' | null>(null);
+  const [selectedUserStatus, setSelectedUserStatus] = useState<
+    "active" | "blocked" | null
+  >(null);
 
-  const handleManageRoles = useCallback((userId: number, status: 'active' | 'blocked') => {
-    setSelectedUserId(userId);
-    setSelectedUserStatus(status);
-    setIsRolesModalOpen(true);
-  }, []);
+  const handleManageRoles = useCallback(
+    (userId: number, status: "active" | "blocked") => {
+      setSelectedUserId(userId);
+      setSelectedUserStatus(status);
+      setIsRolesModalOpen(true);
+    },
+    []
+  );
 
   const fetchAllUsers = useCallback(async () => {
     try {
@@ -78,7 +83,7 @@ export default function Users() {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
-            signal
+            signal,
           }
         );
 
@@ -92,7 +97,8 @@ export default function Users() {
         }
       } catch (err: any) {
         if (!signal.aborted) {
-          const errMsg = generateErrorMessage(err) || "مشکلی در دریافت کاربران رخ داد.";
+          const errMsg =
+            generateErrorMessage(err) || "مشکلی در دریافت کاربران رخ داد.";
           toast.error(errMsg);
         }
       } finally {
@@ -109,53 +115,57 @@ export default function Users() {
     };
   }, [accessToken]);
 
-  const UserItem = React.memo(({ 
-    firstName, 
-    lastName, 
-    phone, 
-    status, 
-    id, 
-    onManageRoles 
-  }: UserType & { onManageRoles: (id: number, status: 'active' | 'blocked') => void }) => {
-    const normalizedStatus = status === "block" ? "blocked" : status;
-    return (
-      <div className="flex flex-row justify-between w-full h-full bg-[#F4F1F3] p-5 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 items-center">
-        <div className="flex items-center gap-3 w-1/4">
-          <div className={`${styles.icon} bg-[#F4F1F3] text-[#FA682D]`}>
-            <User className="m-1" />
+  const UserItem = React.memo(
+    ({
+      firstName,
+      lastName,
+      phone,
+      status,
+      id,
+      onManageRoles,
+    }: UserType & {
+      onManageRoles: (id: number, status: "active" | "blocked") => void;
+    }) => {
+      const normalizedStatus = status === "block" ? "blocked" : status;
+      return (
+        <div className="flex flex-row justify-between w-full h-full bg-[#F4F1F3] p-5 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 items-center">
+          <div className="flex items-center gap-3 w-1/4">
+            <div className={`${styles.icon} bg-[#F4F1F3] text-[#FA682D]`}>
+              <User className="m-1" />
+            </div>
+            <p>
+              {firstName} {lastName}
+            </p>
           </div>
-          <p>
-            {firstName} {lastName}
-          </p>
-        </div>
-        <div className="flex items-center gap-3 w-1/4">
-          <div className={`${styles.icon} bg-[#F4F1F3] text-[#FA682D]`}>
-            <Phone className="m-1" />
+          <div className="flex items-center gap-3 w-1/4">
+            <div className={`${styles.icon} bg-[#F4F1F3] text-[#FA682D]`}>
+              <Phone className="m-1" />
+            </div>
+            <p>{phone.slice(-10)}</p>
           </div>
-          <p>{phone.slice(-10)}</p>
-        </div>
-        <div className="flex items-center gap-3 w-1/4">
-          <div className="flex items-center gap-2">
-            <span className="font-bold">
-              {status === "active" ? "فعال" : "مسدود"}
-            </span>
-            <div
-              className={`h-4 w-4 rounded-full ${
-                status === "active" ? "bg-green-500" : "bg-red-500"
-              } shadow-md`}
-            />
+          <div className="flex items-center gap-3 w-1/4">
+            <div className="flex items-center gap-2">
+              <span className="font-bold">
+                {status === "active" ? "فعال" : "مسدود"}
+              </span>
+              <div
+                className={`h-4 w-4 rounded-full ${
+                  status === "active" ? "bg-green-500" : "bg-red-500"
+                } shadow-md`}
+              />
+            </div>
           </div>
+          <button
+            className={`${styles.button} text-[#FA682D] flex gap-2 items-center p-2 hover:cursor-pointer`}
+            onClick={() => onManageRoles(id, normalizedStatus)}
+          >
+            <p className="font-bold">جزئیات بیشتر و مدیریت</p>
+            <Settings />
+          </button>
         </div>
-        <button
-          className={`${styles.button} text-[#FA682D] flex gap-2 items-center p-2 hover:cursor-pointer`}
-          onClick={() => onManageRoles(id, normalizedStatus)}
-        >
-          <p className="font-bold">جزئیات بیشتر و مدیریت</p>
-          <Settings />
-        </button>
-      </div>
-    );
-  });
+      );
+    }
+  );
 
   if (loading) {
     return (
@@ -166,67 +176,76 @@ export default function Users() {
   }
 
   const CustomIcon = ({ icon: Icon }: { icon: React.ElementType }) => {
-  return (
-    <div className={`${styles.icon} bg-[#F0EDEF] text-[#FA682D]`}>
-      <Icon className="m-1" />
-    </div>
-  );
-};
+    return (
+      <div className={`${styles.icon} bg-[#F0EDEF] text-[#FA682D]`}>
+        <Icon className="m-1" />
+      </div>
+    );
+  };
 
-// const UserItem = ({ firstName, lastName, phone, status, id }: UserType) => {
-//   const normalizedStatus = status === "block" ? "blocked" : status;
-//   return (
-//     <div className="flex flex-row justify-between w-full h-full bg-[#F0EDEF] p-5 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 items-center">
-//       <div className="flex items-center gap-3 w-1/4">
-//         <CustomIcon icon={User} />
-//         <p>
-//           {firstName} {lastName}
-//         </p>
-//       </div>
-//       <div className="flex items-center gap-3 w-1/4">
-//         <CustomIcon icon={Phone} />
-//         <p>{phone.slice(-10)}</p>
-//       </div>
-//       <div className="flex items-center gap-3 w-1/4">
-//         <div className="flex items-center gap-2">
-//           <span className="font-bold">
-//             {status === "active" ? "فعال" : "مسدود"}
-//           </span>
-//           <div
-//             className={`h-4 w-4 rounded-full ${
-//               status === "active" ? "bg-green-500" : "bg-red-500"
-//             } shadow-md`}
-//           />
-//         </div>
-//       </div>
-//       <button
-//         className={`${styles.button} text-[#FA682D] flex gap-2 items-center p-2 hover:cursor-pointer`}
-//        onClick={() => handleManageRoles(id, normalizedStatus)}
-//       >
-//         <p className="font-bold">جزئیات بیشتر و مدیریت</p>
-//         <Settings />
-//       </button>
-//     </div>
-//   );
-// };
+  // const UserItem = ({ firstName, lastName, phone, status, id }: UserType) => {
+  //   const normalizedStatus = status === "block" ? "blocked" : status;
+  //   return (
+  //     <div className="flex flex-row justify-between w-full h-full bg-[#F0EDEF] p-5 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 items-center">
+  //       <div className="flex items-center gap-3 w-1/4">
+  //         <CustomIcon icon={User} />
+  //         <p>
+  //           {firstName} {lastName}
+  //         </p>
+  //       </div>
+  //       <div className="flex items-center gap-3 w-1/4">
+  //         <CustomIcon icon={Phone} />
+  //         <p>{phone.slice(-10)}</p>
+  //       </div>
+  //       <div className="flex items-center gap-3 w-1/4">
+  //         <div className="flex items-center gap-2">
+  //           <span className="font-bold">
+  //             {status === "active" ? "فعال" : "مسدود"}
+  //           </span>
+  //           <div
+  //             className={`h-4 w-4 rounded-full ${
+  //               status === "active" ? "bg-green-500" : "bg-red-500"
+  //             } shadow-md`}
+  //           />
+  //         </div>
+  //       </div>
+  //       <button
+  //         className={`${styles.button} text-[#FA682D] flex gap-2 items-center p-2 hover:cursor-pointer`}
+  //        onClick={() => handleManageRoles(id, normalizedStatus)}
+  //       >
+  //         <p className="font-bold">جزئیات بیشتر و مدیریت</p>
+  //         <Settings />
+  //       </button>
+  //     </div>
+  //   );
+  // };
   return (
     <div className="flex flex-col w-full text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
-      <FilterUsers 
+      <FilterUsers
         accessToken={accessToken}
         onFilteredUsers={setUsers}
         setLoading={setLoading}
       />
-      {users.map((user) => (
-        <UserItem
-          key={`user-${user.id}-${user.phone}`}
-          id={user.id}
-          firstName={user.firstName}
-          lastName={user.lastName}
-          phone={user.phone}
-          status={user.status}
-          onManageRoles={handleManageRoles}
-        />
-      ))}
+      {users.length === 0 ? (
+        <div className="flex flex-row text-center items-center justify-center">
+          <h2 className="text-gray-500 py-5 px-2 text-center">کاربری پیدا نشد</h2>
+          <div className="text-orange-400">
+          <CircleX />
+          </div>
+        </div>
+      ) : (
+        users.map((user) => (
+            <UserItem
+              key={`user-${user.id}-${user.phone}`}
+              id={user.id}
+              firstName={user.firstName}
+              lastName={user.lastName}
+              phone={user.phone}
+              status={user.status}
+              onManageRoles={handleManageRoles}
+            />
+        ))
+      )}
       <UserRolesModal
         isOpen={isRolesModalOpen}
         onClose={() => setIsRolesModalOpen(false)}
