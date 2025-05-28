@@ -19,7 +19,6 @@ export default function page() {
 			</Head>
 			<PageContainer>
 				<AddPanel />
-
 				<Header header="پنل‌های نصب‌ شده" />
 				<InstalledPanelPagination />
 			</PageContainer>
