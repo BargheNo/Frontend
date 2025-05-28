@@ -53,7 +53,7 @@ const WarrantyDetails = ({name, description, type, duration, terms} : WarrantyDe
                 dir='rtl'
             >
                 <DialogHeader>
-                    <DialogTitle className="flex justify-center items-end font-bold mt-3.5 mb-4">
+                    <DialogTitle className="flex justify-center items-end font-bold mt-3.5 mb-2">
                         جزئیات گارانتی
                     </DialogTitle>
                 </DialogHeader>
@@ -84,7 +84,7 @@ const WarrantyDetails = ({name, description, type, duration, terms} : WarrantyDe
                     <h2 className='font-black text-xl'>
                         توضیحات
                     </h2>
-                    <span className='inset-neu-container w-full p-5 max-h-44 overflow-y-scroll'>
+                    <span className='inset-neu-container w-full p-5 max-h-40 overflow-y-scroll'>
                         {description}
                     </span>
                 </div>
@@ -93,7 +93,7 @@ const WarrantyDetails = ({name, description, type, duration, terms} : WarrantyDe
                     <h2 className='font-black text-xl mb-2'>
                         شرایط
                     </h2>
-                    <div className='inset-neu-container w-full max-h-60 p-5 overflow-y-scroll'>
+                    <div className='inset-neu-container w-full max-h-56 p-5 overflow-y-scroll'>
                         {terms.map((termItem, index) =>
                             <TermItem
                                 key={index}
@@ -103,6 +103,12 @@ const WarrantyDetails = ({name, description, type, duration, terms} : WarrantyDe
                             />
                         )}
                     </div>
+                </div>
+
+                <div>
+                    <button className='red-circle-button w-full h-11'>
+                        آرشیو کردن
+                    </button>
                 </div>
 
             </DialogContent>
