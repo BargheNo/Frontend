@@ -126,80 +126,80 @@ const RolesAndPermissions = () => {
 			setDeletingId(null);
 		}
 	};
-	const savePermissions = async (values) => {
-		if (!values.role) return;
-		setIsSaving(true);
+	// const savePermissions = async (values: EditRoleTypes) => {
+	// 	if (!values.role) return;
+	// 	setIsSaving(true);
 
-		try {
-			const response = await fetch(
-				`http://46.249.99.69:8080/v1/admin/roles/${role.id}`,
-				{
-					method: "PUT",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${accessToken}`,
-					},
-					body: JSON.stringify({
-						name: values.name,
-						permissionIDs: values.permissionIDs,
-					}),
-				}
-			);
+	// 	try {
+	// 		const response = await fetch(
+	// 			`http://46.249.99.69:8080/v1/admin/roles/${role.id}`,
+	// 			{
+	// 				method: "PUT",
+	// 				headers: {
+	// 					"Content-Type": "application/json",
+	// 					Authorization: `Bearer ${accessToken}`,
+	// 				},
+	// 				body: JSON.stringify({
+	// 					name: values.name,
+	// 					permissionIDs: values.permissionIDs,
+	// 				}),
+	// 			}
+	// 		);
 
-			if (!response.ok) {
-				throw new Error("Failed to update role");
-			}
+	// 		if (!response.ok) {
+	// 			throw new Error("Failed to update role");
+	// 		}
 
-			const result = await response.json();
-			// toast.success(result.message);
-			CustomToast(result?.message, "success");
-		} catch (error: any) {
-			const errMsg =
-				generateErrorMessage(error) ||
-				"هنگام به‌روزرسانی نقش مشکلی پیش آمد.";
-			// toast.error(errMsg);
-			CustomToast(errMsg, "error");
-		} finally {
-			setIsSaving(false);
-		}
-	};
+	// 		const result = await response.json();
+	// 		// toast.success(result.message);
+	// 		CustomToast(result?.message, "success");
+	// 	} catch (error: any) {
+	// 		const errMsg =
+	// 			generateErrorMessage(error) ||
+	// 			"هنگام به‌روزرسانی نقش مشکلی پیش آمد.";
+	// 		// toast.error(errMsg);
+	// 		CustomToast(errMsg, "error");
+	// 	} finally {
+	// 		setIsSaving(false);
+	// 	}
+	// };
 
 	// const openEditModal = (role: Role) => {
 	// 	setCurrentRole(role);
 	// 	setIsModalOpen(true);
 	// };
-	const permissionsByCategory = allPermissions.reduce((acc, permission) => {
-		if (!acc[permission.category]) {
-			acc[permission.category] = [];
-		}
-		acc[permission.category].push(permission);
-		return acc;
-	}, {} as Record<string, Permission[]>);
-	const getRolePermissions = async (roleId: string) => {
-		try {
-			const response = await fetch(
-				`http://46.249.99.69:8080/v1/admin/roles/${roleId}`,
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${accessToken}`,
-					},
-				}
-			);
-			const data = await response.json();
-			setSelectedPermissions(
-				data.data.permissions.map((p: Permission) => p.id)
-			);
-		} catch (err: any) {
-			console.log(err);
-			const errMsg =
-				generateErrorMessage(err) ||
-				"مشکلی در دریافت مجوزهای نقش رخ داد.";
-			// toast.error(errMsg);
-			CustomToast(errMsg, "error");
-		}
-	};
+	// const permissionsByCategory = allPermissions.reduce((acc, permission) => {
+	// 	if (!acc[permission.category]) {
+	// 		acc[permission.category] = [];
+	// 	}
+	// 	acc[permission.category].push(permission);
+	// 	return acc;
+	// }, {} as Record<string, Permission[]>);
+	// const getRolePermissions = async (roleId: string) => {
+	// 	try {
+	// 		const response = await fetch(
+	// 			`http://46.249.99.69:8080/v1/admin/roles/${roleId}`,
+	// 			{
+	// 				method: "GET",
+	// 				headers: {
+	// 					"Content-Type": "application/json",
+	// 					Authorization: `Bearer ${accessToken}`,
+	// 				},
+	// 			}
+	// 		);
+	// 		const data = await response.json();
+	// 		setSelectedPermissions(
+	// 			data.data.permissions.map((p: Permission) => p.id)
+	// 		);
+	// 	} catch (err: any) {
+	// 		console.log(err);
+	// 		const errMsg =
+	// 			generateErrorMessage(err) ||
+	// 			"مشکلی در دریافت مجوزهای نقش رخ داد.";
+	// 		// toast.error(errMsg);
+	// 		CustomToast(errMsg, "error");
+	// 	}
+	// };
 	const getAllPermissions = async () => {
 		try {
 			const response = await fetch(
@@ -225,19 +225,19 @@ const RolesAndPermissions = () => {
 		getAllPermissions();
 		getRoles();
 	}, []);
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement>,
-		permissionId: number,
-		push: any,
-		remove: any
-	) => {
-		// setFieldValue("");
-		if (e.target.checked) {
-			push(permissionId);
-		} else {
-			remove(permissionId);
-		}
-	};
+	// const handleChange = (
+	// 	e: React.ChangeEvent<HTMLInputElement>,
+	// 	permissionId: number,
+	// 	push: any,
+	// 	remove: any
+	// ) => {
+	// 	// setFieldValue("");
+	// 	if (e.target.checked) {
+	// 		push(permissionId);
+	// 	} else {
+	// 		remove(permissionId);
+	// 	}
+	// };
 	return (
 		<>
 			<CreateRoleModal onSaveSuccess={getRoles} />
@@ -280,7 +280,7 @@ const RolesAndPermissions = () => {
 													<p>دسترسی موجود نیست</p>
 												) : (
 													role.permissions.map(
-														(permission, index) =>
+														(permission: Permission, index:number) =>
 															index < 5 && (
 																<div
 																	className="flex flex-row"
