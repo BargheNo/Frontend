@@ -4,7 +4,7 @@ import CorpRepairCard from "@/components/Repair/Corp/CorpRepairCard";
 import CorpRepairDialog from "@/components/Repair/Corp/CorpRepairDialog";
 import { CorpRepairItem } from "@/types/CorpTypes";
 import getCorpRepairRecords from "@/src/services/getCorpRepairRecords";
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import Header from "@/components/Header/Header";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 

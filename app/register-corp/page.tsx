@@ -34,9 +34,10 @@ import {
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { setUser } from "@/src/store/slices/userSlice";
-import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
+import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
 import useClientCheck from "@/src/hooks/useClientCheck";
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 
 const steps = ["اطلاعات شرکت", "اطلاعات تماس", "آدرس", "مدارک"];
 const icons = [
@@ -142,6 +143,7 @@ export default function Page() {
 	const dispatch = useDispatch();
 	const router = useRouter();
 	const [step, setStep] = useState<number>(0);
+	const [loadingButton, setLoadingButton] = useState<boolean>(false);
 	const corp = useSelector((state: RootState) => state).corp;
 	const user = useSelector((state: RootState) => state).user;
 	const accessToken = useSelector(
@@ -154,78 +156,86 @@ export default function Page() {
 		validateForm: any
 	) => {
 		// Validate the form values
-		await validateForm(values);
-
+		// await validateForm(values);
+		setLoadingButton(true);
 		if (step === 0) {
 			if (corpId) {
 				getData({
 					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
-				}).then(async (res) => {
-					const formData: corpData = {};
-					if (values.name != res.data.name) {
-						formData["name"] = values.name;
-					}
-					if (
-						values.registrationNumber != res.data.registrationNumber
-					) {
-						formData["registrationNumber"] = String(
-							values.registrationNumber
-						);
-					}
-					if (values.nationalID != res.data.nationalID) {
-						formData["nationalID"] = String(values.nationalID);
-					}
-					if (values.iban != res.data.iban) {
-						formData["iban"] = String(values.iban);
-					}
-					const newSig = res.data.signatories
-						? res.data.signatories
-						: [];
-					if (
-						values.signatories?.length !== newSig.length ||
-						JSON.stringify(values.signatories) !==
-							JSON.stringify(res.data.signatories)
-					) {
-						formData["signatories"] = values.signatories;
-					}
-					console.log("formData in step 0", formData);
-					if (
-						values.name === "" ||
-						values.registrationNumber === "" ||
-						values.nationalID === "" ||
-						values.iban === ""
-					) {
-						CustomToast("اطلاعات خواسته شده را پر کنید", "warning");
-					} else {
-						const signatoriesOk = await checkSignatories(formData);
-						if (signatoriesOk) {
-							if (Object.keys(formData).length !== 0) {
-								putData({
-									endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/basic`,
-									data: formData,
-								})
-									.then((res) => {
-										CustomToast(res.message, "success");
-										if (step < steps.length - 1) {
-											setStep(step + 1);
-										}
-										resetFormValues(setFieldValue);
+				})
+					.then(async (res) => {
+						const formData: corpData = {};
+						if (values.name != res.data.name) {
+							formData["name"] = values.name;
+						}
+						if (
+							values.registrationNumber !=
+							res.data.registrationNumber
+						) {
+							formData["registrationNumber"] = String(
+								values.registrationNumber
+							);
+						}
+						if (values.nationalID != res.data.nationalID) {
+							formData["nationalID"] = String(values.nationalID);
+						}
+						if (values.iban != res.data.iban) {
+							formData["iban"] = String(values.iban);
+						}
+						const newSig = res.data.signatories
+							? res.data.signatories
+							: [];
+						if (
+							values.signatories?.length !== newSig.length ||
+							JSON.stringify(values.signatories) !==
+								JSON.stringify(res.data.signatories)
+						) {
+							formData["signatories"] = values.signatories;
+						}
+						console.log("formData in step 0", formData);
+						if (
+							values.name === "" ||
+							values.registrationNumber === "" ||
+							values.nationalID === "" ||
+							values.iban === ""
+						) {
+							CustomToast(
+								"اطلاعات خواسته شده را پر کنید",
+								"warning"
+							);
+						} else {
+							const signatoriesOk = await checkSignatories(
+								formData
+							);
+							if (signatoriesOk) {
+								if (Object.keys(formData).length !== 0) {
+									putData({
+										endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/basic`,
+										data: formData,
 									})
-									.catch((err) => {
-										console.log(err);
-										CustomToast(
-											generateErrorMessage(err),
-											"error"
-										);
-									});
-							} else {
-								if (step < steps.length - 1) {
-									setStep(step + 1);
+										.then((res) => {
+											CustomToast(res.message, "success");
+											if (step < steps.length - 1) {
+												setStep(step + 1);
+											}
+											resetFormValues(setFieldValue);
+										})
+										.catch((err) => {
+											console.log(err);
+											CustomToast(
+												generateErrorMessage(err),
+												"error"
+											);
+										});
+								} else {
+									if (step < steps.length - 1) {
+										setStep(step + 1);
+									}
 								}
 							}
 						}
-					}
-				});
+					})
+					.finally(() => setLoadingButton(false));
 			} else {
 				console.log("formData in step 0", values);
 				if (
@@ -235,12 +245,14 @@ export default function Page() {
 					values.iban === ""
 				) {
 					CustomToast("اطلاعات خواسته شده را پر کنید", "warning");
+					setLoadingButton(false);
 					return;
 				} else if (values.signatories?.length === 0) {
 					CustomToast(
 						"افزودن حداقل یک صاحب امضا الزامی است",
 						"warning"
 					);
+					setLoadingButton(false);
 					return;
 				} else {
 					const signatoriesOk = await checkSignatories(values);
@@ -275,7 +287,8 @@ export default function Page() {
 							})
 							.catch((err) => {
 								CustomToast(generateErrorMessage(err), "error");
-							});
+							})
+							.finally(() => setLoadingButton(false));
 					}
 				}
 			}
@@ -298,6 +311,7 @@ export default function Page() {
 								"افزودن حداقل یک راه ارتباطی الزامی است",
 								"warning"
 							);
+							setLoadingButton(false);
 							return;
 						}
 						console.log("formData in step 1", formData);
@@ -323,20 +337,24 @@ export default function Page() {
 											generateErrorMessage(err),
 											"error"
 										);
-									});
+									})
+									.finally(() => setLoadingButton(false));
 							} else {
 								if (step < steps.length - 1) {
 									setStep(step + 1);
+									setLoadingButton(false);
 								}
 							}
 						}
 					})
 					.catch((err) => {
 						console.log("errr", err);
+						setLoadingButton(false);
 						CustomToast(generateErrorMessage(err), "error");
 					});
 			} else {
 				CustomToast("شرکتی برای شما ثبت نشده است", "info");
+				setLoadingButton(false);
 			}
 		} else if (step === 2) {
 			if (corpId) {
@@ -352,6 +370,7 @@ export default function Page() {
 							"افزودن حداقل یک آدرس الزامی است",
 							"warning"
 						);
+						setLoadingButton(false);
 						return;
 					}
 					if (values.addresses != res.data.addresses) {
@@ -377,17 +396,23 @@ export default function Page() {
 									}
 								})
 								.catch((err) => {
-									CustomToast(generateErrorMessage(err), "error");
-								});
+									CustomToast(
+										generateErrorMessage(err),
+										"error"
+									);
+								})
+								.finally(() => setLoadingButton(false));
 						} else {
 							if (step < steps.length - 1) {
 								setStep(step + 1);
+								setLoadingButton(false);
 							}
 						}
 					}
 				});
 			} else {
 				CustomToast("شرکتی برای شما ثبت نشده است", "info");
+				setLoadingButton(false);
 			}
 		} else if (step === 3) {
 			if (corpId) {
@@ -395,7 +420,11 @@ export default function Page() {
 					!values.certificates?.vatTaxpayerCertificate ||
 					!values.certificates?.officialNewspaperAD
 				) {
-					CustomToast("لطفا مدرک خواسته شده را بارگذاری کنید.", "warning");
+					CustomToast(
+						"لطفا مدرک خواسته شده را بارگذاری کنید.",
+						"warning"
+					);
+					setLoadingButton(false);
 					return;
 				}
 
@@ -424,9 +453,11 @@ export default function Page() {
 						console.log(error);
 						CustomToast(generateErrorMessage(error), "error");
 						setLoading(false);
-					});
+					})
+					.finally(() => setLoadingButton(false));
 			} else {
-				console.log("meow");
+				CustomToast("شرکتی برای شما ثبت نشده است", "info");
+				setLoadingButton(false);
 			}
 		}
 	};
@@ -439,10 +470,12 @@ export default function Page() {
 				signatory.position === ""
 			) {
 				CustomToast("اطلاعات صاحبان امضا را کامل وارد کنید", "warning");
+				setLoadingButton(false);
 				return false;
 			}
 			if (signatory.nationalCardNumber.length !== 10) {
 				CustomToast("فرمت کد ملی صاحبان امضا صحیح نمی‌باشد", "warning");
+				setLoadingButton(false);
 				return false;
 			}
 		}
@@ -452,10 +485,12 @@ export default function Page() {
 		for (const contact of formData["contactInformation"] || []) {
 			if (!contact.contactTypeID) {
 				CustomToast("نوع راه ارتباطی را تعیین کنید", "warning");
+				setLoadingButton(false);
 				return false;
 			}
 			if (!contact.contactValue) {
 				CustomToast("مقدار راه ارتباطی را وارد کنید", "warning");
+				setLoadingButton(false);
 				return false;
 			}
 		}
@@ -465,34 +500,42 @@ export default function Page() {
 		for (const address of formData["addresses"] || []) {
 			if (!address.provinceID) {
 				CustomToast("مقدار استان را انتخاب کنید", "warning");
+				setLoadingButton(false);
 				return false;
 			}
 			if (!address.cityID) {
 				CustomToast("مقدار شهر را انتخاب کنید", "warning");
+				setLoadingButton(false);
 				return false;
 			}
 			if (!address.cityID) {
 				CustomToast("مقدار شهر را انتخاب کنید", "warning");
+				setLoadingButton(false);
 				return false;
 			}
 			if (!address.streetAddress) {
 				CustomToast("آدرس را وارد کنید", "warning");
+				setLoadingButton(false);
 				return false;
 			}
 			if (address.postalCode === "") {
 				CustomToast("کد پستی را وارد کنید", "warning");
+				setLoadingButton(false);
 				return false;
 			}
 			if (String(address.postalCode).length !== 10) {
 				CustomToast("فرمت کد پستی صحیح نمی‌باشد", "warning");
+				setLoadingButton(false);
 				return false;
 			}
 			if (address.houseNumber === "") {
 				CustomToast("پلاک را وارد کنید", "warning");
+				setLoadingButton(false);
 				return false;
 			}
 			if (address.unit === "") {
 				CustomToast("واحد را وارد کنید", "warning");
+				setLoadingButton(false);
 				return false;
 			}
 		}
@@ -565,10 +608,6 @@ export default function Page() {
 					>
 						{({ setFieldValue, values, validateForm }) => (
 							<Card className="justify-between neu-shadow border-0">
-								{/* {loading ? (
-								<TransparentLoading />
-							) : (
-								<> */}
 								<CardHeader>
 									<CardTitle className="text-lg">
 										لطفا اطلاعات شرکت خود را وارد کنید
@@ -605,10 +644,6 @@ export default function Page() {
 											/>
 										)}
 									</div>
-
-									{loading && (
-										<TransparentLoading className="w-full" />
-									)}
 								</CardContent>
 								<CardFooter className="flex justify-between align-bottom ltr">
 									<button
@@ -623,9 +658,15 @@ export default function Page() {
 											);
 										}}
 									>
-										{step === steps.length - 1
-											? "تایید"
-											: "بعدی"}
+										{loadingButton ? (
+											<div className="flex place-content-center">
+												<LoadingOnButton size={28} />
+											</div>
+										) : step === steps.length - 1 ? (
+											<p>تایید</p>
+										) : (
+											<p>بعدی</p>
+										)}
 									</button>
 									{step > 0 && (
 										<button
@@ -640,9 +681,6 @@ export default function Page() {
 										</button>
 									)}
 								</CardFooter>
-
-								{/* </>
-							)} */}
 							</Card>
 						)}
 					</Formik>

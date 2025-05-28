@@ -44,9 +44,10 @@ import { useSelector } from "react-redux";
 // import { RootState } from "@/src/store/types";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
-import TransparentLoading from "../LoadingSpinner/TransparentLoading";
+import TransparentLoading from "../Loading/LoadingSpinner/TransparentLoading";
 import CustomToast from "../Custom/CustomToast/CustomToast";
 import AddComponent from "../AddComponent/AddComponent";
+import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
 export default function Neworder() {
 	const [loading, setLoading] = useState(false);
 	const [open, setOpen] = useState(false);
@@ -96,7 +97,6 @@ export default function Neworder() {
 
 	const handelOrderrequest = (orderinfo: order, token: string) => {
 		setLoading(true);
-		setOpen(false);
 		console.log("hello", token);
 		orderService
 			.orderRequest(orderinfo, token)
@@ -459,7 +459,11 @@ export default function Neworder() {
 										marginTop: "10px",
 									}}
 								>
-									ثبت سفارش
+									{loading ? (
+										<LoadingOnButton size={24} />
+									) : (
+										<p>ثبت سفارش</p>
+									)}
 								</SignupButton>
 							</div>
 							<DialogFooter>
@@ -468,7 +472,6 @@ export default function Neworder() {
 						</Form>
 					)}
 				</Formik>
-				{loading && <TransparentLoading />}
 			</DialogContent>
 		</Dialog>
 	);

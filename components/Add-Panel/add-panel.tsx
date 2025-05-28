@@ -46,8 +46,10 @@ import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
 import addpanelService from "@/src/services/addpanelService";
 import CustomToast from "../Custom/CustomToast/CustomToast";
 import AddComponent from "../AddComponent/AddComponent";
+import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
 export default function AddPanel() {
 	const [open, setOpen] = useState(false);
+	const [loading, setLoading] = useState<boolean>(false);
 	const [disable, Setdisable] = useState(true);
 	const [provinceid, Setprovinceid] = useState<number>();
 	const [provinces, Setprovinces] = useState<Province[]>([]);
@@ -90,16 +92,19 @@ export default function AddPanel() {
 
 	const handelAddPanelrequest = (panel: InitPanel) => {
 		setOpen(false);
+		setLoading(true);
 		addpanelService
 			.AddPanel(panel)
 			.then((res) => {
 				CustomToast(res?.message, "success");
 				console.log(res);
 				setOpen(false);
+				setLoading(false);
 			})
 			.catch((err) => {
 				console.log(err);
 				CustomToast(generateErrorMessage(err), "error");
+				setLoading(false);
 			});
 	};
 	return (
@@ -112,7 +117,7 @@ export default function AddPanel() {
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}
-				className="w-full sm:min-w-[750px] max-w-xl mx-auto p-4  overflow-auto py-4"
+				className="w-full sm:min-w-[750px] max-w-xl max-h-[90vh] no-scrollbar mx-auto p-4 overflow-auto py-4"
 			>
 				<DialogHeader>
 					<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
@@ -226,15 +231,7 @@ export default function AddPanel() {
 								>
 									{" "}
 								</CustomInput>
-								<CustomInput
-									type="number"
-									dir="rtl"
-									icon={DatabaseZap}
-									placeholder="مجموع توان تولید شده(کیلووات)"
-									name="power"
-								>
-									{" "}
-								</CustomInput>
+
 								<Select
 									name="building"
 									onValueChange={(value) => {
@@ -243,7 +240,7 @@ export default function AddPanel() {
 									}}
 								>
 									<SelectTrigger
-										className={`${style.CustomInput} mt-[27px] min-h-[43px]`}
+										className={`${style.CustomInput} mt-[27px] min-h-[43px] cursor-pointer`}
 									>
 										<SelectValue placeholder="نوع ساختمان" />
 									</SelectTrigger>
@@ -252,26 +249,40 @@ export default function AddPanel() {
 											<SelectLabel>
 												نوع ساختمان
 											</SelectLabel>
-											<SelectItem value="residential">
+											<SelectItem
+												value="residential"
+												className="cursor-pointer"
+											>
 												مسکونی
 											</SelectItem>
-											<SelectItem value="commercial">
+											<SelectItem
+												value="commercial"
+												className="cursor-pointer"
+											>
 												تجاری
 											</SelectItem>
-											<SelectItem value="industrial">
+											<SelectItem
+												value="industrial"
+												className="cursor-pointer"
+											>
 												صنعتی
 											</SelectItem>
-											<SelectItem value="argiculture">
+											<SelectItem
+												value="argiculture"
+												className="cursor-pointer"
+											>
 												کشاورزی
 											</SelectItem>
-											<SelectItem value="more">
+											<SelectItem
+												value="more"
+												className="cursor-pointer"
+											>
 												سایر
 											</SelectItem>
 										</SelectGroup>
 									</SelectContent>
 								</Select>
 							</div>
-
 							<div
 								className="flex justify-end w-full -mt-4"
 								style={{ gap: "1vw" }}
@@ -279,18 +290,32 @@ export default function AddPanel() {
 								<CustomInput
 									type="number"
 									dir="rtl"
-									icon={TriangleRight}
-									name="angel"
-									placeholder="زاویه نصب(درجه)"
+									icon={DatabaseZap}
+									placeholder="مجموع توان تولید شده (کیلووات)"
+									name="power"
 								>
 									{" "}
 								</CustomInput>
 								<CustomInput
 									type="number"
+									dir="rtl"
+									icon={TriangleRight}
+									name="angel"
+									placeholder="زاویه نصب (درجه)"
+								>
+									{" "}
+								</CustomInput>
+							</div>
+							<div
+								className="flex justify-end w-full -mt-4"
+								style={{ gap: "1vw" }}
+							>
+								<CustomInput
+									type="number"
 									style={{ width: "12vw" }}
 									dir="rtl"
 									icon={Compass}
-									placeholder="جهت نصب(درجه)"
+									placeholder="جهت نصب (درجه)"
 									name="direction"
 								>
 									{" "}
@@ -300,13 +325,12 @@ export default function AddPanel() {
 									style={{ width: "12vw" }}
 									dir="rtl"
 									icon={LandPlot}
-									placeholder="مساحت(مترمربع)"
+									placeholder="مساحت (مترمربع)"
 									name="area"
 								>
 									{" "}
 								</CustomInput>
 							</div>
-
 							<div
 								className={`${style.citypro} flex md:flex-row flex-col justify-between w-full mt-2`}
 							>
@@ -341,6 +365,7 @@ export default function AddPanel() {
 															value={
 																provincearr.name
 															}
+															className="cursor-pointer"
 														>
 															{provincearr.name}
 														</SelectItem>
@@ -375,6 +400,7 @@ export default function AddPanel() {
 													<SelectItem
 														key={index}
 														value={city.name}
+														className="cursor-pointer"
 													>
 														{Object.values(
 															city.name
@@ -433,7 +459,8 @@ export default function AddPanel() {
 								</CustomInput>
 							</div>
 
-							<div className="flex flex-row justify-center items-center self-center">
+							<DialogFooter className="flex flex-row justify-center items-center self-center">
+								{/* <div className="flex flex-row justify-center items-center self-center"> */}
 								<SignupButton
 									className="text-[#FA682D]"
 									type="submit"
@@ -442,11 +469,13 @@ export default function AddPanel() {
 										width: "25vw",
 									}}
 								>
-									{" "}
-									ثبت پنل
+									{loading ? (
+										<LoadingOnButton />
+									) : (
+										<p>ثبت پنل</p>
+									)}
 								</SignupButton>
-							</div>
-							<DialogFooter>
+								{/* </div> */}
 								<DialogClose />
 							</DialogFooter>
 						</Form>
