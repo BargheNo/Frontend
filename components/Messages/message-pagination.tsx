@@ -68,11 +68,18 @@ export default function CorpMessagesPagination() {
 	//     handelHistory(currpage, "3");
 	//   }, [currpage]);
 
-	const from = { firstName: "تینا", lastName: "محمدپور" };
 	const topic = "این یک پیام خیلی خیلی مهم است";
-	const body =
-		"ابزارهای کاربردی می باشد، کتابهای زیادی در شصت و سه درصد گذشته حال و آیندلورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است.";
-	const date = "1404/2/12";
+  const notificationContent={
+    description:".سلام سلام سلام سلام سلام سلام سلام",
+    details:"این جزئیات پنل است.",
+    panelName:"alos alos",
+    operatorName:"tine",
+    operatorLastName:"mohammadpour",
+    customerName:"alos",
+    customerLastName:"seif",
+    phoneNumber:"+989354826686",
+    corpName:"آتیه سازان",
+}
 	useEffect(() => {
 		setLoading(true);
 		notificationService
@@ -282,55 +289,30 @@ export default function CorpMessagesPagination() {
 												value={item?.name}
 												key={index}
 												className="cursor-pointer"
+                        
 											>
 												{item?.name}
+                        
 											</SelectItem>
 										))}
 									</SelectGroup>
 								</SelectContent>
 							</Select>
 
-							{/* <Select
-                    name="filter2">
-                    <SelectTrigger
-                      className={style.CustomInput}
-                      id="filter2"
-                      // style={{ width: "25vw" }}
-                    >
-                      <SelectValue placeholder="فیلتر2" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>فیلتر</SelectLabel>
-                        
-                              <SelectItem                            
-                                value="آیتم 1"
-                              >
-                                آیتم 1
-                              </SelectItem>
-                              <SelectItem                            
-                                value="آیتم 2"
-                              >
-                                آیتم 2
-                              </SelectItem>
-                            
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select> */}
 						</div>
 					</div>
 					<div className="flex flex-col text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
-						<NotificationBox date="1404-2-2">
-              <NotificationHeader topic={topic}/>
-              <NotificationContent description={body} />
+						<NotificationBox type={"پیام جدید"} notificationContent={notificationContent} date="1404-2-2">
+              <NotificationHeader title="سلااااام" topic={topic}/>
+              <NotificationContent />
             </NotificationBox>
-						<NotificationBox date="1404-2-2">
-              <NotificationHeader topic={topic}/>
-              <NotificationContent description={body} />
+						<NotificationBox  type={"پیام جدید"} notificationContent={notificationContent} date="1404-2-2">
+              <NotificationHeader title="سلاااام" topic={topic}/>
+              <NotificationContent   />
             </NotificationBox>
-            <NotificationBox date="1404-2-2">
-              <NotificationHeader topic={topic}/>
-              <NotificationContent description={body} />
+            <NotificationBox  type={"پیام جدید"} notificationContent={notificationContent} date="1404-2-2">
+              <NotificationHeader title="سلااااام" topic={topic}/>
+              <NotificationContent />
             </NotificationBox>
 						{/* {history.map((order: Orderhistory, index) => (
                             <OrderHistory
