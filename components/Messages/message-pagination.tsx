@@ -304,13 +304,11 @@ export default function CorpMessagesPagination() {
 					<div className="flex flex-col text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
             
 						{notifications.map((item, index) => (
-              
               <NotificationBox key={index} typeid={item.type.id} notificationContent={item} date="1404-2-2">
-              <NotificationHeader topic={item.type.description} title={item.data.description}/>
+              <NotificationHeader topic={item?.type?.description} title={item?.data?.description}/>
               <NotificationContent />
             </NotificationBox>              
-
-                                ))}
+                    ))}
 					</div>
 				</div>
 			</>

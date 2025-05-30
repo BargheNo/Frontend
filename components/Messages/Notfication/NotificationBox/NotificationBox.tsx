@@ -23,13 +23,42 @@ export default function NotificationBox({ children,date,notificationContent,type
                     (
                         <>
                         <span className="mr-2 rtl">{" نام پنل: "}{notificationContent.data.installationRequest.name}</span>
-                        <span className="mr-2 rtl">{" نام مشتری: "}{notificationContent.data.installationRequest.customer.firstName+" "+notificationContent.data.installationRequest.customer.lastName}</span>
-                        <span className="mr-2 rtl">{" شماره تماس مشتری: "}{notificationContent.data.installationRequest.customer.phone}</span>
-                        <span className="mr-2 rtl">{" نام بیدر: "}{notificationContent.data.bidder.firstName+" "+notificationContent.data.bidder.lastName}</span>            
+                        <span className="mr-2 rtl">{" هزینه نصب : "}{notificationContent.data.cost}</span>
+                        <span className="mr-2 rtl">{"  تاریخ ثبت درخواست : "}{notificationContent.data.installationRequest.createdTime}</span>
+                        {/* <span className="mr-2 rtl">{" نام مشتری: "}{notificationContent.data.installationRequest.customer.firstName+" "+notificationContent.data.installationRequest.customer.lastName}</span> */}
+                        {/* <span className="mr-2 rtl">{" شماره تماس مشتری: "}{notificationContent.data.installationRequest.customer.phone}</span> */}
+                        {/* <span className="mr-2 rtl">{" نام بیدر: "}{notificationContent.data.bidder.firstName+" "+notificationContent.data.bidder.lastName}</span>             */}
                         <span className="mr-2 rtl">{"  تاریخ نصب: "}{notificationContent.data.installationTime}</span>
                         </> 
                     )
-                    }          
+                    }     
+                    {typeid===3&&
+                    (
+                        <>
+                        <span className="mr-2 rtl">{" نام پنل: "}{notificationContent?.data?.panel?.name}</span>
+                        <span className="mr-2 rtl">{" نام مشتری: "}{notificationContent?.data?.panel?.customer?.firstName+" "+notificationContent?.data?.panel?.customer?.lastName}</span>
+                        <span className="mr-2 rtl">{" شماره تماس مشتری: "}{notificationContent?.data?.panel?.customer?.phone}</span>
+                        <span className="mr-2 rtl">{"   نام شرکت نصب کننده: "}{notificationContent?.data?.panel?.corporation?.name}</span>
+                        <span className="mr-2 rtl">{"   نام اوپراتور: "}{notificationContent?.data?.panel?.operator?.firstName+" "+notificationContent?.data?.panel?.operator?.lastName}</span>
+                        <span className="mr-2 rtl">{"  وضعیت نصب: "}{notificationContent?.data?.status}</span>
+                        </> 
+                    )
+                    }   
+                    {typeid===4&&
+                    (
+                        <>
+                        <span className="mr-2 rtl">{"  عنوان اعلان: "}{notificationContent.data.maintenanceRecord.title}</span>
+                        <span className="mr-2 rtl">{"  جزئیات اعلان: "}{notificationContent.data.maintenanceRecord.details}</span>
+                        <span className="mr-2 rtl">{" نام مشتری: "}{notificationContent.data.maintenanceRecord.customer.firstName+" "+notificationContent.data.maintenanceRecord.customer.lastName}</span>
+                        <span className="mr-2 rtl">{" شماره تماس مشتری: "}{notificationContent.data.maintenanceRecord.customer.phone}</span>
+                        <span className="mr-2 rtl">{" نام اوپراتور: "}{notificationContent.data.maintenanceRecord.operator.firstName+" "+notificationContent.data.maintenanceRecord.operator.lastName}</span>
+                        <span className="mr-2 rtl">{" نام شرکت: "}{notificationContent.data.maintenanceRecord.corporation.name}</span>
+                        <span className="mr-2 rtl">{"   نام پنل: "}{notificationContent.data.maintenanceRecord.panel.name}</span>
+                        <span className="mr-2 rtl">{" تاریخ تعمیر: "}{notificationContent.data.maintenanceRecord.date}</span>
+                        <span className="mr-2 rtl">{"    وضعیت تعمیر: "}{notificationContent.data.status}</span>
+                        </> 
+                    )
+                    }     
                     </div>
             </DialogContent>
         </Dialog>
