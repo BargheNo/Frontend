@@ -1,4 +1,5 @@
 interface notifType{
+    id:number;
     name:string,
     description:string,
     supportsEmail:boolean,
@@ -27,8 +28,19 @@ interface Notification{
         supportsEmail: boolean,
         supportsPush: boolean,
         },
-    additionalData: string,
-    isRead: boolean   
+    data: {
+        bidder:{firstName:string,lastName:string}
+        installationRequest :{customer:{firstName:string,lastName:string,phone:string},name:string}
+        installationTime:string;
+        description:string
+
+        panel:{customer:{firstName:string,lastName:string,phone:string},name:string,}
+
+        maintenanceRecord:{customer:{firstName:string,lastName:string,phone:string},date:string,details:string,panel:{name:string},title:string}
+    },
+    isRead: boolean 
+    
+    
 }
 
 interface page {

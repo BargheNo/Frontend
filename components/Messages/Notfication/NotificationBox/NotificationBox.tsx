@@ -1,23 +1,10 @@
 "use client"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Notification} from "@/src/types/notificationTypes";
 import React, { ReactNode, useState } from "react";
 
-type notificationContent={
-    description?:string;
-    details?:string;
-    panelName?:string;
-    // operatorName?:string;
-    // operatorLastName?:string;
-    // corpName?:string;
-    customerName?:string;
-    customerLastName?:string;
-    phoneNumber?:string;
-    bidderName?:string;
-    bidderLastName?:string;
-    installationTime?:string;
-}
 
-export default function NotificationBox({ children,date,notificationContent,type }: { children: ReactNode,date:string,notificationContent:notificationContent,type:string}) {
+export default function NotificationBox({ children,date,notificationContent,typeid }: { children: ReactNode,date:string,notificationContent:Notification,typeid:number}) {
     const[open,setOpen]=useState(false);
 	return (
         <>  
@@ -32,14 +19,17 @@ export default function NotificationBox({ children,date,notificationContent,type
                         جزئیات اعلان
                 </DialogTitle>
                     <div className="flex flex-col text-gray-700 mt-2 items-end self-end">
-                        <span className="mr-2">{" جزئیات اعلان: "}{notificationContent.details}</span>
-                        <span className="mr-2 ">{" نام پنل: "}{notificationContent.panelName}</span>
-                        <span className="mr-2 ">{" نام مشتری: "}{notificationContent.customerName+" "+notificationContent.customerLastName}</span>
-                        <span className="mr-2 ">{" شماره تماس مشتری: "}{notificationContent.phoneNumber}</span>
-                        {/* <span className="mr-2 ">{" نام اوپراتور: "}{notificationContent.operatorName+" "+notificationContent.operatorLastName}</span>
-                        <span className="mr-2 ">{" نام شرکت: "}{notificationContent.corpName}</span>             */}
-                        <span className="mr-2 ">{" نام بیدر: "}{notificationContent.bidderName+" "+notificationContent.customerLastName}</span>            
-                        <span className="mr-2 ">{"  تاریخ نصب: "}{notificationContent.installationTime}</span>            
+                    {typeid===2&&
+                    (
+                        <>
+                        <span className="mr-2 rtl">{" نام پنل: "}{notificationContent.data.installationRequest.name}</span>
+                        <span className="mr-2 rtl">{" نام مشتری: "}{notificationContent.data.installationRequest.customer.firstName+" "+notificationContent.data.installationRequest.customer.lastName}</span>
+                        <span className="mr-2 rtl">{" شماره تماس مشتری: "}{notificationContent.data.installationRequest.customer.phone}</span>
+                        <span className="mr-2 rtl">{" نام بیدر: "}{notificationContent.data.bidder.firstName+" "+notificationContent.data.bidder.lastName}</span>            
+                        <span className="mr-2 rtl">{"  تاریخ نصب: "}{notificationContent.data.installationTime}</span>
+                        </> 
+                    )
+                    }          
                     </div>
             </DialogContent>
         </Dialog>

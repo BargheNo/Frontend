@@ -22,7 +22,7 @@ class notification{
         })
     }
 
-    getNotificationList(typeId:number,pageinfo:page){
+    getNotificationFielter(typeId:number,pageinfo:page){
         return getData({
             endPoint:`${baseURL}/v1/user/notifications`,
             params:{notificationTypes:typeId,pageinfo}

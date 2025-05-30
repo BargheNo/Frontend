@@ -11,7 +11,6 @@ import {
 	PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useEffect, useState } from "react";
-import MessageCard from "@/components/Messages/message-card";
 import {
 	Select,
 	SelectContent,
@@ -26,9 +25,8 @@ import panelNotFound from "../../public/images/panelNotFound/panelNotFound.png";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import SignupButton from "../SignupButton/SignupButton";
 import { Switch } from "@/components/ui/switch";
-import { notificationSetting, notifType } from "@/src/types/notificationTypes";
+import { notificationSetting,notifType,Notification } from "@/src/types/notificationTypes";
 import notificationService from "@/src/services/notificationService";
-import { skip } from "node:test";
 import { toast } from "sonner";
 import Header from "../Header/Header";
 import CustomToast from "../Custom/CustomToast/CustomToast";
@@ -36,15 +34,17 @@ import NotificationBox from "./Notfication/NotificationBox/NotificationBox";
 import NotificationHeader from "./Notfication/NotificationHeader/NotificationHeader";
 import NotificationContent from "./Notfication/NotificationContent/NotificationContent";
 
-// import { RootState } from "@/src/store/types";
 
 export default function CorpMessagesPagination() {
 	//   const [history, sethistory] = useState<Orderhistory[]>([]);
+  
 	const [loading, setLoading] = useState(false);
 	const [currpage, Setcurrpage] = useState<string>("1");
 	const [notifTypes, setNotifTypes] = useState<notifType[]>([]);
 	const [notifSetting, setNotifSetting] = useState<notificationSetting[]>([]);
 	const [disable, setDisable] = useState(true);
+  const[notifId,setNotifId]=useState<number>(0);
+  const[notifications,setNotifications]=useState<Notification[]>([]);
 	const [nameFields, setNameFields] = useState<
 		{
 			id: number;
@@ -98,6 +98,12 @@ export default function CorpMessagesPagination() {
 			.catch((err) => console.log(err.message));
 	}, []);
 
+  useEffect(()=>{
+    notificationService.getNotificationFielter(notifId,{page:currpage,pageSize:"4"}).then(res=>
+      {setNotifications(res.data),console.log(res.data)}
+    )
+  },[notifId,currpage])
+
 	useEffect(() => {
 		if (notifSetting && notifSetting.length > 0) {
 			const values = notifSetting.map((item) => ({
@@ -128,8 +134,6 @@ export default function CorpMessagesPagination() {
 								دریافت از طریق ایمیل
 							</p>
 						</div>
-						{/* <div className="flex flex-col bg-[#F0EDEF] text-gray-800 overflow-auto w-90/100 rounded-2xl shadow-[inset_-6px_-6px_16px_rgba(255,255,255,0.8),inset_6px_6px_16px_rgba(0,0,0,0.2)] mt-6 m-auto md:h-65 h-60"> */}
-						{/* <div className="flex flex-col text-gray-800 rounded-2xl w-90/100 overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] mt-6 m-auto md:h-65 h-60"> */}
 						<div className="flex flex-col text-gray-800 rounded-2xl w-90/100 overflow-auto shadow-[inset_-6px_-6px_16px_rgba(255,255,255,0.8),inset_6px_6px_16px_rgba(0,0,0,0.2)] mt-6 m-auto md:h-65 h-60">
 							{notifSetting.length <= 0 && loading ? (
 								<div className="flex flex-1 items-center justify-center h-full">
@@ -243,15 +247,12 @@ export default function CorpMessagesPagination() {
 												successMessage,
 												"success"
 											);
-											// toast.success(successMessage);
 										} catch (error) {
 											CustomToast(
 												"خطا در ذخیره‌سازی تنظیمات",
 												"error"
 											);
-											// toast.error(
-											// 	"خطا در ذخیره‌سازی تنظیمات"
-											// );
+
 											console.error(error);
 										}
 									}
@@ -266,7 +267,6 @@ export default function CorpMessagesPagination() {
 					</div>
 				</div>
 
-				{/* <h1 className="font-bold text-xl mb-4  md:mr-14 mr-4">اعلان ها</h1> */}
 				<Header className="rtl" header="اعلان‌ها" />
 				<div className="flex flex-col text-white bg-transparent w-full">
 					<div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] h-20 mb-5">
@@ -289,7 +289,7 @@ export default function CorpMessagesPagination() {
 												value={item?.name}
 												key={index}
 												className="cursor-pointer"
-                        
+                        onClick={()=>setNotifId(item.id)}
 											>
 												{item?.name}
                         
@@ -302,28 +302,15 @@ export default function CorpMessagesPagination() {
 						</div>
 					</div>
 					<div className="flex flex-col text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
-						<NotificationBox type={"پیام جدید"} notificationContent={notificationContent} date="1404-2-2">
-              <NotificationHeader title="سلااااام" topic={topic}/>
+            
+						{notifications.map((item, index) => (
+              
+              <NotificationBox key={index} typeid={item.type.id} notificationContent={item} date="1404-2-2">
+              <NotificationHeader topic={item.type.description} title={item.data.description}/>
               <NotificationContent />
-            </NotificationBox>
-						<NotificationBox  type={"پیام جدید"} notificationContent={notificationContent} date="1404-2-2">
-              <NotificationHeader title="سلاااام" topic={topic}/>
-              <NotificationContent   />
-            </NotificationBox>
-            <NotificationBox  type={"پیام جدید"} notificationContent={notificationContent} date="1404-2-2">
-              <NotificationHeader title="سلااااام" topic={topic}/>
-              <NotificationContent />
-            </NotificationBox>
-						{/* {history.map((order: Orderhistory, index) => (
-                            <OrderHistory
-                            key={index}
-                            id={index}
-                                name={order.name}
-                                address={order.address}
-                                status={order.status}
-                                createdTime={order.createdTime}
-                                />
-                                ))} */}
+            </NotificationBox>              
+
+                                ))}
 					</div>
 				</div>
 			</>
