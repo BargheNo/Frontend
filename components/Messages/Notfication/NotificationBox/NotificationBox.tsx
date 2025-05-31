@@ -1,10 +1,16 @@
 "use client"
+import { Button } from "@/components/ui/button";
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/react-hover-card";
 import toFarsiNumber from "@/src/functions/toPersianNumbers";
 import notificationService from "@/src/services/notificationService";
 import { Notification} from "@/src/types/notificationTypes";
+import { event } from "cypress/types/jquery";
 import moment from "jalali-moment";
+import { MessageCirclePlus,EllipsisVertical } from "lucide-react";
 import React, { ReactNode, useState } from "react";
+import { toast } from "sonner";
 
 
 export default function NotificationBox({ children,notificationContent,typeid }: { children: ReactNode,date:string,notificationContent:Notification,typeid:number}) {
@@ -67,26 +73,65 @@ export default function NotificationBox({ children,notificationContent,typeid }:
                     </div>
             </DialogContent>
         </Dialog>
-		<div className="w-full border-t-1 md:border-gray-300 border-gray-400 first:border-t-0">
+
+        <ContextMenu>
+  <ContextMenuTrigger>
+
+		<div className="w-full border-t-1 border-b-1 md:border-gray-300 border-gray-600 first:border-t-0">
 			<div className="flex flex-row justify-between h-full bg-[#F0EDEF] p-4 rtl md:pb-5 pb-28 overflow-hidden relative">
+                
 				<div className="flex flex-col justify-between w-full z-10 space-x-0">
+                    
 					<div className="w-full">{children}</div>
-				</div>
+				    </div>
+                
 				<div className="flex flex-col lg:justify-center justify-end lg:mb-0 -mb-20 gap-2 items-center md:mb-10 md:mr-0 -mr-40 min-w-48 ">
-					<div className="flex flex-col  w-2/3 items-center justify-center gap-2 p-5 rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
+                <HoverCard>
+                    <HoverCardTrigger asChild>
+                        <Button  className="cursor-pointer mr-auto" variant="link"><EllipsisVertical/></Button>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-34 h-auto border-0 p-4 flex flex-col gap-2 rtl bg-warm-white ">
+                        <div className="flex neo-btn bg-white h-8">
+                            <div onClick={()=>{notificationContent.isRead===false?notificationService.markAsRead(notificationContent.id).then(res=>setread("خوانده شده")):toast.success("قبلا خوانده شده.")}}  className=" w-full cursor-pointer">
+                                <p className="mt-1 mr-2">خوانده شد</p>
+                            </div>
+                        </div>
+                    </HoverCardContent>
+                </HoverCard>
+                
+					<div className="flex flex-row md:ml-10 ml-15 items-center justify-center gap-2 p-5 ">
 						
-                        <button onClick={()=>setOpen(!open)} className="shadow-md cursor-pointer text-[0.8rem] w-28 rounded-lg bg-fire-orange text-white h-9">
+                        {/* <button onClick={()=>setOpen(!open)} className="shadow-md cursor-pointer text-[0.8rem] w-28 rounded-lg bg-fire-orange text-white h-9">
                         مشاهده جزئیات
-						</button>
+						</button> */}
+                        <div className={`cta-neu-button flex bg-white items-center content-center justify-center`}>
+                                <button onClick={()=>setOpen(!open)} className="cursor-pointer whitespace-nowrap text-[1rem]">
+                                        مشاهده جزئیات
+                                </button>
+                                <MessageCirclePlus />
+                        </div>
                         
-						<button onClick={()=>{notificationContent.isRead===false?notificationService.markAsRead(notificationContent.id).then(res=>setread("خوانده شده")):""}}  className="shadow-md cursor-pointer text-[0.8rem] w-28 rounded-lg bg-fire-orange text-white h-9">
+                        {/* <div className={`cta-neu-button flex bg-white items-center content-center justify-center`}>
+                                <button onClick={()=>{notificationContent.isRead===false?notificationService.markAsRead(notificationContent.id).then(res=>setread("خوانده شده")):""}}  className="cursor-pointer whitespace-nowrap text-[1rem]">
+                                       {read}
+                                </button>
+                                <MessageCirclePlus />
+                        </div> */}
+
+						{/* <button onClick={()=>{notificationContent.isRead===false?notificationService.markAsRead(notificationContent.id).then(res=>setread("خوانده شده")):""}}  className="shadow-md cursor-pointer text-[0.8rem] w-28 rounded-lg bg-fire-orange text-white h-9">
                             {read}
-						</button>
+						</button> */}
 					
 					</div>
 				</div>
 			</div>
 		</div>
+                    </ContextMenuTrigger>
+                    <ContextMenuContent className="border-0 p-4 flex flex-col gap-2 rtl bg-warm-white">
+                <ContextMenuItem  className="neo-btn bg-white" onClick={()=>{notificationContent.isRead===false?notificationService.markAsRead(notificationContent.id).then(res=>setread("خوانده شده")):toast.success("قبلا خوانده شده.")}} >خوانده شد</ContextMenuItem>
+            </ContextMenuContent>
+            </ContextMenu>
+
         </>
 
 	);
