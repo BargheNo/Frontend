@@ -22,9 +22,9 @@ class notification{
         })
     }
 
-    getNotificationFielter(typeId:number,pageinfo:page){
+    getNotificationFielter(typeId:number[],pageinfo:page){
         return getData({
-            endPoint:`${baseURL}/v1/user/notifications`,
+            endPoint:`${baseURL}/v1/user/notifications?${typeId.map((item)=>`notificationTypes=${item}`).join("&")}`,
             params:{notificationTypes:typeId,pageinfo}
         })
     }

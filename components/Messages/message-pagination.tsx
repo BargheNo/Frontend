@@ -43,7 +43,7 @@ export default function CorpMessagesPagination() {
 	const [notifTypes, setNotifTypes] = useState<notifType[]>([]);
 	const [notifSetting, setNotifSetting] = useState<notificationSetting[]>([]);
 	const [disable, setDisable] = useState(true);
-  const[notifId,setNotifId]=useState<number>(0);
+  const[notifId,setNotifId]=useState<number[]>([1,2,3,4]);
   const[notifications,setNotifications]=useState<Notification[]>([]);
 	const [nameFields, setNameFields] = useState<
 		{
@@ -278,7 +278,7 @@ export default function CorpMessagesPagination() {
 							className={`${style.citypro} flex flex-row mr-4 justify-between m-auto md:w-2/10 w-5/10 `}
 						>
 							<Select name="notiftype" 
-							onValueChange={(value)=>setNotifId(Object.fromEntries(notifTypes.map(item => [item.name, item.id]))[value])}>
+							onValueChange={(value)=>{value==="همه پیام ها"?setNotifId([1,2,3,4]):setNotifId([Object.fromEntries(notifTypes.map(item => [item.name, item.id]))[value]])}}>
 								<SelectTrigger
 									className={`${style.CustomInput} cursor-pointer`}
 									id="notiftype"
@@ -289,12 +289,13 @@ export default function CorpMessagesPagination() {
 								<SelectContent>
 									<SelectGroup>
 										<SelectLabel>اعلان‌ها</SelectLabel>
+										<SelectItem  value="همه پیام ها">همه پیام ها</SelectItem>
 										{notifTypes.map((item, index) => (
 											<SelectItem
 												value={item?.name}
 												key={index}
 												className="cursor-pointer"
-                        onClick={()=>setNotifId(item.id)}
+                        // onClick={()=>setNotifId([item.id])}
 											>
 												{item?.name}
                         
