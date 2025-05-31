@@ -105,24 +105,24 @@ export default function NotificationBox({ children,notificationContent,typeid }:
                     </HoverCardContent>
                 </HoverCard>
                 
-					<div className="flex flex-col md:ml-10 ml-23 items-center justify-center gap-2 p-5 md:mt-0 mt-15">
+					<div className="flex flex-col md:ml-10 ml-23 items-center justify-center gap-3 p-5 md:mt-0 mt-15">
 
-                        <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-4 ">
 
-							<div className="flex flex-col items-center justify-center gap-2 p-3 rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)] w-24 ">
+							<div className="flex md:flex-col flex-row items-center justify-center gap-2 p-3 rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)] md:w-24 w-full ">
 								<div
 									className={`h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
 								></div>
-								<span className="text-sm font-medium text-gray-600">
+								<span className="text-sm font-medium text-gray-600 whitespace-nowrap">
 									{notificationContent.isRead?"خوانده شده":"خوانده نشده"}
 								</span>
 							</div>
 						</div>
                         <div className={`cta-neu-button flex bg-white items-center md:w-auto w-40 content-center justify-center `}>
-                                <button onClick={()=>setOpen(!open)} className="cursor-pointer whitespace-nowrap text-[1rem]">
+                                <button onClick={()=>setOpen(!open)} className="cursor-pointer whitespace-nowrap text-[0.9rem]">
                                         مشاهده جزئیات
                                 </button>
-                                <MessageCirclePlus />
+                                <MessageCirclePlus className="md:w-[1.5rem] w-[1.2rem]"/>
                         </div>
                         
                         {/* <div className={`cta-neu-button flex bg-white items-center content-center justify-center`}>
