@@ -273,7 +273,8 @@ export default function CorpMessagesPagination() {
 						<div
 							className={`${style.citypro} flex flex-row mr-4 justify-between m-auto md:w-2/10 w-5/10 `}
 						>
-							<Select name="notiftype">
+							<Select name="notiftype" 
+							onValueChange={(value)=>setNotifId(Object.fromEntries(notifTypes.map(item => [item.name, item.id]))[value])}>
 								<SelectTrigger
 									className={`${style.CustomInput} cursor-pointer`}
 									id="notiftype"
