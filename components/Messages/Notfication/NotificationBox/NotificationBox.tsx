@@ -16,7 +16,13 @@ import { toast } from "sonner";
 export default function NotificationBox({ children,notificationContent,typeid }: { children: ReactNode,date:string,notificationContent:Notification,typeid:number}) {
     const[open,setOpen]=useState(false);
     const[read,setread]=useState(notificationContent.isRead?"خوانده شده":"خوانده نشده");
-   
+    const getStatusColor = () => {
+		if (notificationContent.isRead === true)
+			return "bg-gradient-to-br from-green-400 to-green-500 border-1 border-gray-100/50 shadow-sm shadow-green-500";
+		if (notificationContent.isRead===false)
+			return "bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-yellow-500";
+		return "bg-gradient-to-br from-red-400 to-red-500 shadow-red-500";
+	};
 	return (
         <>  
         <Dialog open={open} onOpenChange={setOpen}>
@@ -99,12 +105,20 @@ export default function NotificationBox({ children,notificationContent,typeid }:
                     </HoverCardContent>
                 </HoverCard>
                 
-					<div className="flex flex-row md:ml-10 ml-15 items-center justify-center gap-2 p-5 ">
-						
-                        {/* <button onClick={()=>setOpen(!open)} className="shadow-md cursor-pointer text-[0.8rem] w-28 rounded-lg bg-fire-orange text-white h-9">
-                        مشاهده جزئیات
-						</button> */}
-                        <div className={`cta-neu-button flex bg-white items-center content-center justify-center md:mr-0 mr-20`}>
+					<div className="flex flex-col md:ml-10 ml-23 items-center justify-center gap-2 p-5 md:mt-0 mt-15">
+
+                        <div className="flex flex-col gap-4">
+
+							<div className="flex flex-col items-center justify-center gap-2 p-3 rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)] w-24 ">
+								<div
+									className={`h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
+								></div>
+								<span className="text-sm font-medium text-gray-600">
+									{notificationContent.isRead?"خوانده شده":"خوانده نشده"}
+								</span>
+							</div>
+						</div>
+                        <div className={`cta-neu-button flex bg-white items-center md:w-auto w-40 content-center justify-center `}>
                                 <button onClick={()=>setOpen(!open)} className="cursor-pointer whitespace-nowrap text-[1rem]">
                                         مشاهده جزئیات
                                 </button>
