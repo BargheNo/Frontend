@@ -1,23 +1,10 @@
 import { Dialog, DialogHeader, DialogTrigger, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { ChartNetwork, CircleAlert, CircleChevronLeft, ListCollapse, ReceiptText, Shapes, Timer } from 'lucide-react';
+import { CircleAlert, CircleChevronLeft, ListCollapse, ReceiptText, Shapes, Timer } from 'lucide-react';
 import React, { useState } from 'react'
 import MetricBox from '@/components/IconWithBackground/MetricBox';
+import { Warranty, TermItem } from './warrantyTypes.ts';
 
-interface WarrantyDetails {
-    name: string;
-    description: string;
-    type: string;
-    duration: number;
-    terms: TermItemTypes[];
-}
-
-interface TermItemTypes {
-    title: string;
-    description: string;
-    limitations: string;
-}
-
-const TermItem = ({ title, description, limitations } : TermItemTypes) => {
+const TermItem = ({ title, description, limitations } : TermItem) => {
     return (
         <div className='space-y-4 pb-2 mb-2 border-b-1 border-gray-400'>
             <div className='flex space-x-2'>
@@ -36,7 +23,7 @@ const TermItem = ({ title, description, limitations } : TermItemTypes) => {
     );
 }
 
-const WarrantyDetails = ({name, description, type, duration, terms} : WarrantyDetails) => {
+const WarrantyDetails = ({name, description, type, duration, terms} : Warranty) => {
     const [open, setOpen] = useState(false);
 
     return (

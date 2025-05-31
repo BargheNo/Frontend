@@ -1,7 +1,8 @@
 import React from 'react'
 import WarrantyCard from './WarrantyCard'
+import { Warranty } from './warrantyTypes.ts'
 
-const mockData = [
+const mockData: Warranty[] = [
     {
         name: "گارانتی طلایی کمرنگ",
         type: 5,

@@ -3,14 +3,9 @@ import { Shapes, Timer,  } from 'lucide-react'
 import MetricBox from '@/components/IconWithBackground/MetricBox'
 import TruncatedText from '@/components/ui/TruncatedText'
 import WarrantyDetails from './WarrantyDetails';
+import { Warranty } from './warrantyTypes.ts';
 
-interface WarrantyCardProps {
-  name: string;
-  type: string;
-  duration: string;
-  description: string;
-  terms: []
-}
+type WarrantyCardProps = Warranty;
 
 const WarrantyCard = ({ name, type, duration, description, terms } : WarrantyCardProps) => {
   return (
