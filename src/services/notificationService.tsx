@@ -1,5 +1,5 @@
 import { data } from "cypress/types/jquery";
-import { baseURL, getData,putData } from "./apiHub";
+import { baseURL, getData,postData,putData } from "./apiHub";
 import { changeNotificationSetting, page } from "../types/notificationTypes";
 
 class notification{
@@ -26,6 +26,12 @@ class notification{
         return getData({
             endPoint:`${baseURL}/v1/user/notifications`,
             params:{notificationTypes:typeId,pageinfo}
+        })
+    }
+
+    markAsRead(notifId:number){
+        return postData({
+            endPoint:`${baseURL}/v1/user/notifications/${notifId}/read`
         })
     }
 }

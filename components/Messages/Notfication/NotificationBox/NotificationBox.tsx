@@ -1,13 +1,16 @@
 "use client"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import toFarsiNumber from "@/src/functions/toPersianNumbers";
+import notificationService from "@/src/services/notificationService";
 import { Notification} from "@/src/types/notificationTypes";
 import moment from "jalali-moment";
 import React, { ReactNode, useState } from "react";
 
 
-export default function NotificationBox({ children,date,notificationContent,typeid }: { children: ReactNode,date:string,notificationContent:Notification,typeid:number}) {
+export default function NotificationBox({ children,notificationContent,typeid }: { children: ReactNode,date:string,notificationContent:Notification,typeid:number}) {
     const[open,setOpen]=useState(false);
+    const[read,setread]=useState(notificationContent.isRead?"خوانده شده":"خوانده نشده");
+   
 	return (
         <>  
         <Dialog open={open} onOpenChange={setOpen}>
@@ -71,12 +74,13 @@ export default function NotificationBox({ children,date,notificationContent,type
 				</div>
 				<div className="flex flex-col lg:justify-center justify-end lg:mb-0 -mb-20 gap-2 items-center md:mb-10 md:mr-0 -mr-40 min-w-48 ">
 					<div className="flex flex-col  w-2/3 items-center justify-center gap-2 p-5 rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
-						<span className="text-sm font-medium text-gray-600">
-							{date}
-						</span>
-
-						<button onClick={()=>setOpen(!open)} className="shadow-md cursor-pointer text-[0.8rem] w-28 rounded-lg bg-fire-orange text-white h-9">
-							مشاهده جزئیات
+						
+                        <button onClick={()=>setOpen(!open)} className="shadow-md cursor-pointer text-[0.8rem] w-28 rounded-lg bg-fire-orange text-white h-9">
+                        مشاهده جزئیات
+						</button>
+                        
+						<button onClick={()=>{notificationContent.isRead===false?notificationService.markAsRead(notificationContent.id).then(res=>setread("خوانده شده")):""}}  className="shadow-md cursor-pointer text-[0.8rem] w-28 rounded-lg bg-fire-orange text-white h-9">
+                            {read}
 						</button>
 					
 					</div>
