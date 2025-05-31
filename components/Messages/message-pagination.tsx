@@ -269,6 +269,10 @@ export default function CorpMessagesPagination() {
 
 				<Header className="rtl" header="اعلان‌ها" />
 				<div className="flex flex-col text-white bg-transparent w-full">
+
+								 {false ? (
+        <LoadingSpinner />
+      ) : notifications?.length >= 0 ? ( 
 					<div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] h-20 mb-5">
 						<div
 							className={`${style.citypro} flex flex-row mr-4 justify-between m-auto md:w-2/10 w-5/10 `}
@@ -301,7 +305,19 @@ export default function CorpMessagesPagination() {
 							</Select>
 
 						</div>
-					</div>
+					</div> ) : (
+        <div className="text-center place-items-center mt-6">
+          {/* <Image className="w-1/3" src={panelNotFound} alt="orderNotFound" /> */}
+          <div className="-mt-8">
+            <p
+              className=" mt-6 text-navy-blue font-bold rtl"
+              style={{ fontSize: "1.1rem" }}
+            >
+              هیچ سفارشی یافت نشد.
+            </p>
+          </div>
+        </div>
+      )} 
 					<div className="flex flex-col text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
             
 						{notifications.map((item, index) => (
@@ -312,6 +328,8 @@ export default function CorpMessagesPagination() {
                     ))}
 					</div>
 				</div>
+
+
 			</>
 			{/* ) : (
         <div className="text-center place-items-center mt-6">
