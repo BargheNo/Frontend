@@ -88,7 +88,7 @@ export default function NotificationBox({ children,notificationContent,typeid }:
 				<div className="flex flex-col lg:justify-center justify-end lg:mb-0 -mb-20 gap-2 items-center md:mb-10 md:mr-0 -mr-40 min-w-48 ">
                 <HoverCard>
                     <HoverCardTrigger asChild>
-                        <Button  className="cursor-pointer mr-auto" variant="link"><EllipsisVertical/></Button>
+                        <Button  className="cursor-pointer mr-auto mb-auto -mt-2 -ml-2" variant="link"><EllipsisVertical/></Button>
                     </HoverCardTrigger>
                     <HoverCardContent className="w-34 h-auto border-0 p-4 flex flex-col gap-2 rtl bg-warm-white ">
                         <div className="flex neo-btn bg-white h-8">
@@ -104,7 +104,7 @@ export default function NotificationBox({ children,notificationContent,typeid }:
                         {/* <button onClick={()=>setOpen(!open)} className="shadow-md cursor-pointer text-[0.8rem] w-28 rounded-lg bg-fire-orange text-white h-9">
                         مشاهده جزئیات
 						</button> */}
-                        <div className={`cta-neu-button flex bg-white items-center content-center justify-center`}>
+                        <div className={`cta-neu-button flex bg-white items-center content-center justify-center md:mr-0 mr-20`}>
                                 <button onClick={()=>setOpen(!open)} className="cursor-pointer whitespace-nowrap text-[1rem]">
                                         مشاهده جزئیات
                                 </button>
