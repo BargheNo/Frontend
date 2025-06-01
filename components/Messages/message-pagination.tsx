@@ -21,7 +21,9 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import style from "./style.module.css";
+
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+
 import SignupButton from "../SignupButton/SignupButton";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -31,6 +33,7 @@ import {
 } from "@/src/types/notificationTypes";
 import notificationService from "@/src/services/notificationService";
 import CustomToast from "../Custom/CustomToast/CustomToast";
+
 import Header from "../Header/Header";
 import NotificationBox from "./Notfication/NotificationBox/NotificationBox";
 import NotificationHeader from "./Notfication/NotificationHeader/NotificationHeader";
@@ -39,6 +42,7 @@ import NotificationContent from "./Notfication/NotificationContent/NotificationC
 export default function CorpMessagesPagination() {
 	const [loading, setLoading] = useState(true);
 	const [loading2, setLoading2] = useState(true);
+
 	const [currpage, Setcurrpage] = useState<string>("1");
 	const [notifTypes, setNotifTypes] = useState<notifType[]>([]);
 	const [notifSetting, setNotifSetting] = useState<notificationSetting[]>([]);
@@ -192,6 +196,7 @@ export default function CorpMessagesPagination() {
 											/>
 										</div>
 									</div>
+
 								</div>
 							))
 						)}
@@ -234,6 +239,7 @@ export default function CorpMessagesPagination() {
 							{disable ? "تنظیمات اعلان ها" : "ذخیرۀ تغییرات"}
 							{disable ? <Settings /> : <Save />}
 						</SignupButton>
+
 					</div>
 				</div>
 			</div>

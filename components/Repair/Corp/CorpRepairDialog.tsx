@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { CorpRepairDialogProps, MaintenanceRecord } from "@/types/CorpTypes";
 import RepairHistory from "./RepairHistory";
 import RepairForm from "./RepairForm";
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 const CorpRepairDialog = ({

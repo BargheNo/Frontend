@@ -32,7 +32,7 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import SignupButton from "@/components/SignupButton/SignupButton";
-import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
+import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 const PanelCard = ({

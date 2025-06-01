@@ -27,7 +27,7 @@ import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import { Building, Home, Mailbox, MapPin, XIcon } from "lucide-react";
 import { Form, FieldArray } from "formik";
 import { toast } from "sonner";
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { baseURL, deleteData, getData, postData } from "@/src/services/apiHub";
 import { useSelector } from "react-redux";
@@ -413,7 +413,10 @@ export default function AddressesForm({
 										// toast(
 										// 	"شما حداکثر مقدار آدرس را اضافه کرده‌اید"
 										// );
-										CustomToast("شما حداکثر مقدار آدرس را اضافه کرده‌اید", "warning")
+										CustomToast(
+											"شما حداکثر مقدار آدرس را اضافه کرده‌اید",
+											"warning"
+										);
 									}
 								}}
 							>

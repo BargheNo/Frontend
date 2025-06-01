@@ -18,23 +18,9 @@ export default function page() {
 				/>
 			</Head>
 			<PageContainer>
-				{/* <div className={`${vazir.className} `}> */}
-				{/* <AddComponent title="ثبت پنل جدید" /> */}
-						<AddPanel />
-				{/* <div className="flex flex-col justify-center items-center mt-9">
-					<div>
-						<AddPanel />
-						<div className="text-center lg:font-semibold mt-3 text-navy-blue">
-							<p>ثبت پنل جدید</p>
-						</div>
-					</div>
-				</div> */}
-				{/* <div className="flex lg:flex-row flex-row-reverse lg:font-bold text-navy-blue lg:text-3xl text-2xl font-bold lg:px-14 px-4 lg:mt-8 mt-10 justify-start py-1.5">
-					<h1>پنل های نصب شده</h1>
-				</div> */}
-				<Header header="پنل‌های نصب‌شده" />
+				<AddPanel />
+				<Header header="پنل‌های نصب‌ شده" />
 				<InstalledPanelPagination />
-				{/* </div> */}
 			</PageContainer>
 		</>
 	);
