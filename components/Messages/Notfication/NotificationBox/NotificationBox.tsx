@@ -11,6 +11,7 @@ import moment from "jalali-moment";
 import { MessageCirclePlus,EllipsisVertical } from "lucide-react";
 import React, { ReactNode, useState } from "react";
 import { toast } from "sonner";
+import NotificationsDialogFields from "./NotificationsDialogFields";
 
 
 export default function NotificationBox({ children,notificationContent,typeid }: { children: ReactNode,date:string,notificationContent:Notification,typeid:number}) {
@@ -39,40 +40,40 @@ export default function NotificationBox({ children,notificationContent,typeid }:
                     {typeid===2&&
                     (
                         <>
-                        <span className="mr-2 rtl"><span className="font-bold">{" نام پنل: "}</span>{notificationContent.data.installationRequest.name}</span>
-                        <span className="mr-2 rtl"><span className="font-bold">{" هزینه نصب : "}</span>{toFarsiNumber(notificationContent.data.cost)}</span>
-                        <span className="mr-2 rtl"><span className="font-bold">{"  تاریخ ثبت درخواست : "}</span>{toFarsiNumber(moment(notificationContent.data.installationRequest.createdTime).locale('fa').format('jYYYY/jMM/jDD'))}</span>
+                        <NotificationsDialogFields title=" نام پنل: " detail={notificationContent.data.installationRequest.name}/>
+                        <NotificationsDialogFields title=" هزینه نصب : " detail={toFarsiNumber(notificationContent.data.cost)}/>
+                        <NotificationsDialogFields title="  تاریخ ثبت درخواست : " detail={toFarsiNumber(moment(notificationContent.data.installationRequest.createdTime).locale('fa').format('jYYYY/jMM/jDD'))}/>
+                        <NotificationsDialogFields title="  تاریخ نصب: " detail={toFarsiNumber(moment(notificationContent.data.installationTime).locale('fa').format('jYYYY/jMM/jDD'))}/>
                         {/* <span className="mr-2 rtl">{" نام مشتری: "}{notificationContent.data.installationRequest.customer.firstName+" "+notificationContent.data.installationRequest.customer.lastName}</span> */}
                         {/* <span className="mr-2 rtl">{" شماره تماس مشتری: "}{notificationContent.data.installationRequest.customer.phone}</span> */}
                         {/* <span className="mr-2 rtl">{" نام بیدر: "}{notificationContent.data.bidder.firstName+" "+notificationContent.data.bidder.lastName}</span>             */}
-                        <span className="mr-2 rtl"><span className="font-bold">{"  تاریخ نصب: "}</span>{toFarsiNumber(moment(notificationContent.data.installationTime).locale('fa').format('jYYYY/jMM/jDD'))}</span>
                         </> 
                     )
                     }     
                     {typeid===3&&
                     (
                         <>
-                        <span className="mr-2 rtl"><span className="font-bold">{" نام پنل: "}</span>{notificationContent?.data?.panel?.name}</span>
-                        <span className="mr-2 rtl"><span className="font-bold">{" نام مشتری: "}</span>{notificationContent?.data?.panel?.customer?.firstName+" "+notificationContent?.data?.panel?.customer?.lastName}</span>
-                        <span className="mr-2 rtl"><span className="font-bold">{" شماره تماس مشتری: "}</span>{toFarsiNumber(notificationContent?.data?.panel?.customer?.phone)}</span>
-                        <span className="mr-2 rtl"><span className="font-bold">{"   نام شرکت نصب کننده: "}</span>{notificationContent?.data?.panel?.corporation?.name}</span>
-                        <span className="mr-2 rtl"><span className="font-bold">{"   نام اوپراتور: "}</span>{notificationContent?.data?.panel?.operator?.firstName+" "+notificationContent?.data?.panel?.operator?.lastName}</span>
-                        <span className="mr-2 rtl"><span className="font-bold">{"  وضعیت نصب: "}</span>{notificationContent?.data?.status}</span>
+                        <NotificationsDialogFields title=" نام پنل: " detail={notificationContent?.data?.panel?.name} />
+                        <NotificationsDialogFields title=" نام مشتری: " detail={notificationContent?.data?.panel?.customer?.firstName+" "+notificationContent?.data?.panel?.customer?.lastName}/>
+                        <NotificationsDialogFields title=" شماره تماس مشتری: " detail={toFarsiNumber(notificationContent?.data?.panel?.customer?.phone)} />
+                        <NotificationsDialogFields title="   نام شرکت نصب کننده: " detail={notificationContent?.data?.panel?.corporation?.name} />
+                        <NotificationsDialogFields title="   نام اوپراتور: " detail={notificationContent?.data?.panel?.operator?.firstName+" "+notificationContent?.data?.panel?.operator?.lastName} />
+                        <NotificationsDialogFields title="  وضعیت نصب: " detail={notificationContent?.data?.status} />
                         </> 
                     )
                     }   
                     {typeid===4&&
                     (
                         <>
-                        <span className="mr-2 rtl"><span className="font-bold">{"  عنوان اعلان: "}</span>{notificationContent.data.maintenanceRecord.title}</span>
-                        <span className="mr-2 rtl"><span className="font-bold">{"  جزئیات اعلان: "}</span>{notificationContent.data.maintenanceRecord.details}</span>
-                        <span className="mr-2 rtl"><span className="font-bold">{" نام مشتری: "}</span>{notificationContent.data.maintenanceRecord.customer.firstName+" "+notificationContent.data.maintenanceRecord.customer.lastName}</span>
-                        <span className="mr-2 rtl"><span className="font-bold">{" شماره تماس مشتری: "}</span>{toFarsiNumber(notificationContent.data.maintenanceRecord.customer.phone)}</span>
-                        <span className="mr-2 rtl"><span className="font-bold">{" نام اوپراتور: "}</span>{notificationContent.data.maintenanceRecord.operator.firstName+" "+notificationContent.data.maintenanceRecord.operator.lastName}</span>
-                        <span className="mr-2 rtl"><span className="font-bold">{" نام شرکت: "}</span>{notificationContent.data.maintenanceRecord.corporation.name}</span>
-                        <span className="mr-2 rtl"><span className="font-bold">{"   نام پنل: "}</span>{notificationContent.data.maintenanceRecord.panel.name}</span>
-                        <span className="mr-2 rtl"><span className="font-bold">{" تاریخ تعمیر: "}</span>{toFarsiNumber(moment(notificationContent.data.maintenanceRecord.date).locale('fa').format('jYYYY/jMM/jDD'))}</span>
-                        <span className="mr-2 rtl"><span className="font-bold">{"    وضعیت تعمیر: "}</span>{notificationContent.data.status}</span>
+                        <NotificationsDialogFields title="  عنوان اعلان: " detail={notificationContent.data.maintenanceRecord.title}/>
+                        <NotificationsDialogFields title="  جزئیات اعلان: " detail={notificationContent.data.maintenanceRecord.details}/>
+                        <NotificationsDialogFields title=" نام مشتری: " detail={notificationContent.data.maintenanceRecord.customer.firstName+" "+notificationContent.data.maintenanceRecord.customer.lastName}/>
+                        <NotificationsDialogFields title=" شماره تماس مشتری: " detail={toFarsiNumber(notificationContent.data.maintenanceRecord.customer.phone)}/>
+                        <NotificationsDialogFields title=" نام اوپراتور: " detail={notificationContent.data.maintenanceRecord.operator.firstName+" "+notificationContent.data.maintenanceRecord.operator.lastName}/>
+                        <NotificationsDialogFields title=" نام شرکت: " detail={notificationContent.data.maintenanceRecord.corporation.name}/>
+                        <NotificationsDialogFields title="   نام پنل: " detail={notificationContent.data.maintenanceRecord.panel.name}/>
+                        <NotificationsDialogFields title=" تاریخ تعمیر: " detail={toFarsiNumber(moment(notificationContent.data.maintenanceRecord.date).locale('fa').format('jYYYY/jMM/jDD'))}/>
+                        <NotificationsDialogFields title="    وضعیت تعمیر: " detail={notificationContent.data.status}/>
                         </> 
                     )
                     }     
