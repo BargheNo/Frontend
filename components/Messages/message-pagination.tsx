@@ -356,7 +356,7 @@ export default function CorpMessagesPagination() {
 								className="mt-6 text-navy-blue font-bold rtl"
 								style={{ fontSize: "1.1rem" }}
 							>
-								هیچ سفارشی یافت نشد.
+								هیچ پیامی یافت نشد.
 							</p>
 						</div>
 					</div>

@@ -14,10 +14,7 @@ export default function NotificationContent() {
                 </div>
             </div>
 
-            <div className="flex flex-row gap-1 mb-7 ">
-                
-                
-            </div>
+
             
 		</>
 	);
