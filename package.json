@@ -52,6 +52,8 @@
 		"react-apexcharts": "^1.7.0",
 		"react-date-object": "^2.1.9",
 		"react-dom": "^18.2.0",
+		"react-drag-drop-files": "^3.0.1",
+		"react-dropzone": "^14.3.8",
 		"react-hook-form": "^7.55.0",
 		"react-redux": "^9.2.0",
 		"react-resizable-panels": "^2.1.7",

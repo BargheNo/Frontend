@@ -1,8 +1,7 @@
-import AddComponent from "@/components/AddComponent/AddComponent";
+import AddBlog from "@/components/blog/AddBlog/AddBlog";
 import BlogCard from "@/components/blog/BlogCard/BlogCard";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 import Header from "@/components/Header/Header";
-import { time } from "console";
 import React from "react";
 
 const mockBlogs = [
@@ -105,7 +104,7 @@ export default function page() {
   return (
     <PageContainer>
       <Header header="مطالب" />
-      <AddComponent title="اضافه کردن مطلب جدید" />
+      <AddBlog />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-[2vw] mx-auto">
               {mockBlogs.map((blog: Blog) => {
             
@@ -116,7 +115,7 @@ export default function page() {
             description={blog.description}
             writer={blog.writer}
              date={blog.date}
-             className="w-[40vw]"
+             className="w-full"
           />;
         })}
       </div>
