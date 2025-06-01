@@ -116,14 +116,14 @@ export default function CorpMessagesPagination() {
 							notifSetting.map((item, index) => (
 								<div
 									key={index}
-									className="flex flex-row justify-between border-t-2 border-gray-300 h-1/3 items-center px-4"
+									className="flex flex-row justify-between border-t-2 border-gray-300 h-1/4 items-center "
 								>
-									<p className="text-gray-600 whitespace-nowrap md:mb-0 mb-9">
+									<p className="text-gray-600 whitespace-nowrap md:mb-0 mb-9 md:mr-4 text-[0.9rem] ml-1">
 										{item.notificationType.name}
 									</p>
 
 									<div className="flex flex-col">
-										<div className="flex flex-row md:gap-37 gap-17 md:mt-0 mt-9 md:ml-23">
+										<div className="flex flex-row md:gap-37 gap-17 md:mt-0 mt-9 md:ml-23 md:mb-0 mb-5 mr-2">
 											<Switch
 												className="rtl"
 												onClick={() =>
