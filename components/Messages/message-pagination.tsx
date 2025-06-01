@@ -151,6 +151,7 @@ export default function CorpMessagesPagination() {
 														 .notificationType
 														 .name
 													)?.isPushEnabled
+													||false
 												}
 											/>
 											<Switch
@@ -186,6 +187,7 @@ export default function CorpMessagesPagination() {
 														.notificationType
 														.name
 													)?.isEmailEnabled
+													||false
 												}
 											/>
 										</div>
