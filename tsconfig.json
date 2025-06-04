@@ -1,42 +1,42 @@
 {
-	"compilerOptions": {
-		// "baseUrl": "./src",
-		"noUnusedLocals": false,
-		"noUnusedParameters": false,
-		// "target": "esnext",
-		"allowImportingTsExtensions": true,
-		"target": "ES2017",
-		"lib": ["dom", "dom.iterable", "esnext"],
-		"allowJs": true,
-		"skipLibCheck": true,
-		"strict": true,
-		"noEmit": true,
-		"esModuleInterop": true,
-		"module": "commonjs",
-		"types": ["cypress"],
-		// "moduleResolution": "NodeNext",
-		"moduleResolution": "node",
-		// "moduleResolution": "bundler",
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"jsx": "preserve",
-		"incremental": true,
-		"plugins": [
-			{
-				"name": "next"
-			}
-		],
-		"paths": {
-			"@/*": ["./*"]
-		}
-	},
-	"include": [
-		"next-env.d.ts",
-		"**/*.ts",
-		"**/*.tsx",
-		".next/types/**/*.ts",
-		"testSetup.js",
-		"tests/page.test.tsx"
-	],
-	"exclude": ["node_modules"]
+  "compilerOptions": {
+    // "baseUrl": "./src",
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    // "target": "esnext",
+    "allowImportingTsExtensions": true,
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "types": ["cypress"],
+    // "moduleResolution": "NodeNext",
+    "moduleResolution": "node",
+    // "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "testSetup.js",
+    "tests/page.test.tsx"
+  ],
+  "exclude": ["node_modules"]
 }
