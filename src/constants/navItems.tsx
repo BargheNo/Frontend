@@ -21,6 +21,11 @@ export const navItems: NavItem[] = [
   { name: "گزارشات", path: "/dashboard/reports", icon: <BarChart /> },
   { name: "پیام‌های من", path: "/dashboard/messages", icon: <MessageSquare /> },
   { name: "محاسبه‌گر", path: "/dashboard/calculator", icon: <Calculator /> },
-  { name: "پشتیبانی", path: "/dashboard/tickets", icon: <Headset/> },
-  { name: "اخبار و اطلاعیه‌ها", path: "/dashboard/announcements", icon: <Megaphone /> },
+  { name: "پشتیبانی", path: "/dashboard/tickets", icon: <Headset /> },
+  {
+    name: "اخبار و اطلاعیه‌ها",
+    path: "/dashboard/announcements",
+    icon: <Megaphone />,
+  },
 ];
+
