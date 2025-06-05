@@ -20,7 +20,7 @@ const AddWarranty = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <AddComponent title='ثبت گارانتی جدید' />
+        <div className='mb-11 items-center flex justify-around'><AddComponent title='ثبت گارانتی جدید' /></div>
       </DialogTrigger>
       <DialogContent
         style={{ backgroundColor: "#F1F4FC" }}

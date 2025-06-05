@@ -22,7 +22,7 @@ const WarrantyForm = ({ warrantyTypes, isLoading, onSubmit }: WarrantyFormProps)
       enableReinitialize
     >
       {({ values, errors, touched, isSubmitting, setFieldValue }) => (
-        <Form className="flex flex-col items-end w-full h-auto gap-4 rtl">
+        <Form className="flex flex-col items-end w-full h-auto max-h-[85vh] gap-4 rtl overflow-y-auto">
           {/* Warranty Name */}
           <div className="w-full">
             <CustomInput
@@ -36,7 +36,7 @@ const WarrantyForm = ({ warrantyTypes, isLoading, onSubmit }: WarrantyFormProps)
           </div>
 
           {/* Warranty Type */}
-          <div className="w-full">
+          <div className="w-full mt-6">
             <Select
               name="warrantyType"
               disabled={isLoading}
@@ -65,23 +65,16 @@ const WarrantyForm = ({ warrantyTypes, isLoading, onSubmit }: WarrantyFormProps)
 
           {/* Warranty Duration */}
           <div className="w-full">
-            <input
-              id="warrantyDuration"
+            <CustomInput
+              name="warrantyDuration"
               type="number"
               min="1"
-              max="600"
-              placeholder='مدت گارانتی (ماه)*'
-              className={`inset-input w-full p-2
-                ${touched.warrantyDuration && errors.warrantyDuration
-                  ? "border-red-500"
-                  : ""}`
-              }
-            />
-            {touched.warrantyDuration && errors.warrantyDuration && (
-              <p className="text-sm text-red-600 text-right">
-                {errors.warrantyDuration as string}
-              </p>
-            )}
+              max="120"
+              className={`block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${
+                touched.warrantyDuration && errors.warrantyDuration ? 'border-red-500' : 'border'}`}
+            >
+              مدت گارانتی (ماه)*
+            </CustomInput>
           </div>
 
           {/* Warranty Description */}

@@ -32,7 +32,8 @@ const mockData: Warranty[] = [
                 description: "این جزو گارانتی محسوب نمیشه لطفا اصرار نکنید",
                 limitations: "واقعا نمیدونم این فیلد چی توشه"
             }
-        ]
+        ],
+        isArchived: true,
     },
     {
         name: "گارانتی طلایی براق",
@@ -45,7 +46,8 @@ const mockData: Warranty[] = [
               description: "این جزو گارانتی محسوب نمیشه لطفا اصرار نکنید",
               limitations: "واقعا نمیدونم این فیلد چی توشه"
             }
-        ]
+        ],
+        isArchived: false,
     },
     {
         name: "گارانتی قهوه‌ای ملو",
@@ -58,7 +60,8 @@ const mockData: Warranty[] = [
               description: "این جزو گارانتی محسوب نمیشه لطفا اصرار نکنید",
               limitations: "واقعا نمیدونم این فیلد چی توشه"
             }
-        ]
+        ],
+        isArchived: false,
     },
     {
         name: "گارانتی سبز فسفری",
@@ -71,7 +74,8 @@ const mockData: Warranty[] = [
               description: "این جزو گارانتی محسوب نمیشه لطفا اصرار نکنید",
               limitations: "واقعا نمیدونم این فیلد چی توشه"
             }
-        ]
+        ],
+        isArchived: false,
     },
     {
         name: "گارانتی قرمز بدرنگ",
@@ -84,7 +88,8 @@ const mockData: Warranty[] = [
               description: "این جزو گارانتی محسوب نمیشه لطفا اصرار نکنید",
               limitations: "واقعا نمیدونم این فیلد چی توشه"
             }
-        ]
+        ],
+        isArchived: false,
     },
     {
         name: "گارانتی آبی حنایی",
@@ -97,7 +102,8 @@ const mockData: Warranty[] = [
               description: "این جزو گارانتی محسوب نمیشه لطفا اصرار نکنید",
               limitations: "واقعا نمیدونم این فیلد چی توشه"
             }
-        ]
+        ],
+        isArchived: false,
     }
 ]
 
@@ -120,6 +126,7 @@ const Warranties = () => {
                 duration={WarrantyItem.duration}
                 description={WarrantyItem.description}
                 terms={WarrantyItem.terms}
+                isArchived={WarrantyItem.isArchived}
             />
         )}
     </div>

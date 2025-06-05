@@ -3,6 +3,8 @@ import { CircleAlert, CircleChevronLeft, ListCollapse, ReceiptText, Shapes, Time
 import React, { useState } from 'react'
 import MetricBox from '@/components/IconWithBackground/MetricBox';
 import { Warranty, TermItem } from './warrantyTypes.ts';
+import { postData } from '@/src/services/apiHub';
+import CustomToast from '@/components/Custom/CustomToast/CustomToast';
 
 const TermItemSection = ({ title, description, limitations } : TermItem) => {
     return (
@@ -23,8 +25,26 @@ const TermItemSection = ({ title, description, limitations } : TermItem) => {
     );
 }
 
-const WarrantyDetails = ({name, description, type, duration, terms} : Warranty) => {
+const WarrantyDetails = ({name, description, type, duration, terms, isArchived} : Warranty) => {
     const [open, setOpen] = useState(false);
+
+    const handleArchive = async () => {
+        if (isArchived) {
+            CustomToast("این گارانتی قبلاً آرشیو شده است!", "warning");
+            return;
+        }
+
+        try {
+            await postData({
+                endPoint: "apiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                // data: { name }
+            });
+            CustomToast("گارانتی با موفقیت آرشیو شد!", "success");
+            setOpen(false);
+        } catch {
+            CustomToast("مشکلی در آرشیو کردن گارانتی پیش آمد!", "error");
+        }
+    };
 
     return (
         <Dialog open={open} onOpenChange={setOpen}  >
@@ -93,8 +113,11 @@ const WarrantyDetails = ({name, description, type, duration, terms} : Warranty) 
                 </div>
 
                 <div>
-                    <button className='red-circle-button w-full h-11'>
-                        آرشیو کردن
+                    <button 
+                        onClick={handleArchive}
+                        className={`${isArchived && "grayscale-100 cursor-auto"} red-circle-button w-full h-11`}
+                    >
+                        {isArchived ? "این گارانتی آرشیو شده است!" : "آرشیو کردن"}
                     </button>
                 </div>
 

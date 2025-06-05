@@ -9,14 +9,14 @@ import { RootState } from '@/src/store/store';
 
 type WarrantyCardProps = Warranty;
 
-const WarrantyCard = ({ name, type, duration, description, terms } : WarrantyCardProps) => {
+const WarrantyCard = ({ name, type, duration, description, terms, isArchived } : WarrantyCardProps) => {
   const { items, status, error } = useSelector((state: RootState) => state.warrantyTypes);
 
   // TODO: handle status === "loading" || status === "failed" cases
 
   return (
-    <div className='flex flex-col space-y-6 neu-container rounded-3xl justify-between
-                    w-full h-full bg-[#F0EDEF] p-8 overflow-hidden relative'>
+    <div className={`flex flex-col space-y-6 neu-container rounded-3xl justify-between
+                    w-full h-full bg-[#F0EDEF] p-8 overflow-hidden relative ${isArchived && "grayscale-100"}`}>
         <h1 className='text-2xl font-black'>
           {name}
         </h1>
@@ -50,6 +50,7 @@ const WarrantyCard = ({ name, type, duration, description, terms } : WarrantyCar
             type={type}
             duration={duration}
             terms={terms}
+            isArchived={isArchived}
           />
         </div>
     </div>
