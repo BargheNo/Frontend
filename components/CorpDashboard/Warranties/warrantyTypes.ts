@@ -19,9 +19,9 @@ export interface WarrantyType {
   }
   
   export interface FormValues {
-    warrantyName: string;
-    warrantyType: string;
-    warrantyDuration: number;
-    warrantyDescription: string;
+    name: string;
+    type: string;
+    duration: number;
+    description: string;
     terms: TermItem[];
   } 

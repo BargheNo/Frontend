@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { FormValues, WarrantyType } from './warrantyTypes';
 import WarrantyForm from './WarrantyForm';
 import { RootState } from '@/src/store/store';
+import { baseURL, postData } from '@/src/services/apiHub';
 
 const AddWarranty = () => {
   const [open, setOpen] = useState(false);
@@ -13,7 +14,12 @@ const AddWarranty = () => {
 
   const handleSubmit = (values: FormValues) => {
     console.log('Form submitted:', values);
-    // TODO: Implement API call
+    postData({
+      endPoint: `${baseURL}/v1/corp/:corporationID/guarantee`,    // TODO: add corpID
+      data: values
+    }).then(res => {
+      console.log(res);
+    })
     setOpen(false);
   };
 

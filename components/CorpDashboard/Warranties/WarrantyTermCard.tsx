@@ -5,13 +5,14 @@ import { TermItem } from './warrantyTypes';
 import { FormikTouched, FormikErrors } from 'formik';
 
 interface WarrantyTermCardProps {
+  term: TermItem;
   index: number;
   touched: FormikTouched<{ terms: TermItem[] }>;
   errors: FormikErrors<{ terms: TermItem[] }>;
   onRemove: () => void;
 }
 
-const WarrantyTermCard = ({ index, touched, errors, onRemove }: WarrantyTermCardProps) => {
+const WarrantyTermCard = ({ term, index, touched, errors, onRemove }: WarrantyTermCardProps) => {
   const termErrors = errors.terms?.[index] as FormikErrors<TermItem> | undefined;
   const termTouched = touched.terms?.[index] as FormikTouched<TermItem> | undefined;
 

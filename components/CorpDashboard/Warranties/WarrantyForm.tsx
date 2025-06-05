@@ -26,10 +26,10 @@ const WarrantyForm = ({ warrantyTypes, isLoading, onSubmit }: WarrantyFormProps)
           {/* Warranty Name */}
           <div className="w-full">
             <CustomInput
-              name="warrantyName"
+              name="name"
               type="text"
               className={`block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${
-                touched.warrantyName && errors.warrantyName ? 'border-red-500' : 'border'}`}
+                touched.name && errors.name ? 'border-red-500' : 'border'}`}
             >
               نام گارانتی*
             </CustomInput>
@@ -38,15 +38,15 @@ const WarrantyForm = ({ warrantyTypes, isLoading, onSubmit }: WarrantyFormProps)
           {/* Warranty Type */}
           <div className="w-full mt-6">
             <Select
-              name="warrantyType"
+              name="type"
               disabled={isLoading}
-              value={values.warrantyType}
-              onValueChange={(value) => setFieldValue("warrantyType", value)}
+              value={values.type}
+              onValueChange={(value) => setFieldValue("type", value)}
             >
               <SelectTrigger className={`w-full rounded-lg shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)]
-                ${touched.warrantyType && errors.warrantyType ? 'border-red-500' : ''}`}>
+                ${touched.type && errors.type ? 'border-red-500' : ''}`}>
                 <SelectValue placeholder="انتخاب نوع گارانتی">
-                  {warrantyTypes.find(type => type.id == values.warrantyType)?.name}
+                  {warrantyTypes.find(type => type.id == values.type)?.name}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
@@ -57,8 +57,8 @@ const WarrantyForm = ({ warrantyTypes, isLoading, onSubmit }: WarrantyFormProps)
                 ))}
               </SelectContent>
             </Select>
-            {touched.warrantyType && errors.warrantyType && (
-              <p className="mt-1 text-sm text-red-600 text-right">{errors.warrantyType}</p>
+            {touched.type && errors.type && (
+              <p className="mt-1 text-sm text-red-600 text-right">{errors.type}</p>
             )}
             {isLoading && (
               <p className="mt-1 text-sm text-gray-500 text-right">در حال بارگذاری انواع گارانتی...</p>
@@ -68,12 +68,12 @@ const WarrantyForm = ({ warrantyTypes, isLoading, onSubmit }: WarrantyFormProps)
           {/* Warranty Duration */}
           <div className="w-full">
             <CustomInput
-              name="warrantyDuration"
+              name="duration"
               type="number"
               min="1"
               max="120"
               className={`block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${
-                touched.warrantyDuration && errors.warrantyDuration ? 'border-red-500' : 'border'}`}
+                touched.duration && errors.duration ? 'border-red-500' : 'border'}`}
             >
               مدت گارانتی (ماه)*
             </CustomInput>
@@ -82,10 +82,10 @@ const WarrantyForm = ({ warrantyTypes, isLoading, onSubmit }: WarrantyFormProps)
           {/* Warranty Description */}
           <div className="w-full">
             <CustomTextArea
-              name="warrantyDescription"
+              name="description"
               rows={3}
               className={`block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${
-                touched.warrantyDescription && errors.warrantyDescription ? 'border-red-500' : 'border'}`}
+                touched.description && errors.description ? 'border-red-500' : 'border'}`}
             >
               توضیحات گارانتی*
             </CustomTextArea>
