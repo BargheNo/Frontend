@@ -9,7 +9,7 @@ import { RootState } from '@/src/store/store';
 
 type WarrantyCardProps = Warranty;
 
-const WarrantyCard = ({ name, type, duration, description, terms, isArchived } : WarrantyCardProps) => {
+const WarrantyCard = ({ id, name, guaranteeType, durationMonths, description, terms, isArchived } : WarrantyCardProps) => {
   const { items, status, error } = useSelector((state: RootState) => state.warrantyTypes);
 
   // TODO: handle status === "loading" || status === "failed" cases
@@ -27,14 +27,14 @@ const WarrantyCard = ({ name, type, duration, description, terms, isArchived } :
             className='w-52'
             childClassName='!text-lg'
           >
-            {String(items.find(typeItem => typeItem.id == type)?.name || type)}
+            {String(items.find(typeItem => typeItem.id == guaranteeType)?.name || guaranteeType)}
           </MetricBox>
           <MetricBox
             title='مدت زمان'
             icon={Timer}
             className='w-52'
           >
-            {String(duration)}
+            {String(durationMonths)}
           </MetricBox>
         </div>
 
@@ -46,10 +46,11 @@ const WarrantyCard = ({ name, type, duration, description, terms, isArchived } :
 
         <div className='w-full flex space-x-4'>
           <WarrantyDetails
+            id={id}
             name={name}
             description={description}
-            type={items.find(typeItem => typeItem.id == type)?.name || type}
-            duration={duration}
+            type={items.find(typeItem => typeItem.id == guaranteeType)?.name || guaranteeType}
+            duration={durationMonths}
             terms={terms}
             isArchived={isArchived}
           />

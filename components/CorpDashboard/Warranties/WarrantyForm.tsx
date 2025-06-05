@@ -41,7 +41,7 @@ const WarrantyForm = ({ warrantyTypes, isLoading, onSubmit }: WarrantyFormProps)
               name="type"
               disabled={isLoading}
               value={values.type}
-              onValueChange={(value) => setFieldValue("type", value)}
+              onValueChange={(value) => setFieldValue("type", Number(value))}
             >
               <SelectTrigger className={`w-full rounded-lg shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)]
                 ${touched.type && errors.type ? 'border-red-500' : ''}`}>

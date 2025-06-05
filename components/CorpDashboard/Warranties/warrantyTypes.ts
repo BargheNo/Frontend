@@ -5,10 +5,11 @@ export interface TermItem {
 }
 
 export interface Warranty {
+    id: number;
     name: string;
     description: string;
-    type: string | number;
-    duration: string | number;
+    guaranteeType: string | number;
+    durationMonths: string | number;
     terms: TermItem[];
     isArchived: boolean;
 } 

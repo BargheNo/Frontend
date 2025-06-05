@@ -1,9 +1,9 @@
 import { Dialog, DialogHeader, DialogTrigger, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { CircleAlert, CircleChevronLeft, ListCollapse, ReceiptText, Shapes, Timer } from 'lucide-react';
+import { Archive, CircleAlert, CircleChevronLeft, ListCollapse, ReceiptText, Shapes, Timer } from 'lucide-react';
 import React, { useState } from 'react'
 import MetricBox from '@/components/IconWithBackground/MetricBox';
 import { Warranty, TermItem } from './warrantyTypes.ts';
-import { postData } from '@/src/services/apiHub';
+import { baseURL, postData, putData } from '@/src/services/apiHub';
 import CustomToast from '@/components/Custom/CustomToast/CustomToast';
 
 const TermItemSection = ({ title, description, limitations } : TermItem) => {
@@ -25,7 +25,7 @@ const TermItemSection = ({ title, description, limitations } : TermItem) => {
     );
 }
 
-const WarrantyDetails = ({name, description, type, duration, terms, isArchived} : Warranty) => {
+const WarrantyDetails = ({id, name, description, type, duration, terms, isArchived} : Warranty) => {
     const [open, setOpen] = useState(false);
 
     const handleArchive = async () => {
@@ -34,16 +34,16 @@ const WarrantyDetails = ({name, description, type, duration, terms, isArchived} 
             return;
         }
 
-        try {
-            await postData({
-                endPoint: "apiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
-                // data: { name }
-            });
+        putData({
+            endPoint: `${baseURL}/v1/corp/2/guarantee/${id}/status`, // TODO: add corp id .........................................
+            data: {status: 2},
+        }).then(res => {
             CustomToast("گارانتی با موفقیت آرشیو شد!", "success");
             setOpen(false);
-        } catch {
+        }).catch(err => {
             CustomToast("مشکلی در آرشیو کردن گارانتی پیش آمد!", "error");
-        }
+            console.log(err);
+        })
     };
 
     return (
@@ -115,9 +115,10 @@ const WarrantyDetails = ({name, description, type, duration, terms, isArchived} 
                 <div>
                     <button 
                         onClick={handleArchive}
-                        className={`${isArchived && "grayscale-100 cursor-auto"} red-circle-button w-full h-11`}
+                        className={`${isArchived && "grayscale-100 cursor-auto"} red-circle-button w-full h-11 gap-2`}
                     >
                         {isArchived ? "این گارانتی آرشیو شده است!" : "آرشیو کردن"}
+                        {!isArchived && <Archive size={20} />}
                     </button>
                 </div>
 

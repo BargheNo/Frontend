@@ -5,7 +5,7 @@ export const validationSchema = Yup.object().shape({
   name: Yup.string()
     .required('نام گارانتی الزامی است')
     .max(100, 'نام گارانتی نباید بیشتر از ۱۰۰ کاراکتر باشد'),
-  type: Yup.string().required('نوع گارانتی الزامی است'),
+  type: Yup.number().required('نوع گارانتی الزامی است'),
   duration: Yup.number()
     .required('مدت گارانتی الزامی است')
     .min(1, 'حداقل مدت گارانتی ۱ ماه است')

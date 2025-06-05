@@ -15,10 +15,11 @@ const AddWarranty = () => {
   const handleSubmit = (values: FormValues) => {
     console.log('Form submitted:', values);
     postData({
-      endPoint: `${baseURL}/v1/corp/:corporationID/guarantee`,    // TODO: add corpID
+      endPoint: `${baseURL}/v1/corp/2/guarantee`,    // TODO: add corpID ................................................................
       data: values
     }).then(res => {
       console.log(res);
+      CustomToast("با موفقیت ثبت شد!", "success");
     })
     setOpen(false);
   };
