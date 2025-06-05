@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import style from "./style.module.css";
 
-import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "../Loading/LoadingSpinner/LoadingSpinner";
 
 import SignupButton from "../SignupButton/SignupButton";
 import { Switch } from "@/components/ui/switch";
@@ -68,7 +68,7 @@ export default function CorpMessagesPagination() {
 			})
 			.catch((err) => {
 				console.log(err.message);
-				setLoading(false);
+				setLoading(true);
 			});
 		notificationService
 			.getNotificationSetting()
@@ -83,7 +83,7 @@ export default function CorpMessagesPagination() {
 				pageSize: "4",
 			})
 			.then((res) => {setNotifications(res.data);setLoading2(false)})
-			.catch(()=>setLoading2(false));
+			.catch(()=>setLoading2(true));
 	}, [notifId, currpage]);
 
 	useEffect(() => {
