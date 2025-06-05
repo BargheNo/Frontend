@@ -59,17 +59,17 @@ export default function Layout({
     },
   ];
   const navItemsMonitoring: NavItem[] = [
-    { name: "پنل‌های من", path: "/dashboard/my-panels", icon: <Layers /> },
-    { name: "ثبت سفارش", path: "/dashboard/new-order", icon: <FilePlus /> },
+    { name: "سفارشات", path: "/admin-dashboard/Orders", icon: <Layers /> },
+    { name: "بید ها", path: "/admin-dashboard/Bids", icon: <FilePlus /> },
     {
       name: "سوابق تعمیرات",
-      path: "/dashboard/repair-history",
+      path: "/admin-dashboard/maintenance-record",
       icon: <History />,
     },
-    { name: "گزارشات", path: "/dashboard/reports", icon: <BarChart /> },
+    { name: "پنل ها", path: "/admin-dashboard/panels", icon: <BarChart /> },
     {
-      name: "پیام‌های من",
-      path: "/dashboard/messages",
+      name: "کارکنان شرکت",
+      path: "/admin-dashboard/corp-staff",
       icon: <MessageSquare />,
     },
   ];
