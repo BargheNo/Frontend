@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { MoveLeft, Lock, Unlock, Smartphone } from "lucide-react";
+import { MoveLeft, Lock, Unlock, Smartphone, Loader2 } from "lucide-react";
 import Link from "next/link";
 import styles from "./login.module.css";
 import { Formik, Form } from "formik";
@@ -13,8 +13,9 @@ import { toast } from "sonner";
 import { setUser } from "@/src/store/slices/userSlice";
 import { useDispatch } from "react-redux";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
-import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
+import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 
 const validationSchema = Yup.object({
 	phoneNumber: Yup.string()
@@ -139,9 +140,14 @@ const Login = () => {
 								</CustomInput>
 							</div>
 							<LoginButton>
-								ورود
-								<MoveLeft />
-								{loading && <TransparentLoading />}
+								{loading ? (
+									<LoadingOnButton size={28} />
+								) : (
+									<>
+										ورود
+										<MoveLeft />
+									</>
+								)}
 							</LoginButton>
 						</Form>
 					</Formik>

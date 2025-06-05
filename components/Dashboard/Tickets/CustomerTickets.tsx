@@ -25,8 +25,9 @@ import {
 } from "@/components/ui/select";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
-import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 interface Ticket {
 	id: string;
 	subject: string;
@@ -87,6 +88,7 @@ const resetFormValues = (
 
 const TicketSupportPage = () => {
 	const [loading, setLoading] = useState(false);
+	const [putCommentLoading, setPutCommentLoading] = useState<boolean>(false);
 	const [isLoadingComments, setIsLoadingComments] = useState(false);
 	const [loadingTickets, setLoadingTickets] = useState(true);
 	const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -131,7 +133,6 @@ const TicketSupportPage = () => {
 		setLoading(true);
 		console.log("values", values);
 		const formData = new FormData();
-		setImagePreview(null);
 		formData.append("subject", values.subject);
 		console.log(values.subject);
 		formData.append("description", values.description);
@@ -155,6 +156,7 @@ const TicketSupportPage = () => {
 			// toast.success(data?.message);
 			fetchTickets();
 			setLoading(false);
+			setImagePreview(null);
 		} catch (error: any) {
 			console.log(error);
 			const errMsg =
@@ -162,6 +164,7 @@ const TicketSupportPage = () => {
 				"هنگام ایجاد تیکت جدید مشکلی پیش آمد.";
 			CustomToast(errMsg, "error");
 			setLoading(false);
+			setImagePreview(null);
 			// toast.error(errMsg);
 		}
 	};
@@ -170,6 +173,7 @@ const TicketSupportPage = () => {
 		comment: string,
 		activeCommentTicketId: string | null
 	) => {
+		setPutCommentLoading(true);
 		try {
 			console.log("comment", comment);
 			const response = await fetch(
@@ -189,11 +193,15 @@ const TicketSupportPage = () => {
 			console.log(result);
 			CustomToast(result?.message, "success");
 			getComments(activeCommentTicketId);
+			setPutCommentLoading(false);
+			setActiveCommentTicketId(null);
 		} catch (error: any) {
 			const errMsg =
 				generateErrorMessage(error) ||
 				"هنگام ایجاد نظر جدید مشکلی پیش آمد.";
 			CustomToast(errMsg, "error");
+			setPutCommentLoading(false);
+			setActiveCommentTicketId(null);
 			// toast.error(errMsg);
 		}
 	};
@@ -254,19 +262,6 @@ const TicketSupportPage = () => {
 	useEffect(() => {
 		fetchTickets();
 	}, []);
-
-	// const formik = useFormik({
-	// 	initialValues: {
-	// 		subject: "",
-	// 		description: "",
-	// 		image: null as File | null,
-	// 	},
-	// 	onSubmit: (values) => {
-	// 		createTicket(values);
-	// 		console.log(values);
-	// 		// formik.resetForm();
-	// 	},
-	// });
 
 	const Ticket = ({
 		id,
@@ -351,7 +346,13 @@ const TicketSupportPage = () => {
 							<div className="flex flex-row w-100 gap-4 mt-4">
 								<div
 									className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
-									onClick={() => setActiveCommentTicketId(id)}
+									onClick={() => {
+										if (activeCommentTicketId) {
+											setActiveCommentTicketId(null);
+										} else {
+											setActiveCommentTicketId(id);
+										}
+									}}
 								>
 									<button className="cursor-pointer">
 										افزودن نظر
@@ -441,7 +442,6 @@ const TicketSupportPage = () => {
 						// onSubmit={formik.handleSubmit}
 						className={`flex flex-row w-full p-5 gap-5 bg-[#F0EDEF] text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]`}
 					>
-						{loading && <TransparentLoading />}
 						<CustomTextArea
 							name="description"
 							rows={7}
@@ -591,7 +591,11 @@ const TicketSupportPage = () => {
 									type="submit"
 									className={`cta-neu-button flex ${styles.button} items-center justify-center w-32 bg-white`}
 								>
-									ارسال
+									{loading ? (
+										<LoadingOnButton size={28} />
+									) : (
+										<p>ارسال</p>
+									)}
 								</button>
 							</div>
 						</div>
@@ -637,7 +641,6 @@ const TicketSupportPage = () => {
 												values.comment,
 												activeCommentTicketId
 											);
-											setActiveCommentTicketId(null);
 										}}
 									>
 										{({ setFieldValue, values }) => (
@@ -649,12 +652,12 @@ const TicketSupportPage = () => {
 														</h3>
 														<CustomTextArea
 															name="comment"
-															rows={3}
+															rows={4}
 															textareaClassName="bg-white"
 															placeholder="متن نظر..."
 														/>
 
-														<div className="flex justify-between">
+														<div className="flex justify-between mb-4">
 															<button
 																onClick={() =>
 																	setActiveCommentTicketId(
@@ -668,7 +671,17 @@ const TicketSupportPage = () => {
 															<button
 																className={`text-left cta-neu-button flex ${styles.button} items-center content-center justify-center w-1/9`}
 															>
-																ثبت نظر
+																{putCommentLoading ? (
+																	<LoadingOnButton
+																		size={
+																			28
+																		}
+																	/>
+																) : (
+																	<p>
+																		ثبت نظر
+																	</p>
+																)}
 															</button>
 														</div>
 													</div>
@@ -728,42 +741,48 @@ const TicketSupportPage = () => {
 									// </div>
 								)}
 								{/* Comments */}
-								{showCommentBoxFor === ticket.id && (
-									<div className="bg-[#F0EDEF] p-8 rounded text-sm flex flex-col gap-4">
-										<h2 className="text-right text-2xl font-bold text-blue-800 pr-7">
-											نظرات
-										</h2>
-										{comments.length > 0 ? (
-											<div className="flex flex-col text-gray-800 rounded-md overflow-hidden">
-												{/* <div className="pb-1 border-t border-gray-400"> */}
-												{comments.map(
-													(comment, index) => (
-														<Comment
-															key={index}
-															id={ticket.id}
-															Author={
-																comment.Author
-															}
-															body={comment.body}
-														/>
-													)
-												)}
-											</div>
-										) : (
-											<div className="text-gray-400 pr-7">
-												نظری ثبت نشده است
-											</div>
-										)}
-										<button
-											className={`text-left cursor-pointer cta-neu-button flex ${styles.button} self-end justify-center w-1/9`}
-											onClick={() => {
-												setShowCommentBoxFor(null);
-												setComments([]);
-											}}
-										>
-											بستن
-										</button>
-									</div>
+								{isLoadingComments ? (
+									<LoadingSpinner />
+								) : (
+									showCommentBoxFor === ticket.id && (
+										<div className="bg-[#F0EDEF] p-8 rounded text-sm flex flex-col gap-4">
+											<h2 className="text-right text-2xl font-bold text-blue-800 pr-7">
+												نظرات
+											</h2>
+											{comments.length > 0 ? (
+												<div className="flex flex-col text-gray-800 rounded-md overflow-hidden">
+													{/* <div className="pb-1 border-t border-gray-400"> */}
+													{comments.map(
+														(comment, index) => (
+															<Comment
+																key={index}
+																id={ticket.id}
+																Author={
+																	comment.Author
+																}
+																body={
+																	comment.body
+																}
+															/>
+														)
+													)}
+												</div>
+											) : (
+												<div className="text-gray-400 pr-7">
+													نظری ثبت نشده است
+												</div>
+											)}
+											<button
+												className={`text-left cursor-pointer cta-neu-button flex ${styles.button} self-end justify-center w-1/9`}
+												onClick={() => {
+													setShowCommentBoxFor(null);
+													setComments([]);
+												}}
+											>
+												بستن
+											</button>
+										</div>
+									)
 								)}
 							</>
 						))}
