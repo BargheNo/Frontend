@@ -11,3 +11,16 @@ export interface Warranty {
     duration: string | number;
     terms: TermItem[];
 } 
+
+export interface WarrantyType {
+    id: string;
+    name: string;
+  }
+  
+  export interface FormValues {
+    warrantyName: string;
+    warrantyType: string;
+    warrantyDuration: number;
+    warrantyDescription: string;
+    terms: TermItem[];
+  } 

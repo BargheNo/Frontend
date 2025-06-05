@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import MetricBox from '@/components/IconWithBackground/MetricBox';
 import { Warranty, TermItem } from './warrantyTypes.ts';
 
-const TermItem = ({ title, description, limitations } : TermItem) => {
+const TermItemSection = ({ title, description, limitations } : TermItem) => {
     return (
         <div className='space-y-4 pb-2 mb-2 border-b-1 border-gray-400'>
             <div className='flex space-x-2'>
@@ -82,7 +82,7 @@ const WarrantyDetails = ({name, description, type, duration, terms} : Warranty) 
                     </h2>
                     <div className='inset-neu-container w-full max-h-56 p-5 overflow-y-scroll'>
                         {terms.map((termItem, index) =>
-                            <TermItem
+                            <TermItemSection
                                 key={index}
                                 title={termItem.title}
                                 description={termItem.description}
