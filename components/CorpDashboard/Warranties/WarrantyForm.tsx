@@ -45,7 +45,9 @@ const WarrantyForm = ({ warrantyTypes, isLoading, onSubmit }: WarrantyFormProps)
             >
               <SelectTrigger className={`w-full rounded-lg shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)]
                 ${touched.warrantyType && errors.warrantyType ? 'border-red-500' : ''}`}>
-                <SelectValue placeholder="انتخاب نوع گارانتی" />
+                <SelectValue placeholder="انتخاب نوع گارانتی">
+                  {warrantyTypes.find(type => type.id == values.warrantyType)?.name}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {warrantyTypes.map((type) => (

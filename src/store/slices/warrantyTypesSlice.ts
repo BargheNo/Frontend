@@ -1,4 +1,4 @@
-import { getData } from "@/src/services/apiHub";
+import { baseURL, getData } from "@/src/services/apiHub";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { WarrantyType } from "@/components/CorpDashboard/Warranties/warrantyTypes";
 
@@ -7,7 +7,7 @@ export const fetchWarrantyTypes = createAsyncThunk(
   async () => {
     try {
       const response = await getData({
-        endPoint: 'apiiiiiiiiiiiiiiiiiiiiii'
+        endPoint: `${baseURL}/v1/corp/:corporationID/guarantee/type`
       });
       return response.data;
     } catch (error) {

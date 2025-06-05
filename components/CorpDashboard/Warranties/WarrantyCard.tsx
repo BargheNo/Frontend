@@ -25,8 +25,9 @@ const WarrantyCard = ({ name, type, duration, description, terms, isArchived } :
             title='نوع گارانتی'
             icon={Shapes}
             className='w-52'
+            childClassName='!text-lg'
           >
-            {String(type)}
+            {String(items.find(typeItem => typeItem.id == type)?.name || type)}
           </MetricBox>
           <MetricBox
             title='مدت زمان'
@@ -47,7 +48,7 @@ const WarrantyCard = ({ name, type, duration, description, terms, isArchived } :
           <WarrantyDetails
             name={name}
             description={description}
-            type={type}
+            type={items.find(typeItem => typeItem.id == type)?.name || type}
             duration={duration}
             terms={terms}
             isArchived={isArchived}
