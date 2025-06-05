@@ -1,6 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import WarrantyCard from './WarrantyCard'
 import { Warranty } from './warrantyTypes.ts'
+import { useDispatch } from 'react-redux'
+import { fetchWarrantyTypes } from '@/src/store/slices/warrantyTypesSlice.ts'
+import { AppDispatch } from '@/src/store/store'
 
 const mockData: Warranty[] = [
     {
@@ -99,6 +102,13 @@ const mockData: Warranty[] = [
 ]
 
 const Warranties = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(fetchWarrantyTypes());
+  }, [dispatch]);
+
+
   return (
     // <TwoColsLayout>
     <div className='grid md:grid-cols-2 md:gap-x-7 gap-y-5'>

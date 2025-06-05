@@ -1,13 +1,19 @@
 import React from 'react'
-import { Shapes, Timer,  } from 'lucide-react'
+import { Shapes, Timer } from 'lucide-react'
 import MetricBox from '@/components/IconWithBackground/MetricBox'
 import TruncatedText from '@/components/ui/TruncatedText'
 import WarrantyDetails from './WarrantyDetails';
 import { Warranty } from './warrantyTypes.ts';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/src/store/store';
 
 type WarrantyCardProps = Warranty;
 
 const WarrantyCard = ({ name, type, duration, description, terms } : WarrantyCardProps) => {
+  const { items, status, error } = useSelector((state: RootState) => state.warrantyTypes);
+
+  // TODO: handle status === "loading" || status === "failed" cases
+
   return (
     <div className='flex flex-col space-y-6 neu-container rounded-3xl justify-between
                     w-full h-full bg-[#F0EDEF] p-8 overflow-hidden relative'>
@@ -20,14 +26,14 @@ const WarrantyCard = ({ name, type, duration, description, terms } : WarrantyCar
             icon={Shapes}
             className='w-52'
           >
-            {type}
+            {String(type)}
           </MetricBox>
           <MetricBox
             title='مدت زمان'
             icon={Timer}
             className='w-52'
           >
-            {duration}
+            {String(duration)}
           </MetricBox>
         </div>
 

@@ -55,14 +55,14 @@ const WarrantyDetails = ({name, description, type, duration, terms} : Warranty) 
                         icon={Shapes}
                         className='w-1/2'
                     >
-                        {type}
+                        {String(type)}
                     </MetricBox>
                     <MetricBox
                         title='مدت زمان'
                         icon={Timer}
                         className='w-1/2'
                     >
-                        {duration}
+                        {String(duration)}
                     </MetricBox>
                 </div>
 

@@ -1,32 +1,15 @@
 import AddComponent from '@/components/AddComponent/AddComponent';
 import CustomToast from '@/components/Custom/CustomToast/CustomToast';
 import { Dialog, DialogHeader, DialogTrigger, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { baseURL, getData } from '@/src/services/apiHub';
+import { useSelector } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 import { FormValues, WarrantyType } from './warrantyTypes';
 import WarrantyForm from './WarrantyForm';
+import { RootState } from '@/src/store/store';
 
 const AddWarranty = () => {
   const [open, setOpen] = useState(false);
-  const [warrantyTypes, setWarrantyTypes] = useState<WarrantyType[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (open) {
-      getData({
-        endPoint: `${baseURL}/apiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii`,
-      }).then(
-        res => {
-          setWarrantyTypes(res.data);
-          setIsLoading(false);
-        }
-      ).catch(() => {
-        CustomToast("خطا در دریافت انواع گارانتی", "error");
-        setIsLoading(false);
-        setWarrantyTypes([{id: "1", name: "گارانتی نوع 1"}, {id: "2", name: "گارانتی نوع 2"}]);
-      })
-    }
-  }, [open]);
+  const { items: warrantyTypes, status, error } = useSelector((state: RootState) => state.warrantyTypes);
 
   const handleSubmit = (values: FormValues) => {
     console.log('Form submitted:', values);
@@ -51,7 +34,7 @@ const AddWarranty = () => {
         
         <WarrantyForm
           warrantyTypes={warrantyTypes}
-          isLoading={isLoading}
+          isLoading={status === 'loading'}
           onSubmit={handleSubmit}
         />
       </DialogContent>
