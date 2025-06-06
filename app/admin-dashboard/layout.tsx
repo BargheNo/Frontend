@@ -59,11 +59,11 @@ export default function Layout({
     },
   ];
   const navItemsMonitoring: NavItem[] = [
-    { name: "سفارشات", path: "/admin-dashboard/Orders", icon: <Layers /> },
-    { name: "بید ها", path: "/admin-dashboard/Bids", icon: <FilePlus /> },
+    { name: "سفارشات", path: "/admin-dashboard/orders", icon: <Layers /> },
+    { name: "پیشنهادات", path: "/admin-dashboard/bids", icon: <FilePlus /> },
     {
-      name: "سوابق تعمیرات",
-      path: "/admin-dashboard/maintenance-record",
+      name: "تعمیرات",
+      path: "/admin-dashboard/maintenance",
       icon: <History />,
     },
     { name: "پنل ها", path: "/admin-dashboard/panels", icon: <BarChart /> },
