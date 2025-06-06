@@ -11,8 +11,12 @@ export default function Ordercard({Name,Status,Customer,MaxCost,Area,PowerReques
     const getStatusColor = () => {
 		if (Status === "فعال")
 			return " text-green-600";
-		if (Status==="غیرفعال")
+		else if (Status==="منقضی")
+			return "text-gray-500";
+        else if (Status==="لغو شده")
 			return "text-red-600";
+        if (Status==="سپرده شده")
+			return "text-yellow-600";
 		return "text-yellow-600";
 	};
     const[open,setOpen]=useState(false);
@@ -25,7 +29,7 @@ export default function Ordercard({Name,Status,Customer,MaxCost,Area,PowerReques
     }
   return (
     <>
-        <div onClick={()=>setOpen(!open)} className='w-[90%] m-auto border-gray-300 border-2 px-10 py-3 cursor-pointer '>
+        <div onClick={()=>setOpen(!open)} className='w-[90%] m-auto border-gray-300 border-1 px-10 py-3 cursor-pointer bg-warm-white'>
             <div className='flex flex-row justify-between items-center w-full rtl'>
                 <div className='flex flex-row items-center mr-4'>
                     <span>{Customer.FirstName+" "+Customer.LastName}</span>
