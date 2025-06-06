@@ -8,18 +8,18 @@ import CustomToast from '@/components/Custom/CustomToast/CustomToast';
 
 const TermItemSection = ({ title, description, limitations } : TermItem) => {
     return (
-        <div className='space-y-4 pb-2 mb-2 border-b-1 border-gray-400'>
+        <div className='space-y-4 pb-2 mb-2 border-b-1 border-gray-400' data-test="warranty-term-item">
             <div className='flex space-x-2'>
                 <ReceiptText className='text-fire-orange' />
-                <span>{title}</span>
+                <span data-test="warranty-term-title">{title}</span>
             </div>
             <div className='flex space-x-2'>
                 <ListCollapse className='text-fire-orange' />
-                <span>{description}</span>
+                <span data-test="warranty-term-description">{description}</span>
             </div>
             <div className='flex space-x-2'>
                 <CircleAlert className='text-fire-orange' />
-                <span>{limitations}</span>
+                <span data-test="warranty-term-limitations">{limitations}</span>
             </div>
         </div>
     );
@@ -42,14 +42,14 @@ const WarrantyDetails = ({id, name, description, type, duration, terms, isArchiv
             setOpen(false);
         }).catch(err => {
             CustomToast("مشکلی در آرشیو کردن گارانتی پیش آمد!", "error");
-            console.log(err);
+            // console.log(err);
         })
     };
 
     return (
         <Dialog open={open} onOpenChange={setOpen}  >
             <DialogTrigger asChild>
-                <button className='red-circle-button w-full !h-fit py-3 space-x-2'>
+                <button className='red-circle-button w-full !h-fit py-3 space-x-2' data-test="warranty-details-trigger">
                     <span>جزئیات بیشتر</span>
                     <CircleChevronLeft />
                 </button>
@@ -58,9 +58,10 @@ const WarrantyDetails = ({id, name, description, type, duration, terms, isArchiv
                 style={{ backgroundColor: "#F1F4FC" }}
 				className="w-full sm:min-w-[750px] max-w-xl mx-auto p-4  overflow-auto py-4 space-y-3"
                 dir='rtl'
+                data-test="warranty-details-dialog"
             >
                 <DialogHeader>
-                    <DialogTitle className="flex justify-center items-end font-bold mt-3.5 mb-2">
+                    <DialogTitle className="flex justify-center items-end font-bold mt-3.5 mb-2" data-test="warranty-details-title">
                         جزئیات گارانتی
                     </DialogTitle>
                 </DialogHeader>
@@ -74,6 +75,7 @@ const WarrantyDetails = ({id, name, description, type, duration, terms, isArchiv
                         title='نوع گارانتی'
                         icon={Shapes}
                         className='w-1/2'
+                        data-test="warranty-details-type"
                     >
                         {String(type)}
                     </MetricBox>
@@ -81,6 +83,7 @@ const WarrantyDetails = ({id, name, description, type, duration, terms, isArchiv
                         title='مدت زمان'
                         icon={Timer}
                         className='w-1/2'
+                        data-test="warranty-details-duration"
                     >
                         {String(duration)}
                     </MetricBox>
@@ -116,6 +119,7 @@ const WarrantyDetails = ({id, name, description, type, duration, terms, isArchiv
                     <button 
                         onClick={handleArchive}
                         className={`${isArchived && "grayscale-100 cursor-auto"} red-circle-button w-full h-11 gap-2`}
+                        data-test="warranty-archive-button"
                     >
                         {isArchived ? "این گارانتی آرشیو شده است!" : "آرشیو کردن"}
                         {!isArchived && <Archive size={20} />}

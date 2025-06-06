@@ -16,8 +16,9 @@ const WarrantyCard = ({ id, name, guaranteeType, durationMonths, description, te
 
   return (
     <div className={`flex flex-col space-y-6 neu-container rounded-3xl justify-between
-                    w-full h-full bg-[#F0EDEF] p-8 overflow-hidden relative ${isArchived && "grayscale-100"}`}>
-        <h1 className='text-2xl font-black'>
+                    w-full h-full bg-[#F0EDEF] p-8 overflow-hidden relative ${isArchived && "grayscale-100"}`}
+         data-test="warranty-card">
+        <h1 className='text-2xl font-black' data-test="warranty-name">
           {name}
         </h1>
         <div className='flex justify-around'>
@@ -26,6 +27,7 @@ const WarrantyCard = ({ id, name, guaranteeType, durationMonths, description, te
             icon={Shapes}
             className='w-52'
             childClassName='!text-lg'
+            data-test="warranty-type"
           >
             {String(items.find(typeItem => typeItem.id == guaranteeType)?.name || guaranteeType)}
           </MetricBox>
@@ -33,13 +35,14 @@ const WarrantyCard = ({ id, name, guaranteeType, durationMonths, description, te
             title='مدت زمان'
             icon={Timer}
             className='w-52'
+            data-test="warranty-duration"
           >
             {String(durationMonths)}
           </MetricBox>
         </div>
 
         <div>
-          <TruncatedText maxLength={70}>
+          <TruncatedText maxLength={70} data-test="warranty-description">
             { description }
           </TruncatedText>
         </div>
@@ -53,6 +56,7 @@ const WarrantyCard = ({ id, name, guaranteeType, durationMonths, description, te
             duration={durationMonths}
             terms={terms}
             isArchived={isArchived}
+            data-test="warranty-details"
           />
         </div>
     </div>

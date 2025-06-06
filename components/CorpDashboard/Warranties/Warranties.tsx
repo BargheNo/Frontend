@@ -158,7 +158,7 @@ const Warranties = () => {
         />
       </div>
       <div className='grid md:grid-cols-2 md:gap-x-7 gap-y-5'>
-          {(warrantyData || mockData).map((warrantyItem) =>
+          {(warrantyData).map((warrantyItem) =>
               <WarrantyCard
                   key={warrantyItem.id}
                   {...warrantyItem}

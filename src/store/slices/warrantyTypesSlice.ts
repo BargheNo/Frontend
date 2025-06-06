@@ -7,7 +7,7 @@ export const fetchWarrantyTypes = createAsyncThunk(
   async () => {
     try {
       const response = await getData({
-        endPoint: `${baseURL}/v1/corp/:corporationID/guarantee/type`
+        endPoint: `${baseURL}/v1/corp/2/guarantee/type`    // TODO: add corp iddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
       });
       return response.data;
     } catch (error) {
