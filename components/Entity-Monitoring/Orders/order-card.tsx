@@ -25,11 +25,9 @@ export default function Ordercard({Name,Status,Customer,MaxCost,Area,PowerReques
     }
   return (
     <>
-        <div onClick={()=>setOpen(!open)} className='w-[90%] m-auto border-gray-300 border-2 px-10 py-3 cursor-pointer rounded-xl'>
+        <div onClick={()=>setOpen(!open)} className='w-[90%] m-auto border-gray-300 border-2 px-10 py-3 cursor-pointer '>
             <div className='flex flex-row justify-between items-center w-full rtl'>
-                <div className='flex flex-row items-center gap-2'>
-                    <div className='rounded-full bg-gray-400 w-[30px] h-[30px]'>
-                    </div>
+                <div className='flex flex-row items-center mr-4'>
                     <span>{Customer.FirstName+" "+Customer.LastName}</span>
                 </div>
                 <span  >{Name}</span>
@@ -60,7 +58,7 @@ export default function Ordercard({Name,Status,Customer,MaxCost,Area,PowerReques
         <Dialog open={open} onOpenChange={setOpen}>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}
-				className="w-full sm:min-w-[690px] max-w-xl max-h-[90vh] no-scrollbar mx-auto p-4 overflow-auto py-4"
+				className="w-full sm:min-w-[690px] max-w-xl max-h-[90vh] no-scrollbar mx-auto p-4 overflow-y-auto py-4"
 			>
 				<DialogHeader>
 					<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
@@ -70,6 +68,7 @@ export default function Ordercard({Name,Status,Customer,MaxCost,Area,PowerReques
                 <div className='flex flex-col gap-y-2 py-3' ref={orderDetailRef}>
                     <NotificationsDialogFields title="   نام پنل: " detail={Name}/>
                     <NotificationsDialogFields title="    وضعیت سفارش: " detail={Status}/>
+                    <NotificationsDialogFields title="     توضیحات: " detail={Description}/>
                     <NotificationsDialogFields title="    سقف هزینه: " detail={MaxCost.toString()}/>
                     <NotificationsDialogFields title="    مساحت: " detail={Area.toString()+"متر مربع"}/>
                     <NotificationsDialogFields title="    توان مصرفی: " detail={PowerRequest.toString()+"کیلووات"}/>
