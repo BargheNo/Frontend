@@ -1,6 +1,6 @@
 'use client'
-import React, { useState } from 'react'
-import { Ellipsis } from 'lucide-react'
+import React, { useRef, useState } from 'react'
+import { Ellipsis,Copy, CheckIcon, CopyIcon, Share2Icon } from 'lucide-react'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/react-hover-card'
 import { Button } from '@/components/ui/button'
 import { getOrder } from '@/src/types/Entity-Monitoring/orderType'
@@ -16,6 +16,13 @@ export default function Ordercard({Name,Status,Customer,MaxCost,Area,PowerReques
 		return "text-yellow-600";
 	};
     const[open,setOpen]=useState(false);
+    const[copied,setCopied]=useState(false);
+    const orderDetailRef=useRef<HTMLDivElement>(null);
+    const handleCopy= ()=>{
+            navigator.clipboard.writeText(orderDetailRef.current?.innerText||"");
+            setCopied(true);
+            setTimeout(()=>setCopied(false),2500);
+    }
   return (
     <>
         <div onClick={()=>setOpen(!open)} className='w-[90%] m-auto border-gray-300 border-2 px-10 py-3 cursor-pointer rounded-xl'>
@@ -60,20 +67,50 @@ export default function Ordercard({Name,Status,Customer,MaxCost,Area,PowerReques
 						جزئیات سفارش
 					</DialogTitle>
 				</DialogHeader>
-				<NotificationsDialogFields title="   نام پنل: " detail={Name}/>
-				<NotificationsDialogFields title="    وضعیت سفارش: " detail={Status}/>
-				<NotificationsDialogFields title="    سقف هزینه: " detail={MaxCost.toString()}/>
-				<NotificationsDialogFields title="    مساحت: " detail={Area.toString()+"متر مربع"}/>
-				<NotificationsDialogFields title="    توان مصرفی: " detail={PowerRequest.toString()+"کیلووات"}/>
-				<NotificationsDialogFields title="    نوع ساختمان: " detail={BuildingType}/>
-				<NotificationsDialogFields title="    نام مشتری: " detail={Customer.FirstName+" "+Customer.LastName}/>
-				<NotificationsDialogFields title="    شماره تماس مشتری: " detail={Customer.Phone}/>
-				{Customer.Email&&(<NotificationsDialogFields title="     ایمیل:" detail={Customer.Email}/>)}
-				<NotificationsDialogFields title="    وضعیت مشتری:" detail={Customer.Status}/>
-				<NotificationsDialogFields title="    آدرس:" detail={ "استان "+Address.Province+"،شهر "+Address.City+"،"+Address.StreetAddress+"،پلاک "+Address.HouseNumber+"، واحد" +Address.Unit}/>
-				<NotificationsDialogFields title="    کدپستی:" detail={Address.PostalCode}/>
+                <div className='flex flex-col gap-y-2 py-3' ref={orderDetailRef}>
+                    <NotificationsDialogFields title="   نام پنل: " detail={Name}/>
+                    <NotificationsDialogFields title="    وضعیت سفارش: " detail={Status}/>
+                    <NotificationsDialogFields title="    سقف هزینه: " detail={MaxCost.toString()}/>
+                    <NotificationsDialogFields title="    مساحت: " detail={Area.toString()+"متر مربع"}/>
+                    <NotificationsDialogFields title="    توان مصرفی: " detail={PowerRequest.toString()+"کیلووات"}/>
+                    <NotificationsDialogFields title="    نوع ساختمان: " detail={BuildingType}/>
+                    <NotificationsDialogFields title="    نام مشتری: " detail={Customer.FirstName+" "+Customer.LastName}/>
+                    <NotificationsDialogFields title="    شماره تماس مشتری: " detail={Customer.Phone}/>
+                    {Customer.Email&&(<NotificationsDialogFields title="     ایمیل:" detail={Customer.Email}/>)}
+                    <NotificationsDialogFields title="    وضعیت مشتری:" detail={Customer.Status}/>
+                    <NotificationsDialogFields title="    آدرس:" detail={ "استان "+Address.Province+"،شهر "+Address.City+"،"+Address.StreetAddress+"،پلاک "+Address.HouseNumber+"، واحد" +Address.Unit}/>
+                    <NotificationsDialogFields title="    کدپستی:" detail={Address.PostalCode}/>
+                </div>
 
-				<DialogFooter className="flex flex-row justify-center items-center self-center">
+				<DialogFooter className="flex flex-row justify-center items-center rounded-l self-center mr-auto">
+                <button
+                    onClick={handleCopy}
+                    className=" flex items-center gap-1 border-1 rounded px-2 py-1 text-sm text-muted-foreground cursor-pointer hover:text-primary"
+                    >
+                    {copied ? (
+                        <>
+                        <CheckIcon className="h-4 w-4" /> کپی شد
+                        </>
+                    ) : (
+                        <>
+                        <CopyIcon className="h-4 w-4" /> کپی
+                        </>
+                    )}
+                </button>
+                <button
+                    onClick={() => {
+                        const text = orderDetailRef.current?.innerText || "";
+                          navigator.share({
+                            title: "جزئیات سفارش",
+                            text,
+                          });
+
+                      }}
+                      
+                    className="flex items-center gap-1 border-1 rounded px-2 py-1 text-sm text-muted-foreground hover:text-primary"
+                >
+                    <Share2Icon className="h-4 w-4" /> ارسال
+                </button>
 					<DialogClose />
 				</DialogFooter>
 						
