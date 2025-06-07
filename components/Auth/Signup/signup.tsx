@@ -5,14 +5,7 @@ import { vazir } from "@/lib/fonts";
 import PhoneVerification from "@/components/phoneVerification/phoneVerification";
 import styles from "./signup.module.css";
 
-import {
-	MoveLeft,
-	Smartphone,
-	Lock,
-	User,
-	Unlock,
-	Check,
-} from "lucide-react";
+import { MoveLeft, Smartphone, Lock, User, Unlock, Check } from "lucide-react";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
 import registerService from "@/src/services/registerService";
@@ -20,27 +13,29 @@ import { useRouter } from "next/navigation";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 import LoginButton from "../Login/LoginButton";
+import { postData } from "@/src/services/apiHub";
+import generateErrorMessage from "@/src/functions/handleAPIErrors";
 
 function Signup() {
 	const validationSchema = Yup.object({
-		firstname: Yup.string().required("نام الزامی است."),
-		lastname: Yup.string().required("نام خانوادگی الزامی است."),
+		firstname: Yup.string().required("نام الزامی است"),
+		lastname: Yup.string().required("نام خانوادگی الزامی است"),
 		phonenumber: Yup.string()
-			.matches(/^(9\d{9})$/, ".شماره تلفن وارد شده اشتباه است")
-			.required(".شماره تلفن الزامی است"),
+			.matches(/^(9\d{9})$/, "شماره تلفن وارد شده اشتباه است")
+			.required("شماره تلفن الزامی است"),
 		password: Yup.string()
-			.min(8, "رمز عبور باید حداقل 8 کاراکتر باشد.")
-			.matches(/[a-z]/, ".رمز عبور باید شامل حداقل یک حرف کوچک باشد")
-			.matches(/[A-Z]/, ".رمز عبور باید شامل حداقل یک حرف بزرگ باشد")
-			.matches(/\d/, ".رمز عبور باید شامل حداقل یک عدد باشد")
-			.matches(/[\W_]/, ".رمز عبور باید شامل حداقل یک نماد باشد")
-			.required(".رمز عبور الزامی است"),
+			.min(8, "رمز عبور باید حداقل 8 کاراکتر باشد")
+			.matches(/[a-z]/, "رمز عبور باید شامل حداقل یک حرف کوچک باشد")
+			.matches(/[A-Z]/, "رمز عبور باید شامل حداقل یک حرف بزرگ باشد")
+			.matches(/\d/, "رمز عبور باید شامل حداقل یک عدد باشد")
+			.matches(/[\W_]/, "رمز عبور باید شامل حداقل یک نماد باشد")
+			.required("رمز عبور الزامی است"),
 		confirmpassword: Yup.string()
 			.oneOf(
 				[Yup.ref("password")],
-				".تأیید رمز عبور باید با رمز عبور مطابقت داشته باشد"
+				"تأیید رمز عبور باید با رمز عبور مطابقت داشته باشد"
 			)
-			.required(".تأیید رمز عبور الزامی است"),
+			.required("تأیید رمز عبور الزامی است"),
 	});
 
 	const [check, Setcheck] = useState(false);
@@ -49,7 +44,6 @@ function Signup() {
 	const [hideconfpass, Sethideconfpass] = useState(true);
 	const [otpCode, setOtpCode] = useState<string>("");
 	const [phone, setPhone] = useState<string>("");
-	const [customer, setCustomer] = useState<boolean>(true);
 	const [loading, setLoading] = useState<boolean>(false);
 	const route = useRouter();
 	const handleOtpChange = (otp: string) => {
@@ -65,56 +59,38 @@ function Signup() {
 		isAcceptTerms: boolean
 	) => {
 		setLoading(true);
-		registerService
-			.createUser({
-				FirstName: name,
-				LastName: Lname,
-				Phone: phone,
-				Password: password,
-				ConfirmPassword: confirmPassword,
-				acceptedTerms: isAcceptTerms,
-			})
-			.then((res) => {
+		const formData = {
+			FirstName: name,
+			LastName: Lname,
+			Phone: phone,
+			Password: password,
+			ConfirmPassword: confirmPassword,
+			acceptedTerms: isAcceptTerms,
+		};
+		postData({ endPoint: `/v1/auth/register/basic`, data: formData })
+			.then((data) => {
 				setOpen(true);
-				// toast(<div id="sonner-toast">{res?.data?.message}</div>);
-				CustomToast(res?.data?.message, "success");
+				CustomToast(data?.message, "success");
 				setLoading(false);
 			})
 			.catch((err) => {
+				CustomToast(generateErrorMessage(err), "error");
 				setLoading(false);
-				CustomToast(
-					err?.response?.data?.messages?.phone["alreadyRegistered"],
-					"error"
-				);
-				// toast(
-				// 	<div id="sonner-toast">
-				// 		{
-				// 			err?.response?.data?.messages?.phone[
-				// 				"alreadyRegistered"
-				// 			]
-				// 		}
-				// 	</div>
-				// );
-				// toast(
-				// 	err?.response?.data?.messages?.phone["alreadyRegistered"]
-				// );
 			});
 	};
 
 	const handleVerification = (phone: string, otp: string) => {
-		registerService
-			.phonenumberVerification({ phone: phone, otp: otp })
-			.then((res) => {
+		postData({
+			endPoint: `/v1/auth/verify/phone`,
+			data: { phone, otp },
+		})
+			.then((data) => {
+				console.log(data);
 				route.push("/login");
-				CustomToast(res?.data?.message, "success");
-				// toast(res?.data?.message);
+				CustomToast(data?.message, "success");
 			})
 			.catch((err) => {
-				CustomToast(
-					err?.response?.data?.messages?.otp["invalidOTP"],
-					"error"
-				);
-				// toast(err.response.data.messages.otp["invalidOTP"]);
+				CustomToast(generateErrorMessage(err), "error");
 			});
 	};
 
@@ -162,17 +138,13 @@ function Signup() {
 											icon={User}
 											type="text"
 											autoFocus={true}
-										>
-											{" "}
-										</CustomInput>
+										/>
 										<CustomInput
 											name="lastname"
 											icon={User}
 											type="text"
 											placeholder="نام خانوادگی"
-										>
-											{" "}
-										</CustomInput>
+										/>
 									</div>
 									<div className="flex flex-row justify-center w-9/10 gap-2">
 										<div className="w-1/4">
@@ -182,18 +154,14 @@ function Signup() {
 												placeholder="+98"
 												icon={Smartphone}
 												type="number"
-											>
-												{" "}
-											</CustomInput>
+											/>
 										</div>
 										<div className="w-3/4">
 											<CustomInput
 												name="phonenumber"
 												placeholder="شماره تلفن همراه"
 												type="number"
-											>
-												{" "}
-											</CustomInput>
+											/>
 										</div>
 									</div>
 									<div className="w-9/10">
@@ -207,9 +175,7 @@ function Signup() {
 											type={
 												hidepass ? "password" : "text"
 											}
-										>
-											{" "}
-										</CustomInput>
+										/>
 										<CustomInput
 											name="confirmpassword"
 											onIconClick={() =>
@@ -222,9 +188,7 @@ function Signup() {
 													: "text"
 											}
 											placeholder="تایید رمز عبور"
-										>
-											{" "}
-										</CustomInput>
+										/>
 									</div>
 									<div className={styles.ruleText}>
 										<label
