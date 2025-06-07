@@ -1,31 +1,35 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import RequestCard from "./RequestCard/RequestCard";
-import { baseURL } from "@/src/services/apiHub";
+import { baseURL, getData } from "@/src/services/apiHub";
 import { useSelector } from "react-redux";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import DateConverter from "@/src/functions/toJalali";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import generateErrorMessage from "@/src/functions/handleAPIErrors";
 // import { RootState } from "@/src/store/types";
-
+// import moment from "moment-jalaali";
 interface address {
 	province: string;
 	city: string;
-	streetAddress: string;
-}
-
-interface Customer {
-	firstName: string;
-	lastName: string;
 }
 
 interface Request {
 	id: number;
 	name: string;
-	customer: Customer;
+	buildingType: string;
+	createdTime: string;
+	status: string;
 	address: address;
 	powerRequest: number;
-	status: string;
 	maxCost: number;
 }
+
+// moment.loadPersian({ dialect: "persian-modern", usePersianDigits: true });
+
+// const DateConverter = (miladiDate: any) => {
+//   return `${moment(miladiDate).format("jYYYY/jMM/jDD")}`;
+// };
 
 export default function Requests() {
 	const accessToken = useSelector(
@@ -35,21 +39,35 @@ export default function Requests() {
 	const [requestData, setRequestData] = useState<Request[] | null>(null);
 	const [error, setError] = useState<string | null>(null);
 
+	const corpId = useSelector((state: RootState) => state.user.corpId);
 	useEffect(() => {
 		console.log("accessToken", accessToken);
 		const fetchRequests = async () => {
 			try {
 				console.log("Fetching Requests...");
-				const response = await fetch(`${baseURL}/v1/bids/list`, {
-					headers: {
-						Authorization: `Bearer ${accessToken}`,
-					},
-				});
+				getData({
+					endPoint: `${baseURL}/v1/corp/${corpId}/installation/request?status=5&offset=1&limit=1`,
+				})
+					.then((data) => {
+						setRequestData(data.data);
+						setLoading(false);
+						console.log(data);
+					})
+					.catch((err) => {
+						CustomToast(generateErrorMessage(err));
+						console.log(err);
+					});
+				// const response = await fetch(
+				// 	`${baseURL}/v1/corp/${corpId}/installation/request?status=5&offset=1&limit=1`,
+				// 	{
+				// 		headers: {
+				// 			Authorization: `Bearer ${accessToken}`,
+				// 		},
+				// 	}
+				// );
 
-				const data = await response.json();
-				console.log("Raw response:", data.data);
-				setRequestData(data.data);
-				setLoading(false);
+				// const data = await response.json();
+				// console.log("Raw response:", data.data);
 			} catch (error: any) {
 				console.error("Error fetching requests:", {
 					message: error.message,
@@ -80,17 +98,20 @@ export default function Requests() {
 				<RequestCard
 					key={request.id}
 					panelDetails={{
-						panelName: request.name,
-						customerName: `${request.customer.firstName} ${request.customer.lastName}`,
-						address: `${request.address.province}، ${request.address.city}، ${request.address.streetAddress}`,
-						capacity: request.powerRequest,
-						price: request.maxCost,
+						panelName: request?.name,
+						address: `استان ${request?.address?.province}، شهر ${request?.address?.city}`,
+						capacity: request?.powerRequest,
+						price: request?.maxCost,
+						buildingType: request?.buildingType,
+						status: request?.status,
+						createdTime: DateConverter(request?.createdTime),
+						// createdTime: request?.createdTime,
 					}}
-					requestId={request.id}
+					requestId={request?.id}
 				/>
 			))}
 
-			<RequestCard
+			{/* <RequestCard
 				panelDetails={{
 					panelName: "پنل خانه تهرانپارس",
 					customerName: "مجتبی قاطع",
@@ -100,18 +121,19 @@ export default function Requests() {
 					price: 200000,
 				}}
 				requestId={1}
-			/>
-			<RequestCard
+			/> */}
+			{/* <RequestCard
 				panelDetails={{
 					panelName: "پنل باغ شهری",
-					customerName: "رضا موسوی نارنجی",
-					address:
-						" ایران، استان کبیر اردبیل، نرسیده ترکیه، 200 کیلومتری ارومیه، کنار دریای خزر، خیابان باقلوا، کوچه خوشمزه، پلاک 104، درب انتهای کوچه سبز خراسان رضوی شمالی نبش میدان بنفش",
+					address:"استان تهران، شهر تهران", 
 					capacity: 200,
-					price: 120050780123406,
+					price: 1200507,
+          buildingType: "مسکونی",
+          createdTime: "1404/01/01",
+          status: "active"
 				}}
 				requestId={1}
-			/>
+			/> */}
 		</div>
 	);
 }

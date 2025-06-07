@@ -37,17 +37,21 @@ export default function Bids() {
 	const [bidData, setBidData] = useState<Bid[] | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
+	const corpId = useSelector((state: RootState) => state.user.corpId);
 
 	useEffect(() => {
 		const fetchBids = async () => {
 			try {
 				console.log("Fetching bids...");
-				const response = await fetch(`${baseURL}/v1/bids/list`, {
-					headers: {
-						Authorization: `Bearer ${accessToken}`,
-						"ngrok-skip-browser-warning": "69420",
-					},
-				});
+				const response = await fetch(
+					`${baseURL}/v1/corp/${corpId}/bid?status=1&offset=10&limit=1`,
+					{
+						headers: {
+							Authorization: `Bearer ${accessToken}`,
+							"ngrok-skip-browser-warning": "69420",
+						},
+					}
+				);
 
 				const data = await response.json();
 				console.log("Raw response:", data.data);
@@ -65,7 +69,7 @@ export default function Bids() {
 		};
 
 		fetchBids();
-	}, [accessToken]);
+	}, []);
 
 	// if (error) {
 	// 	return <div className="text-red-500">Error loading bids: {error}</div>;

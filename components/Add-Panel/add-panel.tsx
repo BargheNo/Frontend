@@ -47,6 +47,7 @@ import addpanelService from "@/src/services/addpanelService";
 import CustomToast from "../Custom/CustomToast/CustomToast";
 import AddComponent from "../AddComponent/AddComponent";
 import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
+import { useSelector } from "react-redux";
 export default function AddPanel() {
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -89,12 +90,12 @@ export default function AddPanel() {
 	useEffect(() => {
 		UpdateCityList(provinceid ?? 1);
 	}, [provinceid]);
-
+	const corpId = useSelector((state: RootState) => state.user.corpId);
 	const handelAddPanelrequest = (panel: InitPanel) => {
-		setOpen(false);
+		// setOpen(false);
 		setLoading(true);
 		addpanelService
-			.AddPanel(panel)
+			.AddPanel(panel, corpId)
 			.then((res) => {
 				CustomToast(res?.message, "success");
 				console.log(res);
@@ -174,13 +175,13 @@ export default function AddPanel() {
 						unit: Yup.number().required("این فیلد الزامی است."),
 					})}
 					onSubmit={(values) => {
-						setOpen(false);
+						// setOpen(false);
 						handelAddPanelrequest({
-							panelName: values.name,
+							name: values.name,
 							customerPhone: "+98" + values.phonenumber,
 							power: Number(values.power),
 							area: Number(values.area),
-							buildingType: building,
+							buildingType: Number(building),
 							tilt: Number(values.angel),
 							azimuth: Number(values.direction),
 							totalNumberOfModules: Number(values.modulecount),
@@ -250,31 +251,31 @@ export default function AddPanel() {
 												نوع ساختمان
 											</SelectLabel>
 											<SelectItem
-												value="residential"
+												value="1"
 												className="cursor-pointer"
 											>
 												مسکونی
 											</SelectItem>
 											<SelectItem
-												value="commercial"
+												value="2"
 												className="cursor-pointer"
 											>
 												تجاری
 											</SelectItem>
 											<SelectItem
-												value="industrial"
+												value="3"
 												className="cursor-pointer"
 											>
 												صنعتی
 											</SelectItem>
 											<SelectItem
-												value="argiculture"
+												value="4"
 												className="cursor-pointer"
 											>
 												کشاورزی
 											</SelectItem>
 											<SelectItem
-												value="more"
+												value="5"
 												className="cursor-pointer"
 											>
 												سایر

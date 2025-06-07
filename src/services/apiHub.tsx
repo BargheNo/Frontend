@@ -3,12 +3,11 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { getParams, postParams } from "../types/apiHubType";
 // import { useSelector } from "react-redux";
 // import { RootState } from "../store/types";
-import { toast } from "sonner";
 import generateErrorMessage from "../functions/handleAPIErrors";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 export const baseURL = "http://46.249.99.69:8080";
-// export const baseURL = "https://8993-2a0d-5940-54-11-00.ngrok-free.app";
+// export const baseURL = "https://a50e-212-64-199-253.ngrok-free.app";
 
 // const {accessToken} = localStorage.getItem("user");
 // export const accessToken =
@@ -227,47 +226,47 @@ export const deleteData = async ({ endPoint, data, headers }: postParams) => {
 };
 
 export const handleLogin = async (phoneNumber: string, password: string) => {
-	try {
-		const response = await axios.post(
-			`${baseURL}/v1/auth/login`,
-			{
-				phone: "+98" + phoneNumber,
-				password: password,
-			},
-			{
-				headers: {
-					"Content-Type": "application/json",
-				},
-			}
-		);
-		console.log(response);
-		if (response.status === 200) {
-			return {
-				success: true,
-				data: response?.data,
-			};
-		}
+  try {
+    const response = await axios.post(
+      `${baseURL}/v1/auth/login`,
+      {
+        phone: "+98" + phoneNumber,
+        password: password,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log(response);
+    if (response.status === 200) {
+      return {
+        success: true,
+        data: response?.data,
+      };
+    }
 
-		return {
-			success: false,
-			message: response?.data?.message || "مشکلی رخ داده",
-		};
-	} catch (error: any) {
-		// console.log("error", error);
-		CustomToast(generateErrorMessage(error), "error");
-		// toast(generateErrorMessage(error));
-		// if (axios.isAxiosError(error)) {
-		// 	return {
-		// 		success: false,
-		// 		message: error?.response?.data?.message || "Network error",
-		// 	};
-		// }
+    return {
+      success: false,
+      message: response?.data?.message || "مشکلی رخ داده",
+    };
+  } catch (error: any) {
+    // console.log("error", error);
+    CustomToast(generateErrorMessage(error), "error");
+    // toast(generateErrorMessage(error));
+    // if (axios.isAxiosError(error)) {
+    // 	return {
+    // 		success: false,
+    // 		message: error?.response?.data?.message || "Network error",
+    // 	};
+    // }
 
-		// return {
-		// 	success: false,
-		// 	message: "An unexpected error occurred",
-		// };
-	}
+    // return {
+    // 	success: false,
+    // 	message: "An unexpected error occurred",
+    // };
+  }
 };
 
 export const handleCorpLogin = async (cin: string, password: string) => {

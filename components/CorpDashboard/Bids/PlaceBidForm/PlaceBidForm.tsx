@@ -4,12 +4,14 @@ import { vazir } from "@/lib/fonts";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
-import { baseURL } from "@/src/services/apiHub";
+import { baseURL, postData } from "@/src/services/apiHub";
 import {
 	Battery,
-	Calendar,
+	Building2,
+	CalendarRange,
 	DollarSign,
 	Eclipse,
+	LandPlot,
 	MapPin,
 	MessageCircle,
 	User,
@@ -21,24 +23,31 @@ import { BidFormProps } from "@/src/types/RequestCardTypes";
 import wordExpression from "@/src/functions/Calculations";
 import { useSelector } from "react-redux";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 // import { RootState } from "@/src/store/types";
-
+import { DatePicker, Calendar, CalendarProvider } from "zaman";
+import { CustomDatePicker } from "@/components/Custom/CustomDatePicker/CustomDatePicker";
+import generateErrorMessage from "@/src/functions/handleAPIErrors";
 const Item = ({
 	icon: Icon,
 	fieldName,
 	fieldValue,
 	english = false,
 	prefix,
+	className,
 }: {
 	icon: React.ElementType;
 	fieldName: string;
 	fieldValue: string | number;
 	english?: boolean;
 	prefix?: string;
+	className?: string;
 }) => {
 	const { value, changed } = wordExpression(fieldValue, english);
 	return (
-		<div className="flex items-start gap-2 border-t-2 first:border-t-0 border-gray-300 w-full py-2">
+		<div
+			className={`flex items-start gap-2 border-t-2 first:border-t-0 border-gray-300 w-full py-2 ${className}`}
+		>
 			<Icon className="min-w-6 min-h-6 transition-transform duration-200 hover:scale-115 text-[#FA682D]" />
 			<div className="flex gap-1">
 				<span>{fieldName}: </span>
@@ -52,158 +61,204 @@ const Item = ({
 	);
 };
 
+const initialValues = {
+	cost: "",
+	area: "",
+	power: "",
+	description: "",
+	installationTime: "",
+	guaranteeID: 1,
+	paymentTerms: { method: 1 },
+};
+
+const validateSchema = Yup.object({
+	cost: Yup.string().required("قیمت پیشنهادی الزامی است"),
+	area: Yup.string().required("مساحت الزامی است"),
+	power: Yup.string().required("ظرفیت الزامی است"),
+	installationTime: Yup.string().required("زمان تخمینی نصب الزامی است"),
+	description: Yup.string().max(500, "توضیحات طولانی است"),
+	guaranteeID: Yup.string().required("نوع گارانتی الزامی است"),
+	paymentTerms: Yup.object().shape({
+		method: Yup.string().required("نحوه پرداخت الزامی است"),
+	}),
+});
+
 export default function PlaceBidForm({
 	requestId,
 	panelDetails,
+	setOpen,
 }: BidFormProps) {
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
-	// const accessToken = localStorage.getItem("accessToken");
-	const validateSchema = Yup.object({
-		time: Yup.string().required("زمان تخمینی خود را وارد کنید."),
-		price: Yup.string().required("قیمت پیشنهادی خود را وارد کنید."),
-		message: Yup.string().max(500, "پیام بسیار طولانی است."),
-	});
+	const corpId = useSelector((state: RootState) => state.user.corpId);
 	const handleBid = async (
 		requestId: number,
-		price: number,
-		time: string,
-		message: string
+		cost: number,
+		area: number,
+		power: number,
+		description: string,
+		installationTime: string,
+		guaranteeID?: number,
+		paymentTerms?: {
+			method: number;
+			installmentPlan?: {
+				numberOfMonths: number;
+				downPaymentAmount: number;
+				monthlyAmount: number;
+				notes: string;
+			};
+		}
 	) => {
-		fetch(`${baseURL}/v1/bids/set`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${accessToken}`,
-			},
-			body: JSON.stringify({
-				installationRequestId: requestId,
-				cost: price,
-				description: message,
-				installationDate: "2025-04-15T00:00:00Z",
-			}),
+		const formData = {
+			cost: cost,
+			area: area,
+			power: power,
+			description: description,
+			installationTime: installationTime,
+			guaranteeID: guaranteeID,
+			paymentTerms: paymentTerms,
+		};
+		console.log("formData", formData);
+		postData({
+			endPoint: `${baseURL}/v1/corp/${corpId}/installation/request/${requestId}/bid`,
+			data: formData,
 		})
-			.then((response) => response.json()) // Parse the JSON response
 			.then((data) => {
-				CustomToast(data?.message, "success");
-				// toast(data?.message);
-				console.log("Success:", data); // Handle the response data
+				CustomToast(data?.message);
+				setOpen(false);
+				// console.log(data);
 			})
-			.catch((error) => {
-				console.error("Error:", error); // Handle errors
+			.catch((err) => {
+				// console.log(err);
+				CustomToast(generateErrorMessage(err));
 			});
-		// postData({
-		// 	endPoint: `${baseURL}/v1/bids/set`,
-		// 	data: {
-		// 		installationRequestId: requestId,
-		// 		cost: price,
-		// 		description: message,
-		// 		installationDate: "2025-04-15T00:00:00Z",
-		// 	},
-		// })
-		// 	.then((res) => {
-		// 		console.log(res);
-		// 		toast(res?.data?.message);
-		// 	})
-		// 	.catch((err) => {
-		// 		console.log(err);
-		// 		toast(err?.response?.data?.message);
-		// 	});
 	};
 	return (
 		<Formik
-			initialValues={{
-				price: "",
-				time: "",
-				message: "",
-			}}
+			initialValues={initialValues}
 			validationSchema={validateSchema}
 			onSubmit={(values) => {
 				handleBid(
 					requestId,
-					Number(values.price),
-					values.time,
-					values.message
+					Number(values.cost),
+					Number(values.area),
+					Number(values.power),
+					values.description,
+					values.installationTime,
+					2,
+					{
+						method: 1,
+						installmentPlan: {
+							numberOfMonths: 12,
+							downPaymentAmount: 2000,
+							monthlyAmount: 833,
+							notes: "Payment plan with 12 monthly installments after initial down payment",
+						},
+					}
 				);
 			}}
 		>
-			<Form className="w-full flex flex-col gap-6">
-				<DialogHeader>
-					<DialogTitle className={`flex ${vazir.className} text-2xl`}>
-						ثبت پیشنهاد
-					</DialogTitle>
-				</DialogHeader>
-				<div className="flex flex-col gap-1">
-					<span className="text-lg font-bold">مشخصات درخواست</span>
-					<div className={styles.Box}>
-						<Item
-							icon={Eclipse}
-							fieldName="نام پنل"
-							fieldValue={panelDetails.panelName}
-						/>
-						<Item
-							icon={User}
-							fieldName="مشتری"
-							fieldValue={panelDetails.customerName}
-						/>
-						<Item
-							icon={Battery}
-							fieldName="ظرفیت"
-							fieldValue={panelDetails.capacity}
-							english={true}
-							prefix="W"
-						/>
-						<Item
-							icon={MapPin}
-							fieldName="آدرس"
-							fieldValue={panelDetails.address}
+			{({ setFieldValue, values }) => (
+				<Form className="w-full flex flex-col gap-6">
+					<DialogHeader>
+						<DialogTitle
+							className={`flex ${vazir.className} text-2xl`}
+						>
+							ثبت پیشنهاد
+						</DialogTitle>
+					</DialogHeader>
+					<div className="flex flex-col gap-1">
+						<span className="text-lg font-bold">
+							مشخصات درخواست
+						</span>
+						<div className={styles.Box}>
+							<div className="flex">
+								<Item
+									icon={Eclipse}
+									fieldName="نام پنل"
+									fieldValue={panelDetails.panelName}
+								/>
+								<Item
+									icon={Building2}
+									fieldName="نوع ساختمان"
+									fieldValue={panelDetails.buildingType}
+								/>
+							</div>
+							<div className="flex">
+								<Item
+									className="first:border-t-2"
+									icon={Battery}
+									fieldName="ظرفیت"
+									fieldValue={panelDetails.capacity}
+									english={true}
+									prefix="W"
+								/>
+								<Item
+									icon={CalendarRange}
+									fieldName="زمان درخواست"
+									fieldValue={panelDetails.createdTime}
+								/>
+							</div>
+							<Item
+								icon={MapPin}
+								fieldName="آدرس"
+								fieldValue={panelDetails.address}
+							/>
+						</div>
+					</div>
+					<div className="w-full">
+						<div className="flex flex-row justify-evenly gap-6">
+							<CustomInput
+								placeholder="قیمت پیشنهادی"
+								name="cost"
+								icon={DollarSign}
+								type="number"
+								autoFocus={true}
+								containerClassName="w-1/2"
+							/>
+							<div className="w-full">
+								<CustomDatePicker
+									placeholder="زمان تخمینی نصب"
+									date={values.installationTime}
+									setDate={(date: string) => {
+										setFieldValue("installationTime", date);
+									}}
+								/>
+							</div>
+						</div>
+						<div className="flex flex-row justify-evenly gap-6">
+							<CustomInput
+								placeholder="ظرفیت"
+								name="power"
+								icon={Battery}
+								type="number"
+								autoFocus={true}
+								containerClassName="w-1/2"
+							/>
+							<CustomInput
+								placeholder="مساحت"
+								name="area"
+								icon={LandPlot}
+								type="number"
+								containerClassName="w-1/2"
+							/>
+						</div>
+						<CustomTextArea
+							placeholder="جزئیات بیشتر"
+							name="description"
+							icon={MessageCircle}
+							containerClassName="w-full"
 						/>
 					</div>
-				</div>
-				<div className="w-full">
-					<div className="flex flex-row justify-evenly gap-6">
-						<CustomInput
-							placeholder="قیمت پیشنهادی شما"
-							name="price"
-							icon={DollarSign}
-							type="number"
-							autoFocus={true}
-							containerClassName="w-1/2"
-						>
-							{" "}
-						</CustomInput>
-						<CustomInput
-							placeholder="زمان تخمینی نصب"
-							name="time"
-							icon={Calendar}
-							type="number"
-							containerClassName="w-1/2"
-						>
-							{" "}
-						</CustomInput>
-						{/* <CustomInput placeholder="آپلود فایل قرارداد" name="file" icon={DollarSign}  type="text" > </CustomInput> */}
-					</div>
-					<CustomInput
-						placeholder="پیام شما"
-						name="message"
-						icon={MessageCircle}
-						type="text"
-						containerClassName="w-full"
-					>
-						{" "}
-					</CustomInput>
-				</div>
 
-				<DialogFooter>
-					<button
-						type="submit"
-						className={`${vazir.className} ml-3 bg-[#11B33A] hover:cursor-pointer shadow-md rounded-md px-2 py-1 text-white`}
-					>
-						ارسال پیشنهاد
-					</button>
-				</DialogFooter>
-			</Form>
+					<DialogFooter>
+						<button
+							type="submit"
+							className={`${vazir.className} ml-3 bg-[#11B33A] hover:cursor-pointer shadow-md rounded-md px-2 py-1 text-white`}
+						>
+							ارسال پیشنهاد
+						</button>
+					</DialogFooter>
+				</Form>
+			)}
 		</Formik>
 	);
 }

@@ -6,7 +6,7 @@ interface Orderinfo {
 	area: number;
 	power: number;
 	maxCost: number;
-	buildingType: string;
+	buildingType: number;
 	description: string;
 	provinceID: number;
 	cityID: number;
@@ -15,13 +15,14 @@ interface Orderinfo {
 	houseNumber: string;
 	unit: number;
 }
-interface page {
-	page: string;
-	pageSize: string;
+interface Filters {
+	status: string;
+	offset: string;
+	limit: string;
 }
 
 class order {
-	orderRequest(Orderinfo: Orderinfo, token: string) {
+	orderRequest(Orderinfo: Orderinfo) {
 		// console.log("token", token);
 		return postData({
 			endPoint: `${baseURL}/v1/user/installation/request`,
@@ -30,33 +31,16 @@ class order {
 				"ngrok-skip-browser-warning": "69420",
 			},
 		});
-		// return axios.post(
-		// 	`${baseURL}/v1/user/installation/request`,
-		// 	Orderinfo,
-		// 	{
-		// 		headers: {
-		// 			Authorization: `Bearer ${token}`,
-		// 			"ngrok-skip-browser-warning": "69420",
-		// 		},
-		// 	}
-		// );
 	}
 
-	orderHistory(pageinfo: page, token: string) {
+	orderHistory(filters: Filters) {
 		return getData({
 			endPoint: `${baseURL}/v1/user/installation/request`,
 			headers: {
 				"ngrok-skip-browser-warning": "69420",
 			},
-			params: pageinfo,
+			params: filters,
 		});
-		// return axios.get(`${baseURL}/v1/user/installation/request`, {
-		//     headers: {
-		//         Authorization: `Bearer ${token}`,
-		//         "ngrok-skip-browser-warning":"69420"
-		//     },
-		//     params: pageinfo,
-		// });
 	}
 }
 
