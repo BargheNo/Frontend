@@ -13,7 +13,7 @@ import style from "./ContactInfoForm.module.css";
 import { Phone, XIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { baseURL, deleteData, getData } from "@/src/services/apiHub";
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import { toast } from "sonner";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { useSelector } from "react-redux";

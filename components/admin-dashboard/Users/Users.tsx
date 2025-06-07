@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import UserRolesModal from "./UserRoleModal";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import FilterUsers from "./FilterUsers";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 
 type UserType = {
   id: number;
@@ -18,9 +19,9 @@ type UserType = {
 };
 
 type RootState = {
-  user: {
-    accessToken: string;
-  };
+	user: {
+		accessToken: string;
+	};
 };
 
 export default function Users() {

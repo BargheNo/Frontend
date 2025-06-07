@@ -19,6 +19,8 @@ import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 
 interface Ticket {
 	id: string;
@@ -55,6 +57,10 @@ const commentValidationSchemaForm = Yup.object({
 });
 
 const TicketSupportPage = () => {
+	const [putCommentLoading, setPutCommentLoading] = useState<boolean>(false);
+	const [resolveTicketLoading, setResolveTicketLoading] =
+		useState<boolean>(false);
+
 	const [isLoadingComments, setIsLoadingComments] = useState(false);
 	const [tickets, setTickets] = useState<Ticket[]>([]);
 	const [comments, setComments] = useState<Comment[]>([]);
@@ -79,6 +85,7 @@ const TicketSupportPage = () => {
 		return translations[subject.toLowerCase()] || subject;
 	};
 	const resolveTicket = async (ticketId: string) => {
+		setResolveTicketLoading(true);
 		try {
 			const response = await fetch(
 				`http://46.249.99.69:8080/v1/admin/ticket/${ticketId}/resolve`,
@@ -92,6 +99,7 @@ const TicketSupportPage = () => {
 				}
 			);
 
+			setResolveTicketLoading(false);
 			if (!response.ok) {
 				throw new Error("Failed to resolve ticket");
 			}
@@ -109,6 +117,7 @@ const TicketSupportPage = () => {
 				"هنگام بررسی تیکت مشکلی پیش آمد.";
 			// toast.error(errMsg);
 			CustomToast(errMsg, "error");
+			setResolveTicketLoading(false);
 		}
 	};
 
@@ -116,6 +125,7 @@ const TicketSupportPage = () => {
 		comment: string,
 		activeCommentTicketId: string
 	) => {
+		setPutCommentLoading(true);
 		try {
 			console.log("comment", comment);
 			const response = await fetch(
@@ -134,17 +144,23 @@ const TicketSupportPage = () => {
 			// toast.success(result?.message);
 			CustomToast(result?.message, "success");
 			getComments(activeCommentTicketId);
+			setPutCommentLoading(false);
+
+			setActiveCommentTicketId(null);
 		} catch (error: any) {
 			const errMsg =
 				generateErrorMessage(error) ||
 				"هنگام ایجاد نظر جدید مشکلی پیش آمد.";
 			// toast.error(errMsg);
 			CustomToast(errMsg, "error");
+			setPutCommentLoading(false);
+
+			setActiveCommentTicketId(null);
 		}
 	};
 
 	const getComments = async (showCommentBoxFor: string | null) => {
-		setComments([]);
+		// setComments([]);
 		setIsLoadingComments(true);
 		fetch(
 			`http://46.249.99.69:8080/v1/admin/ticket/${showCommentBoxFor}/comments`,
@@ -159,6 +175,7 @@ const TicketSupportPage = () => {
 			.then((res) => res.json())
 			.then((data) => {
 				setComments(data.data);
+				setIsLoadingComments(false);
 			})
 			.catch((err: any) => {
 				const errMsg =
@@ -166,10 +183,8 @@ const TicketSupportPage = () => {
 					"هنگام گردآوری نظرات مشکلی به وجود آمد.";
 				// toast.error(errMsg);
 				CustomToast(errMsg, "error");
+				setIsLoadingComments(false);
 			});
-		{
-			setIsLoadingComments(false);
-		}
 	};
 
 	const fetchTickets = () => {
@@ -326,19 +341,27 @@ const TicketSupportPage = () => {
 									{/* </div> */}
 								</div>
 							</div>
-							<div
+							{/* <div
 								className={`cta-neu-button flex ${styles.button} items-center mt-4 content-center w-50 justify-center`}
-							>
+							> */}
+							{status === "بررسی نشده" && (
 								<button
-									className="cursor-pointer"
+									className={`cursor-pointer cta-neu-button flex ${styles.button} items-center mt-4 content-center w-50 justify-center`}
 									onClick={() => {
 										resolveTicket(id);
 									}}
 								>
-									بستن تیکت
+									{resolveTicketLoading ? (
+										<LoadingOnButton />
+									) : (
+										<div className="flex gap-[2px] items-center">
+											بستن تیکت
+											<XIcon />
+										</div>
+									)}
 								</button>
-								<XIcon />
-							</div>
+							)}
+							{/* </div> */}
 						</div>
 					</div>
 				</div>
@@ -420,7 +443,6 @@ const TicketSupportPage = () => {
 											values.comment,
 											activeCommentTicketId
 										);
-										setActiveCommentTicketId(null);
 									}}
 								>
 									{({ setFieldValue, values }) => (
@@ -431,6 +453,7 @@ const TicketSupportPage = () => {
 														ثبت نظر
 													</h3>
 													<CustomTextArea
+														textareaClassName="bg-white"
 														name="comment"
 														rows={3}
 														placeholder="متن نظر..."
@@ -450,7 +473,13 @@ const TicketSupportPage = () => {
 														<button
 															className={`text-left cta-neu-button flex ${styles.button} items-center content-center justify-center w-1/9`}
 														>
-															ثبت نظر
+															{putCommentLoading ? (
+																<LoadingOnButton
+																	size={28}
+																/>
+															) : (
+																<p>ثبت نظر</p>
+															)}
 														</button>
 													</div>
 												</div>
@@ -465,7 +494,9 @@ const TicketSupportPage = () => {
 									<h2 className="text-right text-2xl font-bold text-blue-800 pr-7">
 										نظرات
 									</h2>
-									{comments.length > 0 ? (
+									{isLoadingComments ? (
+										<LoadingSpinner />
+									) : comments.length > 0 ? (
 										<div className="flex flex-col text-gray-800 rounded-md overflow-hidden">
 											{/* <div className="pb-1 border-t border-gray-400"> */}
 											{comments.map((comment, index) => (

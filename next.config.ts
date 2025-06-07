@@ -16,11 +16,14 @@ const nextConfig: NextConfig = {
 			"barghe-no-profile-pic.s3.ir-thr-at1.arvanstorage.ir",
 			"barghe-no-ticket-image.s3.ir-thr-at1.arvanstorage.ir",
 		],
+
 		remotePatterns: [
-			new URL(
-				"https://barghe-no-ticket-image.s3.ir-thr-at1.arvanstorage.ir"
-			),
-		],
+			{
+			  protocol: "https",
+			  hostname: "barghe-no-ticket-image.s3.ir-thr-at1.arvanstorage.ir",
+			},
+		  ],
+		  
 	},
 };
 

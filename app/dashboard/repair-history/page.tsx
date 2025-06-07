@@ -9,7 +9,7 @@ import CustomerRepairRequest from "@/components/Repair/Customer/CustomerRepairRe
 import RepairDetailsDialog from "@/components/Repair/Customer/CustomerRepairDialog";
 
 import { baseURL, getData } from "@/src/services/apiHub";
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import Header from "@/components/Header/Header";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 
@@ -88,9 +88,9 @@ const Page = () => {
 		date: item.CreatedAt,
 	}));
 
-	if (isLoading) {
-		return <LoadingSpinner />;
-	}
+	// if (isLoading) {
+	// 	return <LoadingSpinner />;
+	// }
 
 	if (error) {
 		return (
@@ -104,9 +104,6 @@ const Page = () => {
 		<PageContainer>
 			{/* <div className="min-h-full w-full flex flex-col gap-8 text-white py-8 px-3 md:px-14 bg-transparent" dir='rtl'> */}
 			<Header header="درخواست تعمیرات" />
-			{/* <h1 className="text-navy-blue text-3xl font-black">
-				درخواست تعمیرات
-				</h1> */}
 			<div className="flex flex-col-reverse md:flex-row">
 				{sliderItems.length > 0 ? (
 					<>
@@ -130,29 +127,30 @@ const Page = () => {
 			</div>
 			<div>
 				<Header header="سوابق تعمیرات" />
-				{/* <h1 className="text-navy-blue text-3xl mb-6 font-black">
-					سوابق تعمیرات
-					</h1> */}
-				<div className="flex flex-col neu-container">
-					{repairItems.length === 0 ? (
-						<div className="text-center py-8 text-gray-500">
-							هیچ سابقه تعمیراتی موجود نیست
-						</div>
-					) : (
-						repairItems.map(
-							(item: RepairHistoryItem, index: number) => (
-								<div key={item.ID || index}>
-									<CustomerRepairCard
-										repairItem={item}
-										onDetailsClick={() =>
-											handleOpenDialog(item)
-										}
-									/>
-								</div>
+				{isLoading ? (
+					<LoadingSpinner />
+				) : (
+					<div className="flex flex-col neu-container">
+						{repairItems.length === 0 ? (
+							<div className="text-center py-8 text-gray-500">
+								هیچ سابقه تعمیراتی موجود نیست
+							</div>
+						) : (
+							repairItems.map(
+								(item: RepairHistoryItem, index: number) => (
+									<div key={item.ID || index}>
+										<CustomerRepairCard
+											repairItem={item}
+											onDetailsClick={() =>
+												handleOpenDialog(item)
+											}
+										/>
+									</div>
+								)
 							)
-						)
-					)}
-				</div>
+						)}
+					</div>
+				)}
 			</div>
 
 			{/* Dialog for displaying repair details */}

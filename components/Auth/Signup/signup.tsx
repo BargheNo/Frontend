@@ -2,10 +2,8 @@
 import { useEffect, useState } from "react";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
-import SignupButton from "@/components/SignupButton/SignupButton";
 import PhoneVerification from "@/components/phoneVerification/phoneVerification";
 import styles from "./signup.module.css";
-import { Building2, IdCard } from "lucide-react";
 
 import {
 	MoveLeft,
@@ -14,17 +12,14 @@ import {
 	User,
 	Unlock,
 	Check,
-	ArrowLeft,
-	ArrowRight,
 } from "lucide-react";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
 import registerService from "@/src/services/registerService";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
-// import useClientCheck from "@/src/hooks/useClientCheck";
+import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
+import LoginButton from "../Login/LoginButton";
 
 function Signup() {
 	const validationSchema = Yup.object({
@@ -261,20 +256,24 @@ function Signup() {
 											fontWeight: "600",
 										}}
 									>
-										<SignupButton
-											className="text-[#FA682D]"
-											type="submit"
+										<LoginButton
+											// className="text-[#FA682D]"
+											// type="submit"
 											disabled={!check}
 										>
-											<div
-												className={
-													styles.leftIconButton
-												}
-											>
-												<MoveLeft></MoveLeft>
-												<p id="signup">ثبت نام</p>
-											</div>
-										</SignupButton>
+											{loading ? (
+												<LoadingOnButton size={28} />
+											) : (
+												<div
+													className={
+														styles.leftIconButton
+													}
+												>
+													<MoveLeft />
+													<p id="signup">ثبت نام</p>
+												</div>
+											)}
+										</LoginButton>
 									</div>
 
 									<PhoneVerification
@@ -295,7 +294,6 @@ function Signup() {
 									</div>
 								</Form>
 							</Formik>
-							{loading && <TransparentLoading />}
 						</div>
 					</div>
 				</div>
