@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import {
-	Plus,
 	ShieldAlert,
 	Mailbox,
 	SquareMenu,
@@ -37,14 +36,8 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { City, Province } from "@/src/types/provinceType";
-import provinceService from "@/src/services/provinceService";
 import orderService from "@/src/services/orderService";
-import { toast } from "sonner";
-import { useSelector } from "react-redux";
-// import { RootState } from "@/src/store/types";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
-import TransparentLoading from "../Loading/LoadingSpinner/TransparentLoading";
 import CustomToast from "../Custom/CustomToast/CustomToast";
 import AddComponent from "../AddComponent/AddComponent";
 import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
@@ -63,9 +56,6 @@ export default function Neworder() {
 			.then((data) => {
 				Setprovinces(data?.data);
 			})
-			.catch((err) => {
-				CustomToast(generateErrorMessage(err));
-			});
 	};
 	useEffect(() => {
 		Getprovinces();
@@ -76,13 +66,8 @@ export default function Neworder() {
 			endPoint: `/v1/address/province/${provinceId}/city`,
 		})
 			.then((data) => {
-				// console.log(data);
 				Setcities(data?.data);
 			})
-			.catch((err) => {
-				// console.log(err);
-				CustomToast(generateErrorMessage(err));
-			});
 	};
 	const Findprovinceid = (provinces: Province[], id: number) => {
 		const province = provinces.find((p) => p.ID === id);
@@ -97,7 +82,6 @@ export default function Neworder() {
 	useEffect(() => {
 		UpdateCityList(provinceid ?? 1);
 	}, [provinceid]);
-	// console.log("city is",cityid," ",provinceid)
 
 	const handelOrderrequest = (orderinfo: order) => {
 		setLoading(true);
@@ -106,25 +90,14 @@ export default function Neworder() {
 			.then((res) => {
 				console.log(res);
 				CustomToast(res?.message, "success");
-				// toast(<div id="toast-success">{res?.message}</div>);
 				setLoading(false);
 				setOpen(false);
 			})
-			.catch((err) => {
-				console.log(err);
-				CustomToast(generateErrorMessage(err), "error");
-				// toast(<div id="toast-fail">{generateErrorMessage(err)}</div>);
-				setLoading(false);
-				// setOpen(false);
-			});
 	};
 	// console.log(cityid);
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				{/* <SignupButton type="button" id="plus">
-					<Plus className={style.icon} />
-				</SignupButton> */}
 				<AddComponent title="ثبت سفارش جدید" />
 			</DialogTrigger>
 			<DialogContent

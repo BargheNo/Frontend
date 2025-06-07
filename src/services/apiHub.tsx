@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getParams, postParams } from "../types/apiHubType";
+import generateErrorMessage from "../functions/handleAPIErrors";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 export const baseURL = "http://46.249.99.69:8080";
 // export const baseURL = "https://a50e-212-64-199-253.ngrok-free.app";
@@ -100,7 +102,10 @@ export const getData = async ({ endPoint, headers, params }: getParams) => {
 			...headers,
 		});
 		return response.data;
-	} catch (error) {
+	} catch (error: any) {
+		generateErrorMessage(error)
+			.split("\n")
+			.map((errMsg) => CustomToast(errMsg, "error"));
 		throw error;
 	}
 };
@@ -114,6 +119,9 @@ export const postData = async ({ endPoint, data, headers }: postParams) => {
 		});
 		return response.data;
 	} catch (error: any) {
+		generateErrorMessage(error)
+			.split("\n")
+			.map((errMsg) => CustomToast(errMsg, "error"));
 		throw error;
 	}
 };
@@ -124,7 +132,10 @@ export const patchData = async ({ endPoint, data, headers }: postParams) => {
 			...headers,
 		});
 		return response.data;
-	} catch (error) {
+	} catch (error: any) {
+		generateErrorMessage(error)
+			.split("\n")
+			.map((errMsg) => CustomToast(errMsg, "error"));
 		throw error;
 	}
 };
@@ -142,7 +153,10 @@ export const putDataFile = async ({
 			headers: { "Content-Type": "multipart/form-data", ...headers },
 		});
 		return response.data;
-	} catch (error) {
+	} catch (error: any) {
+		generateErrorMessage(error)
+			.split("\n")
+			.map((errMsg) => CustomToast(errMsg, "error"));
 		throw error;
 	}
 };
@@ -152,7 +166,10 @@ export const putData = async ({ endPoint, data, headers }: postParams) => {
 			...headers,
 		});
 		return response.data;
-	} catch (error) {
+	} catch (error: any) {
+		generateErrorMessage(error)
+			.split("\n")
+			.map((errMsg) => CustomToast(errMsg, "error"));
 		throw error;
 	}
 };
@@ -163,47 +180,10 @@ export const deleteData = async ({ endPoint, data, headers }: postParams) => {
 			...headers,
 		});
 		return response.data;
-	} catch (error) {
+	} catch (error: any) {
+		generateErrorMessage(error)
+			.split("\n")
+			.map((errMsg) => CustomToast(errMsg, "error"));
 		throw error;
-	}
-};
-
-export const phonenumberVerification = async (phone: string, otp: string) => {
-	try {
-		const response = await axios.post(
-			`${baseURL}/v1/auth/confirm-otp`,
-			{
-				phone: "+98" + phone,
-				otp: otp,
-			},
-			{
-				headers: {
-					"Content-Type": "application/json",
-				},
-			}
-		);
-		if (response.status === 200) {
-			return {
-				success: true,
-				data: response.data,
-			};
-		}
-
-		return {
-			success: false,
-			message: response.data?.message || "Verification failed",
-		};
-	} catch (error: unknown) {
-		if (axios.isAxiosError(error)) {
-			return {
-				success: false,
-				message: error.response?.data?.message || "Network error",
-			};
-		}
-
-		return {
-			success: false,
-			message: "An unexpected error occurred",
-		};
 	}
 };

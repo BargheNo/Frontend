@@ -1,12 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { X, Loader2 } from "lucide-react";
-import { toast } from "sonner";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { useSelector } from "react-redux";
 import ReactDOM from "react-dom";
 import { vazir } from "@/lib/fonts";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import { getData, putData } from "@/src/services/apiHub";
 
 type Role = {
 	id: number;
@@ -47,50 +46,18 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 
 	// Fetch all available roles
 	const getAllRoles = async () => {
-		try {
-			const response = await fetch(
-				"http://46.249.99.69:8080/v1/admin/roles",
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${accessToken}`,
-					},
-				}
-			);
-			const data = await response.json();
+		getData({ endPoint: `/v1/admin/roles` }).then((data) => {
 			setAllRoles(data.data);
-		} catch (err: any) {
-			const errMsg =
-				generateErrorMessage(err) || "مشکلی در دریافت نقش‌ها رخ داد.";
-			// toast.error(errMsg);
-			CustomToast(errMsg, "error");
-		}
+		});
 	};
 
 	// Fetch roles for the current user
 	const getUserRoles = async (userId: number) => {
-		try {
-			const response = await fetch(
-				`http://46.249.99.69:8080/v1/admin/users/${userId}/roles`,
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${accessToken}`,
-					},
-				}
-			);
-			const data = await response.json();
-			setUserRoles(data.data.map((role: Role) => role.id));
-		} catch (err: any) {
-			console.log(err);
-			const errMsg =
-				generateErrorMessage(err) ||
-				"مشکلی در دریافت نقش‌های کاربر رخ داد.";
-			// toast.error(errMsg);
-			CustomToast(errMsg, "error");
-		}
+		getData({ endPoint: `/v1/admin/users/${userId}/roles` }).then(
+			(data) => {
+				setUserRoles(data.data.map((role: Role) => role.id));
+			}
+		);
 	};
 
 	// Handle checkbox changes
@@ -107,81 +74,33 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 	// Save updated roles
 	const saveRoles = async () => {
 		setIsSaving(true);
-
-    try {
-      const response = await fetch(
-        `http://46.249.99.69:8080/v1/admin/users/${userId}/roles`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({
-            roleIDs: userRoles,
-          }),
-        }
-      );
-
-			if (!response.ok) {
-				throw new Error("Failed to update user roles");
-			}
-
-			const result = await response.json();
-			// toast.success(result.message);
-      CustomToast(result?.message, "success");
-			onSaveSuccess();
-			onClose();
-		} catch (error: any) {
-			const errMsg =
-				generateErrorMessage(error) ||
-				"هنگام به‌روزرسانی نقش‌های کاربر مشکلی پیش آمد.";
-			// toast.error(errMsg);
-			CustomToast(errMsg, "error");
-		} finally {
-			setIsSaving(false);
-		}
+		const formData = {
+			roleIDs: userRoles,
+		};
+		putData({
+			endPoint: `/v1/admin/users/${userId}/roles`,
+			data: formData,
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				onSaveSuccess();
+				onClose();
+			})
+			.finally(() => setIsSaving(false));
 	};
 
 	const handleBanAction = async () => {
-		setIsBanning(true);
 		const action = currentUserStatus === "active" ? "ban" : "unban";
-
-		try {
-			const response = await fetch(
-				`http://46.249.99.69:8080/v1/admin/users/${userId}/${action}`,
-				{
-					method: "PUT",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${accessToken}`,
-					},
-				}
-			);
-
-			if (!response.ok) {
-				throw new Error(`Failed to ${action} user`);
-			}
-
-			const result = await response.json();
-			// toast.success(result.message);
-      CustomToast(result?.message, "success");
-			// Toggle the status
-			setCurrentUserStatus(
-				currentUserStatus === "active" ? "blocked" : "active"
-			);
-			onSaveSuccess(); // Refresh user list if needed
-		} catch (error: any) {
-			const errMsg =
-				generateErrorMessage(error) ||
-				`هنگام ${
-					action === "ban" ? "مسدود کردن" : "رفع انسداد"
-				} کاربر مشکلی پیش آمد.`;
-			// toast.error(errMsg);
-			CustomToast(errMsg, "error");
-		} finally {
-			setIsBanning(false);
-		}
+		setIsBanning(true);
+		putData({ endPoint: `/v1/admin/users/${userId}/${action}` })
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				setCurrentUserStatus(
+					currentUserStatus === "active" ? "blocked" : "active"
+				);
+				onSaveSuccess();
+			})
+			.finally(() => setIsBanning(false));
 	};
 
 	// Load data when modal opens or user changes

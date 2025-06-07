@@ -40,8 +40,6 @@ import {
 } from "@/components/ui/select";
 import { City, Province } from "@/src/types/provinceType";
 import provinceService from "@/src/services/provinceService";
-import { toast } from "sonner";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
 import addpanelService from "@/src/services/addpanelService";
 import CustomToast from "../Custom/CustomToast/CustomToast";
@@ -100,13 +98,7 @@ export default function AddPanel() {
 				CustomToast(res?.message, "success");
 				console.log(res);
 				setOpen(false);
-				setLoading(false);
-			})
-			.catch((err) => {
-				console.log(err);
-				CustomToast(generateErrorMessage(err), "error");
-				setLoading(false);
-			});
+			}).finally(() => setLoading(false))
 	};
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>

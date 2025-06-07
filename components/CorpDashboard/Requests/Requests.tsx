@@ -5,8 +5,6 @@ import { baseURL, getData } from "@/src/services/apiHub";
 import { useSelector } from "react-redux";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import DateConverter from "@/src/functions/toJalali";
-import CustomToast from "@/components/Custom/CustomToast/CustomToast";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
 // import { RootState } from "@/src/store/types";
 // import moment from "moment-jalaali";
 interface address {
@@ -53,21 +51,6 @@ export default function Requests() {
 						setLoading(false);
 						console.log(data);
 					})
-					.catch((err) => {
-						CustomToast(generateErrorMessage(err));
-						console.log(err);
-					});
-				// const response = await fetch(
-				// 	`${baseURL}/v1/corp/${corpId}/installation/request?status=5&offset=1&limit=1`,
-				// 	{
-				// 		headers: {
-				// 			Authorization: `Bearer ${accessToken}`,
-				// 		},
-				// 	}
-				// );
-
-				// const data = await response.json();
-				// console.log("Raw response:", data.data);
 			} catch (error: any) {
 				console.error("Error fetching requests:", {
 					message: error.message,

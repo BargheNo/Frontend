@@ -14,9 +14,7 @@ import {
 	LandPlot,
 	MapPin,
 	MessageCircle,
-	User,
 } from "lucide-react";
-import { toast } from "sonner";
 import styles from "./PlaceBidForm.module.css";
 import React from "react";
 import { BidFormProps } from "@/src/types/RequestCardTypes";
@@ -24,10 +22,7 @@ import wordExpression from "@/src/functions/Calculations";
 import { useSelector } from "react-redux";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
-// import { RootState } from "@/src/store/types";
-import { DatePicker, Calendar, CalendarProvider } from "zaman";
 import { CustomDatePicker } from "@/components/Custom/CustomDatePicker/CustomDatePicker";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
 const Item = ({
 	icon: Icon,
 	fieldName,
@@ -122,14 +117,9 @@ export default function PlaceBidForm({
 			data: formData,
 		})
 			.then((data) => {
-				CustomToast(data?.message);
+				CustomToast(data?.message, "success");
 				setOpen(false);
-				// console.log(data);
 			})
-			.catch((err) => {
-				// console.log(err);
-				CustomToast(generateErrorMessage(err));
-			});
 	};
 	return (
 		<Formik

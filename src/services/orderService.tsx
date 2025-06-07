@@ -1,4 +1,3 @@
-import axios from "axios";
 import { baseURL, getData, postData } from "./apiHub";
 
 interface Orderinfo {

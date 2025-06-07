@@ -1,14 +1,12 @@
 "use client";
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import { Phone, Settings, User, Loader2 } from "lucide-react";
+import React, { useState, useEffect, useCallback } from "react";
+import { Phone, Settings, User } from "lucide-react";
 import { useSelector } from "react-redux";
 import styles from "./Users.module.css";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
-import { toast } from "sonner";
 import UserRolesModal from "./UserRoleModal";
-import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import FilterUsers from "./FilterUsers";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import { getData } from "@/src/services/apiHub";
 
 type UserType = {
 	id: number;
@@ -46,78 +44,17 @@ export default function Users() {
 	);
 
 	const fetchAllUsers = useCallback(async () => {
-		try {
-			setLoading(true);
-			const response = await fetch(
-				"http://46.249.99.69:8080/v1/admin/users?statuses=1&statuses=2",
-				{
-					headers: {
-						Authorization: `Bearer ${accessToken}`,
-					},
-				}
-			);
-
-			if (!response.ok) {
-				throw new Error("Failed to fetch users");
-			}
-
-			const data = await response.json();
-			setUsers(data.data);
-		} catch (err: any) {
-			const errMsg =
-				generateErrorMessage(err) || "مشکلی در دریافت کاربران رخ داد.";
-			// toast.error(errMsg);
-			CustomToast(errMsg, "error");
-		} finally {
-			setLoading(false);
-		}
-	}, [accessToken]);
+		setLoading(true);
+		getData({ endPoint: `/v1/admin/users?statuses=1&statuses=2` })
+			.then((data) => {
+				setUsers(data.data);
+			})
+			.finally(() => setLoading(false));
+	}, []);
 
 	useEffect(() => {
-		const controller = new AbortController();
-		const signal = controller.signal;
-
-		const fetchData = async () => {
-			try {
-				setLoading(true);
-				const response = await fetch(
-					"http://46.249.99.69:8080/v1/admin/users?statuses=1&statuses=2",
-					{
-						headers: {
-							Authorization: `Bearer ${accessToken}`,
-						},
-						signal,
-					}
-				);
-
-				if (!response.ok) {
-					throw new Error("Failed to fetch users");
-				}
-
-				const data = await response.json();
-				if (!signal.aborted) {
-					setUsers(data.data);
-				}
-			} catch (err: any) {
-				if (!signal.aborted) {
-					const errMsg =
-						generateErrorMessage(err) ||
-						"مشکلی در دریافت کاربران رخ داد.";
-					toast.error(errMsg);
-				}
-			} finally {
-				if (!signal.aborted) {
-					setLoading(false);
-				}
-			}
-		};
-
-		fetchData();
-
-		return () => {
-			controller.abort();
-		};
-	}, [accessToken]);
+		fetchAllUsers();
+	}, []);
 
 	const UserItem = ({
 		firstName,

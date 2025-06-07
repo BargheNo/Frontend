@@ -8,13 +8,11 @@ import styles from "./signup.module.css";
 import { MoveLeft, Smartphone, Lock, User, Unlock, Check } from "lucide-react";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
-import registerService from "@/src/services/registerService";
 import { useRouter } from "next/navigation";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 import LoginButton from "../Login/LoginButton";
 import { postData } from "@/src/services/apiHub";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
 
 function Signup() {
 	const validationSchema = Yup.object({
@@ -71,27 +69,19 @@ function Signup() {
 			.then((data) => {
 				setOpen(true);
 				CustomToast(data?.message, "success");
-				setLoading(false);
 			})
-			.catch((err) => {
-				CustomToast(generateErrorMessage(err), "error");
-				setLoading(false);
-			});
+			.finally(() => setLoading(false));
 	};
 
 	const handleVerification = (phone: string, otp: string) => {
 		postData({
 			endPoint: `/v1/auth/verify/phone`,
 			data: { phone, otp },
-		})
-			.then((data) => {
-				console.log(data);
-				route.push("/login");
-				CustomToast(data?.message, "success");
-			})
-			.catch((err) => {
-				CustomToast(generateErrorMessage(err), "error");
-			});
+		}).then((data) => {
+			console.log(data);
+			route.push("/login");
+			CustomToast(data?.message, "success");
+		});
 	};
 
 	useEffect(() => {
