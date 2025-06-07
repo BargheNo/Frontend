@@ -13,11 +13,12 @@ import style from "./ContactInfoForm.module.css";
 import { Phone, XIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { baseURL, deleteData, getData } from "@/src/services/apiHub";
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import { toast } from "sonner";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { useSelector } from "react-redux";
 import { useMediaQuery } from "react-responsive";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 export default function ContactInfoForm({
 	setFieldValue,
@@ -45,7 +46,8 @@ export default function ContactInfoForm({
 				setLoading(false);
 			})
 			.catch((err) => {
-				toast(generateErrorMessage(err));
+				CustomToast(generateErrorMessage(err), "error");
+				// toast(generateErrorMessage(err));
 				setLoading(false);
 			});
 	}, []);
@@ -128,13 +130,18 @@ export default function ContactInfoForm({
 										deleteData({
 											endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/${contactInfo?.ID}`,
 										}).then((res) => {
-											toast(res.message);
+											CustomToast(
+												res?.message,
+												"success"
+											);
+											// toast(res?.message);
 										});
 									}}
 								/>
 							</div>
 						</div>
-					) : ( // big size
+					) : (
+						// big size
 						<div
 							key={index}
 							className="flex gap-3 items-end w-full"
@@ -202,7 +209,8 @@ export default function ContactInfoForm({
 										endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/${contactInfo?.ID}`,
 										// endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/0`,
 									}).then((res) => {
-										toast(res.message);
+										CustomToast(res?.message, "success");
+										// toast(res?.message);
 										// setContactTypesList(
 										// 	contactTypesList.filter(
 										// 		(contact) =>

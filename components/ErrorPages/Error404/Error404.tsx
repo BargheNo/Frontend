@@ -6,7 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 
 const Error404 = () => {
   return (
-    <div dir='rtl' className="w-full flex flex-col justify-center gap-10
+    <div dir='rtl' className="w-full flex flex-col justify-center gap-10 py-8
         bg-gradient-to-r from-[#24272C] via-[#2F3035] to-[#24272C] vazir
     ">
         <Image 

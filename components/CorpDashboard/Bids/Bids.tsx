@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import BidCard from "./BidCard";
 import { baseURL } from "@/src/services/apiHub";
 import { useSelector } from "react-redux";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 // import { RootState } from "@/src/store/types";
 
 interface address {
@@ -34,6 +35,7 @@ export default function Bids() {
 	// const accessToken =
 	// 	"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU0MDcwMzcsImlhdCI6MTc0MjgxNTAzNywic3ViIjoxfQ.U245pmQco3hU0VATsXU8hovIl75FCpvcPGHDef0BVtRqPny5A9LBMMHRNcD4hQk9OciVS8v-kMYQvyuGsq6ido2ebNVFhIR0Vja023B48S5tW3yzSOyySEvcLEt3pWxTRQo45mK9GLBRtdpQu18qoKqreHOzr98K2mTd4E7lVE8";
 	const [bidData, setBidData] = useState<Bid[] | null>(null);
+	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
@@ -50,6 +52,7 @@ export default function Bids() {
 				const data = await response.json();
 				console.log("Raw response:", data.data);
 				setBidData(data.data);
+				setLoading(false);
 			} catch (error: any) {
 				console.error("Error fetching bids:", {
 					message: error.message,
@@ -57,23 +60,24 @@ export default function Bids() {
 					status: error.response?.status,
 				});
 				setError(error.message);
+				setLoading(false);
 			}
 		};
 
 		fetchBids();
 	}, [accessToken]);
 
-	if (error) {
-		return <div className="text-red-500">Error loading bids: {error}</div>;
-	}
+	// if (error) {
+	// 	return <div className="text-red-500">Error loading bids: {error}</div>;
+	// }
 
-	if (!bidData) {
-		return <div>Loading...</div>;
+	if (loading) {
+		return <LoadingSpinner />;
 	}
 
 	return (
-		<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F4F1F3] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
-			{bidData.map((bid) => (
+		<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F0EDEF] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+			{bidData?.map((bid) => (
 				<BidCard
 					key={bid.id}
 					panelDetails={{
@@ -94,7 +98,7 @@ export default function Bids() {
 					status={bid.status}
 				/>
 			))}
-			{/* <BidCard
+			<BidCard
 				panelDetails={{
 					panelName: "پنل خانه تهرانپارس",
 					customerName: "مجتبی قاطع",
@@ -115,7 +119,7 @@ export default function Bids() {
 					price: 120050780123406,
 				}}
 				status="pending"
-			/> */}
+			/>
 		</div>
 	);
 }
