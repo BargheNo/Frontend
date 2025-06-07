@@ -1,13 +1,13 @@
 interface getOrder{
-    Name:string,
-    Status:string,
-    PowerRequest:number,
-    Description:string,
-    BuildingType:string,
-    Area:number,
-    MaxCost:number,
-    Customer:{FirstName:string,LastName:string,Phone:string,Email?:string,ProfilePic:string,Status:string},
-    Address:{Province:string,City:string,StreetAddress:string,PostalCode:string,HouseNumber:string,Unit:number}
+    name:string,
+    status:string,
+    powerRequest:number,
+    description:string,
+    buildingType:string,
+    area:number,
+    maxCost:number,
+    customer:{firstName:string,lastName:string,phone:string,email?:string,profilePic:string,status:string},
+    address:{province:string,city:string,streetAddress:string,postalCode:string,houseNumber:string,unit:number}
 
 }
  export type {getOrder}

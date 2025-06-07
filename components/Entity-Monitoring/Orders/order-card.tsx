@@ -1,21 +1,21 @@
 'use client'
 import React, { useRef, useState } from 'react'
-import { Ellipsis,Copy, CheckIcon, CopyIcon, Share2Icon } from 'lucide-react'
+import { Ellipsis, CheckIcon, CopyIcon, Share2Icon } from 'lucide-react'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/react-hover-card'
 import { Button } from '@/components/ui/button'
 import { getOrder } from '@/src/types/Entity-Monitoring/orderType'
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import NotificationsDialogFields from '@/components/Messages/Notfication/NotificationBox/NotificationsDialogFields'
 
-export default function Ordercard({Name,Status,Customer,MaxCost,Area,PowerRequest,BuildingType,Description,Address}:getOrder) {
+export default function Ordercard({name,status,customer,maxCost,area,powerRequest,buildingType,description,address}:getOrder) {
     const getStatusColor = () => {
-		if (Status === "فعال")
+		if (status === "فعال")
 			return " text-green-600";
-		else if (Status==="منقضی")
+		else if (status==="منقضی")
 			return "text-gray-500";
-        else if (Status==="لغو شده")
+        else if (status==="لغو شده")
 			return "text-red-600";
-        if (Status==="سپرده شده")
+        if (status==="سپرده شده")
 			return "text-yellow-600";
 		return "text-yellow-600";
 	};
@@ -29,16 +29,16 @@ export default function Ordercard({Name,Status,Customer,MaxCost,Area,PowerReques
     }
   return (
     <>
-        <div onClick={()=>setOpen(!open)} className='w-[90%] m-auto border-gray-300 border-1 px-10 py-3 cursor-pointer bg-warm-white'>
+        <div onClick={()=>setOpen(!open)} className='  border-gray-300 border-1 w-full py-3 cursor-pointer bg-warm-white'>
             <div className='flex flex-row justify-between items-center w-full rtl'>
                 <div className='flex flex-row items-center mr-4'>
-                    <span>{Customer.FirstName+" "+Customer.LastName}</span>
+                    <span>{customer.firstName+" "+customer.lastName}</span>
                 </div>
-                <span  >{Name}</span>
-                <span className={`${getStatusColor()}`}>{Status}</span>
-                <span>{MaxCost}</span>
-                <span>{PowerRequest}</span>
-                <span>{Area}</span>
+                <span  >{name}</span>
+                <span className={`${getStatusColor()}`}>{status}</span>
+                <span>{maxCost}</span>
+                <span>{powerRequest}</span>
+                <span>{area}</span>
                 <HoverCard>
                     <HoverCardTrigger asChild>
                         <Button  className="cursor-pointer" variant="link"><Ellipsis/></Button>
@@ -70,19 +70,19 @@ export default function Ordercard({Name,Status,Customer,MaxCost,Area,PowerReques
 					</DialogTitle>
 				</DialogHeader>
                 <div className='flex flex-col gap-y-2 py-3' ref={orderDetailRef}>
-                    <NotificationsDialogFields title="   نام پنل: " detail={Name}/>
-                    <NotificationsDialogFields title="    وضعیت سفارش: " detail={Status}/>
-                    <NotificationsDialogFields title="     توضیحات: " detail={Description}/>
-                    <NotificationsDialogFields title="    سقف هزینه: " detail={MaxCost.toString()}/>
-                    <NotificationsDialogFields title="    مساحت: " detail={Area.toString()+"متر مربع"}/>
-                    <NotificationsDialogFields title="    توان مصرفی: " detail={PowerRequest.toString()+"کیلووات"}/>
-                    <NotificationsDialogFields title="    نوع ساختمان: " detail={BuildingType}/>
-                    <NotificationsDialogFields title="    نام مشتری: " detail={Customer.FirstName+" "+Customer.LastName}/>
-                    <NotificationsDialogFields title="    شماره تماس مشتری: " detail={Customer.Phone}/>
-                    {Customer.Email&&(<NotificationsDialogFields title="     ایمیل:" detail={Customer.Email}/>)}
-                    <NotificationsDialogFields title="    وضعیت مشتری:" detail={Customer.Status}/>
-                    <NotificationsDialogFields title="    آدرس:" detail={ "استان "+Address.Province+"،شهر "+Address.City+"،"+Address.StreetAddress+"،پلاک "+Address.HouseNumber+"، واحد" +Address.Unit}/>
-                    <NotificationsDialogFields title="    کدپستی:" detail={Address.PostalCode}/>
+                    <NotificationsDialogFields title="   نام پنل: " detail={name}/>
+                    <NotificationsDialogFields title="    وضعیت سفارش: " detail={status}/>
+                    <NotificationsDialogFields title="     توضیحات: " detail={description}/>
+                    <NotificationsDialogFields title="    سقف هزینه: " detail={maxCost.toString()}/>
+                    <NotificationsDialogFields title="    مساحت: " detail={area.toString()+"متر مربع"}/>
+                    <NotificationsDialogFields title="    توان مصرفی: " detail={powerRequest.toString()+"کیلووات"}/>
+                    <NotificationsDialogFields title="    نوع ساختمان: " detail={buildingType}/>
+                    <NotificationsDialogFields title="    نام مشتری: " detail={customer.firstName+" "+customer.lastName}/>
+                    <NotificationsDialogFields title="    شماره تماس مشتری: " detail={customer.phone}/>
+                    {customer.email&&(<NotificationsDialogFields title="     ایمیل:" detail={customer.email}/>)}
+                    <NotificationsDialogFields title="    وضعیت مشتری:" detail={customer.status}/>
+                    <NotificationsDialogFields title="    آدرس:" detail={ "استان "+address.province+"،شهر "+address.city+"،"+address.streetAddress+"،پلاک "+address.houseNumber+"، واحد" +address.unit}/>
+                    <NotificationsDialogFields title="    کدپستی:" detail={address.postalCode}/>
                 </div>
 
 				<DialogFooter className="flex flex-row justify-center items-center rounded-l self-center mr-auto">

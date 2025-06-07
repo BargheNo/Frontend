@@ -1,23 +1,31 @@
+"use client"
 import Ordercard from '@/components/Entity-Monitoring/Orders/order-card'
 import Header from '@/components/Header/Header'
 import { Plus } from 'lucide-react'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import SignupButton from '@/components/SignupButton/SignupButton'
 import style from "./style.module.css";
+import { getOrder } from '@/src/types/Entity-Monitoring/orderType'
+import OrderService from '@/src/services/entityMonitoring'
 
-const Customer={FirstName:"تینا",LastName:"محمدپور",Email:"tina.mpmp2017@gmail.com",Phone:"+989354826686",Status:"بلاک",ProfilePic:""}
+
 export default function orders() {
+const [orderlist,setOrderList]=useState<getOrder[]>([]);
+useEffect(()=>{
+  OrderService.getOrdersList(5,1,1).then(res=>setOrderList(res.data));
+  
+},[orderlist])
   return (
     <>
     <div className='flex flex-col mt-10'>
       <Header className='px-20' header="سفارش ها" />
     </div>
     
-    <div className='border-b-1 border-gray-300 py-4 '>
+    <div className='border-b-1 border-gray-300 py-4'>
       
       
-      <div className='flex flex-row'>
+      <div className='flex flex-row items-end'>
         
       <Select
 									name="order status"
@@ -136,30 +144,15 @@ export default function orders() {
             </div>
     </div>
     
-    <Ordercard  Customer={Customer} Status="سپرده شده" MaxCost={12000} Area={120} Name=' سییی سیسی' PowerRequest={1200} BuildingType={'مسکونی'} Address={{
-        Province: 'مازندران',
-        City: 'آمل',
-        StreetAddress: 'خیابان امام رضا، رضوان 20',
-        PostalCode: '9837485930',
-        HouseNumber: '21',
-        Unit: 2
-      }} Description={'این سفارش خیلی ضروریههههه'} ></Ordercard>
-          <Ordercard  Customer={Customer} Status="فعال" MaxCost={12000} Area={120} Name=' سییی سیسی' PowerRequest={1200} BuildingType={'مسکونی'} Address={{
-        Province: 'مازندران',
-        City: 'آمل',
-        StreetAddress: 'خیابان امام رضا، رضوان 20',
-        PostalCode: '9837485930',
-        HouseNumber: '21',
-        Unit: 2
-      }} Description={'این سفارش خیلی ضروریههههه'} ></Ordercard>
-          <Ordercard  Customer={Customer} Status="فعال" MaxCost={12000} Area={120} Name=' سییی سیسی' PowerRequest={1200} BuildingType={'مسکونی'} Address={{
-        Province: 'مازندران',
-        City: 'آمل',
-        StreetAddress: 'خیابان امام رضا، رضوان 20',
-        PostalCode: '9837485930',
-        HouseNumber: '21',
-        Unit: 2
-      }} Description={'این سفارش خیلی ضروریههههه'} ></Ordercard>
+    <div className="rounded-xl overflow-hidden w-[90%] m-auto bg-red-700  ">
+      {orderlist.map((Item,index)=>
+        
+        
+        <Ordercard key={index} customer={Item.customer} status={Item.status} maxCost={Item.maxCost} area={Item.area} name={Item.name} powerRequest={Item.powerRequest} buildingType={Item.buildingType}
+        address={Item.address} description={Item.description}></Ordercard>
+        
+      )}
+      </div>
     </>
   )
 }
