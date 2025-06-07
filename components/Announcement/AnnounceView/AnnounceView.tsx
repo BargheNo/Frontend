@@ -20,6 +20,7 @@ interface News {
 
 export default function AnnounceView({
 	onlyView = false,
+
 }: {
 	onlyView?: boolean;
 }) {
@@ -28,14 +29,14 @@ export default function AnnounceView({
 		queryKey: ["news"],
 		queryFn: async () => {
 			if (onlyView) {
-				return await getData({ endPoint: "/v1/admin/news?statuses=1" });
+				return await getData({ endPoint: "/v1/news" });
 			} else {
 				const r1 = await getData({
 					endPoint: "/v1/admin/news?statuses=2",
 				});
 				console.log("r1: ", r1);
 				const r2 = await getData({
-					endPoint: "/v1/admin/news?statuses=1",
+					endPoint: "/v1/news",
 				});
 				console.log("r2: ", r2);
 				r1.data?.push(...r2.data);

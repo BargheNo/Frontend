@@ -23,7 +23,8 @@ import {
 import PanelBluePrint from "@/public/images/panels/panel-blueprint-2.jpeg";
 import CleanEnergy from "@/public/images/panels/clean-energy.jpeg";
 import TypewriterComponent from "typewriter-effect";
-import { delay } from "cypress/types/bluebird";
+import { delay, is } from "cypress/types/bluebird";
+import { useMediaQuery } from "react-responsive";
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
 
@@ -32,11 +33,13 @@ export default function BargheNoLanding() {
   const [rotation, setRotation] = useState([0.1, 1, 0]);
   const [scale, setScale] = useState(1.4);
   const [D3PanelRef, setD3PanelRef] = useState<any>(null);
+  const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
   const slide1Trigger = {
     trigger: "#slide-panel1",
     start: "top top",
     end: () => `+=${1 * 1000}vh`,
     toggleActions: "play none none reverse",
+    // markers:true
   };
   const slide2Trigger = {
     trigger: "#slide-panel2",
@@ -168,39 +171,41 @@ export default function BargheNoLanding() {
     <>
       <div className="container-box h-[100vh]! flex flex-row-reverse max-w-none! w-auto! overflow-hidden">
         {/* <div className="fixed bg-red-500 top-20! bottom-20! left-20! right-20! w-[60vw] h-[50vh] flex justify-center items-center"> */}
-        <div className="D3Panel fixed z-20 w-[40vw] left-[8vw] bottom-[20vh] top-[20vh] flex items-center justify-center rounded-2xl">
-          <Canvas
-            style={{
-              width: "100%",
-              height: "100%",
-            }}
-          >
-            <PerspectiveCamera makeDefault position={[0, 1.5, 3]} />
-            <OrbitControls />
-            <ambientLight intensity={0.5} />
-            <directionalLight
-              position={[10, 10, 5]}
-              intensity={1}
-              castShadow
-              shadow-mapSize-width={2048}
-              shadow-mapSize-height={2048}
-            />
-            <pointLight position={[-10, -10, -10]} intensity={0.5} />
-            <Environment preset="city" />
-            <D3Panel
-              position={position}
-              rotation={rotation}
-              scale={scale}
-              ref={setD3PanelRef}
-            />
-          </Canvas>
-        </div>
+        {!isMobile && (
+          <div className="D3Panel fixed z-20 w-[40vw] left-[8vw] bottom-[20vh] top-[20vh] flex items-center justify-center rounded-2xl">
+            <Canvas
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <PerspectiveCamera makeDefault position={[0, 1.5, 3]} />
+              <OrbitControls />
+              <ambientLight intensity={0.5} />
+              <directionalLight
+                position={[10, 10, 5]}
+                intensity={1}
+                castShadow
+                shadow-mapSize-width={2048}
+                shadow-mapSize-height={2048}
+              />
+              <pointLight position={[-10, -10, -10]} intensity={0.5} />
+              <Environment preset="city" />
+              <D3Panel
+                position={position}
+                rotation={rotation}
+                scale={scale}
+                ref={setD3PanelRef}
+              />
+            </Canvas>
+          </div>
+        )}
         <div
-          className="w-[100vw] h-[100vh] pt-20 flex-none px-10 gap-2 slide-panel"
+          className="w-[100vw] h-[100vh] pt-20 flex-none gap-2 slide-panel"
           id="slide-panel1"
         >
           <div className="w-full h-full flex flex-row-reverse items-center justify-between">
-            <div className="w-full h-full"></div>
+            {!isMobile && <div className="w-full h-full"></div>}
             <div
               className="w-full flex flex-col justify-center items-center gap-20"
               id="slide1-text"
@@ -236,7 +241,7 @@ export default function BargheNoLanding() {
           </div>
         </div>
         <div
-          className="w-[100vw] max-w-none h-[100vh] flex-none slide-panel pt-[4.2rem] px-3 pb-5"
+          className="w-[100vw] max-w-none h-[100vh] flex-none slide-panel md:pt-[4.2rem] pt-2 px-3 pb-5"
           id="slide-panel2"
         >
           <div className="flex flex-row justify-between w-full h-full">
@@ -245,48 +250,47 @@ export default function BargheNoLanding() {
                 className="neo-card w-full h-full p-6 rounded-lg bg-warm-white flex flex-col items-center justify-between"
                 id="clean-card"
               >
-                <span className="self-start text-3xl font-bold">چرا ما؟</span>
-                <div className="w-full h-1/2 mt-4 text-lg text-gray-800">
-                  <TypewriterComponent
-                    options={{ delay: 40 }}
-                    onInit={(typewriter) => {
-                      typewriter
-                        .typeString(
-                          `پنل‌های خورشیدی یکی از بهترین راه‌حل‌های تولید انرژی پاک و
-                  مقرون‌به‌صرفه هستند که با جذب نور خورشید، برق مورد نیاز منازل،
+                <div className="flex flex-col items-center justify-center gap-2">
+                  <span className="self-start text-3xl font-bold">چرا ما؟</span>
+                  <div className="w-full mt-4 text-lg text-gray-800 text-justify">
+                    <TypewriterComponent
+                      options={{ delay: 40 }}
+                      onInit={(typewriter) => {
+                        typewriter
+                          .typeString(
+                            `پنل‌های خورشیدی یکی از بهترین راه‌حل‌های تولید انرژی پاک و
+                          مقرون‌به‌صرفه هستند که با جذب نور خورشید، برق مورد نیاز منازل،
                   صنایع و مؤسسات را تأمین می‌کنند. کیفیت این پنل‌ها نقش
                   تعیین‌کننده‌ای در بازدهی و طول عمر سیستم خورشیدی دارد؛ به‌همین
                   دلیل، محصولات باکیفیت همراه با گارانتی عملکرد ۲۵ ساله ارائه
                   می‌شوند تا مشتریان با اطمینان کامل از بازدهی مطلوب و دوام بالا
-                  بهره‌مند شوند. نصب اصولی پنل‌های خورشیدی نیز از اهمیت ویژه‌ای
-                  برخوردار است و باید توسط تیم‌های متخصص و دارای مجوز انجام شود
-                  تا از بیشترین جذب انرژی و ایمنی سیستم اطمینان حاصل گردد. با
-                  انتخاب پنل‌های استاندارد و نصب حرفه‌ای، نه‌تنها در هزینه‌های
-                  بلندمدت صرفه‌جویی می‌شود، بلکه سهم ارزشمندی در حفظ محیط زیست و
-                  کاهش مصرف سوخت‌های فسیلی ایفا می‌کنید.`
-                        )
-                        .start();
-                    }}
-                  />
+                  بهره‌مند شوند.`
+                          )
+                          .start();
+                      }}
+                    />
+                  </div>
                 </div>
-                <div className="relative h-1/2 aspect-square rounded-2xl overflow-hidden">
+                <div className="relative w-full aspect-square md:w-auto md:h-1/2 rounded-2xl overflow-hidden">
                   <Image src={CleanEnergy} alt="CleanEnergy" fill />
                 </div>
               </div>
             </div>
-            <div className=" w-full h-full p-5">
-              <div
-                className="w-full h-full p-3 bg-warm-white neo-card rounded-lg"
-                id="blueprint"
-              >
-                <div className="w-full h-full neo-card-rev p-3 bg-warm-white rounded-lg flex flex-col justify-between ">
-                  <div className="w-full h-full"></div>
-                  <div className="w-full h-full relative rounded-lg overflow-hidden">
-                    <Image src={PanelBluePrint} alt="panel-blue-print" fill />
+            {!isMobile && (
+              <div className=" w-full h-full p-5">
+                <div
+                  className="w-full h-full p-3 bg-warm-white neo-card rounded-lg"
+                  id="blueprint"
+                >
+                  <div className="w-full h-full neo-card-rev p-3 bg-warm-white rounded-lg flex flex-col justify-between ">
+                    <div className="w-full h-full"></div>
+                    <div className="w-full h-full relative rounded-lg overflow-hidden">
+                      <Image src={PanelBluePrint} alt="panel-blue-print" fill />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
         {/* <div

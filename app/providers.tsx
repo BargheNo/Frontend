@@ -5,6 +5,7 @@ import { store } from "../src/store/store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { usePathname } from "next/navigation";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -18,6 +19,14 @@ export function Providers({ children }: { children: React.ReactNode }) {
         },
       })
   );
+  const pathname = usePathname();
+  if (pathname?.startsWith("/announcements")) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <Provider store={store}>{children}</Provider>
+      </QueryClientProvider>
+    );
+  }
   return (
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
