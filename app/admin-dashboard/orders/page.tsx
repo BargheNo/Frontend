@@ -132,17 +132,20 @@ useEffect(()=>{
       </div>
     </div>
     
-    <div  className='w-[84%] m-auto border-gray-300  px-10 py-5  rounded-xl'>
-            <div className='flex flex-row justify-between items-center w-full rtl text-gray-500'>
-                  <span >نام مشتری</span>
-                  <span>نام پنل</span>
-                  <span>وضعیت سفارش</span>
-                  <span>سقف هزینه</span>
-                  <span>توان مصرفی</span>
-                  <span>مساحت</span>
-                  <span> </span>
-            </div>
+    <div className='w-[91%] m-auto border-gray-300 px-10 py-5 rounded-xl'>
+      <div className='flex flex-row justify-between items-center w-full rtl text-gray-500'>
+        <div className="flex w-full justify-between text-center">
+          <span className="w-[16%] flex justify-center">نام مشتری</span>
+          <span className="w-[16%] flex justify-center">نام پنل</span>
+          <span className="w-[16%] flex justify-center">وضعیت سفارش</span>
+          <span className="w-[16%] flex justify-center">سقف هزینه</span>
+          <span className="w-[16%] flex justify-center">توان مصرفی</span>
+          <span className="w-[20%] flex justify-center">مساحت</span>
+        </div>
+      </div>
     </div>
+
+
     
     <div className="rounded-xl overflow-hidden w-[90%] m-auto bg-red-700  ">
       {orderlist.map((Item,index)=>

@@ -31,32 +31,33 @@ export default function Ordercard({name,status,customer,maxCost,area,powerReques
     <>
         <div onClick={()=>setOpen(!open)} className='  border-gray-300 border-1 w-full py-3 cursor-pointer bg-warm-white'>
             <div className='flex flex-row justify-between items-center w-full rtl'>
-                <div className='flex flex-row items-center mr-4'>
-                    <span>{customer.firstName+" "+customer.lastName}</span>
+                <div className="flex w-full justify-between items-center text-sm text-gray-700 px-7 text-center">
+                    <span className="w-[16%] flex justify-center">{customer.firstName + " " + customer.lastName}</span>
+                    <span className="w-[16%] flex justify-center">{name}</span>
+                    <span className={`w-[16%] flex justify-center ${getStatusColor()}`}>{status}</span>
+                    <span className="w-[16%] flex justify-center">{maxCost}</span>
+                    <span className="w-[16%] flex justify-center">{powerRequest}</span>
+                    <span className="w-[16%] flex justify-center">{area}</span>
                 </div>
-                <span  >{name}</span>
-                <span className={`${getStatusColor()}`}>{status}</span>
-                <span>{maxCost}</span>
-                <span>{powerRequest}</span>
-                <span>{area}</span>
-                <HoverCard>
-                    <HoverCardTrigger asChild>
-                        <Button  className="cursor-pointer" variant="link"><Ellipsis/></Button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="w-34 h-auto border-0 p-4 flex flex-col gap-2 rtl bg-warm-white ">
-                        <div className="flex flex-col neo-btn bg-white h-8">
-                            <div className=" w-full cursor-pointer">
-                                <p className="mt-1 mr-2">حذف</p>
-                            </div>
-                        </div>
-                        <div className="flex flex-col neo-btn bg-white h-8">
-                            <div className=" w-full cursor-pointer">
-                                <p className="mt-1 mr-2">ویرایش</p>
-                            </div>
-                        </div>
-                    </HoverCardContent>
-                </HoverCard>
-                
+            <HoverCard>
+                <HoverCardTrigger asChild>
+                <Button className="cursor-pointer" variant="link">
+                    <Ellipsis />
+                </Button>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-34 h-auto border-0 p-4 flex flex-col gap-2 rtl bg-warm-white">
+                <div className="flex flex-col neo-btn bg-white h-8">
+                    <div className="w-full cursor-pointer">
+                    <p className="mt-1 mr-2">حذف</p>
+                    </div>
+                </div>
+                <div className="flex flex-col neo-btn bg-white h-8">
+                    <div className="w-full cursor-pointer">
+                    <p className="mt-1 mr-2">ویرایش</p>
+                    </div>
+                </div>
+                </HoverCardContent>
+            </HoverCard>
             </div>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
