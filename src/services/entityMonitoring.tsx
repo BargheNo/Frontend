@@ -1,4 +1,5 @@
-import { baseURL, deleteData, getData } from "./apiHub";
+import { editOrder } from "../types/Entity-Monitoring/orderType";
+import { baseURL, deleteData, getData, putData } from "./apiHub";
 
 class OrderService {
     getOrdersList(status:number,limit:number,offset:number) {
@@ -11,6 +12,13 @@ class OrderService {
         return deleteData({
             endPoint:`${baseURL}/v1/admin/installation/request/${requestId}`
         });
+    }
+
+    updateOrder(requestId:number,editted:editOrder){
+        return putData({
+            endPoint:`${baseURL}/v1/admin/installation/request/${requestId}`,
+            data: editted,
+        })
     }
 }
 

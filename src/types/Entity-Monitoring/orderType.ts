@@ -11,4 +11,13 @@ interface getOrder{
     address:{province:string,city:string,streetAddress:string,postalCode:string,houseNumber:string,unit:number}
 
 }
- export type {getOrder}
+
+interface editOrder{
+    name: string|null,
+    area: number|null,
+    power:number|null,
+    maxCost: number|null,
+    buildingType: number|null,
+    description: string|null
+}
+ export type {getOrder,editOrder}
