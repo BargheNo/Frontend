@@ -86,6 +86,7 @@ const CustomerRepairRequest = () => {
   const [panels, setPanels] = useState<Panel[]>([]);
   const [loadingPanels, setLoadingPanels] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [isUsingGuarantee, setIsUsingGuarantee] = useState(false);
 
   useEffect(() => {
     getCustomerMyPanels.GetCustomerMyPanels()
@@ -138,7 +139,8 @@ const CustomerRepairRequest = () => {
       corporationID: repairByManufacturer ? panels.find(p => p.id === selectedPanel)?.Corporation.id : selectedCompany,
       subject: values.title,
       description: values.note,
-      urgencyLevel: urgency
+      urgencyLevel: urgency,
+      isUsingGuarantee: isUsingGuarantee
     };
 
     console.log(formData);
@@ -347,6 +349,22 @@ const CustomerRepairRequest = () => {
                         )}
                       </div>
                     )}
+                  </div>
+
+                  {/* Guarantee Checkbox */}
+                  <div className="space-y-2 mt-10 mb-10" dir="rtl">
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="isUsingGuarantee"
+                        checked={isUsingGuarantee}
+                        onChange={() => setIsUsingGuarantee(!isUsingGuarantee)}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <label htmlFor="isUsingGuarantee" className="mr-2 block text-sm text-gray-700">
+                        مایلم از گارانتی استفاده کنم
+                      </label>
+                    </div>
                   </div>
 
                   {/* Submit Button */}
