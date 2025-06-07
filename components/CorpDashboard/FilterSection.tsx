@@ -45,7 +45,7 @@ export default function FilterSection() {
 		setResultPerPage(resultPerPage);
 	};
 	return (
-		<div className="flex flex-col w-full text-gray-800 rounded-2xl overflow-hidden bg-white shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+		<div className="flex flex-col w-full text-gray-800 rounded-2xl overflow-hidden bg-[#F0EDEF] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
 			<Formik
 				initialValues={initialValues}
 				validationSchema={validationSchema}
@@ -59,6 +59,7 @@ export default function FilterSection() {
 							icon={Search}
 							type="text"
 							containerClassName="-translate-y-[11px]"
+							inputClassName="bg-white"
 						>
 							{" "}
 						</CustomInput>
@@ -73,20 +74,20 @@ export default function FilterSection() {
 						>
 							<SelectTrigger
 								dir="rtl"
-								className="bg-[#F4F1F3] w-40"
+								className="w-40 cursor-pointer bg-white"
 							>
 								<SelectValue placeholder="جدیدترین" />
 							</SelectTrigger>
 							<SelectContent dir="rtl">
 								<SelectItem
 									value="most-recent"
-									className="hover:cursor-pointer"
+									className="cursor-pointer"
 								>
 									جدیدترین
 								</SelectItem>
 								<SelectItem
 									value="top-visited"
-									className="hover:cursor-pointer"
+									className="cursor-pointer"
 								>
 									بر اساس وضعیت
 								</SelectItem>
@@ -102,7 +103,7 @@ export default function FilterSection() {
 						>
 							<SelectTrigger
 								dir="rtl"
-								className="bg-[#F4F1F3] w-18"
+								className="w-18 cursor-pointer bg-white"
 							>
 								<SelectValue placeholder="20" />
 							</SelectTrigger>

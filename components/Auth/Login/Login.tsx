@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { MoveLeft, Lock, Unlock, Smartphone } from "lucide-react";
+import { MoveLeft, Lock, Unlock, Smartphone, Loader2 } from "lucide-react";
 import Link from "next/link";
 import styles from "./login.module.css";
 import { Formik, Form } from "formik";
@@ -13,6 +13,9 @@ import { toast } from "sonner";
 import { setUser } from "@/src/store/slices/userSlice";
 import { useDispatch } from "react-redux";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
+import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 
 const validationSchema = Yup.object({
 	phoneNumber: Yup.string()
@@ -48,7 +51,7 @@ const Login = () => {
 		password: string;
 	}) => {
 		const { phoneNumber, password } = values;
-
+		setLoading(true);
 		try {
 			console.log(localStorage.getItem("user"));
 			const response = await postData({
@@ -60,30 +63,38 @@ const Login = () => {
 			});
 
 			if (response?.statusCode === 200) {
-				toast(<div id="sonner-toast">{response?.message}</div>);
+				console.log(response);
+				CustomToast(response?.message, "success");
+				// toast(<div id="sonner-toast">{response?.message}</div>);
 				// toast.success(response?.message);
 				dispatch(
 					setUser({
 						firstName: response.data.firstName,
 						lastName: response.data.lastName,
+						permissions: response.data.permissions,
 						accessToken: response.data.accessToken,
 						refreshToken: response.data.accessToken,
 					})
 				);
+				setLoading(false);
 				window.location.href = "/dashboard";
 			}
 		} catch (error: any) {
 			// toast.error(
 			// 	generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد."
 			// );
-			toast(
-				<div id="sonner-toast">
-					{generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد."}
-				</div>
+			CustomToast(
+				generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد.",
+				"error"
 			);
+			// toast(
+			// 	<div id="sonner-toast">
+			// 		{generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد."}
+			// 	</div>
+			// );
+			setLoading(false);
 		}
 	};
-
 	return (
 		<div className={`${vazir.className} w-full`}>
 			<div dir="rtl" className={`${styles.mainbg} w-full`}>
@@ -129,14 +140,22 @@ const Login = () => {
 								</CustomInput>
 							</div>
 							<LoginButton>
-								ورود
-								<MoveLeft />
+								{loading ? (
+									<LoadingOnButton size={28} />
+								) : (
+									<>
+										ورود
+										<MoveLeft />
+									</>
+								)}
 							</LoginButton>
 						</Form>
 					</Formik>
 
 					<p className="flex gap-5 justify-center text-center text-sm text-blue-600">
-						<a href="/forgot-password" data-test="forget-password">فراموشی رمز عبور</a>
+						<a href="/forgot-password" data-test="forget-password">
+							فراموشی رمز عبور
+						</a>
 						<Link href="/signup">ثبت نام نکرده ام</Link>
 					</p>
 				</div>

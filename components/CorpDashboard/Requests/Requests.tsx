@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import RequestCard from "./RequestCard/RequestCard";
 import { baseURL } from "@/src/services/apiHub";
 import { useSelector } from "react-redux";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 // import { RootState } from "@/src/store/types";
 
 interface address {
@@ -30,6 +31,7 @@ export default function Requests() {
 	const accessToken = useSelector(
 		(state: RootState) => state.user.accessToken
 	);
+	const [loading, setLoading] = useState<boolean>(true);
 	const [requestData, setRequestData] = useState<Request[] | null>(null);
 	const [error, setError] = useState<string | null>(null);
 
@@ -47,6 +49,7 @@ export default function Requests() {
 				const data = await response.json();
 				console.log("Raw response:", data.data);
 				setRequestData(data.data);
+				setLoading(false);
 			} catch (error: any) {
 				console.error("Error fetching requests:", {
 					message: error.message,
@@ -54,25 +57,26 @@ export default function Requests() {
 					status: error.response?.status,
 				});
 				setError(error.message);
+				setLoading(false);
 			}
 		};
 
 		fetchRequests();
 	}, [accessToken]);
 
-	if (error) {
-		return (
-			<div className="text-red-500">Error loading requests: {error}</div>
-		);
-	}
+	// if (error) {
+	// 	return (
+	// 		<div className="text-red-500">Error loading requests: {error}</div>
+	// 	);
+	// }
 
-	if (!requestData) {
-		return <div>Loading...</div>;
+	if (loading) {
+		return <LoadingSpinner />;
 	}
 
 	return (
-		<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F4F1F3] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
-			{requestData.map((request) => (
+		<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F0EDEF] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+			{requestData?.map((request) => (
 				<RequestCard
 					key={request.id}
 					panelDetails={{
@@ -86,24 +90,28 @@ export default function Requests() {
 				/>
 			))}
 
-			{/* <RequestCard
+			<RequestCard
 				panelDetails={{
 					panelName: "پنل خانه تهرانپارس",
 					customerName: "مجتبی قاطع",
-					address: "فلکه شانزدهم تهرانپارس، حیدرخانی، کوچه پارسا، پلاک 134",
+					address:
+						"فلکه شانزدهم تهرانپارس، حیدرخانی، کوچه پارسا، پلاک 134",
 					capacity: 5000,
 					price: 200000,
 				}}
+				requestId={1}
 			/>
 			<RequestCard
 				panelDetails={{
 					panelName: "پنل باغ شهری",
 					customerName: "رضا موسوی نارنجی",
-					address: " ایران، استان کبیر اردبیل، نرسیده ترکیه، 200 کیلومتری ارومیه، کنار دریای خزر، خیابان باقلوا، کوچه خوشمزه، پلاک 104، درب انتهای کوچه سبز خراسان رضوی شمالی نبش میدان بنفش",
+					address:
+						" ایران، استان کبیر اردبیل، نرسیده ترکیه، 200 کیلومتری ارومیه، کنار دریای خزر، خیابان باقلوا، کوچه خوشمزه، پلاک 104، درب انتهای کوچه سبز خراسان رضوی شمالی نبش میدان بنفش",
 					capacity: 200,
 					price: 120050780123406,
 				}}
-			/> */}
+				requestId={1}
+			/>
 		</div>
 	);
 }

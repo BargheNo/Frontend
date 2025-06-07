@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 // import { RootState } from "@/src/store/types";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { postData, putData } from "@/src/services/apiHub";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 const validationSchema = Yup.object({
 	password: Yup.string()
@@ -41,35 +42,35 @@ const ResetPassword = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-	
+	const handleFormSubmit = async (values: {
+		password: string;
+		confirmPassword: string;
+	}) => {
+		const { confirmPassword, password } = values;
 
-const handleFormSubmit = async (values: {
-	password: string;
-	confirmPassword: string;
-}) => {
-	const { confirmPassword, password } = values;
-	
-	try {
-		const response = await putData({
-			endPoint: "/v1/user/profile/password",
+		try {
+			const response = await putData({
+				endPoint: "/v1/user/profile/password",
 
-			data: {
-				password,
-				confirmPassword,
-			},
-		});
+				data: {
+					password,
+					confirmPassword,
+				},
+			});
 
-		if (response?.statusCode === 200) {
-			toast.success(response?.message);
-			window.location.href = "/dashboard";
+			if (response?.statusCode === 200) {
+				CustomToast(response?.message, "success");
+				// toast.success(response?.message);
+				window.location.href = "/dashboard";
+			}
+		} catch (error: any) {
+			const errMsg =
+				generateErrorMessage(error) ||
+				"هنگام تغییر رمز عبور مشکلی پیش آمد.";
+			// toast.error(errMsg);
+			CustomToast(errMsg, "error");
 		}
-	} catch (error: any) {
-		const errMsg =
-			generateErrorMessage(error) || "هنگام تغییر رمز عبور مشکلی پیش آمد.";
-		toast.error(errMsg);
-	}
-};
-
+	};
 
 	return (
 		<div className={`${vazir.className} min-h-screen w-full`}>

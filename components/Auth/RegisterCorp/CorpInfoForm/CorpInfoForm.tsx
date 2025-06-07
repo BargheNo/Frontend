@@ -13,7 +13,7 @@ import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { baseURL, getData } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import { useSelector } from "react-redux";
 import { useMediaQuery } from "react-responsive";
 
@@ -49,11 +49,12 @@ export default function CorpInfoForm({
 				})
 				.catch((err) => {
 					console.log(err);
-					CustomToast(generateErrorMessage(err));
+					CustomToast(generateErrorMessage(err), "error");
 					setLoading(false);
 				});
+		} else {
+			setLoading(false);
 		}
-		setLoading(false);
 	}, []);
 	if (loading)
 		return (
@@ -139,7 +140,8 @@ const Signatories: React.FC<SignatoriesProps> = ({
 									className="text-fire-orange rounded-sm hover:cursor-pointer flex mb-3 w-fit"
 									onClick={() => {
 										CustomToast(
-											"صاحب امضا با موفقیت حذف شد"
+											"صاحب امضا با موفقیت حذف شد",
+											"success"
 										);
 										remove(index);
 									}}

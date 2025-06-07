@@ -7,15 +7,15 @@ import { Users, Gauge, Package, DollarSign, Headset, BookOpen, Megaphone, AlertC
   
 export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
     const navItems = [
-        { name: "داشبورد", path: "/admin-dashboard/dashboard", icon: <Gauge /> },
+        // { name: "داشبورد", path: "/admin-dashboard/dashboard", icon: <Gauge /> },
         { name: "مدیریت کاربران", path: "/admin-dashboard/manage-users", icon: <Users /> },
-        { name: "نقش ها و دسترسی ها", path: "/admin-dashboard/roles-and-permissions", icon: <LaptopMinimalCheck /> },
+        { name: "نقش‌ها و دسترسی‌ها", path: "/admin-dashboard/roles-and-permissions", icon: <LaptopMinimalCheck /> },
         { name: "مدیریت سفارشات", path: "/admin-dashboard/manage-requests", icon: <Package /> },
         { name: "مدیریت مالی", path: "/admin-dashboard/finance", icon: <DollarSign /> },
         { name: "پشتیبانی", path: "/admin-dashboard/support", icon: <Headset /> },
         { name: "بلاگ‌ها", path: "/admin-dashboard/blogs", icon: <BookOpen /> },
-        { name: "اخبار و اطلاعیه‌ها", path: "/admin-dashboard/news", icon: <Megaphone /> },
         { name: "گزارشات", path: "/admin-dashboard/reports", icon: <AlertCircle /> },
+        { name: "اخبار و اطلاعیه‌ها", path: "/admin-dashboard/announcements", icon: <Megaphone /> },
     ];
   return (
     <PanelAside navItems={navItems as NavItem[]} mode="admin" >

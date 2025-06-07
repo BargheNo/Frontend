@@ -14,7 +14,8 @@ const TransparentLoading: React.FC<TransparentLoadingProps> = ({ className = '',
   }
 
   return (
-    <div className={`fixed inset-0 flex items-center justify-center ${className}`} style={{ background: 'rgba(255, 255, 255, 0.5)', zIndex: 1 }}>
+    <div className={`absolute inset-0 flex items-center opacity-70 justify-center ${className}`} style={{ background: 'rgba(255, 255, 255, 0.5)', zIndex: 1 }}>
+    {/* <div className={`fixed inset-0 flex items-center opacity-70 justify-center ${className}`} style={{ background: 'rgba(255, 255, 255, 0.5)', zIndex: 1 }}> */}
       <div role="status">
         <svg 
           aria-hidden="true" 

@@ -44,7 +44,12 @@ import { useSelector } from "react-redux";
 // import { RootState } from "@/src/store/types";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
+import TransparentLoading from "../Loading/LoadingSpinner/TransparentLoading";
+import CustomToast from "../Custom/CustomToast/CustomToast";
+import AddComponent from "../AddComponent/AddComponent";
+import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
 export default function Neworder() {
+	const [loading, setLoading] = useState(false);
 	const [open, setOpen] = useState(false);
 	const [disable, Setdisable] = useState(true);
 	const [provinceid, Setprovinceid] = useState<number>();
@@ -91,17 +96,21 @@ export default function Neworder() {
 	// console.log("city is",cityid," ",provinceid)
 
 	const handelOrderrequest = (orderinfo: order, token: string) => {
-		setOpen(false);
+		setLoading(true);
 		console.log("hello", token);
 		orderService
 			.orderRequest(orderinfo, token)
 			.then((res) => {
-				toast(<div id="toast-success">{res?.message}</div>);
+				CustomToast(res?.message, "success");
+				// toast(<div id="toast-success">{res?.message}</div>);
+				setLoading(false);
 				setOpen(false);
 			})
 			.catch((err) => {
 				console.log(err);
-				toast(<div id="toast-fail">{generateErrorMessage(err)}</div>);
+				CustomToast(generateErrorMessage(err), "error");
+				// toast(<div id="toast-fail">{generateErrorMessage(err)}</div>);
+				setLoading(false);
 				// setOpen(false);
 			});
 	};
@@ -109,15 +118,15 @@ export default function Neworder() {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<SignupButton type="button"  id="plus">
+				{/* <SignupButton type="button" id="plus">
 					<Plus className={style.icon} />
-				</SignupButton>
+				</SignupButton> */}
+				<AddComponent title="ثبت سفارش جدید" />
 			</DialogTrigger>
 			<DialogContent
-               style={{ backgroundColor: "#F1F4FC" }}
-               className="w-full sm:min-w-[750px] max-w-xl mx-auto p-4 overflow-auto py-4 max-h-[90vh] overflow-y-auto"
-           >
-
+				style={{ backgroundColor: "#F1F4FC" }}
+				className="w-full sm:min-w-[750px] max-w-xl mx-auto no-scrollbar p-4 overflow-auto py-4 max-h-[90vh] overflow-y-auto"
+			>
 				<DialogHeader>
 					<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
 						ثبت سفارش پنل جدید
@@ -139,7 +148,10 @@ export default function Neworder() {
 					validationSchema={Yup.object({
 						name: Yup.string()
 							.required("این فیلد الزامی است.")
-							.max(50, "نام پنل نمی تواند بیش از 50 کارکتر باشد."),
+							.max(
+								50,
+								"نام پنل نمی تواند بیش از 50 کارکتر باشد."
+							),
 						address: Yup.string().required("این فیلد الزامی است."),
 						area: Yup.number().required("این فیلد الزامی است."),
 						electricity: Yup.number().required(
@@ -155,7 +167,7 @@ export default function Neworder() {
 						city: Yup.string().required("این فیلد الزامی است."),
 					})}
 					onSubmit={(values) => {
-                        // setOpen(false);
+						// setOpen(false);
 						handelOrderrequest(
 							{
 								name: values.name,
@@ -203,7 +215,6 @@ export default function Neworder() {
 								className={`${style.citypro} flex md:flex-row flex-col justify-between w-full mt-2`}
 							>
 								<Select
-								
 									name="province"
 									onValueChange={(value) => {
 										Setdisable(false);
@@ -218,7 +229,7 @@ export default function Neworder() {
 									}}
 								>
 									<SelectTrigger
-										className={style.CustomInput}
+										className={`${style.CustomInput} cursor-pointer`}
 										id="province"
 										// style={{ width: "25vw" }}
 									>
@@ -231,8 +242,9 @@ export default function Neworder() {
 												provinces.map(
 													(provincearr, index) => (
 														<SelectItem
-														   id={String(index)}
+															id={String(index)}
 															key={index}
+															className="cursor-pointer"
 															value={
 																provincearr.name
 															}
@@ -258,7 +270,7 @@ export default function Neworder() {
 								>
 									<SelectTrigger
 										disabled={disable}
-										className={style.CustomInput}
+										className={`${style.CustomInput} cursor-pointer`}
 										id="city"
 										// style={{ width: "25vw" }}
 									>
@@ -272,8 +284,8 @@ export default function Neworder() {
 													<SelectItem
 														key={index}
 														value={city.name}
+														className="cursor-pointer"
 														id={String(index)}
-														
 													>
 														{Object.values(
 															city.name
@@ -370,7 +382,7 @@ export default function Neworder() {
 									<ShieldAlert />
 									<p className="">میزان برق مورد نیاز </p>
 								</div>
-								
+
 								<CustomInput
 									type="number"
 									dir="rtl"
@@ -380,7 +392,7 @@ export default function Neworder() {
 								>
 									{" "}
 								</CustomInput>
-								
+
 								<Select
 									name="building"
 									onValueChange={(value) =>
@@ -388,9 +400,8 @@ export default function Neworder() {
 									}
 								>
 									<SelectTrigger
-									id="building"
-										className={`${style.CustomInput} mt-[27px] min-h-[43px]`}
-										
+										id="building"
+										className={`${style.CustomInput} mt-[27px] min-h-[43px] cursor-pointer`}
 									>
 										<SelectValue placeholder="نوع ساختمان" />
 									</SelectTrigger>
@@ -399,19 +410,39 @@ export default function Neworder() {
 											<SelectLabel>
 												نوع ساختمان
 											</SelectLabel>
-											<SelectItem id="0" value="residential">
+											<SelectItem
+												id="0"
+												className="cursor-pointer"
+												value="residential"
+											>
 												مسکونی
 											</SelectItem>
-											<SelectItem id="1" value="commercial">
+											<SelectItem
+												id="1"
+												className="cursor-pointer"
+												value="commercial"
+											>
 												تجاری
 											</SelectItem>
-											<SelectItem id="2" value="industrial">
+											<SelectItem
+												id="2"
+												className="cursor-pointer"
+												value="industrial"
+											>
 												صنعتی
 											</SelectItem>
-											<SelectItem id="3" value="argiculture">
+											<SelectItem
+												id="3"
+												className="cursor-pointer"
+												value="argiculture"
+											>
 												کشاورزی
 											</SelectItem>
-											<SelectItem id="4" value="more">
+											<SelectItem
+												id="4"
+												value="more"
+												className="cursor-pointer"
+											>
 												سایر
 											</SelectItem>
 										</SelectGroup>
@@ -419,17 +450,20 @@ export default function Neworder() {
 								</Select>
 							</div>
 
-							<div className="flex flex-row w-80 justify-center items-center self-center">
+							<div className="flex flex-row w-80 font-bold justify-center items-center self-center">
 								<SignupButton
-								   className="text-[#FA682D]"
-								   id="newOrderBtn"
+									className="text-[#FA682D]"
+									id="newOrderBtn"
 									type="submit"
 									style={{
 										marginTop: "10px",
 									}}
 								>
-									{" "}
-									ثبت سفارش
+									{loading ? (
+										<LoadingOnButton size={24} />
+									) : (
+										<p>ثبت سفارش</p>
+									)}
 								</SignupButton>
 							</div>
 							<DialogFooter>

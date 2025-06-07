@@ -110,7 +110,7 @@ export default function BidCard({
 		<div
 			className={`${className} w-full min-h-64 border-t-1 border-gray-300 first:border-t-0`}
 		>
-			<div className="flex flex-row justify-between w-full min-h-64 bg-[#F4F1F3] overflow-hidden relative">
+			<div className="flex flex-row justify-between w-full min-h-64 bg-[#F0EDEF] overflow-hidden relative">
 				<div className="flex flex-row justify-between w-full min-h-64">
 					<div className="w-4/5 flex flex-col justify-between px-4 py-4 h-full">
 						<Item

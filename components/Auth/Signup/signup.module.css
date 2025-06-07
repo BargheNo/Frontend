@@ -4,7 +4,6 @@
 }
 
 .link{
-    @apply hover:underline;
     color:#2979FF;
     cursor:pointer;
 }
@@ -58,7 +57,7 @@
 }
 
 .leftIconButton{
-    @apply flex flex-row justify-center ;
+    @apply flex flex-row justify-center items-center;
     gap: 7px;
 }
 
