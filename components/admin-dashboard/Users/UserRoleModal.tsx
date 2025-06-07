@@ -31,7 +31,7 @@ interface UserRolesModalProps {
   onClose: () => void;
   userId: number;
   onSaveSuccess: () => void;
-  userStatus: "active" | "blocked" | null;
+  userStatus: "فعال" | "blocked" | null;
 }
 
 const UserRolesModal: React.FC<UserRolesModalProps> = ({
@@ -128,7 +128,7 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 
   const handleBanAction = async () => {
     setIsBanning(true);
-    const action = userStatus === "active" ? "ban" : "unban";
+    const action = userStatus === "فعال" ? "ban" : "unban";
 
     try {
       const response = await fetch(
@@ -224,13 +224,13 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
                 onClick={handleBanAction}
                 disabled={isLoading || isBanning}
                 className={`px-4 py-2 rounded-lg ${
-                  userStatus === "active"
+                  userStatus === "فعال"
                     ? "bg-red-500 hover:bg-red-600"
                     : "bg-green-500 hover:bg-green-600"
                 }`}
               >
                 {isBanning && <Loader2 className="animate-spin h-4 w-4 ml-2" />}
-                {userStatus === "active" ? "مسدود کردن" : "رفع انسداد"}
+                {userStatus === "فعال" ? "مسدود کردن" : "رفع انسداد"}
               </Button>
             </div>
 

@@ -14,7 +14,7 @@ type UserType = {
   firstName: string;
   lastName: string;
   phone: string;
-  status: "active" | "block";
+  status: "فعال" | "block";
 };
 
 type RootState = {
@@ -30,11 +30,11 @@ export default function Users() {
   const [isRolesModalOpen, setIsRolesModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [selectedUserStatus, setSelectedUserStatus] = useState<
-    "active" | "blocked" | null
+    "فعال" | "blocked" | null
   >(null);
 
   const handleManageRoles = useCallback(
-    (userId: number, status: "active" | "blocked") => {
+    (userId: number, status: "فعال" | "blocked") => {
       setSelectedUserId(userId);
       setSelectedUserStatus(status);
       setIsRolesModalOpen(true);
@@ -124,7 +124,7 @@ export default function Users() {
       id,
       onManageRoles,
     }: UserType & {
-      onManageRoles: (id: number, status: "active" | "blocked") => void;
+      onManageRoles: (id: number, status: "فعال" | "blocked") => void;
     }) => {
       const normalizedStatus = status === "block" ? "blocked" : status;
       return (
@@ -146,11 +146,11 @@ export default function Users() {
           <div className="flex items-center gap-3 w-1/4">
             <div className="flex items-center gap-2">
               <span className="font-bold">
-                {status === "active" ? "فعال" : "مسدود"}
+                {status === "فعال" ? "فعال" : "مسدود"}
               </span>
               <div
                 className={`h-4 w-4 rounded-full ${
-                  status === "active" ? "bg-green-500" : "bg-red-500"
+                  status === "فعال" ? "bg-green-500" : "bg-red-500"
                 } shadow-md`}
               />
             </div>
@@ -200,11 +200,11 @@ export default function Users() {
   //       <div className="flex items-center gap-3 w-1/4">
   //         <div className="flex items-center gap-2">
   //           <span className="font-bold">
-  //             {status === "active" ? "فعال" : "مسدود"}
+  //             {status === "فعال" ? "فعال" : "مسدود"}
   //           </span>
   //           <div
   //             className={`h-4 w-4 rounded-full ${
-  //               status === "active" ? "bg-green-500" : "bg-red-500"
+  //               status === "فعال" ? "bg-green-500" : "bg-red-500"
   //             } shadow-md`}
   //           />
   //         </div>
@@ -214,7 +214,7 @@ export default function Users() {
   //        onClick={() => handleManageRoles(id, normalizedStatus)}
   //       >
   //         <p className="font-bold">جزئیات بیشتر و مدیریت</p>
-  //         <Settings />
+  //         <Settings />اده
   //       </button>
   //     </div>
   //   );
