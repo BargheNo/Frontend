@@ -3,13 +3,14 @@
 import PanelAside from '@/components/Panel/PanelAside/PanelAside';
 import { NavItem } from '@/src/types/PanelAsideTypes';
 import '@/styles/global.css';
-import { Users, Gauge, Package, DollarSign, Headset, BookOpen, Megaphone, AlertCircle, LaptopMinimalCheck } from "lucide-react";
+import { Users, Gauge, Package, DollarSign, Headset, BookOpen, Megaphone, AlertCircle, LaptopMinimalCheck, School } from "lucide-react";
   
 export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
     const navItems = [
         // { name: "داشبورد", path: "/admin-dashboard/dashboard", icon: <Gauge /> },
         { name: "مدیریت کاربران", path: "/admin-dashboard/manage-users", icon: <Users /> },
         { name: "نقش‌ها و دسترسی‌ها", path: "/admin-dashboard/roles-and-permissions", icon: <LaptopMinimalCheck /> },
+        { name: "مدیریت شرکت ها", path: "/admin-dashboard/corp-management", icon: <School /> },
         { name: "مدیریت سفارشات", path: "/admin-dashboard/manage-requests", icon: <Package /> },
         { name: "مدیریت مالی", path: "/admin-dashboard/finance", icon: <DollarSign /> },
         { name: "پشتیبانی", path: "/admin-dashboard/support", icon: <Headset /> },
