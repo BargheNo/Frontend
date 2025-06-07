@@ -125,8 +125,8 @@ export default function BargheNoLanding() {
       y: "+=100%",
       animation: "power1.inOut",
       duration: 1,
-      delay: 1.5,
-      repeatDelay: 1.5,
+      delay: 1,
+      repeatDelay: 1,
       scrollTrigger: slide1Trigger,
     });
     gsap.from("#clean-card", {
@@ -134,8 +134,8 @@ export default function BargheNoLanding() {
       y: "+=100%",
       animation: "power1.inOut",
       duration: 1,
-      delay: 1.5,
-      repeatDelay: 1.5,
+      delay: 1,
+      repeatDelay: 1,
       scrollTrigger: slide1Trigger,
     });
     // gsap.to("#blueprint", {
@@ -169,7 +169,7 @@ export default function BargheNoLanding() {
 
   return (
     <>
-      <div className="container-box h-[100vh]! flex flex-row-reverse max-w-none! w-auto! overflow-hidden">
+      <div className="container-box h-screen flex flex-row-reverse max-w-none! w-screen overflow-hidden">
         {/* <div className="fixed bg-red-500 top-20! bottom-20! left-20! right-20! w-[60vw] h-[50vh] flex justify-center items-center"> */}
         {!isMobile && (
           <div className="D3Panel fixed z-20 w-[40vw] left-[8vw] bottom-[20vh] top-[20vh] flex items-center justify-center rounded-2xl">
@@ -201,15 +201,25 @@ export default function BargheNoLanding() {
           </div>
         )}
         <div
-          className="w-[100vw] h-[100vh] pt-20 flex-none gap-2 slide-panel"
+          className="w-[100vw] h-[100vh] md:pt-20 flex-none gap-2 slide-panel"
           id="slide-panel1"
         >
           <div className="w-full h-full flex flex-row-reverse items-center justify-between">
             {!isMobile && <div className="w-full h-full"></div>}
             <div
-              className="w-full flex flex-col justify-center items-center gap-20"
+              className="w-full flex flex-col justify-center items-center gap-16"
               id="slide1-text"
             >
+              {isMobile && (
+                <div className="w-[80vw] aspect-video relative">
+                  <Image
+                    src={panel}
+                    alt="panel"
+                    className={`${styles.panel}`}
+                    fill
+                  />
+                </div>
+              )}
               <div className="flex flex-col items-center justify-center gap-2">
                 <h1
                   className={cn(

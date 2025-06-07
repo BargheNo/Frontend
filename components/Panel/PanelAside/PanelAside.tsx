@@ -45,7 +45,7 @@ const PanelAside = ({
   }, []);
 
   if (isMobile) {
-    return <>{children}</>;
+    return <main className="rtl w-screen h-screen">{children}</main>;
   }
 
   return (

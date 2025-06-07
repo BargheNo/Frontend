@@ -16,7 +16,7 @@ export default function AboutUsLanding() {
     console.log("is Mobile: ", isMobile);
   }, [isMobile]);
   return (
-    <div className="w-screen h-screen flex justify-center items-center gap-4 px-5">
+    <div className="w-full h-screen flex justify-center items-center gap-8 px-5">
       {!isMobile && (
         <div className="w-2/5 relative z-10">
           {page === "ContactUs" ? (
