@@ -15,7 +15,7 @@ import { Orderhistory } from "@/src/types/OrderhistoryType";
 import OrderHistory from "@/components/OrderHistory/OrderHistory";
 import { useSelector } from "react-redux";
 import panelNotFound from "../../public/images/panelNotFound/panelNotFound.png";
-import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "../Loading/LoadingSpinner/LoadingSpinner";
 
 // import { RootState } from "@/src/store/types";
 

@@ -13,6 +13,7 @@
     box-sizing: border-box;
     /* text-align: right; */
     background-color: #F1F4FC;
+    cursor: pointer;
 }
 
 .citypro{

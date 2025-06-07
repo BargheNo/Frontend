@@ -12,7 +12,7 @@ const AnnounceEditor = dynamic(
 export default function Page() {
   const params = useParams();
   const router = useRouter();
-  const id = params.id;
+  const id = params?.id;
   return (
     <div className="flex flex-col justify-center items-center gap-2 p-5 overflow-hidden">
       <ChevronLeft
