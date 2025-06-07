@@ -6,8 +6,10 @@ import { Button } from '@/components/ui/button'
 import { getOrder } from '@/src/types/Entity-Monitoring/orderType'
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import NotificationsDialogFields from '@/components/Messages/Notfication/NotificationBox/NotificationsDialogFields'
+import OrderService from '@/src/services/entityMonitoring'
 
-export default function Ordercard({name,status,customer,maxCost,area,powerRequest,buildingType,description,address}:getOrder) {
+
+export default function Ordercard({id,name,status,customer,maxCost,area,powerRequest,buildingType,description,address}:getOrder) {
     const getStatusColor = () => {
 		if (status === "فعال")
 			return " text-green-600";
@@ -29,8 +31,8 @@ export default function Ordercard({name,status,customer,maxCost,area,powerReques
     }
   return (
     <>
-        <div onClick={()=>setOpen(!open)} className='  border-gray-300 border-1 w-full py-3 cursor-pointer bg-warm-white'>
-            <div className='flex flex-row justify-between items-center w-full rtl'>
+        <div onClick={()=>setOpen(!open)} className='  border-gray-300 border-1 cursor-pointer w-full py-3  bg-warm-white'>
+            <div className='flex flex-row justify-between items-center w-full rtl '>
                 <div className="flex w-full justify-between items-center text-sm text-gray-700 px-7 text-center">
                     <span className="w-[16%] flex justify-center">{customer.firstName + " " + customer.lastName}</span>
                     <span className="w-[16%] flex justify-center">{name}</span>
@@ -41,18 +43,21 @@ export default function Ordercard({name,status,customer,maxCost,area,powerReques
                 </div>
             <HoverCard>
                 <HoverCardTrigger asChild>
-                <Button className="cursor-pointer" variant="link">
+                <Button className="cursor-pointer" variant="link"
+                onClick={(e) => e.stopPropagation()}>
                     <Ellipsis />
                 </Button>
                 </HoverCardTrigger>
                 <HoverCardContent className="w-34 h-auto border-0 p-4 flex flex-col gap-2 rtl bg-warm-white">
                 <div className="flex flex-col neo-btn bg-white h-8">
-                    <div className="w-full cursor-pointer">
+                    <div className="w-full cursor-pointer" onClick={(e)=>{e.stopPropagation();OrderService.deleteOrder(id).then(res=>console.log(res.data))}}>
                     <p className="mt-1 mr-2">حذف</p>
                     </div>
                 </div>
                 <div className="flex flex-col neo-btn bg-white h-8">
-                    <div className="w-full cursor-pointer">
+                    <div className="w-full cursor-pointer" onClick={(e) => {
+                        e.stopPropagation();
+                    }}>
                     <p className="mt-1 mr-2">ویرایش</p>
                     </div>
                 </div>

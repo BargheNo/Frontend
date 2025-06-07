@@ -147,11 +147,11 @@ useEffect(()=>{
 
 
     
-    <div className="rounded-xl overflow-hidden w-[90%] m-auto bg-red-700  ">
+    <div className="rounded-xl overflow-hidden w-[90%] m-auto  ">
       {orderlist.map((Item,index)=>
         
         
-        <Ordercard key={index} customer={Item.customer} status={Item.status} maxCost={Item.maxCost} area={Item.area} name={Item.name} powerRequest={Item.powerRequest} buildingType={Item.buildingType}
+        <Ordercard id={Item.id} key={index} customer={Item.customer} status={Item.status} maxCost={Item.maxCost} area={Item.area} name={Item.name} powerRequest={Item.powerRequest} buildingType={Item.buildingType}
         address={Item.address} description={Item.description}></Ordercard>
         
       )}

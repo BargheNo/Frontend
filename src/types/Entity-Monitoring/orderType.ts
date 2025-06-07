@@ -1,4 +1,5 @@
 interface getOrder{
+    id:number,
     name:string,
     status:string,
     powerRequest:number,
