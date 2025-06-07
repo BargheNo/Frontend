@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Plus, NotebookPen, ChevronDown, Check, Tag } from "lucide-react";
+import { NotebookPen, Tag } from "lucide-react";
 import {
 	Dialog,
 	DialogContent,
@@ -17,8 +17,8 @@ import CompaniesService from "@/src/services/getCompaniesService";
 import getCustomerMyPanels from "@/src/services/getCustomerMyPanels";
 import postRepairRequest from "@/src/services/postRepairRequest";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
-import { toast } from "sonner";
 import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
+import getUrgencyLevels from "@/src/services/getUrgencyLevelsService";
 
 import {
 	Select,
@@ -29,18 +29,66 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import AddComponent from "@/components/AddComponent/AddComponent";
 
-const urgencyOptions = [
-	{ value: 1, label: "اولویت پایین" },
-	{ value: 2, label: "اولویت متوسط" },
-	{ value: 3, label: "اولویت بالا" },
-];
+interface UrgencyLevel {
+	id: number;
+	name: string;
+}
 
 interface FormValues {
 	title: string;
 	note: string;
+}
+
+interface Company {
+	id: number;
+	name: string;
+	logo: string;
+	contactInfo: string[];
+	adresses: string[];
+}
+
+interface Panel {
+	id: number;
+	name: string;
+	status: string;
+	buildingType: string;
+	area: number;
+	power: number;
+	tilt: number;
+	azimuth: number;
+	totalNumberOfModules: number;
+	guaranteeStatus: string;
+	corporation: {
+		id: number;
+		name: string;
+		logo: string;
+		contactInfo: string[];
+		addresses: string[];
+	};
+	address: {
+		id: number;
+		province: string;
+		provinceID: number;
+		cityID: number;
+		city: string;
+		streetAddress: string;
+		postalCode: string;
+		houseNumber: string;
+		unit: number;
+	};
+}
+
+interface CustomerRepairRequestProps {
+	onRefresh?: () => void;
 }
 
 const validationSchema = Yup.object({
@@ -52,45 +100,8 @@ const validationSchema = Yup.object({
 		.min(10, "توضیحات باید حداقل 10 کاراکتر باشد"),
 });
 
-interface Company {
-	id: number;
-	name: string;
-	logo: string; // TODO: What is proper type for image??
-	contactInfo: string[]; // TODO: fix the type
-	adresses: string[]; // TODO: fix the type
-}
-
-interface Panel {
-	id: number;
-	panelName: string;
-	Corporation: {
-		id: number;
-		name: string;
-		logo: string; // TODO: Set the proper type for logo
-		contactInfo: string[]; // TODO: Set the proper type
-		addresses: string[]; // TODO: Set the proper type
-	};
-	power: number;
-	area: number;
-	buildingType: string;
-	totalNumberOfModules: number;
-	tilt: number;
-	azimuth: number;
-	address: {
-		ID: number;
-		province: string;
-		city: string;
-		streetAddress: string;
-		postalCode: string;
-		houseNumber: string;
-		unit: number;
-	};
-}
-
-const CustomerRepairRequest = () => {
+const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 	const [open, setOpen] = useState(false);
-	const [isUrgencyOpen, setIsUrgencyOpen] = useState(false);
-	const [isPanelOpen, setIsPanelOpen] = useState(false);
 	const [urgency, setUrgency] = useState(1);
 	const [repairByManufacturer, setRepairByManufacturer] = useState(true);
 	const [selectedCompany, setSelectedCompany] = useState<number | null>(null);
@@ -101,13 +112,13 @@ const CustomerRepairRequest = () => {
 	const [loadingPanels, setLoadingPanels] = useState(true);
 	const [buttonLoading, setButtonLoading] = useState(false);
 	const [isUsingGuarantee, setIsUsingGuarantee] = useState(false);
+	const [urgencyLevels, setUrgencyLevels] = useState<UrgencyLevel[]>([]);
+	const [loadingUrgencyLevels, setLoadingUrgencyLevels] = useState(true);
 
 	useEffect(() => {
 		getCustomerMyPanels
 			.GetCustomerMyPanels()
 			.then((res) => {
-				// console.log(res);
-				// Debugging: Log the response data if needed
 				setPanels(res.data);
 				setLoadingPanels(false);
 			})
@@ -129,86 +140,70 @@ const CustomerRepairRequest = () => {
 			});
 	}, []);
 
-	// TODO: It is obviously the better practice to use corporation ID instead of name which is not handled by API.
+	useEffect(() => {
+		getUrgencyLevels.GetUrgencyLevels()
+			.then((res) => {
+				setUrgencyLevels(res.data);
+				setLoadingUrgencyLevels(false);
+			})
+			.catch((err) => {
+				console.error("Error fetching urgency levels:", err);
+				setLoadingUrgencyLevels(false);
+			});
+	}, []);
+
 	const handleCompanySelection = (companyID: number) => {
 		setSelectedCompany(companyID);
 		const panel = panels.find((p) => p.id === selectedPanel);
-		if (panel && companyID !== panel.Corporation.id) {
+		if (panel && companyID !== panel.corporation.id) {
 			setRepairByManufacturer(false);
 		}
 	};
 
-	const handlePanelSelection = (panelId: number) => {
-		setSelectedPanel(panelId);
-		const panel = panels.find((p) => p.id === panelId);
-		if (panel) {
-			setSelectedCompany(panel.Corporation.id);
-			setRepairByManufacturer(true);
-		}
-	};
+	const handleSubmit = async (values: FormValues) => {
+		const formData = {
+			panelID: selectedPanel,
+			corporationID: repairByManufacturer
+				? panels.find(p => p.id === selectedPanel)?.corporation.id
+				: selectedCompany,
+			subject: values.title,
+			description: values.note,
+			urgencyLevel: urgency,
+			isUsingGuarantee: isUsingGuarantee
+		};
 
-  const handleSubmit = async (values: FormValues) => {
-    const formData = {
-      panelID: selectedPanel,
-      corporationID: repairByManufacturer
-	  	? panels.find(p => p.id === selectedPanel)?.Corporation.id
-		: selectedCompany,
-      subject: values.title,
-      description: values.note,
-      urgencyLevel: urgency,
-      isUsingGuarantee: isUsingGuarantee
-    };
-
-		console.log(formData);
 		setButtonLoading(true);
+		console.log(formData);
 
 		postRepairRequest
 			.PostCustomerRepairRequest(formData)
-			.then((res) => {
-				console.log(res);
+			.then(() => {
 				CustomToast("درخواست تعمیر با موفقیت ثبت شد!", "success");
-				// toast.success("درخواست تعمیر با موفقیت ثبت شد!");
 				setButtonLoading(false);
+				onRefresh?.();
+				setOpen(false);
 			})
-			.catch((res) => {
+			.catch(() => {
 				CustomToast("مشکلی در ثبت درخواست پیش آمد!", "error");
-				// toast.error("مشکلی در ثبت درخواست پیش آمد!");
 				setButtonLoading(false);
 			});
-
-		// try {
-		//   const response = await fetch('EndPointtttttttttttttttttttttt', {
-		//     method: 'POST',
-		//     headers: {
-		//       'Content-Type': 'application/json',
-		//       'Authorization': 'Tokennnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn'
-		//     },
-		//     body: JSON.stringify(formData)
-		//   });
-
-		//   if (!response.ok) {
-		//     throw new Error('Network response was not ok');
-		//   }
-
-		//   const data = await response.json();
-		//   console.log('Success:', data);
-		// } catch (error) {
-		//   console.error('Error:', error);
-		// }
 	};
+
+	const canUseGuarantee = () => {
+		if (!repairByManufacturer || !selectedPanel) return false;
+		const selectedPanelData = panels.find(p => p.id === selectedPanel);
+		return selectedPanelData?.guaranteeStatus === "فعال";
+	};
+
+	useEffect(() => {
+		if (!canUseGuarantee()) {
+			setIsUsingGuarantee(false);
+		}
+	}, [repairByManufacturer, selectedPanel, panels]);
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				{/* <div className="flex flex-col items-center gap-4">
-					<button
-						className="cta-neu-button !w-fit !rounded-4xl"
-						aria-label="درخواست تعمیرات فوری"
-					>
-						<Plus className="w-28 h-28" />
-					</button>
-					<span className="text-navy-blue">درخواست تعمیرات فوری</span>
-				</div> */}
 				<AddComponent title="درخواست تعمیرات فوری" />
 			</DialogTrigger>
 			<DialogContent
@@ -237,13 +232,12 @@ const CustomerRepairRequest = () => {
 									className="space-y-0"
 								>
 									<Select
-										name="province"
-										onValueChange={(value) => {}}
+										name="panel"
+										onValueChange={(value) => setSelectedPanel(Number(value))}
 									>
 										<SelectTrigger
 											className={`${styles.CustomInput} cursor-pointer rtl`}
-											id="province"
-											// style={{ width: "25vw" }}
+											id="panel"
 										>
 											<SelectValue placeholder="انتخاب پنل" />
 										</SelectTrigger>
@@ -254,20 +248,13 @@ const CustomerRepairRequest = () => {
 												</SelectLabel>
 												{panels?.length > 0 ? (
 													panels.map(
-														(panel, index) => (
+														(panel) => (
 															<SelectItem
-																id={String(
-																	index
-																)}
-																key={index}
-																value={String(
-																	panel.id
-																)}
+																key={panel.id}
+																value={String(panel.id)}
 																className="cursor-pointer"
 															>
-																{
-																	panel.panelName
-																}
+																{panel.name}
 															</SelectItem>
 														)
 													)
@@ -277,64 +264,7 @@ const CustomerRepairRequest = () => {
 											</SelectGroup>
 										</SelectContent>
 									</Select>
-									{/* Panel Selection */}
-									{/* <div className="relative" dir="rtl">
-										
-										<label className="block text-sm font-medium text-gray-700 mt-8">
-											انتخاب پنل
-										</label>
-										<button
-											type="button"
-											className="w-full px-4 py-3 flex justify-between items-center inset-neu-container !bg-[#FEFEFE] focus:outline-2"
-											onClick={() =>
-												setIsPanelOpen(!isPanelOpen)
-											}
-										>
-											{selectedPanel
-												? panels.find(
-														(p) =>
-															p.id ===
-															selectedPanel
-												  )?.panelName
-												: "انتخاب پنل"}
-											<ChevronDown
-												className={`w-5 h-5 text-gray-400 transition-transform ${
-													isPanelOpen
-														? "transform rotate-180"
-														: ""
-												}`}
-											/>
-										</button>
 
-										{isPanelOpen && (
-											<div className="absolute z-10 mt-1 w-[99%] neu-shadow rounded-2xl !bg-[#FEFEFE] py-1 text-base ring-2 ring-gray-300 ring-opacity-5 focus:outline-2">
-												{panels.map((panel) => (
-													<div
-														key={panel.id}
-														className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center justify-between"
-														onClick={() => {
-															handlePanelSelection(
-																panel.id
-															);
-															setIsPanelOpen(
-																false
-															);
-														}}
-													>
-														<span>
-															{panel.panelName}
-														</span>
-														{selectedPanel ===
-															panel.id && (
-															<Check className="w-5 h-5 text-blue-500" />
-														)}
-													</div>
-												))}
-											</div>
-										)}
-									</div> */}
-
-									{/* Title */}
 									<div className="flex flex-col md:flex-row ">
 										<div className="flex-1">
 											<CustomInput
@@ -348,7 +278,6 @@ const CustomerRepairRequest = () => {
 										</div>
 									</div>
 
-									{/* Note */}
 									<div>
 										<CustomTextArea
 											name="note"
@@ -358,14 +287,14 @@ const CustomerRepairRequest = () => {
 											شرح مشکل
 										</CustomTextArea>
 									</div>
+
 									<Select
-										name="province"
-										onValueChange={(value) => {}}
+										name="urgency"
+										onValueChange={(value) => setUrgency(Number(value))}
 									>
 										<SelectTrigger
 											className={`${styles.CustomInput} cursor-pointer rtl mt-4`}
-											id="province"
-											// style={{ width: "25vw" }}
+											id="urgency"
 										>
 											<SelectValue placeholder="سطح اهمیت" />
 										</SelectTrigger>
@@ -374,115 +303,39 @@ const CustomerRepairRequest = () => {
 												<SelectLabel>
 													سطح اهمیت
 												</SelectLabel>
-												{urgencyOptions?.length > 0 ? (
-													urgencyOptions.map(
-														(option, index) => (
-															<SelectItem
-																id={String(
-																	index
-																)}
-																key={
-																	option.value
-																}
-																value={String(
-																	option.value
-																)}
-																className="cursor-pointer"
-															>
-																{option.label}
-															</SelectItem>
-														)
-													)
+												{loadingUrgencyLevels ? (
+													<LoadingSpinner />
+												) : urgencyLevels?.length > 0 ? (
+													urgencyLevels.map((level) => (
+														<SelectItem
+															key={level.id}
+															value={String(level.id)}
+															className="cursor-pointer"
+														>
+															{level.name}
+														</SelectItem>
+													))
 												) : (
 													<p>هیچ سطحی یافت نشد</p>
 												)}
 											</SelectGroup>
 										</SelectContent>
 									</Select>
-									{/* Urgency Level */}
-									{/* <div className="relative mt-10" dir="rtl">
-										<label className="block text-sm font-medium text-gray-700 mb-1">
-											سطح اهمیت
-										</label>
-										<button
-											type="button"
-											className="w-full px-4 py-3 flex justify-between items-center inset-neu-container !bg-[#FEFEFE] focus:outline-2"
-											onClick={() =>
-												setIsUrgencyOpen(!isUrgencyOpen)
-											}
-										>
-											{
-												urgencyOptions.find(
-													(opt) =>
-														opt.value === urgency
-												)?.label
-											}
-											<ChevronDown
-												className={`w-5 h-5 text-gray-400 transition-transform ${
-													isUrgencyOpen
-														? "transform rotate-180"
-														: ""
-												}`}
-											/>
-										</button>
 
-										{isUrgencyOpen && (
-											<div className="absolute z-10 mt-1 w-[99%] neu-shadow rounded-2xl !bg-[#FEFEFE] py-1 text-base ring-2 ring-gray-300 ring-opacity-5 focus:outline-2">
-												{urgencyOptions.map(
-													(option) => (
-														<div
-															key={option.value}
-															className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center justify-between"
-															onClick={() => {
-																setUrgency(
-																	option.value
-																);
-																setIsUrgencyOpen(
-																	false
-																);
-															}}
-														>
-															<span>
-																{option.label}
-															</span>
-															{urgency ===
-																option.value && (
-																<Check className="w-5 h-5 text-blue-500" />
-															)}
-														</div>
-													)
-												)}
-											</div>
-										)}
-									</div> */}
-
-									{/* Company Selection */}
-									<div
-										className="space-y-2 mt-10 mb-10"
-										dir="rtl"
-									>
+									<div className="space-y-2 mt-10 mb-10" dir="rtl">
 										<div className="flex items-center">
 											<input
 												type="checkbox"
 												id="repairByManufacturer"
 												checked={repairByManufacturer}
 												onChange={() => {
-													setRepairByManufacturer(
-														!repairByManufacturer
-													);
+													setRepairByManufacturer(!repairByManufacturer);
 													if (!repairByManufacturer) {
-														const panel =
-															panels.find(
-																(p) =>
-																	p.id ===
-																	selectedPanel
-															);
+														const panel = panels.find(
+															(p) => p.id === selectedPanel
+														);
 														if (panel) {
-															setSelectedCompany(
-																panel
-																	.Corporation
-																	.id
-															);
+															setSelectedCompany(panel.corporation.id);
 														}
 													}
 												}}
@@ -511,15 +364,8 @@ const CustomerRepairRequest = () => {
 																type="radio"
 																id={`company-${company.id}`}
 																name="company-selection"
-																checked={
-																	selectedCompany ===
-																	company.id
-																}
-																onChange={() =>
-																	handleCompanySelection(
-																		company.id
-																	)
-																} // TODO: Change it to use ID
+																checked={selectedCompany === company.id}
+																onChange={() => handleCompanySelection(company.id)}
 																className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
 															/>
 															<label
@@ -535,30 +381,49 @@ const CustomerRepairRequest = () => {
 										)}
 									</div>
 
-                  {/* Guarantee Checkbox */}
-                  <div className="space-y-2 mt-10 mb-10" dir="rtl">
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="isUsingGuarantee"
-                        checked={isUsingGuarantee}
-                        onChange={() => setIsUsingGuarantee(!isUsingGuarantee)}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                      />
-                      <label htmlFor="isUsingGuarantee" className="mr-2 block text-sm text-gray-700">
-                        مایلم از گارانتی استفاده کنم
-                      </label>
-                    </div>
-                  </div>
+									<div className="space-y-2 mt-10 mb-10" dir="rtl">
+										<div className="flex items-center">
+											<TooltipProvider>
+												<Tooltip>
+													<TooltipTrigger asChild>
+														<div className="flex items-center">
+															<input
+																type="checkbox"
+																id="isUsingGuarantee"
+																checked={isUsingGuarantee}
+																onChange={() => setIsUsingGuarantee(!isUsingGuarantee)}
+																disabled={!canUseGuarantee()}
+																className={`h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded ${
+																	!canUseGuarantee() ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+																}`}
+															/>
+															<label 
+																htmlFor="isUsingGuarantee" 
+																className={`mr-2 block text-sm ${
+																	!canUseGuarantee() ? 'text-gray-400' : 'text-gray-700'
+																}`}
+															>
+																مایلم از گارانتی استفاده کنم
+															</label>
+														</div>
+													</TooltipTrigger>
+													{!canUseGuarantee() && (
+														<TooltipContent className="max-w-[300px] text-right">
+															<p>برای استفاده از گارانتی، تعمیرات باید توسط شرکتی انجام شود که پنل را نصب کرده است، همچنین امکان گارانتی باید برای این پنل فعال باشد.</p>
+														</TooltipContent>
+													)}
+												</Tooltip>
+											</TooltipProvider>
+										</div>
+									</div>
 
-                  {/* Submit Button */}
-                  <div className='flex justify-end'>
-                    <button
-                      type="submit"
-                      className="bg-gradient-to-br from-[#34C759] to-[#00A92B]
-                                hover:from-[#2AAE4F] hover:to-[#008C25]
-                                active:from-[#008C25] active:to-[#2AAE4F]
-                                text-white py-2 px-4 rounded-md transition-all duration-300 cursor-pointer"
+									<div className='flex justify-end'>
+										<button
+											type="submit"
+											className="bg-gradient-to-br from-[#34C759] to-[#00A92B]
+														hover:from-[#2AAE4F] hover:to-[#008C25]
+														active:from-[#008C25] active:to-[#2AAE4F]
+														text-white py-2 px-4 rounded-md transition-all duration-300 cursor-pointer"
 										>
 											{buttonLoading && (
 												<TransparentLoading />

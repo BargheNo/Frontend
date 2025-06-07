@@ -12,6 +12,7 @@ import { baseURL, getData } from "@/src/services/apiHub";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import Header from "@/components/Header/Header";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 interface RepairHistoryItem {
 	ID: number;
@@ -33,7 +34,7 @@ interface RepairHistoryItem {
 }
 
 // Mock data for testing
-const mockRepairItems: RepairHistoryItem[] = [
+/*const mockRepairItems: RepairHistoryItem[] = [
     {
         ID: 1,
         Subject: "تعمیر پنل خورشیدی شماره 1",
@@ -88,7 +89,7 @@ const mockRepairItems: RepairHistoryItem[] = [
             area: 100
         }
     }
-];
+];*/
 
 const Page = () => {
 	// State for the dialog
@@ -99,6 +100,7 @@ const Page = () => {
 	const [repairItems, setRepairItems] = useState<RepairHistoryItem[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<Error | null>(null);
+	const [refreshTrigger, setRefreshTrigger] = useState(0);
 
 	// Function to filter repairs simce the last month
 	const getRecentRepairs = (items: RepairHistoryItem[]) => {
@@ -113,13 +115,12 @@ const Page = () => {
 
 	useEffect(() => {		
 		// For testing, use mock data instead of API call
-		setRepairItems(mockRepairItems);
-		setIsLoading(false);
+		// setRepairItems(mockRepairItems);
+		// setIsLoading(false);
 
 		// Comment out the actual API call for now ////////////////////////////////////////////////////////////////////////////////////////
-		/*
 		getData({
-			endPoint: `${baseURL}/v1/user/maintenance/request/list`,
+			endPoint: `${baseURL}/v1/user/maintenance/request?status=1`,
 		})
 		.then((res) => {
 			// console.log(res);
@@ -128,10 +129,11 @@ const Page = () => {
 		})
 		.catch((err) => {
 			setError(err instanceof Error ? err : new Error('Failed to fetch repair items'));
+			CustomToast("مشکلی در دریافت سوابق تعمیرات پیش آمد!", "error");
 			setIsLoading(false);
 		});
-		*/ //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	}, []);
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	}, [refreshTrigger]);
 
 	const handleOpenDialog = (item: RepairHistoryItem) => {
 		setSelectedItem(item);
@@ -142,6 +144,11 @@ const Page = () => {
 	const handleCloseDialog = () => {
 		setIsDialogOpen(false);
 		setSelectedItem(null);
+	};
+
+	// Function to trigger refresh
+	const triggerRefresh = () => {
+		setRefreshTrigger(prev => prev + 1);
 	};
 
 	const recentRepairs = getRecentRepairs(repairItems);
@@ -178,12 +185,12 @@ const Page = () => {
 							/>
 						</div>
 						<div className="flex flex-col gap-4 w-full md:w-[40%] items-center align-center justify-center mb-8 md:mt-0">
-							<CustomerRepairRequest />
+							<CustomerRepairRequest onRefresh={triggerRefresh} />
 						</div>
 					</>
 				) : (
 					<div className="w-full flex justify-center">
-						<CustomerRepairRequest />
+						<CustomerRepairRequest onRefresh={triggerRefresh} />
 					</div>
 				)}
 			</div>
@@ -220,6 +227,7 @@ const Page = () => {
 				isOpen={isDialogOpen}
 				onClose={handleCloseDialog}
 				repairItem={selectedItem}
+				onRefresh={triggerRefresh}
 			/>
 			{/* </div> */}
 		</PageContainer>
