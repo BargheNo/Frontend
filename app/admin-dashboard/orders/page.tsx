@@ -8,11 +8,13 @@ import SignupButton from '@/components/SignupButton/SignupButton'
 import style from "./style.module.css";
 import { getOrder } from '@/src/types/Entity-Monitoring/orderType'
 import OrderService from '@/src/services/entityMonitoring'
+import LoadingSpinner from '@/components/Loading/LoadingSpinner/LoadingSpinner'
 
 
 export default function orders() {
 const [orderlist,setOrderList]=useState<getOrder[]>([]);
 const[status,setStatus]=useState<number>(5);
+const[loading,setLoading]=useState(true);
 const orderStatusTypeMap = {
 	active: '1',
 	expired: '2',
@@ -21,7 +23,7 @@ const orderStatusTypeMap = {
 	all: '5',
   } as const;
 useEffect(()=>{
-  OrderService.getOrdersList(status,1,1).then(res=>setOrderList(res.data));
+  OrderService.getOrdersList(status,1,1).then(res=>{setOrderList(res.data);setLoading(false)});
   
 },[status]);
   return (
@@ -78,15 +80,32 @@ useEffect(()=>{
 		</div>
 		</div>
 
-		<div className="rounded-xl overflow-hidden w-[90%] m-auto  ">
-		{orderlist.map((Item,index)=>
-			
-			
-			<Ordercard id={Item.id} key={index} customer={Item.customer} status={Item.status} maxCost={Item.maxCost} area={Item.area} name={Item.name} powerRequest={Item.powerRequest} buildingType={Item.buildingType}
-			address={Item.address} description={Item.description}></Ordercard>
-			
-		)}
-		</div>
+        {loading ? (
+			<div className="flex justify-center mt-6">
+				<LoadingSpinner />
+			</div>
+			) : orderlist && orderlist.length > 0 ? (
+			<div className="rounded-xl overflow-hidden w-[90%] m-auto">
+				{orderlist.map((Item, index) => (
+				<Ordercard
+					id={Item.id}
+					key={index}
+					customer={Item.customer}
+					status={Item.status}
+					maxCost={Item.maxCost}
+					area={Item.area}
+					name={Item.name}
+					powerRequest={Item.powerRequest}
+					buildingType={Item.buildingType}
+					address={Item.address}
+					description={Item.description}
+				/>
+				))}
+			</div>
+			) : <div className='flex flex-col m-auto justify-center font-bold self-center text-center mt-20'>
+				<p className='m-auto text-navy-blue'>سفارشی یافت نشد.</p>
+			   </div>} 
+
     </>
   )
 }
