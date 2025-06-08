@@ -5,8 +5,6 @@ import { baseURL, getData } from "@/src/services/apiHub";
 import { useSelector } from "react-redux";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import DateConverter from "@/src/functions/toJalali";
-// import { RootState } from "@/src/store/types";
-// import moment from "moment-jalaali";
 interface address {
 	province: string;
 	city: string;
@@ -23,53 +21,20 @@ interface Request {
 	maxCost: number;
 }
 
-// moment.loadPersian({ dialect: "persian-modern", usePersianDigits: true });
-
-// const DateConverter = (miladiDate: any) => {
-//   return `${moment(miladiDate).format("jYYYY/jMM/jDD")}`;
-// };
-
 export default function Requests() {
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [requestData, setRequestData] = useState<Request[] | null>(null);
-	const [error, setError] = useState<string | null>(null);
 
 	const corpId = useSelector((state: RootState) => state.user.corpId);
 	useEffect(() => {
-		console.log("accessToken", accessToken);
-		const fetchRequests = async () => {
-			try {
-				console.log("Fetching Requests...");
-				getData({
-					endPoint: `${baseURL}/v1/corp/${corpId}/installation/request?status=5&offset=1&limit=1`,
-				})
-					.then((data) => {
-						setRequestData(data.data);
-						setLoading(false);
-						console.log(data);
-					})
-			} catch (error: any) {
-				console.error("Error fetching requests:", {
-					message: error.message,
-					response: error.response?.data,
-					status: error.response?.status,
-				});
-				setError(error.message);
-				setLoading(false);
-			}
-		};
-
-		fetchRequests();
-	}, [accessToken]);
-
-	// if (error) {
-	// 	return (
-	// 		<div className="text-red-500">Error loading requests: {error}</div>
-	// 	);
-	// }
+		getData({
+			endPoint: `${baseURL}/v1/corp/${corpId}/installation/request?status=5&offset=100&limit=1`,
+		})
+			.then((data) => {
+				setRequestData(data.data);
+			})
+			.finally(() => setLoading(false));
+	}, []);
 
 	if (loading) {
 		return <LoadingSpinner />;

@@ -153,7 +153,7 @@ export default function RequestCard({
 									</div>
 								</DialogTrigger>
 
-								<DialogContent className="rtl sm:max-w-[425px] min-w-[70vw] border-0 overflow-scroll">
+								<DialogContent className="rtl border-0 overflow-scroll dialog-width">
 									<PlaceBidForm
 										setOpen={setOpen}
 										requestId={requestId}

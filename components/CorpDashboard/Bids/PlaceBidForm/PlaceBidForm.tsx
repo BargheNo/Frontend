@@ -108,7 +108,7 @@ export default function PlaceBidForm({
 			power: power,
 			description: description,
 			installationTime: installationTime,
-			guaranteeID: guaranteeID,
+			// guaranteeID: guaranteeID,
 			paymentTerms: paymentTerms,
 		};
 		console.log("formData", formData);
@@ -133,7 +133,7 @@ export default function PlaceBidForm({
 					Number(values.power),
 					values.description,
 					values.installationTime,
-					2,
+					1,
 					{
 						method: 1,
 						installmentPlan: {
