@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { MoveLeft, Lock, Unlock, Smartphone, Loader2 } from "lucide-react";
+import { MoveLeft, Lock, Unlock, Smartphone } from "lucide-react";
 import Link from "next/link";
 import styles from "./login.module.css";
 import { Formik, Form } from "formik";
@@ -8,12 +8,9 @@ import * as Yup from "yup";
 import CustomInput from "../../Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import LoginButton from "./LoginButton";
-import { baseURL, postData } from "../../../src/services/apiHub";
-import { toast } from "sonner";
+import { postData } from "../../../src/services/apiHub";
 import { setUser } from "@/src/store/slices/userSlice";
 import { useDispatch } from "react-redux";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
-import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 
@@ -52,48 +49,28 @@ const Login = () => {
 	}) => {
 		const { phoneNumber, password } = values;
 		setLoading(true);
-		try {
-			console.log(localStorage.getItem("user"));
-			const response = await postData({
-				endPoint: "/v1/auth/login",
-				data: {
-					phone: "+98" + phoneNumber,
-					password: password,
-				},
-			});
-
-			if (response?.statusCode === 200) {
-				console.log(response);
-				CustomToast(response?.message, "success");
-				// toast(<div id="sonner-toast">{response?.message}</div>);
-				// toast.success(response?.message);
+		console.log(localStorage.getItem("user"));
+		postData({
+			endPoint: "/v1/auth/login",
+			data: {
+				phone: "+98" + phoneNumber,
+				password: password,
+			},
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
 				dispatch(
 					setUser({
-						firstName: response.data.firstName,
-						lastName: response.data.lastName,
-						permissions: response.data.permissions,
-						accessToken: response.data.accessToken,
-						refreshToken: response.data.accessToken,
+						firstName: data.data.firstName,
+						lastName: data.data.lastName,
+						permissions: data.data.permissions,
+						accessToken: data.data.accessToken,
+						refreshToken: data.data.accessToken,
 					})
 				);
-				setLoading(false);
 				window.location.href = "/dashboard";
-			}
-		} catch (error: any) {
-			// toast.error(
-			// 	generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد."
-			// );
-			CustomToast(
-				generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد.",
-				"error"
-			);
-			// toast(
-			// 	<div id="sonner-toast">
-			// 		{generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد."}
-			// 	</div>
-			// );
-			setLoading(false);
-		}
+			})
+			.finally(() => setLoading(false));
 	};
 	return (
 		<div className={`${vazir.className} w-full`}>

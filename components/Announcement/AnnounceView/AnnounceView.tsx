@@ -48,7 +48,6 @@ export default function AnnounceView({
 		console.error("error in fetching");
 		toast.error("مشکلی پیش آمده است");
 	} else {
-		console.log("dd:", data?.data);
 		return (
 			<>
 				{/* <div className="flex flex-row w-full items-center"> */}

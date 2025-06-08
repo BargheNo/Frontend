@@ -10,10 +10,8 @@ import { vazir } from "@/lib/fonts";
 import LoginButton from "../Login/LoginButton";
 import { postData } from "@/src/services/apiHub";
 import PhoneVerification from "@/components/phoneVerification/phoneVerification";
-// import { toast } from "sonner";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import { useRouter } from "next/navigation";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/src/store/slices/userSlice";
 
@@ -28,7 +26,7 @@ const initialValues = {
 };
 
 const ForgotPassword = () => {
-  const dispatch = useDispatch();
+	const dispatch = useDispatch();
 	const [open, setOpen] = useState(false);
 	const [otpCode, setOtpCode] = useState<string>("");
 	const [phone, setPhone] = useState<string>("");
@@ -43,66 +41,39 @@ const ForgotPassword = () => {
 		const { phoneNumber } = values;
 		const fullPhone = "+98" + phoneNumber;
 		setLoading(true);
-		try {
-			const response = await postData({
-				endPoint: "/v1/auth/forgot-password",
-				data: { phone: fullPhone },
-			});
-
-			if (response?.statusCode === 200) {
-				CustomToast(response?.message, "success");
-				// toast.success(response?.message);
+		postData({
+			endPoint: "/v1/auth/forgot-password",
+			data: { phone: fullPhone },
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
 				setPhone(phoneNumber);
 				setOpen(true);
-			}
-		} catch (error: any) {
-			const errMsg =
-				generateErrorMessage(error) ||
-				"هنگام باز یابی رمز عبور مشکلی پیش آمد.";
-			// toast.error(errMsg);
-			CustomToast(errMsg, "error");
-		} finally {
-			setLoading(false);
-		}
+			})
+			.finally(() => setLoading(false));
 	};
 
 	const handleVerification = async (phone: string, otp: string) => {
 		const fullPhone = "+98" + phone;
-
-		try {
-			const response = await postData({
-				endPoint: "/v1/auth/confirm-otp",
-				data: {
-					phone: fullPhone,
-					otp: otp,
-				},
-			});
-
-			if (response?.statusCode === 200) {
-				// console.log("response", response);
-				dispatch(
-					setUser({
-						firstName: response.data.firstName,
-						lastName: response.data.lastName,
-						accessToken: response.data.accessToken,
-						permissions: {},
-						refreshToken: response.data.accessToken,
-					})
-				);
-				// toast.success(response?.message);
-				CustomToast(response?.message, "success");
-				route.push("/reset-password");
-			} else {
-				CustomToast(response.message || "Verification failed", "error");
-				// toast.error(response.message || "Verification failed");
-			}
-		} catch (error: any) {
-			const errMsg =
-				generateErrorMessage(error) ||
-				"هنگام احراز هویت مشکلی پیش آمد.";
-			// toast.error(errMsg);
-			CustomToast(errMsg, "error");
-		}
+		postData({
+			endPoint: "/v1/auth/confirm-otp",
+			data: {
+				phone: fullPhone,
+				otp: otp,
+			},
+		}).then((data) => {
+			dispatch(
+				setUser({
+					firstName: data.data.firstName,
+					lastName: data.data.lastName,
+					accessToken: data.data.accessToken,
+					permissions: {},
+					refreshToken: data.data.accessToken,
+				})
+			);
+			CustomToast(data?.message, "success");
+			route.push("/reset-password");
+		});
 	};
 
 	useEffect(() => {

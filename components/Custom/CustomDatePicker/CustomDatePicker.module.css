@@ -1,0 +1,39 @@
+.Conter {
+	@apply flex flex-col;
+	/* width: 90%; */
+	width: 100%;
+	position: relative;
+	/* text-align: right; */
+	margin-top: 25px;
+	font-size: clamp(10px, 3.5vw, 15px);
+}
+
+.CustomInput {
+	box-shadow: inset 1px 2px 5px rgba(0, 0, 0, 0.2);
+	border-radius: 9px;
+	width: 100%;
+	box-sizing: border-box;
+	height: 41px;
+	background-color: #f1f4fc;
+}
+
+.icon {
+	position: absolute;
+	left: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 16px;
+	color: #fa682d;
+	cursor: pointer;
+}
+
+@media (max-width: 600px) {
+	.icon {
+		width: 5.5vw;
+	}
+}
+
+.Wrapper {
+	position: relative;
+	width: 100%;
+}

@@ -3,11 +3,7 @@ import styles from "./Reports.module.css";
 import React from "react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
-import { toast } from "sonner";
 import {
-	MessageCirclePlus,
-	MessageCircleMore,
 	ArrowLeft,
 	User,
 	Hammer,
@@ -18,93 +14,37 @@ import {
 import Header from "@/components/Header/Header";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import { getData, postData } from "@/src/services/apiHub";
 
 const Reports = () => {
 	const [loadingRepair, setLoadingRepair] = useState<boolean>(true);
 	const [loadingPanel, setLoadingPanel] = useState<boolean>(true);
 	const [panelReports, setPanelReports] = useState<any[]>([]);
 	const [maintenanceReports, setMaintenanceReports] = useState<any[]>([]);
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
 	const fetchPanelReports = () => {
-		fetch("http://46.249.99.69:8080/v1/admin/report/panel", {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${accessToken}`,
-			},
-		})
-			.then((res) => res.json())
+		getData({ endPoint: `/v1/admin/report/panel` })
 			.then((data) => {
 				setPanelReports(data.data);
-				setLoadingPanel(false);
 			})
-			.catch((err) => {
-				console.log(err);
-				const errMsg =
-					generateErrorMessage(err) ||
-					"مشکلی در دریافت گزارش‌های پنل رخ داد.";
-				CustomToast(errMsg, "error");
-				setLoadingPanel(false);
-				// toast.error(errMsg);
-			});
+			.finally(() => setLoadingPanel(false));
 	};
 
 	const fetchMaintenanceReports = () => {
-		fetch("http://46.249.99.69:8080/v1/admin/report/maintenance", {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${accessToken}`,
-			},
-		})
-			.then((res) => res.json())
+		getData({ endPoint: `/v1/admin/report/maintenance` })
 			.then((data) => {
-				console.log(data);
 				setMaintenanceReports(data.data);
-				setLoadingRepair(false);
 			})
-			.catch((err) => {
-				console.log(err);
-				const errMsg =
-					generateErrorMessage(err) ||
-					"مشکلی در دریافت گزارش‌های تعمیر و نگهداری رخ داد.";
-				CustomToast(errMsg, "error");
-				setLoadingRepair(false);
-			});
+			.finally(() => setLoadingRepair(false));
 	};
 
 	const resolveReport = async (reportId: string) => {
-		try {
-			const response = await fetch(
-				`http://46.249.99.69:8080/v1/admin/report/resolve/${reportId}`,
-				{
-					method: "POST",
-					headers: {
-						Authorization: `Bearer ${accessToken}`,
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({}),
-				}
-			);
-
-			if (!response.ok) throw new Error("Failed to resolve report");
-
-			const result = await response.json();
-			CustomToast(result?.message, "success");
-			// toast.success(result?.message);
-
-			// Refresh both lists, or only one if you're tracking origin
-			fetchPanelReports();
-			fetchMaintenanceReports();
-		} catch (error: any) {
-			const errMsg =
-				generateErrorMessage(error) ||
-				"هنگام بررسی گزارش مشکلی پیش آمد.";
-			CustomToast(errMsg, "error");
-			// toast.error(errMsg);
-		}
+		postData({ endPoint: `/v1/admin/report/resolve/${reportId}` }).then(
+			(data) => {
+				CustomToast(data?.message, "success");
+				fetchPanelReports();
+				fetchMaintenanceReports();
+			}
+		);
 	};
 
 	useEffect(() => {
