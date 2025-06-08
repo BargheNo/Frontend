@@ -26,16 +26,23 @@ export default function InstalledPanelPagination() {
 	const [isLoading, setIsLoading] = useState(true);
 	const corpId = useSelector((state: RootState) => state.user.corpId);
 	const handelHistory = (status: string, offset: string, limit: string) => {
-		InstalledpanelService.GetInstalledPanels({
-			page: { status: "1", offset: offset ?? "1", limit: limit ?? "50" },
-			corpId: corpId,
-		})
-			.then((res) => {
-				sethistory(res.data);
-				// console.log(res.data);
-				setIsLoading(false);
+		if (corpId) {
+			InstalledpanelService.GetInstalledPanels({
+				page: {
+					status: "1",
+					offset: offset ?? "1",
+					limit: limit ?? "50",
+				},
+				corpId: corpId,
 			})
-			.catch((err) => console.log(err));
+				.then((res) => {
+					sethistory(res.data);
+					// console.log(res.data);
+				})
+				.finally(() => setIsLoading(false));
+		} else {
+			setIsLoading(false);
+		}
 	};
 	useEffect(() => {
 		getData({ endPoint: `/v1/user/corps` }).then((res) => {
