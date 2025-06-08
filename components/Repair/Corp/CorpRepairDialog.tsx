@@ -15,12 +15,32 @@ import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import { Button } from '@/components/ui/button';
 import { CheckCircle, XCircle } from 'lucide-react';
 
+interface RepairHistoryProps {
+    
+        id: string;
+        operator: {
+            firstName: string;
+            lastName: string;
+        };
+        createdAt: string;
+        title: string;
+        details: string;
+        violation?: {
+            reason: string;
+            details: string;
+        };
+    
+}
+
+
+
 const CorpRepairDialog = ({
 	isOpen,
 	onClose,
 	repairItem,
 }: CorpRepairDialogProps) => {
-	const [notes, setNotes] = useState<MaintenanceRecord[] | null>(null);
+	// const [notes, setNotes] = useState<MaintenanceRecord[] | null>(null);
+	const [notes, setNotes] = useState<RepairHistoryProps | null>(null);
 	const [isLoadingNotes, setIsLoadingNotes] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isFormOpen, setIsFormOpen] = useState(false);

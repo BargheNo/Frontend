@@ -1,16 +1,27 @@
 import React, { useEffect } from 'react';
 import { CalendarIcon, Captions, NotepadText, User } from 'lucide-react';
-import { MaintenanceRecord } from '@/types/CorpTypes';
+// import { MaintenanceRecord } from '@/types/CorpTypes';
 import moment from 'jalali-moment';
 
 interface RepairHistoryProps {
-    notes: MaintenanceRecord[] | null;
+    note: {
+        id: string;
+        operator: {
+            firstName: string;
+            lastName: string;
+        };
+        createdAt: string;
+        title: string;
+        details: string;
+        violation?: {
+            reason: string;
+            details: string;
+        };
+    };
 }
 
 const RepairHistory = ({ note }: RepairHistoryProps) => {
-    useEffect(() => {
-        console.log("Hiiii" + note);
-    }, [])
+    
     
     if (!note) return null;
 
@@ -37,7 +48,7 @@ const RepairHistory = ({ note }: RepairHistoryProps) => {
                                     const date = moment(note.createdAt);
                                     if (!date.isValid()) return "0/0/0 00:00"; // Fallback if invalid
                                     return date.locale('fa').format('jYYYY/jMM/jDD HH:mm');
-                                    } catch (error) {
+                                    } catch {
                                     return "0/0/0 00:00"; // Fallback if conversion fails
                                     }
                                 })()

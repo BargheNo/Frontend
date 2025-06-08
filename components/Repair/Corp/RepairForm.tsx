@@ -66,13 +66,13 @@ const RepairForm = ({ panelId, onSuccess }: RepairFormProps) => {
 						<div className="space-y-2">
 							<CustomInput
 								name="title"
-								label="عنوان"
+								// label="عنوان"
 								icon={Captions}
 								placeholder="عنوان یادداشت را وارد کنید"
 							/>
 							<CustomTextArea
 								name="details"
-								label="جزئیات"
+								// label="جزئیات"
 								icon={NotebookPen}
 								placeholder="جزئیات یادداشت را وارد کنید"
 							/>
@@ -82,13 +82,13 @@ const RepairForm = ({ panelId, onSuccess }: RepairFormProps) => {
 								</h5>
 								<CustomInput
 									name="guaranteeViolation.reason"
-									label="دلیل نقض گارانتی"
+									// label="دلیل نقض گارانتی"
 									icon={Captions}
 									placeholder="دلیل نقض گارانتی را وارد کنید"
 								/>
 								<CustomTextArea
 									name="guaranteeViolation.details"
-									label="جزئیات نقض گارانتی"
+									// label="جزئیات نقض گارانتی"
 									icon={NotebookPen}
 									placeholder="جزئیات نقض گارانتی را وارد کنید"
 								/>

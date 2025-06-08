@@ -12,7 +12,7 @@ import * as Yup from "yup";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import moment from "jalali-moment";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import { baseURL, postData, putData } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
@@ -128,7 +128,7 @@ const RepairDetailsDialog = ({
 	if (!repairItem) return null;
 
 	const handleSubmit = async (values: { problem: string }) => {
-		const repairHistoryId = repairItem.ID;
+		const repairHistoryId = repairItem.id;
 		const formData = {
 			description: values.problem,
 		};
