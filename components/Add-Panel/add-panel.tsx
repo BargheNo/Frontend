@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import style from "./style.module.css";
 import SignupButton from "@/components/SignupButton/SignupButton";
-import * as Yup from "yup";
 import { InitPanel } from "@/src/types/addPanelType";
 import {
 	Dialog,
@@ -29,6 +28,7 @@ import {
 } from "@/components/ui/dialog";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { Form, Formik } from "formik";
+import * as Yup from "yup";
 import {
 	Select,
 	SelectContent,
@@ -40,13 +40,12 @@ import {
 } from "@/components/ui/select";
 import { City, Province } from "@/src/types/provinceType";
 import provinceService from "@/src/services/provinceService";
-import { toast } from "sonner";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
 import addpanelService from "@/src/services/addpanelService";
 import CustomToast from "../Custom/CustomToast/CustomToast";
 import AddComponent from "../AddComponent/AddComponent";
 import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
+import { useSelector } from "react-redux";
 export default function AddPanel() {
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -89,23 +88,17 @@ export default function AddPanel() {
 	useEffect(() => {
 		UpdateCityList(provinceid ?? 1);
 	}, [provinceid]);
-
+	const corpId = useSelector((state: RootState) => state.user.corpId);
 	const handelAddPanelrequest = (panel: InitPanel) => {
-		setOpen(false);
+		// setOpen(false);
 		setLoading(true);
 		addpanelService
-			.AddPanel(panel)
+			.AddPanel(panel, corpId)
 			.then((res) => {
 				CustomToast(res?.message, "success");
 				console.log(res);
 				setOpen(false);
-				setLoading(false);
-			})
-			.catch((err) => {
-				console.log(err);
-				CustomToast(generateErrorMessage(err), "error");
-				setLoading(false);
-			});
+			}).finally(() => setLoading(false))
 	};
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -174,13 +167,13 @@ export default function AddPanel() {
 						unit: Yup.number().required("این فیلد الزامی است."),
 					})}
 					onSubmit={(values) => {
-						setOpen(false);
+						// setOpen(false);
 						handelAddPanelrequest({
-							panelName: values.name,
+							name: values.name,
 							customerPhone: "+98" + values.phonenumber,
 							power: Number(values.power),
 							area: Number(values.area),
-							buildingType: building,
+							buildingType: Number(building),
 							tilt: Number(values.angel),
 							azimuth: Number(values.direction),
 							totalNumberOfModules: Number(values.modulecount),
@@ -250,31 +243,31 @@ export default function AddPanel() {
 												نوع ساختمان
 											</SelectLabel>
 											<SelectItem
-												value="residential"
+												value="1"
 												className="cursor-pointer"
 											>
 												مسکونی
 											</SelectItem>
 											<SelectItem
-												value="commercial"
+												value="2"
 												className="cursor-pointer"
 											>
 												تجاری
 											</SelectItem>
 											<SelectItem
-												value="industrial"
+												value="3"
 												className="cursor-pointer"
 											>
 												صنعتی
 											</SelectItem>
 											<SelectItem
-												value="argiculture"
+												value="4"
 												className="cursor-pointer"
 											>
 												کشاورزی
 											</SelectItem>
 											<SelectItem
-												value="more"
+												value="5"
 												className="cursor-pointer"
 											>
 												سایر

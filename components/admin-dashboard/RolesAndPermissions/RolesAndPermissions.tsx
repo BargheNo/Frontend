@@ -6,26 +6,15 @@ import {
 	SquareCheckBig,
 	Trash2,
 	Pencil,
-	Plus,
-	Dot,
-	Loader2,
-	UserRoundCog,
-	Vote,
-	Check,
 } from "lucide-react";
 import { useSelector } from "react-redux";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
-import { toast } from "sonner";
 import {
 	Dialog,
 	DialogContent,
-	DialogHeader,
-	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
 
 import * as Yup from "yup";
-import { Form, Formik, FieldArray } from "formik";
 import { useEffect, useState } from "react";
 import EditRoleModal from "./EditRoleModal";
 import CreateRoleModal from "./CreateRoleModal";
@@ -34,7 +23,7 @@ import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import Header from "@/components/Header/Header";
 import { Badge } from "@/components/ui/badge";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
-import CustomInput from "@/components/Custom/CustomInput/CustomInput";
+import { deleteData, getData } from "@/src/services/apiHub";
 
 const initialValuesForm = { name: "", permissionIDs: [] };
 
@@ -56,188 +45,41 @@ const RolesAndPermissions = () => {
 		permissions: Permission[];
 	};
 
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
 	const [roles, setRoles] = useState<any[]>([]);
 	const [allPermissions, setAllPermissions] = useState<Permission[]>([]);
 	const [editOpen, setEditOpen] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [deletingId, setDeletingId] = useState<string | null>(null);
-	const [isSaving, setIsSaving] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [currentRole, setCurrentRole] = useState<Role | null>(null);
-	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
 	const getRoles = () => {
-		fetch("http://46.249.99.69:8080/v1/admin/roles", {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${accessToken}`,
-			},
-		})
-			.then((res) => res.json())
+		getData({ endPoint: `/v1/admin/roles` })
 			.then((data) => {
 				setRoles(data.data);
 				setLoading(false);
 			})
-			.catch((err) => {
-				const errMsg =
-					generateErrorMessage(err) ||
-					"مشکلی در دریافت نقش ها رخ داد.";
-				// toast.error(errMsg);
-				CustomToast(errMsg, "error");
-				setLoading(false);
-			});
+			.finally(() => setLoading(false));
 	};
 	const deleteRole = async (roleToDeleteId: string) => {
 		setDeletingId(roleToDeleteId);
-		try {
-			const response = await fetch(
-				`http://46.249.99.69:8080/v1/admin/roles/${roleToDeleteId}`,
-				{
-					method: "DELETE",
-					headers: {
-						Authorization: `Bearer ${accessToken}`,
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({}),
-				}
-			);
-
-			if (!response.ok) {
-				throw new Error("Failed to resolve ticket");
-			}
-
-			const result = await response.json();
-			// toast.success(result.message);
-			CustomToast(result?.message, "success");
-			getRoles();
-			setDeletingId(null);
-
-			// Optionally refresh ticket list or update UI
-		} catch (error: any) {
-			const errMsg =
-				generateErrorMessage(error) || "هنگام حذف نقش مشکلی پیش آمد.";
-			// toast.error(errMsg);
-			CustomToast(errMsg, "error");
-			setDeletingId(null);
-		}
+		deleteData({ endPoint: `/v1/admin/roles/${roleToDeleteId}` })
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				getRoles();
+			})
+			.finally(() => setDeletingId(null));
 	};
-	// const savePermissions = async (values: EditRoleTypes) => {
-	// 	if (!values.role) return;
-	// 	setIsSaving(true);
 
-	// 	try {
-	// 		const response = await fetch(
-	// 			`http://46.249.99.69:8080/v1/admin/roles/${role.id}`,
-	// 			{
-	// 				method: "PUT",
-	// 				headers: {
-	// 					"Content-Type": "application/json",
-	// 					Authorization: `Bearer ${accessToken}`,
-	// 				},
-	// 				body: JSON.stringify({
-	// 					name: values.name,
-	// 					permissionIDs: values.permissionIDs,
-	// 				}),
-	// 			}
-	// 		);
-
-	// 		if (!response.ok) {
-	// 			throw new Error("Failed to update role");
-	// 		}
-
-	// 		const result = await response.json();
-	// 		// toast.success(result.message);
-	// 		CustomToast(result?.message, "success");
-	// 	} catch (error: any) {
-	// 		const errMsg =
-	// 			generateErrorMessage(error) ||
-	// 			"هنگام به‌روزرسانی نقش مشکلی پیش آمد.";
-	// 		// toast.error(errMsg);
-	// 		CustomToast(errMsg, "error");
-	// 	} finally {
-	// 		setIsSaving(false);
-	// 	}
-	// };
-
-	// const openEditModal = (role: Role) => {
-	// 	setCurrentRole(role);
-	// 	setIsModalOpen(true);
-	// };
-	// const permissionsByCategory = allPermissions.reduce((acc, permission) => {
-	// 	if (!acc[permission.category]) {
-	// 		acc[permission.category] = [];
-	// 	}
-	// 	acc[permission.category].push(permission);
-	// 	return acc;
-	// }, {} as Record<string, Permission[]>);
-	// const getRolePermissions = async (roleId: string) => {
-	// 	try {
-	// 		const response = await fetch(
-	// 			`http://46.249.99.69:8080/v1/admin/roles/${roleId}`,
-	// 			{
-	// 				method: "GET",
-	// 				headers: {
-	// 					"Content-Type": "application/json",
-	// 					Authorization: `Bearer ${accessToken}`,
-	// 				},
-	// 			}
-	// 		);
-	// 		const data = await response.json();
-	// 		setSelectedPermissions(
-	// 			data.data.permissions.map((p: Permission) => p.id)
-	// 		);
-	// 	} catch (err: any) {
-	// 		console.log(err);
-	// 		const errMsg =
-	// 			generateErrorMessage(err) ||
-	// 			"مشکلی در دریافت مجوزهای نقش رخ داد.";
-	// 		// toast.error(errMsg);
-	// 		CustomToast(errMsg, "error");
-	// 	}
-	// };
 	const getAllPermissions = async () => {
-		try {
-			const response = await fetch(
-				"http://46.249.99.69:8080/v1/admin/permissions",
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${accessToken}`,
-					},
-				}
-			);
-			const data = await response.json();
+		getData({ endPoint: `/v1/admin/permissions` }).then((data) => {
 			setAllPermissions(data.data);
-		} catch (err: any) {
-			const errMsg =
-				generateErrorMessage(err) || "مشکلی در دریافت مجوزها رخ داد.";
-			// toast.error(errMsg);
-			CustomToast(errMsg, "error");
-		}
+		});
 	};
 	useEffect(() => {
 		getAllPermissions();
 		getRoles();
 	}, []);
-	// const handleChange = (
-	// 	e: React.ChangeEvent<HTMLInputElement>,
-	// 	permissionId: number,
-	// 	push: any,
-	// 	remove: any
-	// ) => {
-	// 	// setFieldValue("");
-	// 	if (e.target.checked) {
-	// 		push(permissionId);
-	// 	} else {
-	// 		remove(permissionId);
-	// 	}
-	// };
 	return (
 		<>
 			<CreateRoleModal onSaveSuccess={getRoles} />
@@ -280,7 +122,10 @@ const RolesAndPermissions = () => {
 													<p>دسترسی موجود نیست</p>
 												) : (
 													role.permissions.map(
-														(permission: Permission, index:number) =>
+														(
+															permission: Permission,
+															index: number
+														) =>
 															index < 5 && (
 																<div
 																	className="flex flex-row"
@@ -308,13 +153,13 @@ const RolesAndPermissions = () => {
 											</div>
 										</div>
 									</div>
-									<div
-										className="flex flex-row w-full h-full px-4 gap-4 rtl justify-end"
-									>
+									<div className="flex flex-row w-full h-full px-4 gap-4 rtl justify-end">
 										<DialogTrigger asChild>
 											<button
 												key={index}
-												onClick={() => setCurrentRole(role)}
+												onClick={() =>
+													setCurrentRole(role)
+												}
 												className={`cta-neu-button cursor-pointer w-1/8 flex flex-row ${styles.button} items-center content-center justify-center h-1/2 w-1/2`}
 											>
 												<p>تغییر</p>

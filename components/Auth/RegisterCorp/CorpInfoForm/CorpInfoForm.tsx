@@ -12,7 +12,6 @@ import {
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { baseURL, getData } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import { useSelector } from "react-redux";
 import { useMediaQuery } from "react-responsive";
@@ -45,13 +44,8 @@ export default function CorpInfoForm({
 					setFieldValue("nationalID", res.data.nationalID);
 					setFieldValue("iban", res.data.iban);
 					setFieldValue("signatories", res.data.signatories);
-					setLoading(false);
 				})
-				.catch((err) => {
-					console.log(err);
-					CustomToast(generateErrorMessage(err), "error");
-					setLoading(false);
-				});
+				.finally(() => setLoading(false));
 		} else {
 			setLoading(false);
 		}

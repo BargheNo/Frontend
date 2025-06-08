@@ -23,12 +23,9 @@ export default function OrderHistoryPagination() {
 	const [history, sethistory] = useState<Orderhistory[]>([]);
 	const [currpage, Setcurrpage] = useState<string>("1");
 	const [isLoading, setIsLoading] = useState(true);
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
-	const handelHistory = (page: string, pageSize: string) => {
+	const handelHistory = (status: string, offset: string, limit: string) => {
 		orderService
-			.orderHistory({ page: page, pageSize: pageSize }, accessToken)
+			.orderHistory({status: status ?? "1", offset: status ?? "1", limit: limit ?? "1"})
 			.then((res) => {
 				sethistory(res.data);
 				setIsLoading(false);
@@ -36,7 +33,7 @@ export default function OrderHistoryPagination() {
 			.catch((err) => console.log(err));
 	};
 	useEffect(() => {
-		handelHistory(currpage, "3");
+		handelHistory("1", currpage, "3");
 	}, [currpage]);
 	// const address = {
 	//   ID: 2,

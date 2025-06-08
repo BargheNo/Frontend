@@ -173,26 +173,6 @@ const CustomerRepairRequest = () => {
 				// toast.error("مشکلی در ثبت درخواست پیش آمد!");
 				setButtonLoading(false);
 			});
-
-		// try {
-		//   const response = await fetch('EndPointtttttttttttttttttttttt', {
-		//     method: 'POST',
-		//     headers: {
-		//       'Content-Type': 'application/json',
-		//       'Authorization': 'Tokennnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn'
-		//     },
-		//     body: JSON.stringify(formData)
-		//   });
-
-		//   if (!response.ok) {
-		//     throw new Error('Network response was not ok');
-		//   }
-
-		//   const data = await response.json();
-		//   console.log('Success:', data);
-		// } catch (error) {
-		//   console.error('Error:', error);
-		// }
 	};
 
 	return (

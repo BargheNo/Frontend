@@ -20,7 +20,6 @@ export default function wordExpression(
 				res += `${Math.round(value / 1e9) % 1000} میلیارد`;
 				found = true;
 			}
-			console.log("m:", Math.round(value / 1e9) % 1000);
 			if (Math.round(value / 1e6) % 1000 !== 0) {
 				if (found) res += " و ";
 				res += `${Math.round(value / 1e6) % 1000} میلیون`;

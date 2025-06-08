@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { MoveLeft, Lock, Unlock, Smartphone, Loader2 } from "lucide-react";
+import { MoveLeft, Lock, Unlock, Smartphone } from "lucide-react";
 import Link from "next/link";
 import styles from "./login.module.css";
 import { Formik, Form } from "formik";
@@ -8,12 +8,9 @@ import * as Yup from "yup";
 import CustomInput from "../../Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import LoginButton from "./LoginButton";
-import { baseURL, getData, postData } from "../../../src/services/apiHub";
-import { toast } from "sonner";
+import { getData, postData } from "../../../src/services/apiHub";
 import { setUser } from "@/src/store/slices/userSlice";
 import { useDispatch } from "react-redux";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
-import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 import { useRouter } from "next/navigation";
@@ -41,46 +38,39 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-  useEffect(() => {
-    console.log(localStorage.getItem("user"));
-  }, []);
-  const dispatch = useDispatch();
-  const handleFormSubmit = async (values: {
-    phoneNumber: string;
-    password: string;
-  }) => {
-    const { phoneNumber, password } = values;
-    setLoading(true);
-    try {
-      console.log(localStorage.getItem("user"));
-      const responce = await postData({
-        endPoint: "/v1/auth/login",
-        data: {
-          phone: "+98" + phoneNumber,
-          password: password,
-        },
-      });
-
-      if (responce?.statusCode === 200) {
-        console.log(responce);
-        CustomToast(responce?.message, "success");
-        // toast(<div id="sonner-toast">{response?.message}</div>);
-        // toast.success(response?.message);
-        dispatch(
-          setUser({
-            firstName: responce.data.firstName,
-            lastName: responce.data.lastName,
-            permissions: responce.data.permissions,
-            accessToken: responce.data.accessToken,
-            refreshToken: responce.data.accessToken,
-            // corpId: responceCorpID.data?.id,
-          })
-        );
-        setLoading(false);
-        router.replace("/dashboard");
+	const togglePasswordVisibility = () => {
+		setShowPassword(!showPassword);
+	};
+	useEffect(() => {
+		console.log(localStorage.getItem("user"));
+	}, []);
+	const dispatch = useDispatch();
+	const handleFormSubmit = async (values: {
+		phoneNumber: string;
+		password: string;
+	}) => {
+		const { phoneNumber, password } = values;
+		setLoading(true);
+		console.log(localStorage.getItem("user"));
+		postData({
+			endPoint: "/v1/auth/login",
+			data: {
+				phone: "+98" + phoneNumber,
+				password: password,
+			},
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				dispatch(
+					setUser({
+						firstName: data.data.firstName,
+						lastName: data.data.lastName,
+						permissions: data.data.permissions,
+						accessToken: data.data.accessToken,
+						refreshToken: data.data.accessToken,
+					})
+				);
+				router.replace("/dashboard");
         setTimeout(async () => {
           console.log("getting corp id ...");
           const responceCorpID = await getData({ endPoint: "/v1/user/corps" });
@@ -88,38 +78,26 @@ const Login = () => {
             console.log(responceCorpID);
             dispatch(
               setUser({
-                firstName: responce.data.firstName,
-                lastName: responce.data.lastName,
-                permissions: responce.data.permissions,
-                accessToken: responce.data.accessToken,
-                refreshToken: responce.data.accessToken,
+                firstName: data.data.firstName,
+                lastName: data.data.lastName,
+                permissions: data.data.permissions,
+                accessToken: data.data.accessToken,
+                refreshToken: data.data.accessToken,
                 corpId: responceCorpID.data[0]?.id,
               })
             );
           }
         }, 1000);
-      }
-    } catch (error: any) {
-      // toast.error(
-      // 	generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد."
-      // );
-      CustomToast(
-        generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد.",
-        "error"
-      );
-      // toast(
-      // 	<div id="sonner-toast">
-      // 		{generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد."}
-      // 	</div>
-      // );
-      setLoading(false);
-    }
-  };
-  return (
-    <div className={`${vazir.className} w-full`}>
-      <div dir="rtl" className={`${styles.mainbg} w-full`}>
-        <div className="w-full max-w-md p-6 space-y-4 shadow-2xl rounded-2xl bg-[#f1f4fc]">
-          <h2 className="text-3xl text-black text-center">{"ورود"}</h2>
+			})
+			.finally(() => setLoading(false));
+	};
+	return (
+		<div className={`${vazir.className} w-full`}>
+			<div dir="rtl" className={`${styles.mainbg} w-full`}>
+				<div className="w-full max-w-md p-6 space-y-4 shadow-2xl rounded-2xl bg-[#f1f4fc]">
+					<h2 className="text-3xl text-black text-center">
+						{"ورود"}
+					</h2>
 
           <Formik
             initialValues={initialValues}
