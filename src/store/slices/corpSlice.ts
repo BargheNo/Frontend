@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: corpData = {
+	id: 0,
 	name: "",
 	registrationNumber: "",
 	nationalID: "",
@@ -14,6 +15,7 @@ export const corpSlice = createSlice({
 	initialState,
 	reducers: {
 		setCorp: (state: corpData, action: PayloadAction<corpData>) => {
+			state.id = action.payload.id;
 			state.name = action.payload.name;
 			state.registrationNumber = action.payload.registrationNumber;
 			state.nationalID = action.payload.nationalID;

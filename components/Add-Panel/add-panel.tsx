@@ -59,7 +59,7 @@ export default function AddPanel() {
 		provinceService
 			.GetProvinces()
 			.then((res) => {
-				Setprovinces(res.data.data);
+				Setprovinces(res?.data);
 			})
 			.catch((err) => {
 				console.log(err.message);
@@ -70,18 +70,18 @@ export default function AddPanel() {
 	}, []);
 
 	const UpdateCityList = (provinceId: number) => {
-		provinceService
-			.GetCities(provinceId)
-			.then((res) => Setcities(res.data.data))
-			.catch((err) => console.log(err.message));
+		provinceService.GetCities(provinceId).then((res) => {
+			console.log(res);
+			Setcities(res?.data);
+		});
 	};
 	const Findprovinceid = (provinces: Province[], name: string) => {
-		const province = provinces.find((p) => p.name === name);
+		const province = provinces.find((p) => String(p.ID) === name);
 		return province?.ID ?? null;
 	};
 
 	const FindCityid = (cities: City[], name: string) => {
-		const city = cities.find((p) => p.name === name);
+		const city = cities.find((p) => String(p.ID) === name);
 		return city?.ID ?? null;
 	};
 
@@ -98,7 +98,8 @@ export default function AddPanel() {
 				CustomToast(res?.message, "success");
 				console.log(res);
 				setOpen(false);
-			}).finally(() => setLoading(false))
+			})
+			.finally(() => setLoading(false));
 	};
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -198,18 +199,14 @@ export default function AddPanel() {
 									icon={IdCard}
 									name="phonenumber"
 									type="number"
-								>
-									{" "}
-								</CustomInput>
+								/>
 
 								<CustomInput
 									dir="rtl"
 									placeholder="نام پنل"
 									icon={SquareMenu}
 									name="name"
-								>
-									{" "}
-								</CustomInput>
+								/>
 							</div>
 							<div
 								className="flex justify-end w-full -mt-4"
@@ -221,9 +218,7 @@ export default function AddPanel() {
 									icon={Tally5}
 									name="modulecount"
 									placeholder="تعداد ماژول ها"
-								>
-									{" "}
-								</CustomInput>
+								/>
 
 								<Select
 									name="building"
@@ -286,18 +281,14 @@ export default function AddPanel() {
 									icon={DatabaseZap}
 									placeholder="مجموع توان تولید شده (کیلووات)"
 									name="power"
-								>
-									{" "}
-								</CustomInput>
+								/>
 								<CustomInput
 									type="number"
 									dir="rtl"
 									icon={TriangleRight}
 									name="angel"
 									placeholder="زاویه نصب (درجه)"
-								>
-									{" "}
-								</CustomInput>
+								/>
 							</div>
 							<div
 								className="flex justify-end w-full -mt-4"
@@ -310,9 +301,7 @@ export default function AddPanel() {
 									icon={Compass}
 									placeholder="جهت نصب (درجه)"
 									name="direction"
-								>
-									{" "}
-								</CustomInput>
+								/>
 								<CustomInput
 									type="number"
 									style={{ width: "12vw" }}
@@ -320,9 +309,7 @@ export default function AddPanel() {
 									icon={LandPlot}
 									placeholder="مساحت (مترمربع)"
 									name="area"
-								>
-									{" "}
-								</CustomInput>
+								/>
 							</div>
 							<div
 								className={`${style.citypro} flex md:flex-row flex-col justify-between w-full mt-2`}
@@ -355,9 +342,9 @@ export default function AddPanel() {
 													(provincearr, index) => (
 														<SelectItem
 															key={index}
-															value={
-																provincearr.name
-															}
+															value={String(
+																provincearr.ID
+															)}
 															className="cursor-pointer"
 														>
 															{provincearr.name}
@@ -392,7 +379,7 @@ export default function AddPanel() {
 												cities.map((city, index) => (
 													<SelectItem
 														key={index}
-														value={city.name}
+														value={String(city.ID)}
 														className="cursor-pointer"
 													>
 														{Object.values(

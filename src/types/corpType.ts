@@ -22,6 +22,7 @@ interface contactInformation {
 }
 
 interface corpData {
+	id?: number;
 	name?: string;
 	registrationNumber?: string;
 	nationalID?: string;

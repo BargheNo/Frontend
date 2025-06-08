@@ -142,12 +142,11 @@ export default function Page() {
 	const router = useRouter();
 	const [step, setStep] = useState<number>(0);
 	const [loadingButton, setLoadingButton] = useState<boolean>(false);
-	const corp = useSelector((state: RootState) => state).corp;
 	const user = useSelector((state: RootState) => state).user;
 	const accessToken = useSelector(
 		(state: RootState) => state.user.accessToken
 	);
-	const corpId = useSelector((state: RootState) => state.user.corpId);
+	const corpId = useSelector((state: RootState) => state.corp.id);
 	const onSubmit = async (
 		values: corpData,
 		setFieldValue: any,
@@ -157,6 +156,7 @@ export default function Page() {
 		// await validateForm(values);
 		setLoadingButton(true);
 		if (step === 0) {
+			console.log(corpId);
 			if (corpId) {
 				getData({
 					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
@@ -210,14 +210,13 @@ export default function Page() {
 									putData({
 										endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/basic`,
 										data: formData,
-									})
-										.then((res) => {
-											CustomToast(res.message, "success");
-											if (step < steps.length - 1) {
-												setStep(step + 1);
-											}
-											resetFormValues(setFieldValue);
-										})
+									}).then((res) => {
+										CustomToast(res.message, "success");
+										if (step < steps.length - 1) {
+											setStep(step + 1);
+										}
+										resetFormValues(setFieldValue);
+									});
 								} else {
 									if (step < steps.length - 1) {
 										setStep(step + 1);
@@ -284,50 +283,49 @@ export default function Page() {
 			if (corpId) {
 				getData({
 					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
-				})
-					.then(async (res) => {
-						const formData: corpData = {};
-						if (values.contactInformation != res.data.contactInfo) {
-							formData["contactInformation"] =
-								values.contactInformation;
-						}
-						if (
-							values.contactInformation?.length === 0 &&
-							res.data.contactInfo.length === 0
-						) {
-							CustomToast(
-								"افزودن حداقل یک راه ارتباطی الزامی است",
-								"warning"
-							);
-							setLoadingButton(false);
-							return;
-						}
-						console.log("formData in step 1", formData);
-						const contactInformationOk =
-							await checkContactInformationOk(formData);
-						if (contactInformationOk) {
-							if (formData?.contactInformation?.length !== 0) {
-								postData({
-									endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts`,
-									data: formData,
+				}).then(async (res) => {
+					const formData: corpData = {};
+					if (values.contactInformation != res.data.contactInfo) {
+						formData["contactInformation"] =
+							values.contactInformation;
+					}
+					if (
+						values.contactInformation?.length === 0 &&
+						res.data.contactInfo.length === 0
+					) {
+						CustomToast(
+							"افزودن حداقل یک راه ارتباطی الزامی است",
+							"warning"
+						);
+						setLoadingButton(false);
+						return;
+					}
+					console.log("formData in step 1", formData);
+					const contactInformationOk =
+						await checkContactInformationOk(formData);
+					if (contactInformationOk) {
+						if (formData?.contactInformation?.length !== 0) {
+							postData({
+								endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts`,
+								data: formData,
+							})
+								.then((res) => {
+									console.log("res", res);
+									CustomToast(res?.message, "success");
+									setFieldValue("contactInformation", []);
+									if (step < steps.length - 1) {
+										setStep(step + 1);
+									}
 								})
-									.then((res) => {
-										console.log("res", res);
-										CustomToast(res?.message, "success");
-										setFieldValue("contactInformation", []);
-										if (step < steps.length - 1) {
-											setStep(step + 1);
-										}
-									})
-									.finally(() => setLoadingButton(false));
-							} else {
-								if (step < steps.length - 1) {
-									setStep(step + 1);
-									setLoadingButton(false);
-								}
+								.finally(() => setLoadingButton(false));
+						} else {
+							if (step < steps.length - 1) {
+								setStep(step + 1);
+								setLoadingButton(false);
 							}
 						}
-					})
+					}
+				});
 			} else {
 				CustomToast("شرکتی برای شما ثبت نشده است", "info");
 				setLoadingButton(false);
