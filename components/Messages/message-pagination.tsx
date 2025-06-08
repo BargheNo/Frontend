@@ -58,36 +58,33 @@ export default function CorpMessagesPagination() {
     }[]
   >([]);
 
-  useEffect(() => {
-    setLoading(true);
-    notificationService
-      .getNotificationType()
-      .then((res) => {
-        setNotifTypes(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err.message);
-        setLoading(false);
-      });
-    notificationService
-      .getNotificationSetting()
-      .then((res) => setNotifSetting(res.data))
-      .catch((err) => console.log(err.message));
-  }, []);
+	useEffect(() => {
+		setLoading(true);
+		notificationService
+			.getNotificationType()
+			.then((res) => {
+				setNotifTypes(res.data);
+				setLoading(false);
+			})
+			.catch((err) => {
+				console.log(err.message);
+				setLoading(true);
+			});
+		notificationService
+			.getNotificationSetting()
+			.then((res) => setNotifSetting(res.data))
+			.catch((err) => console.log(err.message));
+	}, []);
 
-  useEffect(() => {
-    notificationService
-      .getNotificationFielter(notifId, {
-        page: currpage,
-        pageSize: "4",
-      })
-      .then((res) => {
-        setNotifications(res.data);
-        setLoading2(false);
-      })
-      .catch(() => setLoading2(false));
-  }, [notifId, currpage]);
+	useEffect(() => {
+		notificationService
+			.getNotificationFielter(notifId, {
+				page: currpage,
+				pageSize: "4",
+			})
+			.then((res) => {setNotifications(res.data);setLoading2(false)})
+			.catch(()=>setLoading2(true));
+	}, [notifId, currpage]);
 
   useEffect(() => {
     if (notifSetting && notifSetting.length > 0) {

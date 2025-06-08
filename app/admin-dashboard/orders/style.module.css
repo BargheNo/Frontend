@@ -1,0 +1,6 @@
+.CustomInput {
+    box-shadow: inset 1px 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 13px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
