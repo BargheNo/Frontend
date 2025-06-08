@@ -16,7 +16,6 @@ import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import { baseURL, postData, putData } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
-import { postData } from "@/src/services/apiHub";
 
 interface ErrorResponse {
 	message: string;
