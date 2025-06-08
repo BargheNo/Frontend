@@ -130,7 +130,7 @@ const CorpManagement = () => {
     setIsProfileOpen(true);
   };
 
-  const handleStatusChange = async (id: number, status: "accept" | "reject") => {
+  const handleStatusChange = async (id: number, status: "accept" | "reject" | "suspend") => {
     try {
       setLoading(true);
       const response = await fetch(
