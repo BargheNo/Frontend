@@ -9,6 +9,7 @@ interface NavItem {
 interface PanelAsideProps {
   children?: ReactNode;
   navItems: NavItem[];
+  navItemsMonitoring?: NavItem[];
   mode?: string;
 }
 
