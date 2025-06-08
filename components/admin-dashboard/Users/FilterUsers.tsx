@@ -7,8 +7,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { toast } from "sonner";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
+import { getData } from "@/src/services/apiHub";
 
 type Role = {
 	id: number;
@@ -34,65 +33,34 @@ export default function FilterUsers({
 
 	// Fetch all roles when needed
 	const fetchRoles = useCallback(async () => {
-		try {
-			setLoadingRoles(true);
-			const response = await fetch(
-				"http://46.249.99.69:8080/v1/admin/roles",
-				{
-					headers: {
-						Authorization: `Bearer ${accessToken}`,
-					},
-				}
-			);
-			const data = await response.json();
-			setRoles(data.data);
-		} catch (err: any) {
-			const errMsg =
-				generateErrorMessage(err) || "مشکلی در دریافت نقش‌ها رخ داد.";
-			toast.error(errMsg);
-		} finally {
-			setLoadingRoles(false);
-		}
+		setLoadingRoles(true);
+		getData({ endPoint: `/v1/admin/roles` })
+			.then((data) => {
+				setRoles(data.data);
+			})
+			.finally(() => setLoadingRoles(false));
 	}, [accessToken]);
 
 	// Fetch all users (no filtering)
 	const fetchAllUsers = useCallback(async () => {
-		try {
-			setLoading(true);
-			const response = await fetch(
-				"http://46.249.99.69:8080/v1/admin/users?statuses=1&statuses=2",
-				{ headers: { Authorization: `Bearer ${accessToken}` } }
-			);
-			const data = await response.json();
-			onFilteredUsers(data.data);
-		} catch (err: any) {
-			const errMsg =
-				generateErrorMessage(err) || "مشکلی در دریافت کاربران رخ داد.";
-			toast.error(errMsg);
-		} finally {
-			setLoading(false);
-		}
+		setLoading(true);
+		getData({ endPoint: `/v1/admin/users?statuses=1&statuses=2` })
+			.then((data) => {
+				onFilteredUsers(data.data);
+			})
+			.finally(() => setLoading(false));
 	}, [accessToken, onFilteredUsers, setLoading]);
 
 	// Fetch users by status
 	const fetchUsersByStatus = useCallback(
 		async (status: string) => {
-			try {
-				setLoading(true);
-				const response = await fetch(
-					`http://46.249.99.69:8080/v1/admin/users?statuses=${status}`,
-					{ headers: { Authorization: `Bearer ${accessToken}` } }
-				);
-				const data = await response.json();
-				onFilteredUsers(data.data);
-			} catch (err: any) {
-				const errMsg =
-					generateErrorMessage(err) ||
-					"مشکلی در دریافت کاربران رخ داد.";
-				toast.error(errMsg);
-			} finally {
-				setLoading(false);
-			}
+			getData({
+				endPoint: `/v1/admin/users?statuses=${status}`,
+			})
+				.then((data) => {
+					onFilteredUsers(data.data);
+				})
+				.finally(() => setLoading(false));
 		},
 		[accessToken, onFilteredUsers, setLoading]
 	);
@@ -100,37 +68,26 @@ export default function FilterUsers({
 	// Fetch users by role
 	const fetchUsersByRole = useCallback(
 		async (roleId: string) => {
-			try {
-				setLoading(true);
-				const response = await fetch(
-					`http://46.249.99.69:8080/v1/admin/roles/${roleId}/owners`,
-					{ headers: { Authorization: `Bearer ${accessToken}` } }
-				);
-				const data = await response.json();
+			setLoading(true);
+			getData({ endPoint: `/v1/admin/roles/${roleId}/owners` })
+				.then((data) => {
+					const formattedUsers = data.data
+						.filter(
+							(user: any) =>
+								user.firstName || user.lastName || user.phone
+						) // Filter empty users
+						.map((user: any, index: number) => ({
+							id: user.id === 0 ? index + 1 : user.id, // Handle ID 0 by using index
+							firstName: user.firstName,
+							lastName: user.lastName,
+							phone: user.phone,
+							status:
+								user.status === "active" ? "active" : "block", // Ensure consistent status values
+						}));
 
-				// Filter out empty/invalid users and transform data
-				const formattedUsers = data.data
-					.filter(
-						(user: any) =>
-							user.firstName || user.lastName || user.phone
-					) // Filter empty users
-					.map((user: any, index: number) => ({
-						id: user.id === 0 ? index + 1 : user.id, // Handle ID 0 by using index
-						firstName: user.firstName,
-						lastName: user.lastName,
-						phone: user.phone,
-						status: user.status === "active" ? "active" : "block", // Ensure consistent status values
-					}));
-
-				onFilteredUsers(formattedUsers);
-			} catch (err: any) {
-				const errMsg =
-					generateErrorMessage(err) ||
-					"مشکلی در دریافت کاربران رخ داد.";
-				toast.error(errMsg);
-			} finally {
-				setLoading(false);
-			}
+					onFilteredUsers(formattedUsers);
+				})
+				.finally(() => setLoading(false));
 		},
 		[accessToken, onFilteredUsers, setLoading]
 	);
@@ -180,7 +137,7 @@ export default function FilterUsers({
 				return (
 					<Select
 						onValueChange={(value) => setFilterValue(value)}
-            defaultValue="all"
+						defaultValue="all"
 						disabled={loadingRoles}
 					>
 						<SelectTrigger

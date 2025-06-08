@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import { baseURL, postData, putData } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import { postData } from "@/src/services/apiHub";
 
 interface ErrorResponse {
 	message: string;
@@ -124,45 +125,21 @@ const RepairDetailsDialog = ({
 	onRefresh,
 }: RepairDetailsDialogProps) => {
 	const [showConfirmation, setShowConfirmation] = useState(false);
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
 
 	if (!repairItem) return null;
 
 	const handleSubmit = async (values: { problem: string }) => {
-		try {
-			console.log(values);
-			const repairHistoryId = repairItem.id;
-			const response = await fetch(
-				`http://46.249.99.69:8080/v1/user/report/maintenance/${repairHistoryId}`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${accessToken}`,
-					},
-					body: JSON.stringify({
-						description: values.problem,
-					}),
-				}
-			);
-
-			if (!response.ok) {
-				throw new Error("Network response was not ok");
-			}
-
-			// Handle success
-			const data = await response.json();
+		const repairHistoryId = repairItem.ID;
+		const formData = {
+			description: values.problem,
+		};
+		postData({
+			endPoint: `/v1/user/report/maintenance/${repairHistoryId}`,
+			data: formData,
+		}).then((data) => {
 			CustomToast(data?.message, "success");
-			onRefresh();
 			onClose();
-		} catch (error: unknown) {
-			const errMsg =
-				generateErrorMessage(error as ErrorResponse) ||
-				"هنگام ایجاد گزارش جدید مشکلی پیش آمد.";
-			CustomToast(errMsg, "error");
-		}
+		});
 	};
 
 	const handleOverrideRequest = async () => {

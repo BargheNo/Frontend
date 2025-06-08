@@ -5,22 +5,17 @@ import { useSelector } from "react-redux";
 import {
 	MessageCirclePlus,
 	MessageCircleMore,
-	ArrowLeft,
 	XIcon,
-	MessageCircle,
 } from "lucide-react";
 import React from "react";
 import styles from "./Tickets.module.css";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
-import { toast } from "sonner";
-import Header from "@/components/Header/Header";
-import Image from "next/image";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
+import { getData, postData } from "@/src/services/apiHub";
 
 interface Ticket {
 	id: string;
@@ -86,39 +81,12 @@ const TicketSupportPage = () => {
 	};
 	const resolveTicket = async (ticketId: string) => {
 		setResolveTicketLoading(true);
-		try {
-			const response = await fetch(
-				`http://46.249.99.69:8080/v1/admin/ticket/${ticketId}/resolve`,
-				{
-					method: "POST",
-					headers: {
-						Authorization: `Bearer ${accessToken}`,
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({}),
-				}
-			);
-
-			setResolveTicketLoading(false);
-			if (!response.ok) {
-				throw new Error("Failed to resolve ticket");
-			}
-
-			const result = await response.json();
-			// toast.success(result?.message);
-			CustomToast(result?.message, "success");
-			fetchTickets();
-
-			// Optionally refresh ticket list or update UI
-		} catch (error: any) {
-			console.log(error);
-			const errMsg =
-				generateErrorMessage(error) ||
-				"هنگام بررسی تیکت مشکلی پیش آمد.";
-			// toast.error(errMsg);
-			CustomToast(errMsg, "error");
-			setResolveTicketLoading(false);
-		}
+		postData({ endPoint: `/v1/admin/ticket/${ticketId}/resolve` })
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				fetchTickets();
+			})
+			.finally(() => setResolveTicketLoading(false));
 	};
 
 	const createComment = async (
@@ -126,86 +94,36 @@ const TicketSupportPage = () => {
 		activeCommentTicketId: string
 	) => {
 		setPutCommentLoading(true);
-		try {
-			console.log("comment", comment);
-			const response = await fetch(
-				`http://46.249.99.69:8080/v1/admin/ticket/${activeCommentTicketId}/comments`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${accessToken}`,
-					},
-					body: JSON.stringify({ body: comment }),
-				}
-			);
-
-			const result = await response.json();
-			// toast.success(result?.message);
-			CustomToast(result?.message, "success");
-			getComments(activeCommentTicketId);
-			setPutCommentLoading(false);
-
-			setActiveCommentTicketId(null);
-		} catch (error: any) {
-			const errMsg =
-				generateErrorMessage(error) ||
-				"هنگام ایجاد نظر جدید مشکلی پیش آمد.";
-			// toast.error(errMsg);
-			CustomToast(errMsg, "error");
-			setPutCommentLoading(false);
-
-			setActiveCommentTicketId(null);
-		}
+		const formData = { comment: comment };
+		postData({
+			endPoint: `/v1/admin/ticket/${activeCommentTicketId}/comments`,
+			data: formData,
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				getComments(activeCommentTicketId);
+			})
+			.finally(() => {
+				setPutCommentLoading(false);
+				setActiveCommentTicketId(null);
+			});
 	};
 
 	const getComments = async (showCommentBoxFor: string | null) => {
-		// setComments([]);
 		setIsLoadingComments(true);
-		fetch(
-			`http://46.249.99.69:8080/v1/admin/ticket/${showCommentBoxFor}/comments`,
-			{
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${accessToken}`,
-				},
-			}
-		)
-			.then((res) => res.json())
+		getData({
+			endPoint: `/v1/admin/ticket/${showCommentBoxFor}/comments`,
+		})
 			.then((data) => {
 				setComments(data.data);
-				setIsLoadingComments(false);
 			})
-			.catch((err: any) => {
-				const errMsg =
-					generateErrorMessage(err) ||
-					"هنگام گردآوری نظرات مشکلی به وجود آمد.";
-				// toast.error(errMsg);
-				CustomToast(errMsg, "error");
-				setIsLoadingComments(false);
-			});
+			.finally(() => setIsLoadingComments(false));
 	};
 
 	const fetchTickets = () => {
-		fetch("http://46.249.99.69:8080/v1/admin/ticket", {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${accessToken}`,
-			},
-		})
-			.then((res) => res.json())
-			.then((data) => {
-				setTickets(data.data);
-			})
-			.catch((err) => {
-				const errMsg =
-					generateErrorMessage(err) ||
-					"هنگام گردآوری تیکت ها مشکلی پیش آمد.";
-				// toast.error(errMsg);
-				CustomToast(errMsg, "error");
-			});
+		getData({ endPoint: `/v1/admin/ticket` }).then((data) => {
+			setTickets(data.data);
+		});
 	};
 
 	useEffect(() => {
