@@ -49,6 +49,7 @@ export function CustomDatePicker({
 							} cursor-pointer ${className} ${
 								styles.CustomInput
 							}`}
+							type="button"
 						>
 							{date ? DateConverter(date) : placeholder}
 						</Button>

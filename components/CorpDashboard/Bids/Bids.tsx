@@ -34,14 +34,15 @@ interface Bid {
 	description: string;
 	installationTime: string;
 	request: RequestDetails;
+	power: number;
+	area: number;
 }
 
 export default function Bids() {
 	const [bidData, setBidData] = useState<Bid[] | null>(null);
 	const [loading, setLoading] = useState<boolean>(false);
 	const corpId = useSelector((state: RootState) => state.user.corpId);
-
-	useEffect(() => {
+	const updateBids = () => {
 		setLoading(true);
 		getData({
 			endPoint: `/v1/corp/${corpId}/bid?status=1&offset=100&limit=1`,
@@ -52,7 +53,10 @@ export default function Bids() {
 			})
 			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
-	}, [corpId]);
+	};
+	useEffect(() => {
+		updateBids();
+	}, []);
 
 	if (loading) {
 		return <LoadingSpinner />;
@@ -66,13 +70,14 @@ export default function Bids() {
 					id={bid?.id}
 					price={bid?.cost}
 					date={bid?.installationTime}
-					power={1}
-					area={1}
+					power={bid?.power}
+					area={bid?.area}
 					status={bid?.status}
 					description={bid?.description}
 					panelName={bid?.request?.name}
 					buildingType={bid?.request?.buildingType}
 					address={bid?.request?.address}
+					updateBids={updateBids}
 				/>
 			))}
 			{/* <BidCard

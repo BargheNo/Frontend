@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import style from "./style.module.css";
 import SignupButton from "@/components/SignupButton/SignupButton";
-import * as Yup from "yup";
 import { InitPanel } from "@/src/types/addPanelType";
 import {
 	Dialog,
@@ -29,6 +28,7 @@ import {
 } from "@/components/ui/dialog";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { Form, Formik } from "formik";
+import * as Yup from "yup";
 import {
 	Select,
 	SelectContent,
