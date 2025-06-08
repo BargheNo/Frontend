@@ -4,6 +4,7 @@ import { Loader2, Settings, Phone, MapPinHouse } from "lucide-react";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import { useSelector } from "react-redux";
 import { FilterCorps } from "./FilterCorps";
+import CorpProfile from "./CorpProfile";
 
 interface CorporationType {
   id: number;
@@ -78,7 +79,7 @@ const CorporationItem = React.memo(
           className={`text-orange-400 flex gap-2 items-center p-2 hover:cursor-pointer border border-orange-400 rounded-md`}
           onClick={() => onManage(id)}
         >
-          <p className="font-bold">جزئیات بیشتر و مدیریت</p>
+          <p className="font-bold">مشاهده پروفایل و مدیریت</p>
           <Settings size={16} />
         </button>
       </div>
@@ -90,6 +91,8 @@ const CorpManagement = () => {
   const [corporations, setCorporations] = useState<CorporationType[]>([]);
   const [loading, setLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState("5");
+  const [selectedCorpId, setSelectedCorpId] = useState<number | null>(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
 
   const fetchAllCorporations = useCallback(async () => {
@@ -123,10 +126,44 @@ const CorpManagement = () => {
   }, [fetchAllCorporations]);
 
   const handleManageCorporation = (id: number) => {
-    console.log("Manage corporation with id:", id);
+    setSelectedCorpId(id);
+    setIsProfileOpen(true);
   };
 
-  if (loading) {
+  const handleStatusChange = async (id: number, status: "accept" | "reject") => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `http://46.249.99.69:8080/v1/admin/corporation/${id}/status`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            status: status === "accept" ? 1 : 4, // 1 for accepted, 4 for rejected
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update corporation status");
+      }
+
+      CustomToast(
+        `شرکت با موفقیت ${status === "accept" ? "تایید" : "رد"} شد`,
+        "success"
+      );
+      fetchAllCorporations();
+    } catch (err: any) {
+      CustomToast(err.message || "مشکلی در تغییر وضعیت شرکت رخ داد.", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading && corporations.length === 0) {
     return (
       <div className="flex justify-center items-center h-40">
         <Loader2 className="animate-spin text-orange-500" size={32} />
@@ -140,7 +177,6 @@ const CorpManagement = () => {
         <h1 className="text-3xl text-blue-800">شرکت های فعلی</h1> 
       </div>
       <div className="p-5"><FilterCorps value={filterStatus} onChange={setFilterStatus} /></div>
-      
 
       <div className="flex flex-col w-full">
         {corporations.map((corporation) => (
@@ -151,6 +187,15 @@ const CorpManagement = () => {
           />
         ))}
       </div>
+
+      {selectedCorpId && (
+        <CorpProfile
+          corporationId={selectedCorpId}
+          open={isProfileOpen}
+          onOpenChange={setIsProfileOpen}
+          onStatusChange={handleStatusChange}
+        />
+      )}
     </div>
   );
 };
