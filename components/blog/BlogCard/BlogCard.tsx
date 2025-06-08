@@ -129,7 +129,12 @@ export default function BlogCard({
                     </div>
                   </div>
                 </ContextMenuTrigger>
-                <ContextMenuContent className="w-full h-full p-2 bg-warm-white border-0! neo-card flex flex-col gap-2">
+                <ContextMenuContent
+                  onClick={(e) => {
+                    e.preventDefault();
+                  }}
+                  className="w-full h-full p-2 bg-warm-white border-0! neo-card flex flex-col gap-2"
+                >
                   <DialogTrigger className="neo-btn rounded-lg!">
                     ویرایش
                   </DialogTrigger>

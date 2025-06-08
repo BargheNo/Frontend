@@ -77,7 +77,7 @@ export default function MobileNavbar() {
                         : "neo-btn rounded-lg! p-1.5"
                     }
                   >
-                    <button>{select.icon}</button>
+                    <div>{select.icon}</div>
                   </SelectTrigger>
                   <SelectContent className="w-full h-full bg-warm-white neo-card p-1 ">
                     <div className="w-full h-full flex flex-col items-center justify-center gap-2">

@@ -111,7 +111,7 @@ export default function Page() {
     queryKey: ["blogs"],
     queryFn: async () => {
       const r1 = await getData({
-        endPoint: `/v1/blog/`,
+        endPoint: `/v1/blog`,
       });
       console.log("r1: ", r1);
       return r1;
