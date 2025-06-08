@@ -337,11 +337,12 @@ export default function PanelCard({
               }}
               onSubmit={(values) => {
                 setTimeout(() => setEditOpen(false), 1000);
-
-                const typeCasting = (val: string) =>
-                  val.trim() === "" ? null : Number(val);
+              
+                const typeCasting = (val: any) =>
+                  String(val).trim() === "" ? null : Number(val);
+              
                 const body = {
-                  name: values.name.trim() === "" ? null : values.name,
+                  name: String(values.name).trim() === "" ? null : values.name,
                   area: typeCasting(values.area),
                   power: typeCasting(values.power),
                   tilt: typeCasting(values.tilt),
@@ -350,13 +351,14 @@ export default function PanelCard({
                   buildingType: buildingId ? Number(buildingId) : null,
                   status: statusId ? Number(statusId) : null,
                 };
-
+              
                 PanelService.updatePanel(id, body)
                   .then((res) => {
                     toast.success(res.message);
                   })
                   .catch((err) => console.log(err));
               }}
+              
             >
               {({ setFieldValue, values }) => (
                 <Form className="flex flex-col items-center  h-auto gap-3 rtl w-[70%] m-auto">

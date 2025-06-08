@@ -268,27 +268,27 @@ export default function Ordercard({
               }}
               onSubmit={(values) => {
                 setTimeout(() => setEditOpen(false), 1000);
-
-                const typeCasting = (val: string) =>
-                  val.trim() === "" ? null : Number(val);
+              
+                const typeCasting = (val: any) =>
+                  String(val).trim() === "" ? null : Number(val);
+              
                 const body = {
-                  name: values.name.trim() === "" ? null : values.name,
+                  name: String(values.name).trim() === "" ? null : values.name,
                   area: typeCasting(values.area),
                   power: typeCasting(values.power),
                   maxCost: typeCasting(values.maxCost),
                   buildingType: buildingId ? Number(buildingId) : null,
                   description:
-                    values.description.trim() === ""
-                      ? null
-                      : values.description,
+                    String(values.description).trim() === "" ? null : values.description,
                 };
-
+              
                 OrderService.updateOrder(id, body)
                   .then((res) => {
                     toast.success(res.message);
                   })
                   .catch((err) => console.log(err));
               }}
+              
             >
               {({ setFieldValue, values }) => (
                 <Form className="flex flex-col items-center  h-auto gap-3 rtl w-[70%] m-auto">
