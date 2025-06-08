@@ -26,9 +26,7 @@ import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import { Building, Home, Mailbox, MapPin, XIcon } from "lucide-react";
 import { Form, FieldArray } from "formik";
-import { toast } from "sonner";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { baseURL, deleteData, getData, postData } from "@/src/services/apiHub";
 import { useSelector } from "react-redux";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
@@ -80,16 +78,9 @@ export default function AddressesForm({
 			endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
 		})
 			.then((res) => {
-				console.log("res address", res);
 				setAddresses(res.data.addresses);
-				// setFieldValue("addresses", res.data.addresses);
-				setLoading(false);
 			})
-			.catch((err) => {
-				CustomToast(generateErrorMessage(err), "error");
-				// toast(generateErrorMessage(err));
-				setLoading(false);
-			});
+			.finally(() => setLoading(false));
 	}, []);
 	useEffect(() => {
 		console.log(addresses);

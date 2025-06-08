@@ -32,9 +32,7 @@ import {
 	putDataFile,
 } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { setUser } from "@/src/store/slices/userSlice";
-import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
 import useClientCheck from "@/src/hooks/useClientCheck";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
@@ -220,13 +218,6 @@ export default function Page() {
 											}
 											resetFormValues(setFieldValue);
 										})
-										.catch((err) => {
-											console.log(err);
-											CustomToast(
-												generateErrorMessage(err),
-												"error"
-											);
-										});
 								} else {
 									if (step < steps.length - 1) {
 										setStep(step + 1);
@@ -285,9 +276,6 @@ export default function Page() {
 
 								resetFormValues(setFieldValue);
 							})
-							.catch((err) => {
-								CustomToast(generateErrorMessage(err), "error");
-							})
 							.finally(() => setLoadingButton(false));
 					}
 				}
@@ -331,13 +319,6 @@ export default function Page() {
 											setStep(step + 1);
 										}
 									})
-									.catch((err) => {
-										console.log("err", err);
-										CustomToast(
-											generateErrorMessage(err),
-											"error"
-										);
-									})
 									.finally(() => setLoadingButton(false));
 							} else {
 								if (step < steps.length - 1) {
@@ -347,11 +328,6 @@ export default function Page() {
 							}
 						}
 					})
-					.catch((err) => {
-						console.log("errr", err);
-						setLoadingButton(false);
-						CustomToast(generateErrorMessage(err), "error");
-					});
 			} else {
 				CustomToast("شرکتی برای شما ثبت نشده است", "info");
 				setLoadingButton(false);
@@ -394,12 +370,6 @@ export default function Page() {
 									if (step < steps.length - 1) {
 										setStep(step + 1);
 									}
-								})
-								.catch((err) => {
-									CustomToast(
-										generateErrorMessage(err),
-										"error"
-									);
 								})
 								.finally(() => setLoadingButton(false));
 						} else {
@@ -447,11 +417,6 @@ export default function Page() {
 						console.log("result file", res);
 						CustomToast(res?.message, "success");
 						router.push("/");
-						setLoading(false);
-					})
-					.catch((error) => {
-						console.log(error);
-						CustomToast(generateErrorMessage(error), "error");
 						setLoading(false);
 					})
 					.finally(() => setLoadingButton(false));
