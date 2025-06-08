@@ -15,22 +15,78 @@ import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 interface RepairHistoryItem {
-	ID: number;
-	Subject: string;
-	Description: string;
-	Status: string;
-	UrgencyLevel: string;
-	CreatedAt: string;
-	OwnerID: number;
-	CorporationID: number;
-	PanelID: number;
-	Panel: {
+	id: number;
+	createdAt: string;
+	panel: {
 		id: number;
-		panelName: string;
-		corporationName: string;
-		power: number;
+		name: string;
+		status: string;
+		buildingType: string;
 		area: number;
+		power: number;
+		tilt: number;
+		azimuth: number;
+		totalNumberOfModules: number;
+		guaranteeStatus: string;
+		corporation: {
+			id: number;
+			name: string;
+			logo: string;
+			contactInfo: ContactInfo[];
+			addresses: Address[];
+		};
+		address: Address;
+		guarantee: {
+			id: number;
+			name: string;
+			status: string;
+			guaranteeType: string;
+			durationMonths: number;
+			description: string;
+			terms: Record<string, unknown>;
+		};
 	};
+	corporation: {
+		id: number;
+		name: string;
+		logo: string;
+		contactInfo: ContactInfo[];
+		addresses: Address[];
+	};
+	subject: string;
+	description: string;
+	urgencyLevel: string;
+	status: string;
+	isGuaranteeRequested: boolean;
+	record: {
+		id: number;
+		createdAt: string;
+		title: string;
+		details: string;
+		date: string;
+		isApproved: boolean;
+		violation: {
+			reason: string;
+			details: string;
+		};
+	};
+}
+
+interface ContactInfo {
+	type: string;
+	value: string;
+}
+
+interface Address {
+	id: number;
+	province: string;
+	provinceID: number;
+	cityID: number;
+	city: string;
+	streetAddress: string;
+	postalCode: string;
+	houseNumber: string;
+	unit: number;
 }
 
 // Mock data for testing
@@ -108,7 +164,7 @@ const Page = () => {
 		oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
 		return items.filter((item) => {
-			const repairDate = new Date(item.CreatedAt);
+			const repairDate = new Date(item.createdAt);
 			return repairDate >= oneMonthAgo;
 		});
 	};
@@ -153,8 +209,8 @@ const Page = () => {
 
 	const recentRepairs = getRecentRepairs(repairItems);
 	const sliderItems = recentRepairs.map((item: RepairHistoryItem) => ({
-		text: item.Subject,
-		date: item.CreatedAt,
+		text: item.subject,
+		date: item.createdAt,
 	}));
 
 	// if (isLoading) {
@@ -207,7 +263,7 @@ const Page = () => {
 						) : (
 							repairItems.map(
 								(item: RepairHistoryItem, index: number) => (
-									<div key={item.ID || index}>
+									<div key={item.id || index}>
 										<CustomerRepairCard
 											repairItem={item}
 											onDetailsClick={() =>
