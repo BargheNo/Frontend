@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import style from "./style.module.css";
 import panelNotFound from "../../public/images/panelNotFound/panelNotFound.png";
-import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "../Loading/LoadingSpinner/LoadingSpinner";
 import SignupButton from "../SignupButton/SignupButton";
 import { Switch } from "@/components/ui/switch";
 import { notificationSetting, notifType } from "@/src/types/notificationTypes";
@@ -32,12 +32,14 @@ import { skip } from "node:test";
 import { toast } from "sonner";
 import Header from "../Header/Header";
 import CustomToast from "../Custom/CustomToast/CustomToast";
+import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
 
 // import { RootState } from "@/src/store/types";
 
 export default function CorpMessagesPagination() {
 	//   const [history, sethistory] = useState<Orderhistory[]>([]);
 	const [loading, setLoading] = useState(false);
+	const [loadingSave, setLoadingSave] = useState<boolean>(false);
 	const [currpage, Setcurrpage] = useState<string>("1");
 	const [notifTypes, setNotifTypes] = useState<notifType[]>([]);
 	const [notifSetting, setNotifSetting] = useState<notificationSetting[]>([]);
@@ -210,6 +212,7 @@ export default function CorpMessagesPagination() {
 							<SignupButton
 								onClick={async () => {
 									if (!disable) {
+										setLoadingSave(true);
 										try {
 											const responses = await Promise.all(
 												nameFields.map((item) =>
@@ -231,6 +234,8 @@ export default function CorpMessagesPagination() {
 												successMessage,
 												"success"
 											);
+
+											setLoadingSave(false);
 											// toast.success(successMessage);
 										} catch (error) {
 											CustomToast(
@@ -241,14 +246,27 @@ export default function CorpMessagesPagination() {
 											// 	"خطا در ذخیره‌سازی تنظیمات"
 											// );
 											console.error(error);
+											setLoadingSave(false);
 										}
 									}
 									setDisable(!disable);
 								}}
 								className="bg-[#FA682D]  text-white"
 							>
-								{disable ? "تنظیمات اعلان ها" : "ذخیرۀ تغییرات"}
-								{disable ? <Settings /> : <Save />}
+								{loadingSave ? (
+									<LoadingOnButton />
+								) : disable ? (
+									<p>تنظیمات اعلان‌ها</p>
+								) : (
+									<p>ذخیره تغییرات</p>
+								)}
+								{loadingSave ? (
+									<></>
+								) : disable ? (
+									<Settings />
+								) : (
+									<Save />
+								)}
 							</SignupButton>
 						</div>
 					</div>

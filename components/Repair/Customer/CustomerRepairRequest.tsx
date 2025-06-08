@@ -16,9 +16,9 @@ import { Formik } from "formik";
 import CompaniesService from "@/src/services/getCompaniesService";
 import getCustomerMyPanels from "@/src/services/getCustomerMyPanels";
 import postRepairRequest from "@/src/services/postRepairRequest";
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import { toast } from "sonner";
-import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
+import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
 
 import {
 	Select,
@@ -30,6 +30,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import AddComponent from "@/components/AddComponent/AddComponent";
 
 const urgencyOptions = [
 	{ value: 1, label: "اولویت پایین" },
@@ -206,6 +207,7 @@ const CustomerRepairRequest = () => {
 					</button>
 					<span className="text-navy-blue">درخواست تعمیرات فوری</span>
 				</div> */}
+				<AddComponent title="درخواست تعمیرات فوری" />
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}

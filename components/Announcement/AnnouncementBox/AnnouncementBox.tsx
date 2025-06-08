@@ -70,10 +70,12 @@ export const AnnounceContex = createContext<{
 });
 
 export default function AnnouncementBox({
+  onlyView = false,
   children,
   className,
   insideClassName,
 }: {
+  onlyView?: boolean;
   children: React.ReactNode;
   className?: string;
   insideClassName?: string;
@@ -136,35 +138,37 @@ export default function AnnouncementBox({
       }}
     >
       <div className="flex flex-col items-center">
+        {!onlyView && (
+          <div
+            className={cn(
+              "self-end px-1 pt-1 flex neo-card rounded-t-lg bg-warm-white transition-all duration-500 ease-in-out transform translate-y-full z-0",
+              selectMode && "translate-y-0"
+            )}
+          >
+            <div
+              onClick={(e) => {
+                e.preventDefault();
+                handleDelete.mutate();
+              }}
+              className="neo-card-rev mx-2 mt-2 p-3 rounded-md bg-white cursor-pointer hover:bg-gray-50"
+            >
+              حذف
+            </div>
+            <div
+              onClick={(e) => {
+                e.preventDefault();
+                resetCount();
+                setSelectMode(false);
+              }}
+              className="neo-card-rev mx-2 mt-2 p-3 rounded-md bg-white cursor-pointer hover:bg-gray-50"
+            >
+              صرف نظر
+            </div>
+          </div>
+        )}
         <div
           className={cn(
-            "self-end px-1 pt-1 flex neo-card rounded-t-lg bg-[#F0EDEF] transition-all duration-500 ease-in-out transform translate-y-full z-0",
-            selectMode && "translate-y-0"
-          )}
-        >
-          <div
-            onClick={(e) => {
-              e.preventDefault();
-              handleDelete.mutate();
-            }}
-            className="neo-card-rev mx-2 mt-2 p-3 rounded-md bg-white cursor-pointer hover:bg-gray-50"
-          >
-            حذف
-          </div>
-          <div
-            onClick={(e) => {
-              e.preventDefault();
-              resetCount();
-              setSelectMode(false);
-            }}
-            className="neo-card-rev mx-2 mt-2 p-3 rounded-md bg-white cursor-pointer hover:bg-gray-50"
-          >
-            صرف نظر
-          </div>
-        </div>
-        <div
-          className={cn(
-            "p-5 rounded-lg z-10",
+            "p-5 rounded-lg z-10 neo-card",
             selectMode && "rounded-tl-none",
             className
           )}
@@ -172,7 +176,7 @@ export default function AnnouncementBox({
           <div
             ref={holder}
             className={cn(
-              "neo-card-rev rounded-lg p-10 h-full overflow-y-scroll scroll-smooth no-scrollbar flex flex-col justify-start items-center",
+              "neo-card-rev rounded-lg pt-5 px-4 h-full w-full overflow-y-scroll scroll-smooth no-scrollbar flex flex-col justify-start items-center",
               insideClassName
             )}
           >

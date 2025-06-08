@@ -3,8 +3,8 @@ import { ArrowLeft } from "lucide-react";
 import React from "react";
 import BidCard from "@/components/CorpDashboard/Bids/BidCard";
 import { toast } from "sonner";
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
-import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
 import Header from "@/components/Header/Header";
 
 /**
@@ -182,7 +182,6 @@ const StyleShowcase = () => {
 					click to notif
 				</button>
 			</section>
-
 
 			<section>
 				<div className="relative inline-block rounded-2xl">

@@ -6,8 +6,8 @@ import React from "react";
 export default function Page() {
 	return (
 		<PageContainer>
-      {/*<header="اخبار و اطلاعیه‌ها" />*/}
-      <AnnounceView onlyView={true} />
+			<Header header="اخبار و اطلاعیه‌ها" />
+			<AnnounceView onlyView={true} />
 		</PageContainer>
 	);
 }
