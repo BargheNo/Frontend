@@ -251,7 +251,7 @@ export default function BargheNoLanding() {
           </div>
         </div>
         <div
-          className="w-[100vw] max-w-none h-[100vh] flex-none slide-panel md:pt-[4.2rem] pt-2 px-3 pb-5"
+          className="w-[100vw] max-w-none h-[100vh] flex-none slide-panel md:px-[5vw] md:pt-[4.2rem] pt-2 px-3 pb-5"
           id="slide-panel2"
         >
           <div className="flex flex-row justify-between w-full h-full">

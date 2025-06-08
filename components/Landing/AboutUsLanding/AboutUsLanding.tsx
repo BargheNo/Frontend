@@ -9,14 +9,33 @@ import man_solar_pic from "@/public/images/Landing/man-solar.png";
 import styles from "./AboutUsLanding.module.css";
 import { useMediaQuery } from "react-responsive";
 import NeuFrame from "@/components/Custom/NeuFrame/NeuFrame";
+import { useGSAP } from "@gsap/react";
+import { gsap } from "gsap/gsap-core";
 export default function AboutUsLanding() {
   const [page, setPage] = useState("AboutUs");
   const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
   useEffect(() => {
     console.log("is Mobile: ", isMobile);
   }, [isMobile]);
+   useGSAP(() => {
+    gsap.from(".about-box", {
+      opacity: 0,
+      duration: 2,
+      x: "-=100%",
+      ease: "power2.out",
+      delay: 0.7,
+      scrollTrigger:
+        {
+          trigger: ".about-box",
+          start: "top 80%",
+          end: "top 50%",
+          toggleActions: "play none none none",
+          // markers: true,
+        },
+    });
+  });
   return (
-    <div className="w-full h-screen flex justify-center items-center gap-8 px-5">
+    <div className="w-full h-screen flex justify-center items-center gap-8 md:gap-16 px-5 md:px-[10vw] about-box overflow-x-hidden">
       {!isMobile && (
         <div className="w-2/5 relative z-10">
           {page === "ContactUs" ? (
