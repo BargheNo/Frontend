@@ -14,18 +14,26 @@ import {
 	User,
 } from "lucide-react";
 import styles from "./BidCard.module.css";
-import { Form, Formik } from "formik";
+import { Form, Formik, useFormikContext } from "formik";
 import * as Yup from "yup";
 import React, { useEffect, useState } from "react";
 import {
 	Dialog,
-	DialogClose,
 	DialogContent,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { getData, putData } from "@/src/services/apiHub";
 import { useSelector } from "react-redux";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
@@ -33,6 +41,7 @@ import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { CustomDatePicker } from "@/components/Custom/CustomDatePicker/CustomDatePicker";
+import { GuaranteeProps } from "@/src/types/BidCardTypes";
 interface BidInfo {
 	id: number;
 	price: number;
@@ -45,6 +54,7 @@ interface BidInfo {
 	buildingType: string;
 	address: Address;
 	updateBids: any;
+	guaranteeID: number;
 }
 
 interface BidSchema {
@@ -196,8 +206,10 @@ export default function BidCard({
 	buildingType,
 	address,
 	status,
+	guaranteeID,
 	updateBids,
 }: BidInfo) {
+	const [guarantees, setGuarantees] = React.useState<GuaranteeProps[]>([]);
 	const [open, setOpen] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
@@ -209,14 +221,25 @@ export default function BidCard({
 		power: power,
 		description: description,
 		installationTime: date,
-		guaranteeID: 1,
+		guaranteeID: guaranteeID,
 		paymentTerms: { method: 1 },
 	};
 
 	useEffect(() => {
-		getData({ endPoint: `/v1/corp/${corpId}/bid/${id}` }).then((data) => {
-			console.log(`data of bid ${id}`, data);
-		});
+		// getData({ endPoint: `/v1/corp/${corpId}/bid/${id}` }).then((data) => {
+		// 	console.log(`data of bid ${id}`, data);
+		// });
+		// console.log("guaranti", guarantee);
+		getData({ endPoint: `/v1/corp/${corpId}/guarantee?status=1` }).then(
+			(data) => {
+				setGuarantees(
+					data?.data?.filter(
+						(guarantee: GuaranteeProps) =>
+							guarantee.status === "فعال"
+					)
+				);
+			}
+		);
 	}, []);
 
 	const cancelBid = () => {
@@ -232,15 +255,15 @@ export default function BidCard({
 	const updateBid = (values: BidSchema) => {
 		setLoading(true);
 		const formData = {
-			cost: values.cost,
-			area: values.area,
-			power: values.power,
-			description: values.description,
-			installationTime: values.installationTime,
-			guaranteeID: values.guaranteeID,
-			paymentTerms: values.paymentTerms,
+			cost: Number(values?.cost),
+			area: Number(values?.area),
+			power: Number(values?.power),
+			description: values?.description,
+			installationTime: values?.installationTime,
+			guaranteeID: Number(values?.guaranteeID),
+			paymentTerms: { method: Number(values?.paymentTerms) },
 		};
-		console.log(formData);
+		console.log("formData", formData);
 		putData({
 			endPoint: `/v1/corp/${corpId}/bid/${id}`,
 			data: formData,
@@ -328,29 +351,32 @@ export default function BidCard({
 										initialValues={initialValues}
 										validationSchema={validateSchema}
 										onSubmit={(values) => {
-											updateBid(values);
-											// handleBid(
-											// 	requestId,
-											// 	Number(values.cost),
-											// 	Number(values.area),
-											// 	Number(values.power),
-											// 	values.description,
-											// 	values.installationTime,
-											// 	1,
-											// 	{
-											// 		method: 1,
-											// 		installmentPlan: {
-											// 			numberOfMonths: 12,
-											// 			downPaymentAmount: 2000,
-											// 			monthlyAmount: 833,
-											// 			notes: "Payment plan with 12 monthly installments after initial down payment",
-											// 		},
-											// 	}
-											// );
+											updateBid({
+												cost: String(values.cost),
+												area: String(values.area),
+												power: String(values.power),
+												installationTime:
+													values.installationTime,
+												description: values.description,
+												guaranteeID: String(
+													values.guaranteeID
+												),
+												paymentTerms: {
+													method: String(
+														values.paymentTerms
+															.method
+													),
+												},
+											});
 										}}
 									>
 										{({ setFieldValue, values }) => (
 											<Form className="w-full flex flex-col gap-6">
+												<FormObserver
+													guaranteeID={Number(
+														values?.guaranteeID
+													)}
+												/>
 												<DialogHeader>
 													<DialogTitle
 														className={`flex vazir text-2xl`}
@@ -450,6 +476,59 @@ export default function BidCard({
 															type="number"
 															containerClassName="w-1/2"
 														/>
+													</div>
+													<div className="flex flex-row justify-evenly gap-6">
+														<Select
+															name="guaranteeID"
+															defaultValue={String(
+																values?.guaranteeID
+															)}
+															value={String(
+																values?.guaranteeID
+															)}
+															onValueChange={(
+																value
+															) => {
+																setFieldValue(
+																	"guaranteeID",
+																	value
+																);
+															}}
+														>
+															<SelectTrigger
+																className={`${styles.CustomInput} mt-[27px] min-h-[43px] cursor-pointer`}
+															>
+																<SelectValue placeholder="نوع گارانتی" />
+															</SelectTrigger>
+															<SelectContent>
+																<SelectGroup>
+																	<SelectLabel>
+																		نوع
+																		گارانتی
+																	</SelectLabel>
+																	{guarantees.map(
+																		(
+																			guarantee: GuaranteeProps,
+																			index: number
+																		) => (
+																			<SelectItem
+																				key={
+																					index
+																				}
+																				value={String(
+																					guarantee?.id
+																				)}
+																				className="cursor-pointer"
+																			>
+																				{
+																					guarantee?.name
+																				}
+																			</SelectItem>
+																		)
+																	)}
+																</SelectGroup>
+															</SelectContent>
+														</Select>
 													</div>
 													<CustomTextArea
 														placeholder="جزئیات بیشتر"
@@ -575,3 +654,13 @@ export default function BidCard({
 		</div>
 	);
 }
+
+const FormObserver = ({ guaranteeID }: { guaranteeID: number }) => {
+	const { setFieldValue } = useFormikContext();
+
+	useEffect(() => {
+		setFieldValue("guaranteeID", String(guaranteeID));
+	}, []);
+
+	return null;
+};

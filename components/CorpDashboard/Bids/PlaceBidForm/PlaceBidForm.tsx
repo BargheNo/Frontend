@@ -4,7 +4,7 @@ import { vazir } from "@/lib/fonts";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
-import { baseURL, postData } from "@/src/services/apiHub";
+import { baseURL, getData, postData } from "@/src/services/apiHub";
 import {
 	Battery,
 	Building2,
@@ -15,14 +15,25 @@ import {
 	MapPin,
 	MessageCircle,
 } from "lucide-react";
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import styles from "./PlaceBidForm.module.css";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BidFormProps } from "@/src/types/RequestCardTypes";
 import wordExpression from "@/src/functions/Calculations";
 import { useSelector } from "react-redux";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import { CustomDatePicker } from "@/components/Custom/CustomDatePicker/CustomDatePicker";
+import { GuaranteeProps } from "@/src/types/BidCardTypes";
+
 const Item = ({
 	icon: Icon,
 	fieldName,
@@ -83,6 +94,7 @@ export default function PlaceBidForm({
 	panelDetails,
 	setOpen,
 }: BidFormProps) {
+	const [guarantees, setGuarantees] = useState<GuaranteeProps[]>([]);
 	const corpId = useSelector((state: RootState) => state.user.corpId);
 	const handleBid = async (
 		requestId: number,
@@ -108,19 +120,30 @@ export default function PlaceBidForm({
 			power: power,
 			description: description,
 			installationTime: installationTime,
-			// guaranteeID: guaranteeID,
+			guaranteeID: guaranteeID,
 			paymentTerms: paymentTerms,
 		};
 		console.log("formData", formData);
 		postData({
 			endPoint: `${baseURL}/v1/corp/${corpId}/installation/request/${requestId}/bid`,
 			data: formData,
-		})
-			.then((data) => {
-				CustomToast(data?.message, "success");
-				setOpen(false);
-			})
+		}).then((data) => {
+			CustomToast(data?.message, "success");
+			setOpen(false);
+		});
 	};
+	useEffect(() => {
+		getData({ endPoint: `/v1/corp/${corpId}/guarantee?status=1` }).then(
+			(data) => {
+				setGuarantees(
+					data?.data?.filter(
+						(guarantee: GuaranteeProps) =>
+							guarantee.status === "فعال"
+					)
+				);
+			}
+		);
+	}, []);
 	return (
 		<Formik
 			initialValues={initialValues}
@@ -230,6 +253,41 @@ export default function PlaceBidForm({
 								type="number"
 								containerClassName="w-1/2"
 							/>
+						</div>
+						<div className="flex flex-row justify-evenly gap-6">
+							<Select
+								name="guaranteeID"
+								onValueChange={(value) => {
+									setFieldValue("guaranteeID", value);
+								}}
+							>
+								<SelectTrigger
+									className={`${styles.CustomInput} mt-[27px] min-h-[43px] cursor-pointer`}
+								>
+									<SelectValue placeholder="نوع گارانتی" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectGroup>
+										<SelectLabel>نوع گارانتی</SelectLabel>
+										{guarantees.map(
+											(
+												guarantee: GuaranteeProps,
+												index: number
+											) => (
+												<SelectItem
+													key={index}
+													value={String(
+														guarantee?.id
+													)}
+													className="cursor-pointer"
+												>
+													{guarantee?.name}
+												</SelectItem>
+											)
+										)}
+									</SelectGroup>
+								</SelectContent>
+							</Select>
 						</div>
 						<CustomTextArea
 							placeholder="جزئیات بیشتر"

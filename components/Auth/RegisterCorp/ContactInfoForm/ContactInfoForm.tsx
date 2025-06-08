@@ -44,9 +44,6 @@ export default function ContactInfoForm({
 			})
 			.finally(() => setLoading(false));
 	}, []);
-	useEffect(() => {
-		console.log("contactTypesList", contactTypesList);
-	}, [contactTypesList]);
 	if (loading)
 		return (
 			<div className="h-fit">

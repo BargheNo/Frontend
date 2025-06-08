@@ -3,6 +3,7 @@ import BidCard from "./BidCard";
 import { baseURL, getData } from "@/src/services/apiHub";
 import { useSelector } from "react-redux";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import { GuaranteeProps } from "@/src/types/BidCardTypes";
 // import { RootState } from "@/src/store/types";
 
 interface address {
@@ -36,6 +37,7 @@ interface Bid {
 	request: RequestDetails;
 	power: number;
 	area: number;
+	guarantee: GuaranteeProps;
 }
 
 export default function Bids() {
@@ -56,6 +58,11 @@ export default function Bids() {
 	};
 	useEffect(() => {
 		updateBids();
+		getData({ endPoint: `/v1/corp/${corpId}/guarantee?status=1` }).then(
+			(data) => {
+				console.log("garanti", data);
+			}
+		);
 	}, []);
 
 	if (loading) {
@@ -77,6 +84,7 @@ export default function Bids() {
 					panelName={bid?.request?.name}
 					buildingType={bid?.request?.buildingType}
 					address={bid?.request?.address}
+					guaranteeID={bid?.guarantee?.id}
 					updateBids={updateBids}
 				/>
 			))}

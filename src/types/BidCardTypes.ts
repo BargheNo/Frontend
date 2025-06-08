@@ -1,29 +1,39 @@
-interface PanelDetailsProps {
-	name: string;
-	customerName: string;
-	address: string;
-	capacity: number;
+export interface BidInfo {
+	id: number;
 	price: number;
+	date: string;
+	power: number;
+	status: string;
+	area: number;
+	description: string;
+	panelName: string;
+	buildingType: string;
+	address: Address;
+	updateBids: any;
 }
 
-interface RequestDetailsProps {
+export interface BidSchema {
+	cost: string;
+	area: string;
+	power: string;
+	installationTime: string;
+	description: string;
+	guaranteeID: string;
+	paymentTerms: { method: string };
+}
+
+export interface TermsProps {
+	title: string;
+	description: string;
+	limitations: string;
+}
+
+export interface GuaranteeProps {
 	id: number;
 	name: string;
-	createdTime: string;
 	status: string;
-	buildingType: string;
-	powerRequest: number;
-	maxCost: number;
-	address: Address;
-}
-
-export interface BidCardProps {
-	id: number;
+	guaranteeType: string;
+	durationMonths: number;
 	description: string;
-	cost: number;
-	request: RequestDetailsProps;
-	status: string;
-	installationTime: string;
-	panelDetails: PanelDetailsProps;
-	className?: string;
+	terms: TermsProps[];
 }
