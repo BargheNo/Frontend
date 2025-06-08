@@ -17,6 +17,7 @@ import {
   FilePlus,
   BarChart,
   MessageSquare,
+  School,
 } from "lucide-react";
 
 export default function Layout({
