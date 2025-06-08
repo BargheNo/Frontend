@@ -22,7 +22,7 @@ export default function AnnounceEditor({
 	onlyView = false,
 }: {
 	newsID: string;
-	onlyView: boolean;
+	onlyView?: boolean;
 }) {
 	const editorRef = useRef<EditorJS | null>(null);
 	const holderRef = useRef<HTMLDivElement>(null);
@@ -247,8 +247,8 @@ export default function AnnounceEditor({
 					</div>
 				)}
 				{onlyView ? (
-					<div className="flex flex-col justify-center items-center p-5 h-[80vh]">
-						<div className=" w-[90vw]! h-full bg-warm-white neo-card rounded-md p-2 ">
+					<div className="flex flex-col justify-center items-center p-5 h-[80vh] w-[85vw]">
+						<div className="w-full h-full bg-warm-white neo-card rounded-md p-2 ">
 							<div className="overflow-y-auto overflow-x-hidden no-scrollbar neo-card-rev w-full h-full rounded-md p-3">
 								<div
 									ref={holderRef}

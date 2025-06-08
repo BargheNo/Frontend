@@ -1,28 +1,7 @@
 "use client";
-
 import PanelAside from "@/components/Panel/PanelAside/PanelAside";
-import { getData } from "@/src/services/apiHub";
-import { setCorp } from "@/src/store/slices/corpSlice";
-import { setCorpId, setUser } from "@/src/store/slices/userSlice";
-import { NavItem } from "@/src/types/PanelAsideTypes";
-// import '../styles/globals.css';
 import "@/styles/global.css";
-import {
-  Server,
-  Send,
-  ClipboardList,
-  SquarePen,
-  MessageSquare,
-  Wrench,
-  BarChart,
-  Users,
-  Megaphone,
-  ShieldCheck,
-} from "lucide-react";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-
-// const myFont = localFont({ src: '../..' })
+import { CorpNavItems } from "@/src/constants/navItems";
 
 export default function Layout({
   children,
@@ -83,7 +62,7 @@ export default function Layout({
       })
   }, []);
   return (
-    <PanelAside navItems={navItems as NavItem[]} mode="corp">
+    <PanelAside navItems={CorpNavItems} mode="corp">
       {children}
     </PanelAside>
   );
