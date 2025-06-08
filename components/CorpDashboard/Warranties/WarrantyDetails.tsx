@@ -3,7 +3,7 @@ import { Archive, CircleAlert, CircleChevronLeft, ListCollapse, ReceiptText, Sha
 import React, { useState } from 'react'
 import MetricBox from '@/components/IconWithBackground/MetricBox';
 import { Warranty, TermItem } from './warrantyTypes.ts';
-import { baseURL, postData, putData } from '@/src/services/apiHub';
+import { baseURL, putData } from '@/src/services/apiHub';
 import CustomToast from '@/components/Custom/CustomToast/CustomToast';
 
 const TermItemSection = ({ title, description, limitations } : TermItem) => {
@@ -37,10 +37,10 @@ const WarrantyDetails = ({id, name, description, type, duration, terms, isArchiv
         putData({
             endPoint: `${baseURL}/v1/corp/2/guarantee/${id}/status`, // TODO: add corp id .........................................
             data: {status: 2},
-        }).then(res => {
+        }).then(() => {
             CustomToast("گارانتی با موفقیت آرشیو شد!", "success");
             setOpen(false);
-        }).catch(err => {
+        }).catch(() => {
             CustomToast("مشکلی در آرشیو کردن گارانتی پیش آمد!", "error");
             // console.log(err);
         })

@@ -11,7 +11,10 @@ export interface Warranty {
     guaranteeType: string | number;
     durationMonths: string | number;
     terms: TermItem[];
+    status: string;
     isArchived: boolean;
+    type: string | number;
+    duration: number | string;
 } 
 
 export interface WarrantyType {

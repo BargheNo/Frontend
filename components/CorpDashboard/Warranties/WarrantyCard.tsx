@@ -10,7 +10,7 @@ import { RootState } from '@/src/store/store';
 type WarrantyCardProps = Warranty;
 
 const WarrantyCard = ({ id, name, guaranteeType, durationMonths, description, terms, isArchived } : WarrantyCardProps) => {
-  const { items, status, error } = useSelector((state: RootState) => state.warrantyTypes);
+  const { items, /*status, error*/ } = useSelector((state: RootState) => state.warrantyTypes);
 
   // TODO: handle status === "loading" || status === "failed" cases
 
@@ -57,6 +57,10 @@ const WarrantyCard = ({ id, name, guaranteeType, durationMonths, description, te
             terms={terms}
             isArchived={isArchived}
             data-test="warranty-details"
+
+            durationMonths=""
+            status=''
+            guaranteeType=""
           />
         </div>
     </div>
