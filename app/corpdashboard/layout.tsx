@@ -75,9 +75,6 @@ export default function Layout({
         console.log("corpId", corpId, res);
         dispatch(setCorpId(corpId));
       })
-      .catch((err) => {
-        console.log(err);
-      });
   }, []);
   return (
     <PanelAside navItems={navItems as NavItem[]} mode="corp">
