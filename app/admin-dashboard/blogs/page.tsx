@@ -1,12 +1,12 @@
 "use client";
 
-import BlogsList from "@/components/admin-dashboard/Blogs/BlogsList/BlogsList";
+import BlogsList from "@/components/Blogs/BlogsList/BlogsList";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 import Header from "@/components/Header/Header";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 import useClientCheck from "@/src/hooks/useClientCheck";
 import React from "react";
-import NewBlog from "@/components/admin-dashboard/Blogs/NewBlog/NewBlog";
+import NewBlog from "@/components/Blogs/NewBlog/NewBlog";
 export default function Page() {
 	if (!useClientCheck()) {
 		return <LoadingSpinner />;
