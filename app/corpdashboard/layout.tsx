@@ -17,6 +17,7 @@ import {
   BarChart,
   Users,
   Megaphone,
+  ShieldCheck,
 } from "lucide-react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -66,6 +67,11 @@ export default function Layout({
       path: "/corpdashboard/announcements",
       icon: <Megaphone />,
     },
+    {
+      name: "گارانتی",
+      path: "/corpdashboard/warranties",
+      icon: <ShieldCheck />
+    }
   ];
 
   useEffect(() => {
