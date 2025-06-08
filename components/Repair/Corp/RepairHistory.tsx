@@ -1,39 +1,82 @@
-import React from 'react';
-import { CalendarIcon, Captions, NotepadText } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { CalendarIcon, Captions, NotepadText, User } from 'lucide-react';
 import { MaintenanceRecord } from '@/types/CorpTypes';
+import moment from 'jalali-moment';
 
 interface RepairHistoryProps {
     notes: MaintenanceRecord[] | null;
 }
 
-const RepairHistory: React.FC<RepairHistoryProps> = ({ notes }) => {
+const RepairHistory = ({ note }: RepairHistoryProps) => {
+    useEffect(() => {
+        console.log("Hiiii" + note);
+    }, [])
+    
+    if (!note) return null;
+
+    
+
     return (
-        <>
-            <h4 className="text-lg font-semibold text-navy-blue">تاریخچۀ تعمیرات قبلی</h4>
-            <div className='inset-neu-container overflow-y-auto max-h-[40vh] w-full bg-gradient-to-br from-[#FAFAFB] to-[#E9EBEF]'>
-                <div className='flex flex-col divide-y divide-gray-300'>
-                    {notes?.map((item: MaintenanceRecord, index: number) => (
-                        <div key={index} className='flex flex-col p-5 gap-3'>
-                            <div className='flex gap-1'>
-                                <CalendarIcon size={18} className='text-fire-orange' />
-                                <span className='font-black'>تاریخ:</span>
-                                <span>{item.Date}</span>
-                            </div>
-                            <div className='flex gap-1'>
-                                <Captions size={18} className='text-fire-orange' />
-                                <span className='font-black'>عنوان:</span>
-                                <span>{item.Title}</span>
-                            </div>
-                            <div className='flex gap-1'>
-                                <NotepadText size={18} className='text-fire-orange' />
-                                <span className='font-black'>یادداشت:</span>
-                                <span>{item.Details}</span>
+        <div className="space-y-4">
+            {/* {notes.map((note) => ( */}
+                <div key={note.id} className="flex flex-col gap-2 justify-center items-center inset-neu-container !w-full !p-5 !bg-gray-50">
+                    <div className="flex justify-between items-center w-full">
+                        <div className="flex items-center gap-2">
+                            <User size={20} className="text-gray-500" />
+                            <span className="text-sm text-gray-700">
+                                {note.operator.firstName} {note.operator.lastName}
+                            </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <CalendarIcon size={20} className="text-gray-500" />
+                            <span className="text-sm text-gray-700">
+                            {
+                                (() => {
+                                    try {
+                                    if (!note?.createdAt) return "0/0/0 00:00"; // Fallback if missing
+                                    const date = moment(note.createdAt);
+                                    if (!date.isValid()) return "0/0/0 00:00"; // Fallback if invalid
+                                    return date.locale('fa').format('jYYYY/jMM/jDD HH:mm');
+                                    } catch (error) {
+                                    return "0/0/0 00:00"; // Fallback if conversion fails
+                                    }
+                                })()
+                            }
+                            </span>
+                        </div>
+                    </div>
+                    <div className="w-full space-y-2">
+                        <div className="flex items-center gap-2">
+                            <Captions size={20} className="text-gray-500" />
+                            <span className="text-sm font-medium text-gray-700">عنوان:</span>
+                            <span className="text-sm text-gray-700">{note.title}</span>
+                        </div>
+                        <div className="flex items-start gap-2">
+                            <NotepadText size={20} className="text-gray-500 mt-1" />
+                            <div className="flex flex-col">
+                                <span className="text-sm font-medium text-gray-700">جزئیات:</span>
+                                <span className="text-sm text-gray-700">{note.details}</span>
                             </div>
                         </div>
-                    ))}
+                        {note.violation && (
+                            <div className="mt-4 p-4 bg-red-50 rounded-md">
+                                <h5 className="text-sm font-medium text-red-700 mb-2">نقض گارانتی</h5>
+                                <div className="space-y-2">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-sm font-medium text-red-700">دلیل:</span>
+                                        <span className="text-sm text-red-700">{note.violation.reason}</span>
+                                    </div>
+                                    <div className="flex items-start gap-2">
+                                        <span className="text-sm font-medium text-red-700">جزئیات:</span>
+                                        <span className="text-sm text-red-700">{note.violation.details}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
-            </div>
-        </>
+            {/* ))} */}
+        </div>
     );
 };
 
