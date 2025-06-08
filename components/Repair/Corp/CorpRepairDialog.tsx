@@ -14,7 +14,6 @@ import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import { Button } from '@/components/ui/button';
 import { CheckCircle, XCircle } from 'lucide-react';
-import { postData } from '@/src/services/apiHub';
 
 const CorpRepairDialog = ({
 	isOpen,
