@@ -21,7 +21,7 @@ const Item = ({
 }) => {
 	return (
 		<div className="flex items-start gap-2">
-			<Icon className="min-w-6 min-h-6 transition-transform duration-200 hover:scale-115 text-[#FA682D]" />
+			{/* <Icon className="min-w-6 min-h-6 transition-transform duration-200 hover:scale-115 text-[#FA682D]" /> */}
 			<div className="flex gap-1">
 				<span>{fieldName}: </span>
 				<span className="text-[#5E5E5E]">{fieldValue}</span>

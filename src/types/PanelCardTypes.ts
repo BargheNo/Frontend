@@ -10,4 +10,5 @@ export interface PanelCardProps {
 	technicalDetails: TechnicalDetails;
 	address: string;
 	className?: string;
+	status: string;
 }

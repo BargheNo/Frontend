@@ -110,3 +110,4 @@ export const AdminNavItems = [
     icon: <Megaphone />,
   },
 ];
+
