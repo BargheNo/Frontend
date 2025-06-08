@@ -1,9 +1,11 @@
 interface Blog {
-  id?: number;
+  id: number;
   className?: string;
-  imageUrl?: string;
-  title?: string;
-  description?: string;
-  writer?: string;
-  date?: string;
+  cover_image: string;
+  title: string;
+  description: string;
+  author: string;
+  created_at: string;
+  like_count: number;
+  status: number;
 }

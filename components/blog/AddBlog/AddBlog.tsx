@@ -8,6 +8,7 @@ import BlogEditor from "../BlogEditor/BlogEditor";
 
 export default function AddBlog() {
   const [step, setStep] = useState(0);
+  const [blogID, setBlogID] = useState("");
   return (
     <>
       <Dialog
@@ -27,7 +28,11 @@ export default function AddBlog() {
               : "w-[90vw]! max-w-none! h-[90vh]! p-10"
           )}
         >
-          {step === 0 ? <AddBlogForm setStep={setStep} /> : <BlogEditor />}
+          {step === 0 ? (
+            <AddBlogForm setBlogID={setBlogID} setStep={setStep} />
+          ) : (
+            <BlogEditor blogID={blogID} />
+          )}
         </DialogContent>
       </Dialog>
     </>

@@ -1,26 +1,61 @@
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
+import { postData } from "@/src/services/apiHub";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Form, Formik } from "formik";
 import { ImageUp, SquarePlus } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { useSelector } from "react-redux";
+import { toast } from "sonner";
 export default function AddBlogForm({
   setStep,
+  setBlogID,
 }: {
   setStep: (step: number) => void;
+  setBlogID: (id: string) => void;
 }) {
   const [file, setFile] = useState<File | null>(null);
   const onDrop = useCallback((acceptedFiles: any) => {
     setFile(acceptedFiles[0]);
   }, []);
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
+  // Get corpID from userSlice store
+  const corpID = useSelector((state: any) => state.user.corpId);
+  const queryClient = useQueryClient();
 
-  const handleSubmit = (values: any) => {
-    console.log(values);
-    console.log(file);
-    setStep(1);
-  };
+  const createBlog = useMutation({
+    mutationFn: (values: { title: string; description: string }) => {
+      const formData = new FormData();
+      formData.append("title", values.title);
+      formData.append("description", values.description);
+      formData.append("content", "empty blog");
+      if (file) {
+        formData.append("cover_image", file);
+      }
+      return postData({
+        endPoint: `/v1/corp/${corpID}/blog/create`,
+        data: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    },
+    onSuccess: (responce) => {
+      console.log("Mutation successful, response:", responce);
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["news"] });
+      console.log("Query invalidated");
+      setBlogID(responce.data);
+      setStep(1);
+      toast.success("بلاگ با موفقیت ساخته شد");
+    },
+    onError: (error) => {
+      console.error("Mutation error:", error);
+      toast.error("خطایی رخ داده است");
+    },
+  });
 
   return (
     <Formik
@@ -28,7 +63,7 @@ export default function AddBlogForm({
         title: "",
         description: "",
       }}
-      onSubmit={handleSubmit}
+      onSubmit={createBlog.mutate}
     >
       <Form>
         <div className=" flex flex-col justify-start items-center gap-3">

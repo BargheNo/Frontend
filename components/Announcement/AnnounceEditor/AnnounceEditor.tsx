@@ -22,7 +22,7 @@ export default function AnnounceEditor({
 	onlyView = false,
 }: {
 	newsID: string;
-	onlyView: boolean;
+	onlyView?: boolean;
 }) {
 	const editorRef = useRef<EditorJS | null>(null);
 	const holderRef = useRef<HTMLDivElement>(null);

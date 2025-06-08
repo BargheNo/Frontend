@@ -1,4 +1,3 @@
-import AddBlog from "@/components/blog/AddBlog/AddBlog";
 import BlogCard from "@/components/blog/BlogCard/BlogCard";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 import Header from "@/components/Header/Header";
@@ -104,7 +103,7 @@ export default function page() {
   return (
     <PageContainer>
       <Header header="مطالب" />
-      <AddBlog />
+      {/* <AddBlog /> */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-[2vw] mx-auto">
               {mockBlogs.map((blog: Blog) => {
             

@@ -5,25 +5,116 @@ import Header from "@editorjs/header";
 import List from "@editorjs/list";
 import Paragraph from "@editorjs/paragraph";
 
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner.tsx";
 import ImageTool from "ert-image";
 import { FileUp, Save } from "lucide-react";
 import { cn } from "@/lib/utils.ts";
 import FaTranslation from "@/components/Announcement/AnnounceEditor/FaTranslation";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import { getData, postData } from "@/src/services/apiHub";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { useQuery } from "@tanstack/react-query";
 export default function BlogEditor({
-  newsID,
+  blogID,
   onlyView = false,
 }: {
-  newsID: string;
-  onlyView: boolean;
+  blogID: string;
+  onlyView?: boolean;
 }) {
   const editorRef = useRef<EditorJS | null>(null);
   const holderRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<OutputData | null>(null);
   const [title, setTitle] = useState("");
   const [status, setStatus] = useState(2);
-  const [loading, setLoading] = useState(false);
-//   const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const corpID = useSelector((state: any) => state.user.corpId);
+
+  const getter = async (id: string) => {
+    try {
+      console.log("id to url: ", `/v1/admin/news/${blogID}/media/${id}`);
+      const responce = await getData({
+        endPoint: `/v1/admin/news/${blogID}/media/${id}`,
+      });
+      return responce.data;
+    } catch (error) {
+      console.error("Error getting image: url", error);
+      return {
+        success: 0,
+        error: "Image upload failed",
+      };
+    }
+  };
+
+  const uploadByFile = async (file: File) => {
+    // Create a FormData object to send the image file
+    const formData = new FormData();
+    formData.append("media", file);
+
+    try {
+      // Send the POST request to your API
+      const response = await postData({
+        endPoint: `/v1/corp/blog/${blogID}/media`,
+        data: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(response);
+
+      // The API should return the URL of the uploaded image
+      const imageId = response.data.toString();
+      console.log("success on upload");
+
+      // Return the URL of the uploaded image
+      return {
+        success: 1,
+        file: {
+          id: imageId, // The URL returned by your API
+        },
+      };
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return {
+        success: 0,
+        error: "Image upload failed",
+      };
+    }
+  };
+
+  const {} = useQuery({
+    queryKey: ["blogs", blogID],
+    queryFn: async () => {
+      try {
+        const responce = await getData({
+          endPoint: `/v1/corp/${corpID}/blog/${blogID}`,
+        });
+        console.log(responce);
+        if (responce.statusCode == 200) {
+          setTitle(responce.data.title);
+          setStatus(responce.data.status);
+          if (responce.data.content != "empty blog") {
+            setData(JSON.parse(responce.data.content));
+          } else {
+            setData({
+              blocks: [
+                {
+                  type: "paragraph",
+                  data: {
+                    text: "متن اعلان خود را اینجا بنویسید...",
+                  },
+                },
+              ],
+            });
+          }
+        }
+        return responce;
+      } catch (error) {
+        console.error(error);
+        // router.push("/not-found");
+      }
+    },
+  });
 
   useEffect(() => {
     console.log("editor1: ", editorRef.current);
@@ -59,13 +150,11 @@ export default function BlogEditor({
               config: {
                 // endpoints: {
                 //   // byFile: '46.249.99.69:8080/v1/admin/news/1/media',
-                //   byId: `/v1/admin/news/${newsID}/media`,
+                byId: `/v1/admin/news/${blogID}/media`,
                 // },
                 field: "media",
-                // uploader: { uploadByFile },
-                // getter: {
-                //   getById: getter,
-                // },
+                uploader: { uploadByFile },
+                getter: { getById: getter },
               },
             },
           } as any,
@@ -97,7 +186,7 @@ export default function BlogEditor({
       )}
       <div className="flex flex-col items-center gap-3 w-[70vw] mx-auto">
         {!onlyView && (
-          <div className="text-bold text-2xl self-start">ویرایشگر: </div>
+          <div className="text-bold text-2xl self-end rtl">:ویرایشگر</div>
         )}
         {onlyView ? (
           <div className="flex flex-col justify-center items-center p-5 h-[80vh]">
@@ -126,7 +215,7 @@ export default function BlogEditor({
               <button
                 className="flex gap-3 items-center bg-fire-orange px-8 py-2 rounded-full! neo-btn text-white font-bold text-lg"
                 onClick={() => {
-                //   handelSave.mutate();
+                  // handelSave.mutate();
                 }}
               >
                 <span>ذخیره</span>

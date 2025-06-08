@@ -33,6 +33,7 @@ export const UserNavItems: NavItem[] = [
   { name: "پیام‌های من", path: "/dashboard/messages", icon: <MessageSquare /> },
   { name: "محاسبه‌گر", path: "/dashboard/calculator", icon: <Calculator /> },
   { name: "پشتیبانی", path: "/dashboard/tickets", icon: <Headset /> },
+  { name: "بلاگ‌ها", path: "/dashboard/blogs", icon: <BookOpen /> },
   {
     name: "اخبار و اطلاعیه‌ها",
     path: "/dashboard/announcements",
@@ -70,6 +71,7 @@ export const CorpNavItems = [
   },
   { name: "گزارشات", path: "/corpdashboard/reports", icon: <BarChart /> },
   { name: "تکنسین‌ها", path: "/corpdashboard/technicians", icon: <Users /> },
+  { name: "بلاگ‌ها", path: "/corpdashboard/blogs", icon: <BookOpen /> },
   {
     name: "اخبار و اطلاعیه‌ها",
     path: "/corpdashboard/announcements",
@@ -100,8 +102,8 @@ export const AdminNavItems = [
     icon: <DollarSign />,
   },
   { name: "پشتیبانی", path: "/admin-dashboard/support", icon: <Headset /> },
-  { name: "بلاگ‌ها", path: "/admin-dashboard/blogs", icon: <BookOpen /> },
   { name: "گزارشات", path: "/admin-dashboard/reports", icon: <AlertCircle /> },
+  { name: "بلاگ‌ها", path: "/admin-dashboard/blogs", icon: <BookOpen /> },
   {
     name: "اخبار و اطلاعیه‌ها",
     path: "/admin-dashboard/announcements",
