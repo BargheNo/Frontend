@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { MoveLeft, Lock, Unlock, Smartphone } from "lucide-react";
+import { MoveLeft, Lock, Unlock } from "lucide-react";
 import styles from "./ResetPassword.module.css";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -9,6 +9,7 @@ import { vazir } from "@/lib/fonts";
 import LoginButton from "../Login/LoginButton";
 import { useSelector } from "react-redux";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import { putData } from "@/src/services/apiHub";
 
 const validationSchema = Yup.object({
 	password: Yup.string()
@@ -32,9 +33,6 @@ const initialValues = {
 };
 
 const ResetPassword = () => {
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 

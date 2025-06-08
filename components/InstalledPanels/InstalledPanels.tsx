@@ -5,7 +5,7 @@ import Link from "next/link";
 import { installedpanel } from "@/src/types/installedpanelType";
 
 const InstalledPanel = ({
-  panelName,
+  name,
   customer,
   address,
   power,
@@ -29,7 +29,7 @@ const InstalledPanel = ({
                     <IconWithBackground icon={Eclipse} color="#FA682D" />
                     <span className=" mr-2 whitespace-nowrap">نام پنل :</span>
                     <span className="text-2xl font-bold text-gray-800 mr-2 whitespace-nowrap">
-                      {panelName}
+                      {name}
                     </span>
                   </div>
                 </div>

@@ -51,7 +51,7 @@ export default function InstalledPanelPagination() {
                   <InstalledPanel
                     key={index}
                     customer={order.customer}
-                    panelName={order.name}
+                    name={order.name}
                     power={order.power}
                     address={order.address}
                   />
