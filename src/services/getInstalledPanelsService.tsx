@@ -1,4 +1,4 @@
-import { baseURL, getData } from "./apiHub";
+import { getData } from "./apiHub";
 
 interface page {
 	status: string;
@@ -9,7 +9,7 @@ interface page {
 class InstalledPanel {
 	GetInstalledPanels({ page, corpId }: { page: page; corpId?: number }) {
 		return getData({
-			endPoint: `${baseURL}/v1/corp/${corpId}/installation/panel`,
+			endPoint: `/v1/corp/${corpId}/installation/panel`,
 			params: page,
 		});
 	}

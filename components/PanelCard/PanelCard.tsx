@@ -5,6 +5,7 @@ import { PanelCardProps } from "@/src/types/PanelCardTypes";
 const PanelCard = ({
 	panelName,
 	technicalDetails,
+	status,
 	address,
 }: PanelCardProps) => {
 	// Determine status color based on efficiency
@@ -103,7 +104,7 @@ const PanelCard = ({
 							className={`h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
 						></div>
 						<span className="text-sm font-medium text-gray-600">
-							فعال
+							{status}
 						</span>
 					</div>
 					<button className="flex items-center justify-between bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">

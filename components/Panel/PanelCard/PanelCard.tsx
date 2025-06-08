@@ -108,6 +108,25 @@ const PanelCard = ({
 								<div className="flex text-sm text-gray-700 justify-between w-[28%] items-center">
 									<div className="flex items-center w-1/2">
 										<IconWithBackground
+											icon={Battery}
+											color="#6B7280"
+										/>
+										<span className="font-medium mr-2">
+											ظرفیت:
+										</span>
+									</div>
+									<div className="w-1/2">
+										<span className="mr-1">
+											{formatNumber(
+												technicalDetails.capacity
+											)}{" "}
+											کیلووات
+										</span>
+									</div>
+								</div>
+								{/* <div className="flex text-sm text-gray-700 justify-between w-[28%] items-center">
+									<div className="flex items-center w-1/2">
+										<IconWithBackground
 											icon={Sun}
 											color="#F59E0B"
 										/>
@@ -139,7 +158,7 @@ const PanelCard = ({
 											{technicalDetails.efficiency}%
 										</span>
 									</div>
-								</div>
+								</div> */}
 							</div>
 						</div>
 						<div className="flex items-start text-sm text-gray-700 mt-6">
