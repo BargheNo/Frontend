@@ -17,23 +17,17 @@ import IconWithBackground from "@/components/IconWithBackground/IconWithBackgrou
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
-import { useSelector } from "react-redux";
-import { toast } from "sonner";
-import Modal from "./ReportModal";
 
 import {
 	Dialog,
-	DialogClose,
 	DialogContent,
-	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import SignupButton from "@/components/SignupButton/SignupButton";
-import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import { postData } from "@/src/services/apiHub";
+import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 
 const PanelCard = ({
 	id,
@@ -45,52 +39,25 @@ const PanelCard = ({
 	const [loading, setLoading] = useState<boolean>(false);
 	const [open, setOpen] = useState(false);
 	// const [isModalOpen, setModalOpen] = useState(false);
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
 
 	const handleSubmit = async (values: { problem: string }) => {
 		setLoading(true);
-		try {
-			const panelId = id;
-
-			const payload = {
-				description: values.problem,
-			};
-
-			const response = await fetch(
-				`http://46.249.99.69:8080/v1/user/report/panel/${panelId}`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${accessToken}`,
-					},
-					body: JSON.stringify(payload),
-				}
-			);
-
-			const data = await response.json();
-			// toast.success(data?.message);
-			CustomToast(data?.message, "success");
-			// setModalOpen(false);
-			setOpen(false);
-			setLoading(false);
-			if (!response.ok) {
-				throw new Error("API error: " + JSON.stringify(data));
-			}
-		} catch (error: any) {
-			const errMsg =
-				generateErrorMessage(error) ||
-				"هنگام ایجاد گزارش جدید مشکلی پیش آمد.";
-			// toast.error(errMsg);
-			CustomToast(errMsg, "error");
-			setLoading(false);
-		}
+		const formData = {
+			description: values.problem,
+		};
+		postData({
+			endPoint: `v1/user/report/panel/${id}`,
+			data: formData,
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				setOpen(false);
+			})
+			.finally(() => setLoading(false));
 	};
 
 	const validationSchema = Yup.object({
-		problem: Yup.string().required("وارد کردن توضیحات ضروری است."),
+		problem: Yup.string().required("وارد کردن توضیحات ضروری است"),
 	});
 
 	const getStatusColor = () => {
@@ -240,9 +207,13 @@ const PanelCard = ({
 												<button
 													type="submit"
 													disabled={isSubmitting}
-													className="self-end bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white py-2 px-4 rounded-md transition-all duration-300"
+													className="self-end w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white py-2 px-4 rounded-md transition-all duration-300"
 												>
-													ارسال گزارش
+													{loading ? (
+														<LoadingOnButton />
+													) : (
+														<p>ارسال گزارش</p>
+													)}
 												</button>
 											</Form>
 										)}
@@ -267,7 +238,6 @@ const PanelCard = ({
 						</div>
 					</div>
 				</div>
-				{loading && <TransparentLoading />}
 			</div>
 
 			{/* <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>

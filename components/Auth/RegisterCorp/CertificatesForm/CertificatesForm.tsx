@@ -1,10 +1,6 @@
 import { UploadCloud } from "lucide-react";
 import React, { useEffect } from "react";
 import styles from "./CertificatesForm.module.css";
-import { baseURL, postData, putData } from "@/src/services/apiHub";
-import { useSelector } from "react-redux";
-import { toast } from "sonner";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
 
 export default function CertificatesForm({
 	setFieldValue,
@@ -13,33 +9,13 @@ export default function CertificatesForm({
 	setFieldValue?: any;
 	values: corpData;
 }) {
-	const corpId = useSelector((state: RootState) => state.user.corpId);
 	const handleFileChange = async (
 		e: React.ChangeEvent<HTMLInputElement>,
 		fieldName: string
 	) => {
 		const file = e.target.files?.[0];
 		if (!file) return;
-
-		// Optionally update formik or parent state
 		setFieldValue(`certificates.${fieldName}`, file);
-
-		// const formData = new FormData();
-		// formData.append(fieldName, file);
-
-		// putData({
-		// 	endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/certificates`,
-		// 	data: formData,
-		// 	headers: {
-		// 		"Content-Type": "multipart/form-data",
-		// 	},
-		// })
-		// 	.then((res) => {
-		// 		toast(res?.message);
-		// 	})
-		// 	.catch((error) => {
-		// 		toast(generateErrorMessage(error));
-		// 	});
 	};
 	useEffect(() => {
 		console.log(values);

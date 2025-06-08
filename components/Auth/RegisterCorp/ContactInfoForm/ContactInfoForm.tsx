@@ -14,8 +14,6 @@ import { Phone, XIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { baseURL, deleteData, getData } from "@/src/services/apiHub";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
-import { toast } from "sonner";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { useSelector } from "react-redux";
 import { useMediaQuery } from "react-responsive";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
@@ -43,17 +41,9 @@ export default function ContactInfoForm({
 		})
 			.then((res) => {
 				setContactTypesList(res.data.contactInfo);
-				setLoading(false);
 			})
-			.catch((err) => {
-				CustomToast(generateErrorMessage(err), "error");
-				// toast(generateErrorMessage(err));
-				setLoading(false);
-			});
+			.finally(() => setLoading(false));
 	}, []);
-	useEffect(() => {
-		console.log("contactTypesList", contactTypesList);
-	}, [contactTypesList]);
 	if (loading)
 		return (
 			<div className="h-fit">

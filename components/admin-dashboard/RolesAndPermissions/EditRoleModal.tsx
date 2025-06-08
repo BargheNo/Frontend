@@ -1,26 +1,20 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { X, Loader2, Vote, UserRoundCog, Check } from "lucide-react";
-import { toast } from "sonner";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
+import { Vote, UserRoundCog, Check } from "lucide-react";
 import { useSelector } from "react-redux";
-import ReactDOM from "react-dom";
 import styles from "./RolesAndPermissions.module.css";
-import { vazir } from "@/lib/fonts";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 import * as Yup from "yup";
-import { Form, Formik, FieldArray, useFormikContext } from "formik";
+import { Form, Formik, FieldArray } from "formik";
 import {
-	Dialog,
-	DialogContent,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from "@/components/ui/dialog";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import { getData, putData } from "@/src/services/apiHub";
 
 type Permission = {
 	id: number;
@@ -83,65 +77,19 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 
 	// Fetch all available permissions
 	const getAllPermissions = async () => {
-		try {
-			const response = await fetch(
-				"http://46.249.99.69:8080/v1/admin/permissions",
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${accessToken}`,
-					},
-				}
-			);
-			const data = await response.json();
+		getData({ endPoint: `/v1/admin/permissions` }).then((data) => {
 			setAllPermissions(data.data);
-		} catch (err: any) {
-			const errMsg =
-				generateErrorMessage(err) || "مشکلی در دریافت مجوزها رخ داد.";
-			// toast.error(errMsg);
-			CustomToast(errMsg, "error");
-		}
+		});
 	};
 
 	// Fetch permissions for the current role
 	const getRolePermissions = async (roleId: string | undefined) => {
 		if (!roleId) return;
-
-		try {
-			const response = await fetch(
-				`http://46.249.99.69:8080/v1/admin/roles/${roleId}`,
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${accessToken}`,
-					},
-				}
-			);
-			const data = await response.json();
+		getData({ endPoint: `/v1/admin/roles/${roleId}` }).then((data) => {
 			const permissionIds = data.data.permissions.map(
 				(p: Permission) => p.id
 			);
 			setSelectedPermissions(permissionIds);
-			// setFieldValue("permissionIDs", permissionIds);
-		} catch (err: any) {
-			const errMsg =
-				generateErrorMessage(err) ||
-				"مشکلی در دریافت مجوزهای نقش رخ داد.";
-			// toast.error(errMsg);
-			CustomToast(errMsg, "error");
-		}
-	};
-
-	// Handle checkbox changes
-	const handlePermissionChange = (permissionId: number) => {
-		setSelectedPermissions((prev) => {
-			if (prev.includes(permissionId)) {
-				return prev.filter((id) => id !== permissionId);
-			} else {
-				return [...prev, permissionId];
-			}
 		});
 	};
 
@@ -150,95 +98,25 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 		if (!role) return;
 		setEditOpen(true);
 		setIsSaving(true);
-
-		try {
-			const response = await fetch(
-				`http://46.249.99.69:8080/v1/admin/roles/${role.id}`,
-				{
-					method: "PUT",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${accessToken}`,
-					},
-					body: JSON.stringify({
-						name: values.name,
-						permissionIDs:
-							values.permissionIDs.concat(selectedPermissions),
-					}),
-				}
-			);
-
-			if (!response.ok) {
-				throw new Error("Failed to update role");
-			}
-
-			const result = await response.json();
-			// toast.success(result.message);
-			CustomToast(result?.message, "success");
-			setEditOpen(false);
-			onSaveSuccess();
-			onClose();
-		} catch (error: any) {
-			const errMsg =
-				generateErrorMessage(error) ||
-				"هنگام به‌روزرسانی نقش مشکلی پیش آمد.";
-			// toast.error(errMsg);
-			setEditOpen(false);
-			CustomToast(errMsg, "error");
-		} finally {
-			setIsSaving(false);
-		}
+		const formData = {
+			name: values.name,
+			permissionIDs: values.permissionIDs.concat(selectedPermissions),
+		};
+		putData({
+			endPoint: `/v1/admin/roles/${role.id}`,
+			data: formData,
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				setEditOpen(false);
+				onSaveSuccess();
+				onClose();
+			})
+			.catch(() => {
+				setEditOpen(false);
+			})
+			.finally(() => setIsSaving(false));
 	};
-	// const savePermissions = async () => {
-	// 	if (!role) return;
-	// 	setIsSaving(true);
-
-	// 	try {
-	// 		const response = await fetch(
-	// 			`http://46.249.99.69:8080/v1/admin/roles/${role.id}`,
-	// 			{
-	// 				method: "PUT",
-	// 				headers: {
-	// 					"Content-Type": "application/json",
-	// 					Authorization: `Bearer ${accessToken}`,
-	// 				},
-	// 				body: JSON.stringify({
-	// 					name: roleName,
-	// 					permissionIDs: selectedPermissions,
-	// 				}),
-	// 			}
-	// 		);
-
-	// 		if (!response.ok) {
-	// 			throw new Error("Failed to update role");
-	// 		}
-
-	// 		const result = await response.json();
-	// 		// toast.success(result.message);
-	// 		CustomToast(result?.message, "success");
-	// 		onSaveSuccess();
-	// 		onClose();
-	// 	} catch (error: any) {
-	// 		const errMsg =
-	// 			generateErrorMessage(error) ||
-	// 			"هنگام به‌روزرسانی نقش مشکلی پیش آمد.";
-	// 		// toast.error(errMsg);
-	// 		CustomToast(errMsg, "error");
-	// 	} finally {
-	// 		setIsSaving(false);
-	// 	}
-	// };
-
-	// Load data when modal opens or role changes
-	// useEffect(() => {
-	// 	if (editOpen && role) {
-	// 		setIsLoading(true);
-	// 		Promise.all([
-	// 			getAllPermissions(),
-	// 			getRolePermissions(role.id),
-	// 		]).finally(() => setIsLoading(false));
-	// 	}
-	// }, [editOpen, role]);
 
 	// Group permissions by category
 	const permissionsByCategory = allPermissions.reduce((acc, permission) => {
@@ -290,13 +168,13 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 
 				{isLoading ? (
 					<LoadingSpinner />
+				) : (
 					// <div className="flex justify-center items-center h-40">
 					// 	<Loader2
 					// 		className="animate-spin text-orange-500"
 					// 		size={32}
 					// 	/>
 					// </div>
-				) : (
 					<div className="flex flex-col gap-6">
 						<CustomInput
 							name="name"
