@@ -63,7 +63,7 @@ export default function panels() {
                   فعال
                 </SelectItem>
                 <SelectItem value="expired" className="cursor-pointer">
-                  لغو شده
+                   در انتظار نصب
                 </SelectItem>
                 <SelectItem value="cancled" className="cursor-pointer">
                   خراب

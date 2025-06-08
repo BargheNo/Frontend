@@ -60,7 +60,7 @@ export default function PanelCard({
   const getStatusColor = () => {
     if (status === "فعال") return " text-green-600";
     else if (status === "منقضی") return "text-gray-500";
-    else if (status === "لغو شده") return "text-red-600";
+    else if (status === "خراب") return "text-red-600";
     if (status === "سپرده شده") return "text-yellow-600";
     return "text-yellow-600";
   };
@@ -481,26 +481,15 @@ export default function PanelCard({
                             value="expired"
                             className="cursor-pointer"
                           >
-                            منقضی شده
+                             در انتظار نصب
                           </SelectItem>
                           <SelectItem
                             value="cancled"
                             className="cursor-pointer"
                           >
-                            لغو شده
+                             خراب
                           </SelectItem>
-                          <SelectItem
-                            value="deposited"
-                            className="cursor-pointer"
-                          >
-                            سپرده شده
-                          </SelectItem>
-                          <SelectItem
-                            value="all"
-                            className="cursor-pointer"
-                          >
-                            همه
-                          </SelectItem>
+
 
                         </SelectGroup>
                       </SelectContent>
