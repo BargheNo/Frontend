@@ -1,5 +1,4 @@
 "use client";
-
 import PanelAside from "@/components/Panel/PanelAside/PanelAside";
 import { NavItem } from "@/src/types/PanelAsideTypes";
 import "@/styles/global.css";
@@ -18,6 +17,7 @@ import {
   FilePlus,
   BarChart,
   MessageSquare,
+  School,
 } from "lucide-react";
 
 export default function Layout({
@@ -35,6 +35,9 @@ export default function Layout({
       path: "/admin-dashboard/roles-and-permissions",
       icon: <LaptopMinimalCheck />,
     },
+    { name: "مدیریت شرکت ها",
+     path: "/admin-dashboard/corp-management",
+     icon: <School /> },
     {
       name: "مدیریت سفارشات",
       path: "/admin-dashboard/manage-requests",
