@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Loader2, Settings, Phone, MapPinHouse } from "lucide-react";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import { useSelector } from "react-redux";
+import { FilterCorps } from "./FilterCorps";
 
 interface CorporationType {
   id: number;
@@ -67,7 +68,7 @@ const CorporationItem = React.memo(
         </div>
 
         <div className="flex items-center gap-3 w-1/4">
-        <div className="text-orange-400">
+          <div className="text-orange-400">
             <MapPinHouse />
           </div>
           <p>آدرس: {addresses.length > 0 ? "دارد" : "ندارد"}</p>
@@ -88,13 +89,14 @@ const CorporationItem = React.memo(
 const CorpManagement = () => {
   const [corporations, setCorporations] = useState<CorporationType[]>([]);
   const [loading, setLoading] = useState(false);
+  const [filterStatus, setFilterStatus] = useState("5");
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
 
   const fetchAllCorporations = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(
-        "http://46.249.99.69:8080/v1/admin/corporation?status=5",
+        `http://46.249.99.69:8080/v1/admin/corporation?status=${filterStatus}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -114,14 +116,13 @@ const CorpManagement = () => {
     } finally {
       setLoading(false);
     }
-  }, [accessToken]);
+  }, [accessToken, filterStatus]);
 
   useEffect(() => {
     fetchAllCorporations();
   }, [fetchAllCorporations]);
 
   const handleManageCorporation = (id: number) => {
-    // Handle corporation management here
     console.log("Manage corporation with id:", id);
   };
 
@@ -135,17 +136,21 @@ const CorpManagement = () => {
 
   return (
     <div className="flex flex-col">
-      <h1 className="text-3xl px-8 my-10 py-2 text-blue-800 border-b w-70">شرکت های فعلی</h1>
+      <div className="flex justify-between items-center px-8 my-10 py-2 border-b w-70 border-blue-800">
+        <h1 className="text-3xl text-blue-800">شرکت های فعلی</h1> 
+      </div>
+      <div className="p-5"><FilterCorps value={filterStatus} onChange={setFilterStatus} /></div>
+      
 
-    <div className="flex flex-col w-full ">
-      {corporations.map((corporation) => (
-        <CorporationItem
-          key={corporation.id}
-          {...corporation}
-          onManage={handleManageCorporation}
-        />
-      ))}
-    </div>
+      <div className="flex flex-col w-full">
+        {corporations.map((corporation) => (
+          <CorporationItem
+            key={corporation.id}
+            {...corporation}
+            onManage={handleManageCorporation}
+          />
+        ))}
+      </div>
     </div>
   );
 };
