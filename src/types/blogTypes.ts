@@ -8,4 +8,5 @@ interface Blog {
   created_at: string;
   like_count: number;
   status: number;
+  corporation?: {name:string};
 }

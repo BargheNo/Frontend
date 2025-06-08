@@ -29,7 +29,7 @@ export default function AddBlog() {
           )}
         >
           {step === 0 ? (
-            <AddBlogForm setBlogID={setBlogID} setStep={setStep} />
+            <AddBlogForm  setBlogID={setBlogID} setStep={setStep} />
           ) : (
             <BlogEditor blogID={blogID} />
           )}

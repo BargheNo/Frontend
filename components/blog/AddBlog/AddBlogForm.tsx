@@ -1,6 +1,6 @@
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
-import { postData } from "@/src/services/apiHub";
+import { postData, putData } from "@/src/services/apiHub";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Form, Formik } from "formik";
 import { ImageUp, SquarePlus } from "lucide-react";
@@ -12,9 +12,13 @@ import { toast } from "sonner";
 export default function AddBlogForm({
   setStep,
   setBlogID,
+  edit = false,
+  blogId,
 }: {
-  setStep: (step: number) => void;
-  setBlogID: (id: string) => void;
+  setStep?: (step: number) => void;
+  setBlogID?: (id: string) => void;
+  edit?: boolean;
+  blogId?: string;
 }) {
   const [file, setFile] = useState<File | null>(null);
   const onDrop = useCallback((acceptedFiles: any) => {
@@ -43,13 +47,45 @@ export default function AddBlogForm({
       });
     },
     onSuccess: (responce) => {
-      console.log("Mutation successful, response:", responce);
+      // console.log("Mutation successful, response:", responce);
       // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["news"] });
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
       console.log("Query invalidated");
-      setBlogID(responce.data);
-      setStep(1);
+      if (setBlogID && setStep) {
+        setBlogID(responce.data);
+        setStep(1);
+      }
       toast.success("بلاگ با موفقیت ساخته شد");
+    },
+    onError: (error) => {
+      console.error("Mutation error:", error);
+      toast.error("خطایی رخ داده است");
+    },
+  });
+
+  const editBlog = useMutation({
+    mutationFn: async (values: { title?: string; description?: string }) => {
+      const formData = new FormData();
+      if (values.title) formData.append("title", values.title);
+      if (values.description)
+        formData.append("description", values.description);
+      formData.append("content", "empty blog");
+      if (file) {
+        formData.append("cover_image", file);
+      }
+
+      const responce = await putData({
+        endPoint: `/v1/corp/${corpID}/blog/${blogId}/edit`,
+        data: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return responce;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+      toast.success("بلاگ با موفقیت ذخیره شد");
     },
     onError: (error) => {
       console.error("Mutation error:", error);
@@ -63,7 +99,7 @@ export default function AddBlogForm({
         title: "",
         description: "",
       }}
-      onSubmit={createBlog.mutate}
+      onSubmit={edit ? editBlog.mutate : createBlog.mutate}
     >
       <Form>
         <div className=" flex flex-col justify-start items-center gap-3">
@@ -98,7 +134,7 @@ export default function AddBlogForm({
             className="flex justify-center items-center w-full gap-3 py-2 px-3 bg-fire-orange rounded-full! text-white font-bold text-lg cursor-pointer neo-btn"
           >
             <SquarePlus />
-            <span>ساخت</span>
+            <span>{edit ? "بروزرسانی" : "ساخت"}</span>
           </button>
         </div>
       </Form>

@@ -6,14 +6,17 @@ import List from "@editorjs/list";
 import Paragraph from "@editorjs/paragraph";
 
 import ImageTool from "ert-image";
-import { FileUp, Save } from "lucide-react";
+import { FileUp, Save, Settings } from "lucide-react";
 import { cn } from "@/lib/utils.ts";
 import FaTranslation from "@/components/Announcement/AnnounceEditor/FaTranslation";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
-import { getData, postData } from "@/src/services/apiHub";
+import { getData, postData, putData } from "@/src/services/apiHub";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import AddBlogForm from "../AddBlog/AddBlogForm";
 export default function BlogEditor({
   blogID,
   onlyView = false,
@@ -32,9 +35,9 @@ export default function BlogEditor({
 
   const getter = async (id: string) => {
     try {
-      console.log("id to url: ", `/v1/admin/news/${blogID}/media/${id}`);
+      // console.log("id to url: ", `/v1/corp/${corpID}/blog/${blogID}/media/${id}`);
       const responce = await getData({
-        endPoint: `/v1/admin/news/${blogID}/media/${id}`,
+        endPoint: `/v1/corp/${corpID}/blog/${blogID}/media/${id}`,
       });
       return responce.data;
     } catch (error) {
@@ -54,7 +57,7 @@ export default function BlogEditor({
     try {
       // Send the POST request to your API
       const response = await postData({
-        endPoint: `/v1/corp/blog/${blogID}/media`,
+        endPoint: `/v1/corp/${corpID}/blog/${blogID}/media`,
         data: formData,
         headers: {
           "Content-Type": "multipart/form-data",
@@ -81,6 +84,57 @@ export default function BlogEditor({
       };
     }
   };
+
+  const queryClient = useQueryClient();
+  const handelSave = useMutation({
+    mutationFn: async () => {
+      const savedData = await editorRef.current?.save();
+      if (savedData) {
+        setData(savedData);
+        const responce = await putData({
+          endPoint: `/v1/corp/${corpID}/blog/${blogID}/edit`,
+          data: {
+            content: JSON.stringify(savedData),
+            title: title,
+            status: 2,
+          },
+        });
+        return responce;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+      toast.success("بلاگ با موفقیت ذخیره شد");
+    },
+    onError: (error) => {
+      console.error("Mutation error:", error);
+      toast.error("خطایی رخ داده است");
+    },
+  });
+  const handelPublish = useMutation({
+    mutationFn: async () =>
+      putData({ endPoint: `/v1/corp/${corpID}/blog/${blogID}/publish` }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+      toast.success("خبر با موفقیت منتشر شد");
+    },
+    onError: (error) => {
+      console.error("Mutation error:", error);
+      toast.error("خطایی رخ داده است");
+    },
+  });
+  const handelUnpublish = useMutation({
+    mutationFn: async () =>
+      putData({ endPoint: `/v1/corp/${corpID}/blog/${blogID}/unpublish` }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+      toast.success("خبر با موفقیت از انتشار خارج شد");
+    },
+    onError: (error) => {
+      console.error("Mutation error:", error);
+      toast.error("خطایی رخ داده است");
+    },
+  });
 
   const {} = useQuery({
     queryKey: ["blogs", blogID],
@@ -111,7 +165,7 @@ export default function BlogEditor({
         return responce;
       } catch (error) {
         console.error(error);
-        // router.push("/not-found");
+        router.push("/not-found");
       }
     },
   });
@@ -184,13 +238,26 @@ export default function BlogEditor({
       {loading && (
         <LoadingSpinner className="absolute top-0 left-0 right-0 bottom-0 bg-white z-50" />
       )}
-      <div className="flex flex-col items-center gap-3 w-[70vw] mx-auto">
+      <div className="flex flex-col items-center justify-evenly gap-3 w-[70vw] mx-auto">
         {!onlyView && (
-          <div className="text-bold text-2xl self-end rtl">:ویرایشگر</div>
+          <div className="flex justify-between items-center w-full self-end rtl">
+            <div className="text-bold text-2xl">ویرایشگر</div>
+            <Dialog>
+              <DialogTrigger>
+                <div className="flex items-center gap-1 cursor-pointer hover:underline">
+                  <span className="text-blue-400">ویرایش جزئیات</span>
+                  <Settings className="text-blue-400" size={16} />
+                </div>
+              </DialogTrigger>
+              <DialogContent className="w-[90vw]! h-fit! p-10">
+                <AddBlogForm edit blogId={blogID} />
+              </DialogContent>
+            </Dialog>
+          </div>
         )}
         {onlyView ? (
-          <div className="flex flex-col justify-center items-center p-5 h-[80vh]">
-            <div className=" w-[90vw]! h-full bg-warm-white neo-card rounded-md p-2 ">
+          <div className="flex flex-col justify-center items-center p-5 h-[80vh] w-[85vw]">
+            <div className="w-full h-full bg-warm-white neo-card rounded-md p-2 ">
               <div className="overflow-y-auto overflow-x-hidden no-scrollbar neo-card-rev w-full h-full rounded-md p-3">
                 <div
                   ref={holderRef}
@@ -215,17 +282,17 @@ export default function BlogEditor({
               <button
                 className="flex gap-3 items-center bg-fire-orange px-8 py-2 rounded-full! neo-btn text-white font-bold text-lg"
                 onClick={() => {
-                  // handelSave.mutate();
+                  handelSave.mutate();
                 }}
               >
                 <span>ذخیره</span>
                 <Save />
               </button>
-              {status == 2 ? (
+              {status == 1 ? (
                 <button
                   className="flex gap-3 items-center bg-fire-orange px-8 py-2 rounded-full! neo-btn text-white font-bold text-lg"
                   onClick={() => {
-                    // handelPublish.mutate();
+                    handelPublish.mutate();
                   }}
                 >
                   <span>انتشار</span>
@@ -235,7 +302,7 @@ export default function BlogEditor({
                 <button
                   className="flex gap-3 items-center bg-fire-orange px-8 py-2 rounded-full! neo-btn text-white font-bold text-lg"
                   onClick={() => {
-                    // handelUnpublish.mutate();
+                    handelUnpublish.mutate();
                   }}
                 >
                   <span>پیش نویس</span>
