@@ -14,7 +14,7 @@ import React, { useEffect, useState } from "react";
 import SignupButton from "@/components/SignupButton/SignupButton";
 import style from "./style.module.css";
 import { getOrder } from "@/src/types/Entity-Monitoring/orderType";
-import OrderService from "@/src/services/entityMonitoring";
+import OrderService from "@/src/services/entityMonitoringOrder";
 
 export default function OrderList() {
   const [orderlist, setOrderList] = useState<getOrder[]>([]);

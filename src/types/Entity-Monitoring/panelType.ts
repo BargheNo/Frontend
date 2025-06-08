@@ -29,24 +29,24 @@ interface getPanel{
         corporation: {
             id: number,
             name: string,
-            contactInfo: [
-                {
-                    contactType: {
-                        name: string
-                    },
-                    value: string
+            contactInfo: 
+            {
+                contactType: {
+                name: string
                 }
-            ],
-            addresses: [
-                {
+                value: string
+            }[]
+            
+            addresses: {
+                
                     province: string,
                     city: string,
                     streetAddress: string,
                     postalCode: string,
                     houseNumber: string,
                     unit: number
-                }
-            ]
+                
+            }[]
         },
         address: {
             province: string,
@@ -71,14 +71,14 @@ interface getPanel{
 }
 
 interface editPanel{
-    name: string,
-    status: number,
-    buildingType: number,
-    area: number,
-    power: number,
-    tilt: number,
-    azimuth: number,
-    totalNumberOfModules: number
+    name: string|null,
+    status: number|null,
+    buildingType: number|null,
+    area: number|null,
+    power: number|null,
+    tilt: number|null,
+    azimuth: number|null,
+    totalNumberOfModules: number|null
 }
 
 
