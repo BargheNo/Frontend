@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Loader2, Vote, Check, UserRoundCog } from "lucide-react";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import { useSelector } from "react-redux";
 import styles from "./RolesAndPermissions.module.css";
 
@@ -18,6 +17,7 @@ import {
 import AddComponent from "@/components/AddComponent/AddComponent";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
+import { getData, postData } from "@/src/services/apiHub";
 
 type Permission = {
 	id: number;
@@ -57,35 +57,8 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
 	const [roleName, setRoleName] = useState("");
 
 	const getAllPermissions = async () => {
-		try {
-			const response = await fetch(
-				"http://46.249.99.69:8080/v1/admin/permissions",
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${accessToken}`,
-					},
-				}
-			);
-			const data = await response.json();
+		getData({ endPoint: `/v1/admin/permissions` }).then((data) => {
 			setAllPermissions(data.data);
-		} catch (err: any) {
-			const errMsg =
-				generateErrorMessage(err) || "مشکلی در دریافت مجوزها رخ داد.";
-			// toast.error(errMsg);
-			CustomToast(errMsg, "error");
-		}
-	};
-
-	// Handle checkbox changes
-	const handlePermissionChange = (permissionId: number) => {
-		setSelectedPermissions((prev) => {
-			if (prev.includes(permissionId)) {
-				return prev.filter((id) => id !== permissionId);
-			} else {
-				return [...prev, permissionId];
-			}
 		});
 	};
 
@@ -100,47 +73,19 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
 		}
 
 		setIsSaving(true);
-
-		try {
-			const response = await fetch(
-				"http://46.249.99.69:8080/v1/admin/roles",
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${accessToken}`,
-					},
-					body: JSON.stringify({
-						name: values.name,
-						permissionIDs: values.permissionIDs,
-					}),
-					// body: JSON.stringify({
-					// 	name: roleName,
-					// 	permissionIDs: selectedPermissions,
-					// }),
-				}
-			);
-
-			if (!response.ok) {
-				throw new Error("Failed to create role");
-			}
-
-			const result = await response.json();
-			CustomToast(result?.message, "success");
-			// toast.success(result.message);
-			onSaveSuccess();
-			// onClose();
-			setRoleName("");
-			setSelectedPermissions([]);
-			setOpen(false);
-		} catch (error: any) {
-			const errMsg =
-				generateErrorMessage(error) || "هنگام ایجاد نقش مشکلی پیش آمد.";
-			// toast.error(errMsg);
-			CustomToast(errMsg, "error");
-		} finally {
-			setIsSaving(false);
-		}
+		const formData = {
+			name: roleName,
+			permissionIDs: selectedPermissions,
+		};
+		postData({ endPoint: `/v1/admin/roles`, data: formData })
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				onSaveSuccess();
+				setRoleName("");
+				setSelectedPermissions([]);
+				setOpen(false);
+			})
+			.finally(() => setIsSaving(false));
 	};
 
 	// Load permissions when modal opens

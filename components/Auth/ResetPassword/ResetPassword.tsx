@@ -1,18 +1,15 @@
 "use client";
 import { useState } from "react";
-import { MoveLeft, Lock, Unlock, Smartphone } from "lucide-react";
+import { MoveLeft, Lock, Unlock } from "lucide-react";
 import styles from "./ResetPassword.module.css";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import CustomInput from "../../Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import LoginButton from "../Login/LoginButton";
-import { toast } from "sonner";
 import { useSelector } from "react-redux";
-// import { RootState } from "@/src/store/types";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
-import { postData, putData } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import { putData } from "@/src/services/apiHub";
 
 const validationSchema = Yup.object({
 	password: Yup.string()
@@ -36,9 +33,6 @@ const initialValues = {
 };
 
 const ResetPassword = () => {
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -47,29 +41,16 @@ const ResetPassword = () => {
 		confirmPassword: string;
 	}) => {
 		const { confirmPassword, password } = values;
-
-		try {
-			const response = await putData({
-				endPoint: "/v1/user/profile/password",
-
-				data: {
-					password,
-					confirmPassword,
-				},
-			});
-
-			if (response?.statusCode === 200) {
-				CustomToast(response?.message, "success");
-				// toast.success(response?.message);
-				window.location.href = "/dashboard";
-			}
-		} catch (error: any) {
-			const errMsg =
-				generateErrorMessage(error) ||
-				"هنگام تغییر رمز عبور مشکلی پیش آمد.";
-			// toast.error(errMsg);
-			CustomToast(errMsg, "error");
-		}
+		putData({
+			endPoint: `/v1/user/profile/password`,
+			data: {
+				password,
+				confirmPassword,
+			},
+		}).then((data) => {
+			CustomToast(data?.message, "success");
+			window.location.href = "/dashboard";
+		});
 	};
 
 	return (

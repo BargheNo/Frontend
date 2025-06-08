@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import {
-	Plus,
 	ShieldAlert,
 	Mailbox,
 	SquareMenu,
@@ -37,17 +36,12 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { City, Province } from "@/src/types/provinceType";
-import provinceService from "@/src/services/provinceService";
 import orderService from "@/src/services/orderService";
-import { toast } from "sonner";
-import { useSelector } from "react-redux";
-// import { RootState } from "@/src/store/types";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
-import TransparentLoading from "../Loading/LoadingSpinner/TransparentLoading";
 import CustomToast from "../Custom/CustomToast/CustomToast";
 import AddComponent from "../AddComponent/AddComponent";
 import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
+import { getData } from "@/src/services/apiHub";
 export default function Neworder() {
 	const [loading, setLoading] = useState(false);
 	const [open, setOpen] = useState(false);
@@ -55,33 +49,28 @@ export default function Neworder() {
 	const [provinceid, Setprovinceid] = useState<number>();
 	const [provinces, Setprovinces] = useState<Province[]>([]);
 	const [cities, Setcities] = useState<City[]>([]);
-	const [building, Setbuilding] = useState("");
+	const [building, Setbuilding] = useState(1);
 	const [cityid, Setcityid] = useState<number>();
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
 	const Getprovinces = () => {
-		provinceService
-			.GetProvinces()
-			.then((res) => {
-				Setprovinces(res.data.data);
+		getData({ endPoint: `/v1/address/province` })
+			.then((data) => {
+				Setprovinces(data?.data);
 			})
-			.catch((err) => {
-				console.log(err.message);
-			});
 	};
 	useEffect(() => {
 		Getprovinces();
 	}, []);
 
 	const UpdateCityList = (provinceId: number) => {
-		provinceService
-			.GetCities(provinceId)
-			.then((res) => Setcities(res.data.data))
-			.catch((err) => console.log(err.message));
+		getData({
+			endPoint: `/v1/address/province/${provinceId}/city`,
+		})
+			.then((data) => {
+				Setcities(data?.data);
+			})
 	};
-	const Findprovinceid = (provinces: Province[], name: string) => {
-		const province = provinces.find((p) => p.name === name);
+	const Findprovinceid = (provinces: Province[], id: number) => {
+		const province = provinces.find((p) => p.ID === id);
 		return province?.ID ?? null;
 	};
 
@@ -93,34 +82,22 @@ export default function Neworder() {
 	useEffect(() => {
 		UpdateCityList(provinceid ?? 1);
 	}, [provinceid]);
-	// console.log("city is",cityid," ",provinceid)
 
-	const handelOrderrequest = (orderinfo: order, token: string) => {
+	const handelOrderrequest = (orderinfo: order) => {
 		setLoading(true);
-		console.log("hello", token);
 		orderService
-			.orderRequest(orderinfo, token)
+			.orderRequest(orderinfo)
 			.then((res) => {
+				console.log(res);
 				CustomToast(res?.message, "success");
-				// toast(<div id="toast-success">{res?.message}</div>);
 				setLoading(false);
 				setOpen(false);
 			})
-			.catch((err) => {
-				console.log(err);
-				CustomToast(generateErrorMessage(err), "error");
-				// toast(<div id="toast-fail">{generateErrorMessage(err)}</div>);
-				setLoading(false);
-				// setOpen(false);
-			});
 	};
 	// console.log(cityid);
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				{/* <SignupButton type="button" id="plus">
-					<Plus className={style.icon} />
-				</SignupButton> */}
 				<AddComponent title="ثبت سفارش جدید" />
 			</DialogTrigger>
 			<DialogContent
@@ -138,6 +115,7 @@ export default function Neworder() {
 						address: "",
 						area: "",
 						electricity: "",
+						buildingType: "",
 						cost: "",
 						code: "",
 						unit: "",
@@ -159,6 +137,9 @@ export default function Neworder() {
 						),
 						cost: Yup.number().required("این فیلد الزامی است."),
 						number: Yup.string().required("این فیلد الزامی است."),
+						buildingType: Yup.string().required(
+							"نوع ساختمان الزامی است"
+						),
 						code: Yup.string()
 							.required("این فیلد الزامی است.")
 							.length(10, "کد پستی وارد شده اشتباه است."),
@@ -168,23 +149,20 @@ export default function Neworder() {
 					})}
 					onSubmit={(values) => {
 						// setOpen(false);
-						handelOrderrequest(
-							{
-								name: values.name,
-								area: Number(values.area),
-								power: Number(values.electricity),
-								maxCost: Number(values.cost),
-								buildingType: building,
-								description: "",
-								provinceID: provinceid ?? 1,
-								cityID: cityid ?? 1,
-								streetAddress: values.address,
-								postalCode: String(values.code),
-								houseNumber: String(values.number),
-								unit: Number(values.unit),
-							},
-							accessToken
-						);
+						handelOrderrequest({
+							name: values.name,
+							area: Number(values.area),
+							power: Number(values.electricity),
+							maxCost: Number(values.cost),
+							buildingType: Number(building),
+							description: "",
+							provinceID: provinceid ?? 1,
+							cityID: cityid ?? 1,
+							streetAddress: values.address,
+							postalCode: String(values.code),
+							houseNumber: String(values.number),
+							unit: Number(values.unit),
+						});
 					}}
 				>
 					{({ setFieldValue, values }) => (
@@ -222,8 +200,9 @@ export default function Neworder() {
 										setFieldValue("city", "");
 										const id = Findprovinceid(
 											provinces,
-											value
+											Number(value)
 										);
+										console.log("id found in province", id);
 										Setprovinceid(id ?? 1);
 										if (id) UpdateCityList(id);
 									}}
@@ -245,9 +224,9 @@ export default function Neworder() {
 															id={String(index)}
 															key={index}
 															className="cursor-pointer"
-															value={
-																provincearr.name
-															}
+															value={String(
+																provincearr.ID
+															)}
 														>
 															{provincearr.name}
 														</SelectItem>
@@ -394,13 +373,20 @@ export default function Neworder() {
 								</CustomInput>
 
 								<Select
-									name="building"
-									onValueChange={(value) =>
-										Setbuilding(value)
-									}
+									name="buildingType"
+									onValueChange={(value) => {
+										setFieldValue("buildingType", value);
+										Setbuilding(Number(value));
+									}}
 								>
 									<SelectTrigger
-										id="building"
+										value={values.buildingType}
+										onChange={(value) => {
+											setFieldValue(
+												"buildingType",
+												value
+											);
+										}}
 										className={`${style.CustomInput} mt-[27px] min-h-[43px] cursor-pointer`}
 									>
 										<SelectValue placeholder="نوع ساختمان" />
@@ -413,34 +399,34 @@ export default function Neworder() {
 											<SelectItem
 												id="0"
 												className="cursor-pointer"
-												value="residential"
+												value="1"
 											>
 												مسکونی
 											</SelectItem>
 											<SelectItem
 												id="1"
 												className="cursor-pointer"
-												value="commercial"
+												value="2"
 											>
 												تجاری
 											</SelectItem>
 											<SelectItem
 												id="2"
 												className="cursor-pointer"
-												value="industrial"
+												value="3"
 											>
 												صنعتی
 											</SelectItem>
 											<SelectItem
 												id="3"
 												className="cursor-pointer"
-												value="argiculture"
+												value="4"
 											>
 												کشاورزی
 											</SelectItem>
 											<SelectItem
 												id="4"
-												value="more"
+												value="5"
 												className="cursor-pointer"
 											>
 												سایر

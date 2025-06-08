@@ -1,16 +1,13 @@
-import axios from "axios";
 import { baseURL, getData } from "./apiHub";
 
 class provinceService {
 	GetProvinces() {
-		return axios.get(`${baseURL}/v1/address/province`, {
-			headers: {
-				"ngrok-skip-browser-warning": "69420",
-			},
-		});
+		return getData({ endPoint: `${baseURL}/v1/address/province` });
 	}
 	GetCities(provinceId: number) {
-		return axios.get(`${baseURL}/v1/address/province/${provinceId}/city`);
+		return getData({
+			endPoint: `${baseURL}/v1/address/province/${provinceId}/city`,
+		});
 	}
 }
 

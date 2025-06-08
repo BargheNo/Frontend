@@ -2,17 +2,13 @@
 import { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { useSelector } from "react-redux";
 import {
 	MessageCirclePlus,
 	MessageCircleMore,
 	ImagePlus,
-	List,
 } from "lucide-react";
 import React from "react";
 import styles from "./CustomerTickets.module.css";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
-import { toast } from "sonner";
 import Header from "@/components/Header/Header";
 import {
 	Select,
@@ -25,9 +21,9 @@ import {
 } from "@/components/ui/select";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
-import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
+import { getData, postData } from "@/src/services/apiHub";
 interface Ticket {
 	id: string;
 	subject: string;
@@ -59,11 +55,6 @@ interface Comment {
 const validationSchemaForm = Yup.object({
 	subject: Yup.string().required("موضوع تیکت الزامی است"),
 	description: Yup.string().required("توضیحات تیکت الزامی است"),
-	// image: Yup.mixed().optional(),
-	// image: Yup.mixed().test("fileType", "فرمت فایل معتبر نیست", (value) => {
-	// 	const file = value as File;
-	// 	return value && ["image/jpeg", "image/png"].includes(file.type);
-	// }),
 });
 
 const initialValuesForm = {
@@ -100,9 +91,6 @@ const TicketSupportPage = () => {
 		null
 	);
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
 	const subjectOptions = [
 		{ id: 1, label: "عمومی" },
 		{ id: 2, label: "پنل" },
@@ -131,42 +119,23 @@ const TicketSupportPage = () => {
 		setFieldValue: (field: string, value: any) => void
 	) => {
 		setLoading(true);
-		console.log("values", values);
 		const formData = new FormData();
 		formData.append("subject", values.subject);
-		console.log(values.subject);
 		formData.append("description", values.description);
-
 		if (values.image) {
 			formData.append("image", values.image);
 		}
 
-		try {
-			const res = await fetch("http://46.249.99.69:8080/v1/user/ticket", {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ${accessToken}`,
-				},
-				body: formData,
+		postData({ endPoint: `/v1/user/ticket`, data: formData })
+			.then((data) => {
+				resetFormValues(setFieldValue);
+				CustomToast(data?.message, "success");
+				fetchTickets();
+			})
+			.finally(() => {
+				setLoading(false);
+				setImagePreview(null);
 			});
-
-			const data = await res.json();
-			resetFormValues(setFieldValue);
-			CustomToast(data?.message, "success");
-			// toast.success(data?.message);
-			fetchTickets();
-			setLoading(false);
-			setImagePreview(null);
-		} catch (error: any) {
-			console.log(error);
-			const errMsg =
-				generateErrorMessage(error) ||
-				"هنگام ایجاد تیکت جدید مشکلی پیش آمد.";
-			CustomToast(errMsg, "error");
-			setLoading(false);
-			setImagePreview(null);
-			// toast.error(errMsg);
-		}
 	};
 
 	const createComment = async (
@@ -174,89 +143,39 @@ const TicketSupportPage = () => {
 		activeCommentTicketId: string | null
 	) => {
 		setPutCommentLoading(true);
-		try {
-			console.log("comment", comment);
-			const response = await fetch(
-				`http://46.249.99.69:8080/v1/user/ticket/${activeCommentTicketId}/comments`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${accessToken}`,
-					},
-					body: JSON.stringify({ body: comment }),
-				}
-			);
-
-			const result = await response.json();
-			// toast.success(result?.message);
-			console.log(result);
-			CustomToast(result?.message, "success");
-			getComments(activeCommentTicketId);
-			setPutCommentLoading(false);
-			setActiveCommentTicketId(null);
-		} catch (error: any) {
-			const errMsg =
-				generateErrorMessage(error) ||
-				"هنگام ایجاد نظر جدید مشکلی پیش آمد.";
-			CustomToast(errMsg, "error");
-			setPutCommentLoading(false);
-			setActiveCommentTicketId(null);
-			// toast.error(errMsg);
-		}
+		const formData = { comment: comment };
+		postData({
+			endPoint: `/v1/user/ticket/${activeCommentTicketId}/comments`,
+			data: formData,
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				getComments(activeCommentTicketId);
+			})
+			.finally(() => {
+				setPutCommentLoading(false);
+				setActiveCommentTicketId(null);
+			});
 	};
 
 	const getComments = async (showCommentBoxFor: string | null) => {
 		setComments([]);
 		setIsLoadingComments(true);
-		fetch(
-			`http://46.249.99.69:8080/v1/user/ticket/${showCommentBoxFor}/comments`,
-			{
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${accessToken}`,
-				},
-			}
-		)
-			.then((res) => res.json())
+		getData({
+			endPoint: `/v1/user/ticket/${showCommentBoxFor}/comments`,
+		})
 			.then((data) => {
 				setComments(data.data);
 			})
-			.catch((err: any) => {
-				const errMsg =
-					generateErrorMessage(err) ||
-					"هنگام گردآوری نظرات مشکلی به وجود آمد.";
-				// toast.error(errMsg);
-				CustomToast(errMsg, "error");
-			});
-		{
-			setIsLoadingComments(false);
-		}
+			.finally(() => setIsLoadingComments(false));
 	};
 
 	const fetchTickets = () => {
 		setLoadingTickets(true);
-		fetch("http://46.249.99.69:8080/v1/user/ticket/list", {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${accessToken}`,
-			},
-		})
-			.then((res) => res.json())
-			.then((data) => {
-				setTickets(data.data);
-				setLoadingTickets(false);
-			})
-			.catch((err) => {
-				const errMsg =
-					generateErrorMessage(err) ||
-					"هنگام گردآوری تیکت ها مشکلی پیش آمد.";
-				CustomToast(errMsg, "error");
-				setLoadingTickets(false);
-				// toast.error(errMsg);
-			});
+		getData({ endPoint: `/v1/user/ticket/list` }).then((data) => {
+			setTickets(data.data);
+			setLoadingTickets(false);
+		});
 	};
 
 	useEffect(() => {

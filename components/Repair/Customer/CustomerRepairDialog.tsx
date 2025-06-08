@@ -11,10 +11,8 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import moment from "jalali-moment";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
-import { useSelector } from "react-redux";
-import { toast } from "sonner";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import { postData } from "@/src/services/apiHub";
 
 interface RepairHistoryItem {
 	ID: number;
@@ -52,46 +50,21 @@ const RepairDetailsDialog = ({
 	repairItem,
 }: RepairDetailsDialogProps) => {
 	const [showConfirmation, setShowConfirmation] = useState(false);
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
 
 	if (!repairItem) return null;
 
 	const handleSubmit = async (values: { problem: string }) => {
-		try {
-			console.log(values);
-			const repairHistoryId = repairItem.ID;
-			const response = await fetch(
-				`http://46.249.99.69:8080/v1/user/report/maintenance/${repairHistoryId}`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${accessToken}`,
-					},
-					body: JSON.stringify({
-						description: values.problem,
-					}),
-				}
-			);
-
-			if (!response.ok) {
-				throw new Error("Network response was not ok");
-			}
-
-			// Handle success
-			const data = await response.json();
+		const repairHistoryId = repairItem.ID;
+		const formData = {
+			description: values.problem,
+		};
+		postData({
+			endPoint: `/v1/user/report/maintenance/${repairHistoryId}`,
+			data: formData,
+		}).then((data) => {
 			CustomToast(data?.message, "success");
-			// toast.success(data?.message);
 			onClose();
-		} catch (error: any) {
-			const errMsg =
-				generateErrorMessage(error) ||
-				"هنگام ایجاد گزارش جدید مشکلی پیش آمد.";
-			CustomToast(errMsg, "error");
-			// toast.error(errMsg);
-		}
+		});
 	};
 
 	return (
