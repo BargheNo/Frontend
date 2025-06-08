@@ -1,40 +1,96 @@
 export interface CorpRepairItem {
-    CreatedAt: string;
-    Description: string;
-    ID: number;
-    OwnerPhone: string;
-    Panel: {
-        address: {
-            ID: number;
-            city: string;
-            houseNumber: string;
-            postalCode: string;
-            province: string;
-            streetAddress: string;
-            unit: number;
-        }
-        area: number;
-        azimuth: number;
-        buildingType: string;
-        customerName: string;
-        customerPhone: string;
+    id: number;
+    createdAt: string;
+    panel: {
         id: number;
-        operatorName: string;
-        panelName: string;
+        name: string;
+        status: string;
+        buildingType: string;
+        area: number;
         power: number;
         tilt: number;
+        azimuth: number;
         totalNumberOfModules: number;
+        guaranteeStatus: string;
+        operator: {
+            id: number;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string;
+            nationalID: string;
+            profilePic: string;
+            status: string;
+        };
+        customer: {
+            id: number;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string;
+            nationalID: string;
+            profilePic: string;
+            status: string;
+        };
+        address: {
+            id: number;
+            province: string;
+            provinceID: number;
+            cityID: number;
+            city: string;
+            streetAddress: string;
+            postalCode: string;
+            houseNumber: string;
+            unit: number;
+        };
+        guarantee: {
+            id: number;
+            name: string;
+            status: string;
+            guaranteeType: string;
+            durationMonths: number;
+            description: string;
+            terms: null;
+        };
     };
-    PanelID: number;
-    Subject: string;
-    UrgencyLevel: "low" | "medium" | "high";
-    Status: "pending" | "completed";
+    subject: string;
+    description: string;
+    urgencyLevel: string;
+    status: "در انتظار تایید" | "تایید شده" | "رد شده" | "تمام شده";
+    isGuaranteeRequested: boolean;
+    record: MaintenanceRecord[];
 }
 
 export interface MaintenanceRecord {
-    Date: string;
-    Title: string;
-    Details: string;
+    id: number;
+    createdAt: string;
+    operator: {
+        id: number;
+        firstName: string;
+        lastName: string;
+        phone: string;
+        email: string;
+        nationalID: string;
+        profilePic: string;
+        status: string;
+    };
+    title: string;
+    details: string;
+    isApproved: boolean;
+    violation?: {
+        operator: {
+            id: number;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string;
+            nationalID: string;
+            profilePic: string;
+            status: string;
+        };
+        reason: string;
+        details: string;
+    };
 }
 
 export interface CorpRepairDialogProps {
@@ -44,8 +100,10 @@ export interface CorpRepairDialogProps {
 }
 
 export interface RepairFormValues {
-    date: string;
-    time: string;
     title: string;
-    note: string;
+    details: string;
+    guaranteeViolation?: {
+        reason: string;
+        details: string;
+    };
 } 

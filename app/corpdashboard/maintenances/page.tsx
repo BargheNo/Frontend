@@ -7,41 +7,29 @@ import getCorpRepairRecords from "@/src/services/getCorpRepairRecords";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import Header from "@/components/Header/Header";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
-
-interface ApiRepairItem extends Omit<CorpRepairItem, "Status"> {
-	Status: string;
-}
-
-const mapStatus = (status: string): "pending" | "completed" => {
-	// Add your status mapping logic here
-	// For example:
-	if (
-		status.toLowerCase().includes("completed") ||
-		status.toLowerCase().includes("done")
-	) {
-		return "completed";
-	}
-	return "pending";
-};
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 
 export default function Page() {
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
-	const [selectedItem, setSelectedItem] = useState<CorpRepairItem | null>(
-		null
-	);
-	const [repairItems, setRepairItmes] = useState<CorpRepairItem[]>([]);
+	const [selectedItem, setSelectedItem] = useState<CorpRepairItem | null>(null);
+	const [repairItems, setRepairItems] = useState<CorpRepairItem[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
+	const [myRepairsFilter, setMyRepairsFilter] = useState<"تایید شده" | "تمام شده" | "همه">("همه");
+	const [allRepairsFilter, setAllRepairsFilter] = useState<"در انتظار تایید" | "رد شده" | "همه">("همه");
 
 	useEffect(() => {
 		setIsLoading(true);
 		getCorpRepairRecords
 			.GetRepairRequest()
 			.then((res) => {
-				const mappedData = res.data.map((item: ApiRepairItem) => ({
-					...item,
-					Status: mapStatus(item.Status),
-				}));
-				setRepairItmes(mappedData);
+				console.log(res.data)
+				setRepairItems(res.data);
 				setIsLoading(false);
 			})
 			.catch((err) => {
@@ -60,41 +48,105 @@ export default function Page() {
 		setSelectedItem(null);
 	};
 
+	const filteredMyRepairs = repairItems.filter(item => {
+		if (myRepairsFilter === "همه") {
+			return item.status === "تایید شده" || item.status === "تمام شده";
+		}
+		return item.status === myRepairsFilter;
+	});
+
+	const filteredAllRepairs = repairItems.filter(item => {
+		if (allRepairsFilter === "همه") {
+			return item.status === "در انتظار تایید" || item.status === "رد شده";
+		}
+		return item.status === allRepairsFilter;
+	});
+
 	return (
 		<PageContainer>
-			{/* <div className="min-h-full flex flex-col gap-8 text-white py-8 px-4 md:px-14 bg-transparent"> */}
-			<Header header="تعمیرات پیش رو" />
-			{/* <h1 className="text-navy-blue self-end md:self-auto text-3xl font-black">
-				تعمیرات پیش رو
-				</h1> */}
-
-			<div>
-				<div className="flex flex-col neu-container">
-					{isLoading ? (
-						<LoadingSpinner />
-					) : repairItems.length === 0 ? (
-						<div className="text-center py-8 text-gray-500">
-							هیچ درخواست تعمیراتی موجود نیست
-						</div>
-					) : (
-						repairItems.map((item) => (
-							<div key={item.ID} className="">
-								<CorpRepairCard
-									panelName={item.Panel.panelName}
-									panelPower={item.Panel.power}
-									owner={item.Panel.customerName}
-									date={item.CreatedAt}
-									status={item.Status} // TODO: change it with status, if available
-									UrgencyLevel={item.UrgencyLevel}
-									address={item.Panel.address.streetAddress}
-									className="w-full"
-									onDetailsClick={() =>
-										handleOpenDialog(item)
-									}
-								/>
+			<div className="space-y-8">
+				{/* تعمیرات من Section */}
+				<div>
+					<div className="flex justify-between items-center mb-4">
+						<Header header="تعمیرات من" />
+						<Select value={myRepairsFilter} onValueChange={(value: "تایید شده" | "تمام شده" | "همه") => setMyRepairsFilter(value)}>
+							<SelectTrigger className="w-[180px]">
+								<SelectValue placeholder="فیلتر وضعیت" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="همه">همه</SelectItem>
+								<SelectItem value="تایید شده">تایید شده</SelectItem>
+								<SelectItem value="تمام شده">تمام شده</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
+					<div className="flex flex-col neu-container">
+						{isLoading ? (
+							<LoadingSpinner />
+						) : filteredMyRepairs.length === 0 ? (
+							<div className="text-center py-8 text-gray-500">
+								هیچ درخواست تعمیراتی موجود نیست
 							</div>
-						))
-					)}
+						) : (
+							filteredMyRepairs.map((item) => (
+								<div key={item.id} className="">
+									<CorpRepairCard
+										panelName={item.panel.name}
+										panelPower={item.panel.power}
+										owner={`${item.panel.customer.firstName} ${item.panel.customer.lastName}`}
+										date={item.createdAt}
+										status={item.status}
+										UrgencyLevel={item.urgencyLevel.toLowerCase() as "low" | "medium" | "high"}
+										address={item.panel.address.streetAddress}
+										className="w-full"
+										onDetailsClick={() => handleOpenDialog(item)}
+									/>
+								</div>
+							))
+						)}
+					</div>
+				</div>
+
+				{/* کلیۀ درخواستهای تعمیرات Section */}
+				<div>
+					<div className="flex justify-between items-center mb-4">
+						<Header header="کلیۀ درخواستهای تعمیرات" />
+						<Select value={allRepairsFilter} onValueChange={(value: "در انتظار تایید" | "رد شده" | "همه") => setAllRepairsFilter(value)}>
+							<SelectTrigger className="w-[180px]">
+								<SelectValue placeholder="فیلتر وضعیت" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="همه">همه</SelectItem>
+								<SelectItem value="در انتظار تایید">در انتظار تایید</SelectItem>
+								<SelectItem value="رد شده">رد شده</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
+					<div className="flex flex-col neu-container">
+						{isLoading ? (
+							<LoadingSpinner />
+						) : filteredAllRepairs.length === 0 ? (
+							<div className="text-center py-8 text-gray-500">
+								هیچ درخواست تعمیراتی موجود نیست
+							</div>
+						) : (
+							filteredAllRepairs.map((item) => (
+								<div key={item.id} className="">
+									<CorpRepairCard
+										panelName={item.panel.name}
+										panelPower={item.panel.power}
+										owner={`${item.panel.customer.firstName} ${item.panel.customer.lastName}`}
+										date={item.createdAt}
+										status={item.status}
+										UrgencyLevel={item.urgencyLevel.toLowerCase() as "low" | "medium" | "high"}
+										address={item.panel.address.streetAddress}
+										className="w-full"
+										onDetailsClick={() => handleOpenDialog(item)}
+									/>
+								</div>
+							))
+						)}
+					</div>
 				</div>
 			</div>
 
@@ -105,10 +157,6 @@ export default function Page() {
 					repairItem={selectedItem}
 				/>
 			)}
-
-			<br />
-			<br />
-			{/* </div> */}
 		</PageContainer>
 	);
 }

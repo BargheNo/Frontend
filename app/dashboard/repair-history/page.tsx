@@ -12,25 +12,141 @@ import { baseURL, getData } from "@/src/services/apiHub";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import Header from "@/components/Header/Header";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 interface RepairHistoryItem {
-	ID: number;
-	Subject: string;
-	Description: string;
-	Status: string;
-	UrgencyLevel: string;
-	CreatedAt: string;
-	OwnerID: number;
-	CorporationID: number;
-	PanelID: number;
-	Panel: {
+	id: number;
+	createdAt: string;
+	panel: {
 		id: number;
-		panelName: string;
-		corporationName: string;
-		power: number;
+		name: string;
+		status: string;
+		buildingType: string;
 		area: number;
+		power: number;
+		tilt: number;
+		azimuth: number;
+		totalNumberOfModules: number;
+		guaranteeStatus: string;
+		corporation: {
+			id: number;
+			name: string;
+			logo: string;
+			contactInfo: ContactInfo[];
+			addresses: Address[];
+		};
+		address: Address;
+		guarantee: {
+			id: number;
+			name: string;
+			status: string;
+			guaranteeType: string;
+			durationMonths: number;
+			description: string;
+			terms: Record<string, unknown>;
+		};
+	};
+	corporation: {
+		id: number;
+		name: string;
+		logo: string;
+		contactInfo: ContactInfo[];
+		addresses: Address[];
+	};
+	subject: string;
+	description: string;
+	urgencyLevel: string;
+	status: string;
+	isGuaranteeRequested: boolean;
+	record: {
+		id: number;
+		createdAt: string;
+		title: string;
+		details: string;
+		date: string;
+		isApproved: boolean;
+		violation: {
+			reason: string;
+			details: string;
+		};
 	};
 }
+
+interface ContactInfo {
+	type: string;
+	value: string;
+}
+
+interface Address {
+	id: number;
+	province: string;
+	provinceID: number;
+	cityID: number;
+	city: string;
+	streetAddress: string;
+	postalCode: string;
+	houseNumber: string;
+	unit: number;
+}
+
+// Mock data for testing
+/*const mockRepairItems: RepairHistoryItem[] = [
+    {
+        ID: 1,
+        Subject: "تعمیر پنل خورشیدی شماره 1",
+        Description: "پنل خورشیدی نیاز به تعمیر و نگهداری دارد",
+        Status: "در انتظار بررسی",
+        UrgencyLevel: "بالا",
+        CreatedAt: new Date().toISOString(),
+        OwnerID: 1,
+        CorporationID: 1,
+        PanelID: 1,
+        Panel: {
+            id: 1,
+            panelName: "پنل خورشیدی A",
+            corporationName: "شرکت انرژی خورشیدی",
+            power: 100,
+            area: 50
+        }
+    },
+    {
+        ID: 2,
+        Subject: "بازرسی دوره‌ای پنل‌ها",
+        Description: "نیاز به بازرسی دوره‌ای پنل‌های خورشیدی",
+        Status: "در حال انجام",
+        UrgencyLevel: "متوسط",
+        CreatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        OwnerID: 1,
+        CorporationID: 1,
+        PanelID: 2,
+        Panel: {
+            id: 2,
+            panelName: "پنل خورشیدی B",
+            corporationName: "شرکت انرژی خورشیدی",
+            power: 150,
+            area: 75
+        }
+    },
+    {
+        ID: 3,
+        Subject: "تعویض قطعات فرسوده",
+        Description: "نیاز به تعویض برخی قطعات فرسوده",
+        Status: "تکمیل شده",
+        UrgencyLevel: "پایین",
+        CreatedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+        OwnerID: 1,
+        CorporationID: 1,
+        PanelID: 3,
+        Panel: {
+            id: 3,
+            panelName: "پنل خورشیدی C",
+            corporationName: "شرکت انرژی خورشیدی",
+            power: 200,
+            area: 100
+        }
+    }
+];*/
+
 const Page = () => {
 	// State for the dialog
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -40,6 +156,7 @@ const Page = () => {
 	const [repairItems, setRepairItems] = useState<RepairHistoryItem[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<Error | null>(null);
+	const [refreshTrigger, setRefreshTrigger] = useState(0);
 
 	// Function to filter repairs simce the last month
 	const getRecentRepairs = (items: RepairHistoryItem[]) => {
@@ -47,29 +164,32 @@ const Page = () => {
 		oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
 		return items.filter((item) => {
-			const repairDate = new Date(item.CreatedAt);
+			const repairDate = new Date(item.createdAt);
 			return repairDate >= oneMonthAgo;
 		});
 	};
 
-	useEffect(() => {
+	useEffect(() => {		
+		// For testing, use mock data instead of API call
+		// setRepairItems(mockRepairItems);
+		// setIsLoading(false);
+
+		// Comment out the actual API call for now ////////////////////////////////////////////////////////////////////////////////////////
 		getData({
-			endPoint: `${baseURL}/v1/user/maintenance/request/list`,
+			endPoint: `${baseURL}/v1/user/maintenance/request?status=1`,
 		})
-			.then((res) => {
-				// console.log(res);
-				setRepairItems(res.data);
-				setIsLoading(false);
-			})
-			.catch((err) => {
-				setError(
-					err instanceof Error
-						? err
-						: new Error("Failed to fetch repair items")
-				);
-				setIsLoading(false);
-			});
-	}, []);
+		.then((res) => {
+			// console.log(res);
+			setRepairItems(res.data);
+			setIsLoading(false);
+		})
+		.catch((err) => {
+			setError(err instanceof Error ? err : new Error('Failed to fetch repair items'));
+			CustomToast("مشکلی در دریافت سوابق تعمیرات پیش آمد!", "error");
+			setIsLoading(false);
+		});
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	}, [refreshTrigger]);
 
 	const handleOpenDialog = (item: RepairHistoryItem) => {
 		setSelectedItem(item);
@@ -82,10 +202,15 @@ const Page = () => {
 		setSelectedItem(null);
 	};
 
+	// Function to trigger refresh
+	const triggerRefresh = () => {
+		setRefreshTrigger(prev => prev + 1);
+	};
+
 	const recentRepairs = getRecentRepairs(repairItems);
 	const sliderItems = recentRepairs.map((item: RepairHistoryItem) => ({
-		text: item.Subject,
-		date: item.CreatedAt,
+		text: item.subject,
+		date: item.createdAt,
 	}));
 
 	// if (isLoading) {
@@ -116,12 +241,12 @@ const Page = () => {
 							/>
 						</div>
 						<div className="flex flex-col gap-4 w-full md:w-[40%] items-center align-center justify-center mb-8 md:mt-0">
-							<CustomerRepairRequest />
+							<CustomerRepairRequest onRefresh={triggerRefresh} />
 						</div>
 					</>
 				) : (
 					<div className="w-full flex justify-center">
-						<CustomerRepairRequest />
+						<CustomerRepairRequest onRefresh={triggerRefresh} />
 					</div>
 				)}
 			</div>
@@ -138,7 +263,7 @@ const Page = () => {
 						) : (
 							repairItems.map(
 								(item: RepairHistoryItem, index: number) => (
-									<div key={item.ID || index}>
+									<div key={item.id || index}>
 										<CustomerRepairCard
 											repairItem={item}
 											onDetailsClick={() =>
@@ -158,6 +283,7 @@ const Page = () => {
 				isOpen={isDialogOpen}
 				onClose={handleCloseDialog}
 				repairItem={selectedItem}
+				onRefresh={triggerRefresh}
 			/>
 			{/* </div> */}
 		</PageContainer>
