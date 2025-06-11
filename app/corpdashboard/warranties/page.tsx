@@ -8,8 +8,8 @@ import React from "react";
 export default function Page() {
 
 	return (
-		<PageContainer>
-			<Header header="گارانتی‌ها" />
+		<PageContainer className="!gap-0">
+			<Header className="!mb-0" header="گارانتی‌ها" />
 			<AddWarranty />
 			<Warranties />
 		</PageContainer>
