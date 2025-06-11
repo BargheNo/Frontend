@@ -205,6 +205,7 @@ export default function Neworder() {
 							>
 								<Select
 									name="province"
+									value={values.provinceID}
 									onValueChange={(value) => {
 										setFieldValue("cityID", null);
 										setFieldValue("provinceID", value);
