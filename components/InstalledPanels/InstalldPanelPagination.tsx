@@ -37,7 +37,6 @@ export default function InstalledPanelPagination() {
 			})
 				.then((res) => {
 					sethistory(res.data);
-					// console.log(res.data);
 				})
 				.finally(() => setIsLoading(false));
 		} else {

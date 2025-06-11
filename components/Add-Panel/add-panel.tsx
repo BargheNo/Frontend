@@ -46,6 +46,13 @@ import CustomToast from "../Custom/CustomToast/CustomToast";
 import AddComponent from "../AddComponent/AddComponent";
 import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
 import { useSelector } from "react-redux";
+import { getData } from "@/src/services/apiHub";
+
+interface BuildingTypeProps {
+	id: number;
+	name: string;
+}
+
 export default function AddPanel() {
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -55,6 +62,8 @@ export default function AddPanel() {
 	const [cities, Setcities] = useState<City[]>([]);
 	const [building, Setbuilding] = useState("");
 	const [cityid, Setcityid] = useState<number>();
+	const [buildingTypes, setBuildingTypes] = useState<BuildingTypeProps[]>();
+
 	const Getprovinces = () => {
 		provinceService
 			.GetProvinces()
@@ -66,12 +75,16 @@ export default function AddPanel() {
 			});
 	};
 	useEffect(() => {
+		getData({ endPoint: `/v1/installation/request/building` }).then(
+			(data) => {
+				setBuildingTypes(data?.data);
+			}
+		);
 		Getprovinces();
 	}, []);
 
 	const UpdateCityList = (provinceId: number) => {
 		provinceService.GetCities(provinceId).then((res) => {
-			console.log(res);
 			Setcities(res?.data);
 		});
 	};
@@ -237,7 +250,20 @@ export default function AddPanel() {
 											<SelectLabel>
 												نوع ساختمان
 											</SelectLabel>
-											<SelectItem
+											{buildingTypes?.map(
+												(buildingType, index) => (
+													<SelectItem
+														key={index}
+														value={String(
+															buildingType?.id
+														)}
+														className="cursor-pointer"
+													>
+														{buildingType?.name}
+													</SelectItem>
+												)
+											)}
+											{/* <SelectItem
 												value="1"
 												className="cursor-pointer"
 											>
@@ -266,7 +292,7 @@ export default function AddPanel() {
 												className="cursor-pointer"
 											>
 												سایر
-											</SelectItem>
+											</SelectItem> */}
 										</SelectGroup>
 									</SelectContent>
 								</Select>

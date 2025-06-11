@@ -42,6 +42,12 @@ import CustomToast from "../Custom/CustomToast/CustomToast";
 import AddComponent from "../AddComponent/AddComponent";
 import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
 import { getData } from "@/src/services/apiHub";
+
+interface BuildingTypeProps {
+	id: number;
+	name: string;
+}
+
 export default function Neworder() {
 	const [loading, setLoading] = useState(false);
 	const [open, setOpen] = useState(false);
@@ -51,7 +57,7 @@ export default function Neworder() {
 	const [cities, Setcities] = useState<City[]>([]);
 	const [building, Setbuilding] = useState(1);
 	const [cityid, Setcityid] = useState<number>();
-	const [buildingTypes, setBuildingTypes] = useState();
+	const [buildingTypes, setBuildingTypes] = useState<BuildingTypeProps[]>();
 
 	const Getprovinces = () => {
 		getData({ endPoint: `/v1/address/province` }).then((data) => {
@@ -62,7 +68,6 @@ export default function Neworder() {
 		Getprovinces();
 		getData({ endPoint: `v1/installation/request/building` }).then(
 			(data) => {
-				console.log(data?.data);
 				setBuildingTypes(data?.data);
 			}
 		);
@@ -288,9 +293,7 @@ export default function Neworder() {
 									name="address"
 									id="address"
 									placeholder="آدرس"
-								>
-									{" "}
-								</CustomTextArea>
+								/>
 							</div>
 							<div
 								className="flex md:flex-row flex-col justify-end w-full -mt-4"
@@ -303,9 +306,7 @@ export default function Neworder() {
 									icon={Mailbox}
 									name="code"
 									placeholder="کد پستی"
-								>
-									{" "}
-								</CustomInput>
+								/>
 								<CustomInput
 									type="number"
 									style={{ width: "12vw" }}
@@ -313,9 +314,7 @@ export default function Neworder() {
 									icon={House}
 									placeholder="پلاک"
 									name="number"
-								>
-									{" "}
-								</CustomInput>
+								/>
 								<CustomInput
 									type="number"
 									style={{ width: "12vw" }}
@@ -323,9 +322,7 @@ export default function Neworder() {
 									icon={BellRing}
 									placeholder="واحد"
 									name="unit"
-								>
-									{" "}
-								</CustomInput>
+								/>
 							</div>
 
 							<div className="flex w-full gap-x-1 text-gray-500 -mb-6 mt-2">
@@ -344,9 +341,7 @@ export default function Neworder() {
 									placeholder="مساحت(مترمربع)"
 									icon={LandPlot}
 									name="area"
-								>
-									{" "}
-								</CustomInput>
+								/>
 								<div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
 									<ShieldAlert />
 									<p>مساحت محل نصب پنل (متر مربع)</p>
@@ -358,9 +353,7 @@ export default function Neworder() {
 									placeholder="میزان برق مورد نیاز(کیلووات)"
 									icon={Gauge}
 									name="electricity"
-								>
-									{" "}
-								</CustomInput>
+								/>
 								<div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
 									<ShieldAlert />
 									<p className="">میزان برق مورد نیاز </p>
@@ -372,9 +365,7 @@ export default function Neworder() {
 									placeholder="سقف هزینه(ریال)"
 									icon={CircleDollarSign}
 									name="cost"
-								>
-									{" "}
-								</CustomInput>
+								/>
 
 								<Select
 									name="buildingType"
@@ -405,47 +396,14 @@ export default function Neworder() {
 													<SelectItem
 														key={index}
 														className="cursor-pointer"
-														value={String(buildingType?.id)}
+														value={String(
+															buildingType?.id
+														)}
 													>
 														{buildingType?.name}
 													</SelectItem>
 												)
 											)}
-											{/* <SelectItem
-												id="0"
-												className="cursor-pointer"
-												value="1"
-											>
-												مسکونی
-											</SelectItem>
-											<SelectItem
-												id="1"
-												className="cursor-pointer"
-												value="2"
-											>
-												تجاری
-											</SelectItem>
-											<SelectItem
-												id="2"
-												className="cursor-pointer"
-												value="3"
-											>
-												صنعتی
-											</SelectItem>
-											<SelectItem
-												id="3"
-												className="cursor-pointer"
-												value="4"
-											>
-												کشاورزی
-											</SelectItem>
-											<SelectItem
-												id="4"
-												value="5"
-												className="cursor-pointer"
-											>
-												سایر
-											</SelectItem> */}
 										</SelectGroup>
 									</SelectContent>
 								</Select>
