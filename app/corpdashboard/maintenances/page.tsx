@@ -69,7 +69,7 @@ export default function Page() {
 				<div>
 					<div className="flex justify-between items-center mb-4">
 						<Header header="تعمیرات من" />
-						<Select value={myRepairsFilter} onValueChange={(value: "تایید شده" | "تمام شده" | "همه") => setMyRepairsFilter(value)}>
+						<Select dir="rtl" value={myRepairsFilter} onValueChange={(value: "تایید شده" | "تمام شده" | "همه") => setMyRepairsFilter(value)}>
 							<SelectTrigger className="w-[180px]">
 								<SelectValue placeholder="فیلتر وضعیت" />
 							</SelectTrigger>
@@ -111,7 +111,7 @@ export default function Page() {
 				<div>
 					<div className="flex justify-between items-center mb-4">
 						<Header header="کلیۀ درخواستهای تعمیرات" />
-						<Select value={allRepairsFilter} onValueChange={(value: "در انتظار تایید" | "رد شده" | "همه") => setAllRepairsFilter(value)}>
+						<Select dir="rtl" value={allRepairsFilter} onValueChange={(value: "در انتظار تایید" | "رد شده" | "همه") => setAllRepairsFilter(value)}>
 							<SelectTrigger className="w-[180px]">
 								<SelectValue placeholder="فیلتر وضعیت" />
 							</SelectTrigger>
