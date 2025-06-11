@@ -66,7 +66,7 @@ export default function Neworder() {
 	};
 	useEffect(() => {
 		Getprovinces();
-		getData({ endPoint: `v1/installation/request/building` }).then(
+		getData({ endPoint: `/v1/installation/request/building` }).then(
 			(data) => {
 				setBuildingTypes(data?.data);
 			}
@@ -95,15 +95,17 @@ export default function Neworder() {
 	}, [provinceid]);
 
 	const handelOrderrequest = (orderinfo: order) => {
+		console.log(orderinfo);
 		setLoading(true);
-		orderService.orderRequest(orderinfo).then((res) => {
-			console.log(res);
-			CustomToast(res?.message, "success");
-			setLoading(false);
-			setOpen(false);
-		});
+		orderService
+			.orderRequest(orderinfo)
+			.then((res) => {
+				console.log(res);
+				CustomToast(res?.message, "success");
+				setOpen(false);
+			})
+			.finally(() => setLoading(false));
 	};
-	// console.log(cityid);
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
@@ -129,8 +131,8 @@ export default function Neworder() {
 						code: "",
 						unit: "",
 						number: "",
-						province: "",
-						city: "",
+						provinceID: "",
+						cityID: "",
 					}}
 					validationSchema={Yup.object({
 						name: Yup.string()
@@ -153,8 +155,10 @@ export default function Neworder() {
 							.required("این فیلد الزامی است.")
 							.length(10, "کد پستی وارد شده اشتباه است."),
 						unit: Yup.number().required("این فیلد الزامی است."),
-						province: Yup.string().required("این فیلد الزامی است."),
-						city: Yup.string().required("این فیلد الزامی است."),
+						provinceID: Yup.number().required(
+							"این فیلد الزامی است."
+						),
+						cityID: Yup.number().required("این فیلد الزامی است."),
 					})}
 					onSubmit={(values) => {
 						// setOpen(false);
@@ -165,8 +169,8 @@ export default function Neworder() {
 							maxCost: Number(values.cost),
 							buildingType: Number(building),
 							description: "",
-							provinceID: provinceid ?? 1,
-							cityID: cityid ?? 1,
+							provinceID: Number(values.provinceID),
+							cityID: Number(values.cityID),
 							streetAddress: values.address,
 							postalCode: String(values.code),
 							houseNumber: String(values.number),
@@ -186,9 +190,7 @@ export default function Neworder() {
 									placeholder="نام پنل"
 									icon={SquareMenu}
 									name="name"
-								>
-									{" "}
-								</CustomInput>
+								/>
 								<div className="flex flex-row justify-center mt-5 gap-x-1 text-gray-500 w-full">
 									<ShieldAlert />
 									<p className="rtl whitespace-nowrap">
@@ -204,16 +206,17 @@ export default function Neworder() {
 								<Select
 									name="province"
 									onValueChange={(value) => {
-										Setdisable(false);
-										setFieldValue("province", value);
-										setFieldValue("city", "");
+										setFieldValue("cityID", null);
+										setFieldValue("provinceID", value);
+
+										console.log(values.cityID);
 										const id = Findprovinceid(
 											provinces,
 											Number(value)
 										);
-										console.log("id found in province", id);
 										Setprovinceid(id ?? 1);
 										if (id) UpdateCityList(id);
+										Setdisable(false);
 									}}
 								>
 									<SelectTrigger
@@ -234,10 +237,10 @@ export default function Neworder() {
 															key={index}
 															className="cursor-pointer"
 															value={String(
-																provincearr.ID
+																provincearr?.ID
 															)}
 														>
-															{provincearr.name}
+															{provincearr?.name}
 														</SelectItem>
 													)
 												)
@@ -248,19 +251,18 @@ export default function Neworder() {
 									</SelectContent>
 								</Select>
 								<Select
-									name="city"
+									name="cityID"
+									value={values?.cityID}
 									disabled={disable}
 									onValueChange={(value) => {
 										const iD = FindCityid(cities, value);
 										Setcityid(iD ?? 1);
-										setFieldValue("city", value);
+										setFieldValue("cityID", value);
 									}}
 								>
 									<SelectTrigger
 										disabled={disable}
 										className={`${style.CustomInput} cursor-pointer`}
-										id="city"
-										// style={{ width: "25vw" }}
 									>
 										<SelectValue placeholder="شهر" />
 									</SelectTrigger>
@@ -271,7 +273,7 @@ export default function Neworder() {
 												cities.map((city, index) => (
 													<SelectItem
 														key={index}
-														value={city.name}
+														value={String(city?.ID)}
 														className="cursor-pointer"
 														id={String(index)}
 													>
