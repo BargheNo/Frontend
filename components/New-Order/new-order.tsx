@@ -51,23 +51,29 @@ export default function Neworder() {
 	const [cities, Setcities] = useState<City[]>([]);
 	const [building, Setbuilding] = useState(1);
 	const [cityid, Setcityid] = useState<number>();
+	const [buildingTypes, setBuildingTypes] = useState();
+
 	const Getprovinces = () => {
-		getData({ endPoint: `/v1/address/province` })
-			.then((data) => {
-				Setprovinces(data?.data);
-			})
+		getData({ endPoint: `/v1/address/province` }).then((data) => {
+			Setprovinces(data?.data);
+		});
 	};
 	useEffect(() => {
 		Getprovinces();
+		getData({ endPoint: `v1/installation/request/building` }).then(
+			(data) => {
+				console.log(data?.data);
+				setBuildingTypes(data?.data);
+			}
+		);
 	}, []);
 
 	const UpdateCityList = (provinceId: number) => {
 		getData({
 			endPoint: `/v1/address/province/${provinceId}/city`,
-		})
-			.then((data) => {
-				Setcities(data?.data);
-			})
+		}).then((data) => {
+			Setcities(data?.data);
+		});
 	};
 	const Findprovinceid = (provinces: Province[], id: number) => {
 		const province = provinces.find((p) => p.ID === id);
@@ -85,14 +91,12 @@ export default function Neworder() {
 
 	const handelOrderrequest = (orderinfo: order) => {
 		setLoading(true);
-		orderService
-			.orderRequest(orderinfo)
-			.then((res) => {
-				console.log(res);
-				CustomToast(res?.message, "success");
-				setLoading(false);
-				setOpen(false);
-			})
+		orderService.orderRequest(orderinfo).then((res) => {
+			console.log(res);
+			CustomToast(res?.message, "success");
+			setLoading(false);
+			setOpen(false);
+		});
 	};
 	// console.log(cityid);
 	return (
@@ -396,7 +400,18 @@ export default function Neworder() {
 											<SelectLabel>
 												نوع ساختمان
 											</SelectLabel>
-											<SelectItem
+											{buildingTypes?.map(
+												(buildingType, index) => (
+													<SelectItem
+														key={index}
+														className="cursor-pointer"
+														value={String(buildingType?.id)}
+													>
+														{buildingType?.name}
+													</SelectItem>
+												)
+											)}
+											{/* <SelectItem
 												id="0"
 												className="cursor-pointer"
 												value="1"
@@ -430,7 +445,7 @@ export default function Neworder() {
 												className="cursor-pointer"
 											>
 												سایر
-											</SelectItem>
+											</SelectItem> */}
 										</SelectGroup>
 									</SelectContent>
 								</Select>

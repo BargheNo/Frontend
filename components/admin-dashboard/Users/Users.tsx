@@ -120,14 +120,6 @@ export default function Users() {
 		);
 	}
 
-	const CustomIcon = ({ icon: Icon }: { icon: React.ElementType }) => {
-		return (
-			<div className={`${styles.icon} bg-[#F0EDEF] text-[#FA682D]`}>
-				<Icon className="m-1" />
-			</div>
-		);
-	};
-
 	// const UserItem = ({ firstName, lastName, phone, status, id }: UserType) => {
 	//   const normalizedStatus = status === "block" ? "blocked" : status;
 	//   return (
