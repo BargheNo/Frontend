@@ -15,13 +15,11 @@ type Role = {
 };
 
 type FilterUsersProps = {
-	accessToken: string;
 	onFilteredUsers: (users: any[]) => void;
 	setLoading: (loading: boolean) => void;
 };
 
 export default function FilterUsers({
-	accessToken,
 	onFilteredUsers,
 	setLoading,
 }: FilterUsersProps) {
@@ -39,8 +37,8 @@ export default function FilterUsers({
 				setRoles(data.data);
 			})
 			.finally(() => setLoadingRoles(false));
-	}, [accessToken]);
-
+	}, []);
+	
 	// Fetch all users (no filtering)
 	const fetchAllUsers = useCallback(async () => {
 		setLoading(true);
@@ -49,7 +47,7 @@ export default function FilterUsers({
 				onFilteredUsers(data.data);
 			})
 			.finally(() => setLoading(false));
-	}, [accessToken, onFilteredUsers, setLoading]);
+	}, [onFilteredUsers, setLoading]);
 
 	// Fetch users by status
 	const fetchUsersByStatus = useCallback(
@@ -62,7 +60,7 @@ export default function FilterUsers({
 				})
 				.finally(() => setLoading(false));
 		},
-		[accessToken, onFilteredUsers, setLoading]
+		[onFilteredUsers, setLoading]
 	);
 
 	// Fetch users by role
@@ -89,7 +87,7 @@ export default function FilterUsers({
 				})
 				.finally(() => setLoading(false));
 		},
-		[accessToken, onFilteredUsers, setLoading]
+		[onFilteredUsers, setLoading]
 	);
 
 	// Handle filter changes

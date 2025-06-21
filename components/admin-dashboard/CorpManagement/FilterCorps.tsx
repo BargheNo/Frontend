@@ -6,7 +6,7 @@ import {
 	SelectContent,
 	SelectItem,
 	SelectGroup,
-  SelectLabel,
+	SelectLabel,
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -71,7 +71,7 @@ export const FilterCorps = ({ value, onChange }: FilterCorpsProps) => {
 			</SelectTrigger>
 			<SelectContent>
 				<SelectGroup>
-          <SelectLabel>وضعیت</SelectLabel>
+					<SelectLabel>وضعیت</SelectLabel>
 					{statuses.map((status) => (
 						<SelectItem
 							key={status.id}
