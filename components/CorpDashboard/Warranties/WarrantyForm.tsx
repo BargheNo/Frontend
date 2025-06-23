@@ -22,7 +22,7 @@ const WarrantyForm = ({ warrantyTypes, isLoading, onSubmit }: WarrantyFormProps)
       enableReinitialize
     >
       {({ values, errors, touched, isSubmitting, setFieldValue }) => (
-        <Form className="flex flex-col items-end w-full h-auto max-h-[85vh] gap-4 rtl overflow-y-auto">
+        <Form className="flex flex-col items-end w-full h-auto max-h-[85vh] gap-4 rtl no-scrollbar">
           {/* Warranty Name */}
           <div className="w-full">
             <CustomInput
@@ -134,7 +134,7 @@ const WarrantyForm = ({ warrantyTypes, isLoading, onSubmit }: WarrantyFormProps)
           </div>
 
           {/* Submit Button */}
-          <div className="w-full pt-4">
+          <div className="w-full py-4">
             <button
               type="submit"
               disabled={isSubmitting}

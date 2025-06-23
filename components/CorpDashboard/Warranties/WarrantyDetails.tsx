@@ -94,7 +94,7 @@ const WarrantyDetails = ({id, name, description, type, duration, terms, isArchiv
                     <h2 className='font-black text-xl'>
                         توضیحات
                     </h2>
-                    <span className='inset-neu-container w-full p-5 max-h-40 overflow-y-scroll'>
+                    <span className='inset-neu-container w-full p-5 max-h-40 overflow-y-auto'>
                         {description}
                     </span>
                 </div>
@@ -103,7 +103,7 @@ const WarrantyDetails = ({id, name, description, type, duration, terms, isArchiv
                     <h2 className='font-black text-xl mb-2'>
                         شرایط
                     </h2>
-                    <div className='inset-neu-container w-full max-h-56 p-5 overflow-y-scroll'>
+                    <div className='inset-neu-container w-full max-h-56 p-5 overflow-y-auto'>
                         {terms.map((termItem, index) =>
                             <TermItemSection
                                 key={index}
