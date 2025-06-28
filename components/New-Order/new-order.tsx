@@ -42,6 +42,12 @@ import CustomToast from "../Custom/CustomToast/CustomToast";
 import AddComponent from "../AddComponent/AddComponent";
 import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
 import { getData } from "@/src/services/apiHub";
+
+interface BuildingTypeProps {
+	id: number;
+	name: string;
+}
+
 export default function Neworder() {
 	const [loading, setLoading] = useState(false);
 	const [open, setOpen] = useState(false);
@@ -51,23 +57,28 @@ export default function Neworder() {
 	const [cities, Setcities] = useState<City[]>([]);
 	const [building, Setbuilding] = useState(1);
 	const [cityid, Setcityid] = useState<number>();
+	const [buildingTypes, setBuildingTypes] = useState<BuildingTypeProps[]>();
+
 	const Getprovinces = () => {
-		getData({ endPoint: `/v1/address/province` })
-			.then((data) => {
-				Setprovinces(data?.data);
-			})
+		getData({ endPoint: `/v1/address/province` }).then((data) => {
+			Setprovinces(data?.data);
+		});
 	};
 	useEffect(() => {
 		Getprovinces();
+		getData({ endPoint: `/v1/installation/request/building` }).then(
+			(data) => {
+				setBuildingTypes(data?.data);
+			}
+		);
 	}, []);
 
 	const UpdateCityList = (provinceId: number) => {
 		getData({
 			endPoint: `/v1/address/province/${provinceId}/city`,
-		})
-			.then((data) => {
-				Setcities(data?.data);
-			})
+		}).then((data) => {
+			Setcities(data?.data);
+		});
 	};
 	const Findprovinceid = (provinces: Province[], id: number) => {
 		const province = provinces.find((p) => p.ID === id);
@@ -84,17 +95,17 @@ export default function Neworder() {
 	}, [provinceid]);
 
 	const handelOrderrequest = (orderinfo: order) => {
+		console.log(orderinfo);
 		setLoading(true);
 		orderService
 			.orderRequest(orderinfo)
 			.then((res) => {
 				console.log(res);
 				CustomToast(res?.message, "success");
-				setLoading(false);
 				setOpen(false);
 			})
+			.finally(() => setLoading(false));
 	};
-	// console.log(cityid);
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
@@ -120,8 +131,8 @@ export default function Neworder() {
 						code: "",
 						unit: "",
 						number: "",
-						province: "",
-						city: "",
+						provinceID: "",
+						cityID: "",
 					}}
 					validationSchema={Yup.object({
 						name: Yup.string()
@@ -144,8 +155,10 @@ export default function Neworder() {
 							.required("این فیلد الزامی است.")
 							.length(10, "کد پستی وارد شده اشتباه است."),
 						unit: Yup.number().required("این فیلد الزامی است."),
-						province: Yup.string().required("این فیلد الزامی است."),
-						city: Yup.string().required("این فیلد الزامی است."),
+						provinceID: Yup.number().required(
+							"این فیلد الزامی است."
+						),
+						cityID: Yup.number().required("این فیلد الزامی است."),
 					})}
 					onSubmit={(values) => {
 						// setOpen(false);
@@ -156,8 +169,8 @@ export default function Neworder() {
 							maxCost: Number(values.cost),
 							buildingType: Number(building),
 							description: "",
-							provinceID: provinceid ?? 1,
-							cityID: cityid ?? 1,
+							provinceID: Number(values.provinceID),
+							cityID: Number(values.cityID),
 							streetAddress: values.address,
 							postalCode: String(values.code),
 							houseNumber: String(values.number),
@@ -177,9 +190,7 @@ export default function Neworder() {
 									placeholder="نام پنل"
 									icon={SquareMenu}
 									name="name"
-								>
-									{" "}
-								</CustomInput>
+								/>
 								<div className="flex flex-row justify-center mt-5 gap-x-1 text-gray-500 w-full">
 									<ShieldAlert />
 									<p className="rtl whitespace-nowrap">
@@ -194,17 +205,19 @@ export default function Neworder() {
 							>
 								<Select
 									name="province"
+									value={values.provinceID}
 									onValueChange={(value) => {
-										Setdisable(false);
-										setFieldValue("province", value);
-										setFieldValue("city", "");
+										setFieldValue("cityID", null);
+										setFieldValue("provinceID", value);
+
+										console.log(values.cityID);
 										const id = Findprovinceid(
 											provinces,
 											Number(value)
 										);
-										console.log("id found in province", id);
 										Setprovinceid(id ?? 1);
 										if (id) UpdateCityList(id);
+										Setdisable(false);
 									}}
 								>
 									<SelectTrigger
@@ -225,10 +238,10 @@ export default function Neworder() {
 															key={index}
 															className="cursor-pointer"
 															value={String(
-																provincearr.ID
+																provincearr?.ID
 															)}
 														>
-															{provincearr.name}
+															{provincearr?.name}
 														</SelectItem>
 													)
 												)
@@ -239,19 +252,18 @@ export default function Neworder() {
 									</SelectContent>
 								</Select>
 								<Select
-									name="city"
+									name="cityID"
+									value={values?.cityID}
 									disabled={disable}
 									onValueChange={(value) => {
 										const iD = FindCityid(cities, value);
 										Setcityid(iD ?? 1);
-										setFieldValue("city", value);
+										setFieldValue("cityID", value);
 									}}
 								>
 									<SelectTrigger
 										disabled={disable}
 										className={`${style.CustomInput} cursor-pointer`}
-										id="city"
-										// style={{ width: "25vw" }}
 									>
 										<SelectValue placeholder="شهر" />
 									</SelectTrigger>
@@ -262,7 +274,7 @@ export default function Neworder() {
 												cities.map((city, index) => (
 													<SelectItem
 														key={index}
-														value={city.name}
+														value={String(city?.ID)}
 														className="cursor-pointer"
 														id={String(index)}
 													>
@@ -284,9 +296,7 @@ export default function Neworder() {
 									name="address"
 									id="address"
 									placeholder="آدرس"
-								>
-									{" "}
-								</CustomTextArea>
+								/>
 							</div>
 							<div
 								className="flex md:flex-row flex-col justify-end w-full -mt-4"
@@ -299,9 +309,7 @@ export default function Neworder() {
 									icon={Mailbox}
 									name="code"
 									placeholder="کد پستی"
-								>
-									{" "}
-								</CustomInput>
+								/>
 								<CustomInput
 									type="number"
 									style={{ width: "12vw" }}
@@ -309,9 +317,7 @@ export default function Neworder() {
 									icon={House}
 									placeholder="پلاک"
 									name="number"
-								>
-									{" "}
-								</CustomInput>
+								/>
 								<CustomInput
 									type="number"
 									style={{ width: "12vw" }}
@@ -319,9 +325,7 @@ export default function Neworder() {
 									icon={BellRing}
 									placeholder="واحد"
 									name="unit"
-								>
-									{" "}
-								</CustomInput>
+								/>
 							</div>
 
 							<div className="flex w-full gap-x-1 text-gray-500 -mb-6 mt-2">
@@ -340,9 +344,7 @@ export default function Neworder() {
 									placeholder="مساحت(مترمربع)"
 									icon={LandPlot}
 									name="area"
-								>
-									{" "}
-								</CustomInput>
+								/>
 								<div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
 									<ShieldAlert />
 									<p>مساحت محل نصب پنل (متر مربع)</p>
@@ -354,9 +356,7 @@ export default function Neworder() {
 									placeholder="میزان برق مورد نیاز(کیلووات)"
 									icon={Gauge}
 									name="electricity"
-								>
-									{" "}
-								</CustomInput>
+								/>
 								<div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
 									<ShieldAlert />
 									<p className="">میزان برق مورد نیاز </p>
@@ -368,9 +368,7 @@ export default function Neworder() {
 									placeholder="سقف هزینه(ریال)"
 									icon={CircleDollarSign}
 									name="cost"
-								>
-									{" "}
-								</CustomInput>
+								/>
 
 								<Select
 									name="buildingType"
@@ -396,41 +394,19 @@ export default function Neworder() {
 											<SelectLabel>
 												نوع ساختمان
 											</SelectLabel>
-											<SelectItem
-												id="0"
-												className="cursor-pointer"
-												value="1"
-											>
-												مسکونی
-											</SelectItem>
-											<SelectItem
-												id="1"
-												className="cursor-pointer"
-												value="2"
-											>
-												تجاری
-											</SelectItem>
-											<SelectItem
-												id="2"
-												className="cursor-pointer"
-												value="3"
-											>
-												صنعتی
-											</SelectItem>
-											<SelectItem
-												id="3"
-												className="cursor-pointer"
-												value="4"
-											>
-												کشاورزی
-											</SelectItem>
-											<SelectItem
-												id="4"
-												value="5"
-												className="cursor-pointer"
-											>
-												سایر
-											</SelectItem>
+											{buildingTypes?.map(
+												(buildingType, index) => (
+													<SelectItem
+														key={index}
+														className="cursor-pointer"
+														value={String(
+															buildingType?.id
+														)}
+													>
+														{buildingType?.name}
+													</SelectItem>
+												)
+											)}
 										</SelectGroup>
 									</SelectContent>
 								</Select>

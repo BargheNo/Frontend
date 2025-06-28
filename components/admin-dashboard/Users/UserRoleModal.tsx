@@ -14,6 +14,7 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 
 type Role = {
 	id: number;
@@ -28,7 +29,7 @@ type Role = {
 
 interface UserRolesModalProps {
 	isOpen: boolean;
-	onClose: () => void;
+	onClose: any;
 	userId: number;
 	onSaveSuccess: () => void;
 	userStatus: "فعال" | "غیر فعال" | null;
@@ -46,7 +47,9 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 	const [isLoading, setIsLoading] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isBanning, setIsBanning] = useState(false);
-	const [currentUserStatus, setCurrentUserStatus] = useState<"فعال" | "غیر فعال" | null>(userStatus);
+	const [currentUserStatus, setCurrentUserStatus] = useState<
+		"فعال" | "غیر فعال" | null
+	>(userStatus);
 
 	// Fetch all available roles
 	const getAllRoles = async () => {
@@ -63,7 +66,6 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 			}
 		);
 	};
-
 	// Save updated roles
 	const saveRoles = async () => {
 		setIsSaving(true);
@@ -77,7 +79,7 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 			.then((data) => {
 				CustomToast(data?.message, "success");
 				onSaveSuccess();
-				onClose();
+				onClose(false);
 			})
 			.finally(() => setIsSaving(false));
 	};
@@ -113,9 +115,9 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 	}, [isOpen, userId]);
 
 	return (
-		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+		<Dialog open={isOpen} onOpenChange={onClose}>
 			<DialogContent
-				className={`sm:max-w-[800px] max-h-[80vh] overflow-y-auto no-scrollbar rtl ${vazir.className} dialog-width flex flex-col`}
+				className={`sm:max-w-[800px] max-h-[80vh] overflow-y-auto no-scrollbar rtl vazir dialog-width flex flex-col`}
 				onInteractOutside={(e) => e.preventDefault()}
 			>
 				<div className="relative flex-1 overflow-y-auto no-scrollbar">
@@ -132,7 +134,8 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 
 					{isLoading ? (
 						<div className="flex justify-center items-center h-40">
-							<Loader2 className="animate-spin text-orange-500 h-8 w-8" />
+							<LoadingSpinner />
+							{/* <Loader2 className="animate-spin text-orange-500 h-8 w-8" /> */}
 						</div>
 					) : (
 						<div className="space-y-3 py-4">

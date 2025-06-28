@@ -46,6 +46,13 @@ import CustomToast from "../Custom/CustomToast/CustomToast";
 import AddComponent from "../AddComponent/AddComponent";
 import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
 import { useSelector } from "react-redux";
+import { getData } from "@/src/services/apiHub";
+
+interface BuildingTypeProps {
+	id: number;
+	name: string;
+}
+
 export default function AddPanel() {
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -53,8 +60,8 @@ export default function AddPanel() {
 	const [provinceid, Setprovinceid] = useState<number>();
 	const [provinces, Setprovinces] = useState<Province[]>([]);
 	const [cities, Setcities] = useState<City[]>([]);
-	const [building, Setbuilding] = useState("");
-	const [cityid, Setcityid] = useState<number>();
+	const [buildingTypes, setBuildingTypes] = useState<BuildingTypeProps[]>();
+
 	const Getprovinces = () => {
 		provinceService
 			.GetProvinces()
@@ -66,12 +73,16 @@ export default function AddPanel() {
 			});
 	};
 	useEffect(() => {
+		getData({ endPoint: `/v1/installation/request/building` }).then(
+			(data) => {
+				setBuildingTypes(data?.data);
+			}
+		);
 		Getprovinces();
 	}, []);
 
 	const UpdateCityList = (provinceId: number) => {
 		provinceService.GetCities(provinceId).then((res) => {
-			console.log(res);
 			Setcities(res?.data);
 		});
 	};
@@ -91,6 +102,7 @@ export default function AddPanel() {
 	const corpId = useSelector((state: RootState) => state.user.corpId);
 	const handelAddPanelrequest = (panel: InitPanel) => {
 		// setOpen(false);
+		console.log(panel);
 		setLoading(true);
 		addpanelService
 			.AddPanel(panel, corpId)
@@ -128,9 +140,9 @@ export default function AddPanel() {
 						direction: "",
 						area: "",
 						address: "",
-						province: "",
-						city: "",
-						building: "",
+						provinceID: "",
+						cityID: "",
+						buildingType: "",
 						code: "",
 						unit: "",
 						number: "",
@@ -149,7 +161,9 @@ export default function AddPanel() {
 								".نام پنل نمی تواند بیش از 50 کارکتر باشد"
 							),
 						address: Yup.string().required("این فیلد الزامی است."),
-						building: Yup.string().required("این فیلد الزامی است."),
+						buildingType: Yup.number().required(
+							"این فیلد الزامی است."
+						),
 						area: Yup.number().required("این فیلد الزامی است."),
 						power: Yup.number().required("این فیلد الزامی است."),
 						modulecount: Yup.number().required(
@@ -159,9 +173,10 @@ export default function AddPanel() {
 						direction: Yup.number().required(
 							"این فیلد الزامی است."
 						),
-						province: Yup.string().required("این فیلد الزامی است."),
-						city: Yup.string().required("این فیلد الزامی است."),
-						number: Yup.string().required("این فیلد الزامی است."),
+						provinceID: Yup.number().required(
+							"این فیلد الزامی است."
+						),
+						cityID: Yup.number().required("این فیلد الزامی است."),
 						code: Yup.string()
 							.required("این فیلد الزامی است.")
 							.length(10, "کد پستی وارد شده اشتباه است."),
@@ -174,12 +189,12 @@ export default function AddPanel() {
 							customerPhone: "+98" + values.phonenumber,
 							power: Number(values.power),
 							area: Number(values.area),
-							buildingType: Number(building),
+							buildingType: Number(values.buildingType),
 							tilt: Number(values.angel),
 							azimuth: Number(values.direction),
 							totalNumberOfModules: Number(values.modulecount),
-							provinceID: provinceid ?? 1,
-							cityID: cityid ?? 1,
+							provinceID: Number(values.provinceID),
+							cityID: Number(values.cityID),
 							streetAddress: values.address,
 							postalCode: String(values.code),
 							houseNumber: String(values.number),
@@ -198,7 +213,6 @@ export default function AddPanel() {
 									placeholder="شماره مشتری"
 									icon={IdCard}
 									name="phonenumber"
-									type="number"
 								/>
 
 								<CustomInput
@@ -223,8 +237,8 @@ export default function AddPanel() {
 								<Select
 									name="building"
 									onValueChange={(value) => {
-										Setbuilding(value);
-										setFieldValue("building", value);
+										console.log(values);
+										setFieldValue("buildingType", Number(value));
 									}}
 								>
 									<SelectTrigger
@@ -237,36 +251,19 @@ export default function AddPanel() {
 											<SelectLabel>
 												نوع ساختمان
 											</SelectLabel>
-											<SelectItem
-												value="1"
-												className="cursor-pointer"
-											>
-												مسکونی
-											</SelectItem>
-											<SelectItem
-												value="2"
-												className="cursor-pointer"
-											>
-												تجاری
-											</SelectItem>
-											<SelectItem
-												value="3"
-												className="cursor-pointer"
-											>
-												صنعتی
-											</SelectItem>
-											<SelectItem
-												value="4"
-												className="cursor-pointer"
-											>
-												کشاورزی
-											</SelectItem>
-											<SelectItem
-												value="5"
-												className="cursor-pointer"
-											>
-												سایر
-											</SelectItem>
+											{buildingTypes?.map(
+												(buildingType, index) => (
+													<SelectItem
+														key={index}
+														value={String(
+															buildingType?.id
+														)}
+														className="cursor-pointer"
+													>
+														{buildingType?.name}
+													</SelectItem>
+												)
+											)}
 										</SelectGroup>
 									</SelectContent>
 								</Select>
@@ -315,11 +312,12 @@ export default function AddPanel() {
 								className={`${style.citypro} flex md:flex-row flex-col justify-between w-full mt-2`}
 							>
 								<Select
-									name="province"
+									name="provinceID"
+									value={values.provinceID}
 									onValueChange={(value) => {
 										Setdisable(false);
-										setFieldValue("province", value);
-										setFieldValue("city", "");
+										setFieldValue("provinceID", Number(value));
+										setFieldValue("cityID", "");
 										const id = Findprovinceid(
 											provinces,
 											value
@@ -358,12 +356,13 @@ export default function AddPanel() {
 									</SelectContent>
 								</Select>
 								<Select
-									name="city"
+									name="cityID"
+									value={values.cityID}
 									disabled={disable}
 									onValueChange={(value) => {
-										const iD = FindCityid(cities, value);
-										Setcityid(iD ?? 1);
-										setFieldValue("city", value);
+										// const iD = FindCityid(cities, value);
+										// Setcityid(iD ?? 1);
+										setFieldValue("cityID", Number(value));
 									}}
 								>
 									<SelectTrigger
@@ -399,9 +398,7 @@ export default function AddPanel() {
 									icon={MapPinHouse}
 									name="address"
 									placeholder="آدرس"
-								>
-									{" "}
-								</CustomTextArea>
+								/>
 							</div>
 							<div
 								className="flex md:flex-row flex-col justify-end w-full -mt-4"
@@ -414,9 +411,7 @@ export default function AddPanel() {
 									icon={Mailbox}
 									name="code"
 									placeholder="کد پستی"
-								>
-									{" "}
-								</CustomInput>
+								/>
 								<CustomInput
 									type="number"
 									style={{ width: "12vw" }}
@@ -424,9 +419,7 @@ export default function AddPanel() {
 									icon={House}
 									placeholder="پلاک"
 									name="number"
-								>
-									{" "}
-								</CustomInput>
+								/>
 								<CustomInput
 									type="number"
 									style={{ width: "12vw" }}
@@ -434,9 +427,7 @@ export default function AddPanel() {
 									icon={BellRing}
 									placeholder="واحد"
 									name="unit"
-								>
-									{" "}
-								</CustomInput>
+								/>
 							</div>
 
 							<DialogFooter className="flex flex-row justify-center items-center self-center">
