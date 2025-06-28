@@ -7,5 +7,11 @@ export default function PageContainer({
 	className?: string;
 	children?: React.ReactNode;
 }) {
-	return <div className={`${className} w-full min-h-full flex flex-col text-black py-8 md:px-14 px-2.5 gap-4`}>{children}</div>;
+	return (
+		<div
+			className={`${className} w-full min-h-full flex flex-col text-black py-8 pb-24 md:px-14 px-2.5 gap-4`}
+		>
+			{children}
+		</div>
+	);
 }
