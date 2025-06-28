@@ -24,7 +24,7 @@ export default function FilterUsers({
 	setLoading,
 }: FilterUsersProps) {
 	const [filterType, setFilterType] = useState<string>("all");
-	const [filterValue, setFilterValue] = useState<string>("all");
+	const [filterValue, setFilterValue] = useState<string>("1");
 	const [roles, setRoles] = useState<Role[]>([]);
 	const [loadingRoles, setLoadingRoles] = useState(false);
 	const isInitialMount = useRef(true);
@@ -202,7 +202,7 @@ export default function FilterUsers({
 						defaultValue="all"
 						onValueChange={(value) => {
 							setFilterType(value);
-							setFilterValue("all");
+							setFilterValue("1");
 						}}
 					>
 						<SelectTrigger

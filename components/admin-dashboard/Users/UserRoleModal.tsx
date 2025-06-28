@@ -14,6 +14,7 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 
 type Role = {
 	id: number;
@@ -65,7 +66,6 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 			}
 		);
 	};
-
 	// Save updated roles
 	const saveRoles = async () => {
 		setIsSaving(true);
@@ -117,7 +117,7 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
 			<DialogContent
-				className={`sm:max-w-[800px] max-h-[80vh] overflow-y-auto no-scrollbar rtl ${vazir.className} dialog-width flex flex-col`}
+				className={`sm:max-w-[800px] max-h-[80vh] overflow-y-auto no-scrollbar rtl vazir dialog-width flex flex-col`}
 				onInteractOutside={(e) => e.preventDefault()}
 			>
 				<div className="relative flex-1 overflow-y-auto no-scrollbar">
@@ -134,7 +134,8 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 
 					{isLoading ? (
 						<div className="flex justify-center items-center h-40">
-							<Loader2 className="animate-spin text-orange-500 h-8 w-8" />
+							<LoadingSpinner />
+							{/* <Loader2 className="animate-spin text-orange-500 h-8 w-8" /> */}
 						</div>
 					) : (
 						<div className="space-y-3 py-4">
