@@ -17,6 +17,8 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 type UserType = {
 	id: number;
 	firstName: string;
@@ -73,7 +75,9 @@ export default function Users() {
 		// 	onManageRoles: (id: number, status: "فعال" | "غیر فعال") => void;
 		// }
 		{
-			const [loading, setLoading] = useState(false);
+			const [loadingRoles, setLoadingRoles] = useState(false);
+			const [isSaving, setIsSaving] = useState(false);
+			const [isBanning, setIsBanning] = useState(false);
 			const [allRoles, setAllRoles] = useState<Role[]>([]);
 			const [userRoles, setUserRoles] = useState<number[]>([]);
 			const [open, setOpen] = useState(false);
@@ -90,15 +94,47 @@ export default function Users() {
 						setUserRoles(data.data.map((role: Role) => role.id));
 					}
 				);
-				getData({ endPoint: `/v1/admin/roles` }).then((data) => {
-					setAllRoles(data.data);
-				});
+				setLoadingRoles(true);
+				getData({ endPoint: `/v1/admin/roles` })
+					.then((data) => {
+						setAllRoles(data.data);
+					})
+					.finally(() => setLoadingRoles(false));
 			}, []);
+			const saveRoles = async () => {
+				setIsSaving(true);
+				const formData = {
+					roleIDs: userRoles,
+				};
+				putData({
+					endPoint: `/v1/admin/users/${id}/roles`,
+					data: formData,
+				})
+					.then((data) => {
+						CustomToast(data?.message, "success");
+						fetchAllUsers();
+						setOpen(false);
+					})
+					.finally(() => setIsSaving(false));
+			};
+			const handleBanAction = async () => {
+				const action = status === "فعال" ? "ban" : "unban";
+				setIsBanning(true);
+				putData({ endPoint: `/v1/admin/users/${id}/${action}` })
+					.then((data) => {
+						CustomToast(data?.message, "success");
+						// setCurrentUserStatus(
+						// 	currentUserStatus === "فعال" ? "غیر فعال" : "فعال"
+						// );
+						fetchAllUsers();
+					})
+					.finally(() => setIsBanning(false));
+			};
 			return (
 				<div className="flex flex-row justify-between w-full h-full bg-[#F4F1F3] p-5 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 items-center">
 					<div className="flex items-center gap-3 w-1/4">
 						<div
-							className={`${styles.icon} bg-[#F4F1F3] text-[#FA682D]`}
+							className={`${styles.icon} bg-[#F4F1F3] bg-white text-[#FA682D]`}
 						>
 							<User className="m-1" />
 						</div>
@@ -108,7 +144,7 @@ export default function Users() {
 					</div>
 					<div className="flex items-center gap-3 w-1/4">
 						<div
-							className={`${styles.icon} bg-[#F4F1F3] text-[#FA682D]`}
+							className={`${styles.icon} bg-[#F4F1F3] bg-white text-[#FA682D]`}
 						>
 							<Phone className="m-1" />
 						</div>
@@ -131,7 +167,7 @@ export default function Users() {
 					<Dialog open={open} onOpenChange={setOpen}>
 						<DialogTrigger>
 							<div
-								className={`${styles.button} text-[#FA682D] flex gap-2 items-center p-2 hover:cursor-pointer`}
+								className={`bg-white ${styles.button} text-[#FA682D] flex gap-2 items-center p-2 hover:cursor-pointer`}
 							>
 								<p className="font-bold">
 									جزئیات بیشتر و مدیریت
@@ -154,10 +190,10 @@ export default function Users() {
 						disabled={isSaving || isBanning}
 					></DialogClose> */}
 
-								{loading ? (
+								{loadingRoles ? (
 									<div className="flex justify-center items-center h-40">
-										<LoadingSpinner />
-										{/* <Loader2 className="animate-spin text-orange-500 h-8 w-8" /> */}
+										{/* <LoadingSpinner /> */}
+										<Loader2 className="animate-spin text-orange-500 h-8 w-8" />
 									</div>
 								) : (
 									<div className="space-y-3 py-4">
@@ -197,20 +233,22 @@ export default function Users() {
 									{/* Left-aligned buttons container */}
 									<div className="flex justify-start">
 										<Button
-											// onClick={handleBanAction}
-											// disabled={isLoading || isBanning}
-											className={`px-4 py-2 rounded-lg cursor-pointer ${
+											onClick={handleBanAction}
+											// disabled={isBanning}
+											className={`px-4 py-2 rounded-lg cursor-pointer min-w-32 ${
 												status === "فعال"
 													? "bg-red-500 hover:bg-red-600"
 													: "bg-green-500 hover:bg-green-600"
 											}`}
 										>
-											{/* {isBanning && (
-											<Loader2 className="animate-spin h-4 w-4 ml-2" />
-										)} */}
-											{status === "فعال"
-												? "مسدود کردن"
-												: "رفع انسداد"}
+											{isBanning ? (
+												<LoadingOnButton />
+											) : // <Loader2 className="animate-spin h-4 w-4 ml-2" />
+											status === "فعال" ? (
+												<p>مسدود کردن</p>
+											) : (
+												<p>رفع انسداد</p>
+											)}
 										</Button>
 									</div>
 
@@ -227,16 +265,17 @@ export default function Users() {
 										</DialogClose>
 
 										<Button
-											// onClick={saveRoles}
+											onClick={saveRoles}
 											// disabled={
 											// 	isLoading || isSaving || isBanning
 											// }
-											className="bg-orange-500 cursor-pointer hover:bg-orange-600"
+											className="bg-orange-500 cursor-pointer hover:bg-orange-600 min-w-28"
 										>
-											{/* {isSaving && (
-											<Loader2 className="animate-spin h-4 w-4 ml-2" />
-										)} */}
-											ذخیره تغییرات
+											{isSaving ? (
+												<LoadingOnButton />
+											) : (
+												<p>ذخیره تغییرات</p>
+											)}
 										</Button>
 									</div>
 								</DialogFooter>
@@ -254,14 +293,14 @@ export default function Users() {
 			);
 		};
 
-	if (loading) {
-		return (
-			<div className="flex justify-center items-center h-40">
-				<LoadingSpinner />
-				{/* <Loader2 className="animate-spin text-orange-500" size={32} /> */}
-			</div>
-		);
-	}
+	// if (loading) {
+	// 	return (
+	// 		<div className="flex justify-center items-center h-40">
+	// 			<LoadingSpinner />
+	// 			{/* <Loader2 className="animate-spin text-orange-500" size={32} /> */}
+	// 		</div>
+	// 	);
+	// }
 
 	// const UserItem = ({ firstName, lastName, phone, status, id }: UserType) => {
 	//   const normalizedStatus = status === "block" ? "blocked" : status;
@@ -302,7 +341,12 @@ export default function Users() {
 	return (
 		<div className="flex flex-col w-full text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
 			<FilterUsers onFilteredUsers={setUsers} setLoading={setLoading} />
-			{users.length === 0 ? (
+			{loading ? (
+				<div className="flex bg-[#F4F1F3] min-h-[50vh] justify-center items-center h-40">
+					<LoadingSpinner />
+					{/* <Loader2 className="animate-spin text-orange-500" size={32} /> */}
+				</div>
+			) : users.length === 0 ? (
 				<div className="flex flex-row text-center items-center justify-center">
 					<h2 className="text-gray-500 py-5 px-2 text-center">
 						کاربری پیدا نشد

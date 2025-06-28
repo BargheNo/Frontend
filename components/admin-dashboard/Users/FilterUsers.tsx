@@ -24,7 +24,7 @@ export default function FilterUsers({
 	setLoading,
 }: FilterUsersProps) {
 	const [filterType, setFilterType] = useState<string>("all");
-	const [filterValue, setFilterValue] = useState<string>("1");
+	const [filterValue, setFilterValue] = useState<string>("all");
 	const [roles, setRoles] = useState<Role[]>([]);
 	const [loadingRoles, setLoadingRoles] = useState(false);
 	const isInitialMount = useRef(true);
@@ -52,6 +52,7 @@ export default function FilterUsers({
 	// Fetch users by status
 	const fetchUsersByStatus = useCallback(
 		async (status: string) => {
+			setLoading(true);
 			getData({
 				endPoint: `/v1/admin/users?statuses=${status}`,
 			})
@@ -172,7 +173,7 @@ export default function FilterUsers({
 					>
 						<SelectTrigger
 							dir="rtl"
-							className="bg-[#F4F1F3] w-40 cursor-pointer"
+							className="bg-[#F4F1F3] bg-white w-36 cursor-pointer"
 						>
 							<SelectValue placeholder="وضعیت" />
 						</SelectTrigger>
@@ -195,7 +196,8 @@ export default function FilterUsers({
 	};
 
 	return (
-		<div className="flex flex-col w-full text-gray-800 rounded-2xl overflow-hidden bg-white shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+		<div className="flex flex-row justify-between w-full h-full bg-[#F4F1F3] overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 items-center">
+		{/* <div className="flex flex-col w-full text-gray-800 rounded-2xl overflow-hidden bg-white shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]"> */}
 			<div className="p-5 items-center flex gap-6">
 				<div className="flex gap-4 items-center">
 					<Select
@@ -207,7 +209,7 @@ export default function FilterUsers({
 					>
 						<SelectTrigger
 							dir="rtl"
-							className="bg-[#F4F1F3] w-40 cursor-pointer"
+							className="bg-[#F4F1F3] bg-white w-40 cursor-pointer"
 						>
 							<SelectValue placeholder="فیلتر بر اساس" />
 						</SelectTrigger>
