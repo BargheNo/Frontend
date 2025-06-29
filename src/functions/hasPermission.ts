@@ -17,5 +17,6 @@ export default function hasPermission(permission: string): boolean {
 	const permissions = GetPermissions().map(
 		(permission: permission) => permission.name
 	);
+    if (permissions.includes("general.all")) return true;
 	return permissions.includes(permission);
 }
