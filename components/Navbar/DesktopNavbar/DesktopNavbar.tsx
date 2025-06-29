@@ -6,39 +6,7 @@ import { usePathname } from "next/navigation";
 import Dashboard from "./Dashboard/Dashboard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSelector } from "react-redux";
-import hasPermission from "@/src/functions/hasPermission";
-
-const adminPermissions = [
-	"general.all",
-	"user.view_all",
-	"user.ban_unban",
-	"user.change_role",
-	"user.view_roles",
-	"user.manage_role_permissions",
-	"user.remove_role",
-	"user.create_role",
-	"corporation.view_all",
-	"corporation.approve_decline",
-	"installation_request.view_all",
-	"installation_request.edit",
-	"installation_request.remove",
-	"ticket.view_all",
-	"ticket.respond",
-	"ticket.close",
-	"ticket.comment",
-	"report.view_all",
-	"report.respond",
-	"admin_blog.view_all",
-	"admin_blog.create",
-	"admin_blog.edit",
-	"admin_blog.delete",
-	"news.view_all",
-	"news.create",
-	"news.edit",
-	"news.delete",
-	"panel.view_all",
-	"panel.create",
-];
+import hasAdminAnyPermission from "@/src/functions/isAdmin";
 
 export default function DesktopNavbar() {
 	const [loading, setLoading] = useState<boolean>(true);
@@ -46,19 +14,9 @@ export default function DesktopNavbar() {
 	const corps = useSelector((state: RootState) => state).user.corps ?? [];
 	const accessToken = useSelector((state: RootState) => state).user
 		.accessToken;
-	const isAdmin = adminPermissions
-		.map((adminPermission) => hasPermission(adminPermission))
-		.some((value) => value === true);
+	const isAdmin = hasAdminAnyPermission();
 	const isCorp = corps?.length > 0;
 	useEffect(() => {
-		console.log(
-			"hi",
-			typeof accessToken !== "undefined",
-			typeof corps !== "undefined",
-			typeof isAdmin != "undefined",
-			typeof isCorp != "undefined",
-			"hi"
-		);
 		const hasInitialized =
 			typeof accessToken !== "undefined" &&
 			typeof corps !== "undefined" &&
