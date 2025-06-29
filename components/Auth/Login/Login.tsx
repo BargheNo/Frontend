@@ -74,7 +74,7 @@ const Login = () => {
 				getData({ endPoint: `/v1/user/corps` }).then((res) => {
 					console.log(res.data);
 					dispatch(setCorps(res.data));
-					window.location.href = "/dashboard";
+					window.location.href = "/dashboard/my-panels";
 				});
 			})
 			.finally(() => setLoading(false));

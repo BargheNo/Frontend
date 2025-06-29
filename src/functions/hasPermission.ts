@@ -10,13 +10,12 @@ interface permission {
 function GetPermissions(): permission[] {
 	const permissions = useSelector((state: RootState) => state).user
 		.permissions;
-	return permissions;
+	return permissions?.length ? permissions : [];
 }
 
 export default function hasPermission(permission: string): boolean {
-	const permissions = GetPermissions().map(
-		(permission: permission) => permission.name
-	);
-    if (permissions.includes("general.all")) return true;
-	return permissions.includes(permission);
+	const permissions =
+		GetPermissions()?.map((permission: permission) => permission.name);
+	if (permissions?.includes("general.all")) return true;
+	return permissions?.includes(permission);
 }
