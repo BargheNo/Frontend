@@ -65,9 +65,6 @@ const TicketSupportPage = () => {
 	const [showCommentBoxFor, setShowCommentBoxFor] = useState<string | null>(
 		null
 	);
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
 	const translateSubjectToPersian = (subject: string): string => {
 		const translations: { [key: string]: string } = {
 			installation: "نصب",
@@ -169,7 +166,7 @@ const TicketSupportPage = () => {
 									{translateSubjectToPersian(subject)}
 								</p>
 								<p className="text-start content-start w-full text-lg ">
-									از طرف {Owner.firstName} {Owner.lastName}
+									از طرف {Owner?.firstName} {Owner?.lastName}
 								</p>
 
 								<p className="break-words">{description}</p>
@@ -332,7 +329,7 @@ const TicketSupportPage = () => {
 			) : (
 				<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
 					{tickets.map((ticket, index) => (
-						<>
+						<div key={index}>
 							<Ticket
 								id={ticket.id}
 								key={index}
@@ -353,6 +350,7 @@ const TicketSupportPage = () => {
 							{activeCommentTicketId === ticket.id && (
 								<Formik
 									initialValues={initialValuesForm}
+									key={index}
 									validationSchema={
 										commentValidationSchemaForm
 									}
@@ -442,7 +440,7 @@ const TicketSupportPage = () => {
 									</button>
 								</div>
 							)}
-						</>
+						</div>
 					))}
 				</div>
 			)}

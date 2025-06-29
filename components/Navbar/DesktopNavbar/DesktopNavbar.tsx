@@ -14,14 +14,15 @@ export default function DesktopNavbar() {
 	const corps = useSelector((state: RootState) => state.user.corps) ?? [];
 	const perms =
 		useSelector((state: RootState) => state.user.permissions) ?? [];
-	const permissions = perms.map((perm) => perm.name);
+	console.log(perms);
+	// const permissions = perms?.map((perm) => perm.name);
 	const accessToken = useSelector(
 		(state: RootState) => state.user
 	).accessToken;
 	const isAdmin = hasAdminAnyPermission();
 	const isCorp = corps?.length > 0;
 	useEffect(() => {
-		console.log(permissions);
+		console.log(perms);
 		const hasInitialized =
 			typeof accessToken !== "undefined" &&
 			typeof corps !== "undefined" &&

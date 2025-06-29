@@ -41,11 +41,13 @@ export default function Layout({
 		{
 			name: "مدیریت شرکت‌ها",
 			path: "/admin-dashboard/corp-management",
+			RNPName: "corporation.view_all",
 			icon: <School />,
 		},
 		{
 			name: "مدیریت سفارشات",
 			path: "/admin-dashboard/manage-requests",
+			RNPName: "installation_request.view_all",
 			icon: <Package />,
 		},
 		{
@@ -89,11 +91,11 @@ export default function Layout({
 			icon: <MessageSquare />,
 		},
 	];
-	const isAdmin = hasAdminAnyPermission();
-	if (!isAdmin) {
-		window.location.href = "/";
-	}
-	return isAdmin ? (
+	// const isAdmin = hasAdminAnyPermission();
+	// if (!isAdmin) {
+	// 	window.location.href = "/";
+	// }
+	return (
 		<PanelAside
 			navItems={navItems as NavItem[]}
 			navItemsMonitoring={navItemsMonitoring}
@@ -101,7 +103,5 @@ export default function Layout({
 		>
 			{children}
 		</PanelAside>
-	) : (
-		<LoadingSpinner />
 	);
 }

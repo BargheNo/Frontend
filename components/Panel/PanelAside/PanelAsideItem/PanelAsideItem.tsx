@@ -1,19 +1,13 @@
 import useHasPermission from "@/src/functions/hasPermission";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useEffect } from "react";
+import React from "react";
 
 export function PanelAsideIcon({ item, mode }) {
 	const pathname = usePathname();
-	const hasPermission = useHasPermission(item?.RNPName);
-	// const hasPermission = useHasPermission(item?.RNPName || "general.all");
-	// if (!useHasPermission(item?.RNPName || "general.all")) {
-	// 	console.log("no access to", item.name, "for", item?.RNPName);
-	// 	return <></>;
-	// }
-	// useEffect(() => {
-	// 	console.log(hasPermission, "for", item.name);
-	// }, []);
+	const hasPermission = true;
+	// const hasPermission = useHasPermission(item?.RNPName ?? "general.all");
+	// const hasPermission = useHasPermission(item?.RNPName);
 	return hasPermission ? (
 		<Link key={item.path} href={item.path}>
 			<span
@@ -39,15 +33,9 @@ export function PanelAsideIcon({ item, mode }) {
 
 export function PanelAsideTitle({ item, mode }) {
 	const pathname = usePathname();
-	const hasPermission = useHasPermission(item?.RNPName);
-	// const hasPermission = useHasPermission(item?.RNPName || "general.all");
-	// if (!useHasPermission(item?.RNPName || "general.all")) {
-	// 	console.log("no access to", item.name, "for", item?.RNPName);
-	// 	return <></>;
-	// }
-	// useEffect(() => {
-	// 	console.log(hasPermission, "for", item.name);
-	// }, []);
+	const hasPermission = true;
+	// const hasPermission = useHasPermission(item?.RNPName ?? "general.all");
+	// const hasPermission = useHasPermission(item?.RNPName);
 	return hasPermission ? (
 		<Link key={item.path} href={item.path}>
 			<span
