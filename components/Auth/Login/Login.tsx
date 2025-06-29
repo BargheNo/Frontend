@@ -58,6 +58,7 @@ const Login = () => {
 			},
 		})
 			.then((data) => {
+				console.log("data", data);
 				CustomToast(data?.message, "success");
 				dispatch(
 					setUser({

@@ -347,7 +347,7 @@ export default function Users() {
 					{/* <Loader2 className="animate-spin text-orange-500" size={32} /> */}
 				</div>
 			) : users.length === 0 ? (
-				<div className="flex flex-row text-center items-center justify-center">
+				<div className="flex bg-[#F4F1F3] flex-row text-center items-center justify-center">
 					<h2 className="text-gray-500 py-5 px-2 text-center">
 						کاربری پیدا نشد
 					</h2>
