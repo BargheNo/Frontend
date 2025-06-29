@@ -60,18 +60,18 @@ const Settings = () => {
 								todayProduction: 12.3,
 								efficiency: 92,
 							}}
-              status={panel.status}
+							status={panel.status}
 							address={`استان ${panel.address.province}، شهر ${panel.address.city}، ${panel.address.streetAddress}`}
 						/>
 					))
 				) : panels ? (
-					<div className="text-center place-items-center mt-6">
+					<div className="text-center place-items-center py-18">
 						<Image
 							className="w-1/3"
 							src={panelNotFound}
 							alt="orderNotFound"
 						/>
-						<div className="-mt-8">
+						<div className="">
 							<p
 								className=" mt-6 text-navy-blue font-bold rtl"
 								style={{ fontSize: "1.1rem" }}
