@@ -6,7 +6,6 @@ import { NavItem } from "@/src/types/PanelAsideTypes";
 import "@/styles/global.css";
 import {
 	Users,
-	Gauge,
 	Package,
 	DollarSign,
 	Headset,
@@ -26,19 +25,21 @@ export default function Layout({
 	children,
 }: Readonly<{ children: React.ReactNode }>) {
 	const navItems = [
-		// { name: "داشبورد", path: "/admin-dashboard/dashboard", icon: <Gauge /> },
 		{
 			name: "مدیریت کاربران",
 			path: "/admin-dashboard/manage-users",
+			RNPName: "user.view_all",
 			icon: <Users />,
 		},
+
 		{
 			name: "نقش‌ها و دسترسی‌ها",
 			path: "/admin-dashboard/roles-and-permissions",
+			RNPName: "user.manage_roles_permissions",
 			icon: <LaptopMinimalCheck />,
 		},
 		{
-			name: "مدیریت شرکت ها",
+			name: "مدیریت شرکت‌ها",
 			path: "/admin-dashboard/corp-management",
 			icon: <School />,
 		},
@@ -81,7 +82,7 @@ export default function Layout({
 			path: "/admin-dashboard/maintenance",
 			icon: <History />,
 		},
-		{ name: "پنل ها", path: "/admin-dashboard/panels", icon: <BarChart /> },
+		{ name: "پنل‌ها", path: "/admin-dashboard/panels", icon: <BarChart /> },
 		{
 			name: "کارکنان شرکت",
 			path: "/admin-dashboard/corp-staff",

@@ -1,4 +1,4 @@
-import hasPermission from "./hasPermission";
+import useHasPermission from "./hasPermission";
 
 const adminPermissions = [
 	"general.all",
@@ -34,6 +34,6 @@ const adminPermissions = [
 
 export default function hasAdminAnyPermission() {
 	return adminPermissions
-		.map((adminPermission) => hasPermission(adminPermission))
+		.map((adminPermission) => useHasPermission(adminPermission))
 		.some((value) => value === true);
 }

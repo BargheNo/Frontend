@@ -11,12 +11,17 @@ import hasAdminAnyPermission from "@/src/functions/isAdmin";
 export default function DesktopNavbar() {
 	const [loading, setLoading] = useState<boolean>(true);
 	const pathname = usePathname();
-	const corps = useSelector((state: RootState) => state).user.corps ?? [];
-	const accessToken = useSelector((state: RootState) => state).user
-		.accessToken;
+	const corps = useSelector((state: RootState) => state.user.corps) ?? [];
+	const perms =
+		useSelector((state: RootState) => state.user.permissions) ?? [];
+	const permissions = perms.map((perm) => perm.name);
+	const accessToken = useSelector(
+		(state: RootState) => state.user
+	).accessToken;
 	const isAdmin = hasAdminAnyPermission();
 	const isCorp = corps?.length > 0;
 	useEffect(() => {
+		console.log(permissions);
 		const hasInitialized =
 			typeof accessToken !== "undefined" &&
 			typeof corps !== "undefined" &&
@@ -25,7 +30,7 @@ export default function DesktopNavbar() {
 		if (hasInitialized) {
 			setLoading(false);
 		}
-	}, [accessToken, corps, isAdmin, isCorp, setLoading]);
+	}, [accessToken, corps, isAdmin, isCorp, setLoading, perms]);
 	return (
 		<>
 			<div className="h-[70px] fixed top-0 w-full flex flex-col justify-center items-center z-20">

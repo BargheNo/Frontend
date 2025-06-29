@@ -37,7 +37,6 @@ const Settings = () => {
 			endPoint: `/v1/user/installation/panel?status=1&offset=5&limit=1`,
 		})
 			.then((data) => {
-				console.log(data);
 				setPanels(data?.data);
 			})
 			.finally(() => setLoading(false));

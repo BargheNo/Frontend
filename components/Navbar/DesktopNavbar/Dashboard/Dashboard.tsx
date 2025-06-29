@@ -10,45 +10,10 @@ import {
 	NavigationMenuList,
 	NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { useSelector } from "react-redux";
-import hasPermission from "@/src/functions/hasPermission";
 
 
 
 export default function Dashboard({ setLoading, accessToken, isCorp, isAdmin }) {
-	// const corps = useSelector((state: RootState) => state).user.corps ?? [];
-	// const accessToken = useSelector((state: RootState) => state).user
-	// 	.accessToken;
-	// const isAdmin = adminPermissions
-	// 	.map((adminPermission) => hasPermission(adminPermission))
-	// 	.some((value) => value === true);
-	// const isCorp = corps?.length > 0;
-	// const hasInitialized =
-	// 	typeof accessToken !== "undefined" &&
-	// 	typeof corps !== "undefined" &&
-	// 	typeof isAdmin != "undefined" &&
-	// 	typeof isCorp != "undefined";
-	// if (hasInitialized) {
-	// 	setLoading(false);
-	// }
-	// useEffect(() => {
-	// 	// console.log(
-	// 	// 	"hi",
-	// 	// 	typeof accessToken !== "undefined",
-	// 	// 	typeof corps !== "undefined",
-	// 	// 	typeof isAdmin != "undefined",
-	// 	// 	typeof isCorp != "undefined",
-	// 	// 	"hi"
-	// 	// );
-	// 	// const hasInitialized =
-	// 	// 	typeof accessToken !== "undefined" &&
-	// 	// 	typeof corps !== "undefined" &&
-	// 	// 	typeof isAdmin != "undefined" &&
-	// 	// 	typeof isCorp != "undefined";
-	// 	// if (hasInitialized) {
-	// 	// 	setLoading(false);
-	// 	// }
-	// }, [accessToken, corps, isAdmin, isCorp, setLoading]);
 	const pathname = usePathname();
 	if (!accessToken) return <></>;
 	if (!isCorp && !isAdmin)
@@ -78,7 +43,7 @@ export default function Dashboard({ setLoading, accessToken, isCorp, isAdmin }) 
 										: "",
 									vazirBold.className,
 								].join(" ")}`}
-								href={"/corpdashboard/installed-panels"}
+								href={"/dashboard"}
 							>
 								داشبورد
 							</Link>
@@ -118,20 +83,11 @@ export default function Dashboard({ setLoading, accessToken, isCorp, isAdmin }) 
 												? "text-[#FA682D]"
 												: ""
 										} hover:cursor-pointer hover:bg-accent/50 rounded-lg p-1`}
-										href={"/admin-dashboard/manage-users"}
+										href={"/admin-dashboard"}
 									>
 										داشبورد ادمین
 									</Link>
 								)}
-								{/* <li className="hover:cursor-pointer hover:bg-accent/50 rounded-lg p-1">
-									داشبورد
-								</li>
-								<li className="hover:cursor-pointer hover:bg-accent/50 rounded-lg p-1">
-									داشبورد شرکت
-								</li>
-								<li className="hover:cursor-pointer hover:bg-accent/50 rounded-lg p-1">
-									داشبورد ادمین
-								</li> */}
 							</ul>
 						</NavigationMenuContent>
 					</NavigationMenuItem>

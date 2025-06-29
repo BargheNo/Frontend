@@ -45,9 +45,6 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
 	onSaveSuccess,
 }) => {
 	const [open, setOpen] = useState<boolean>(false);
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
 	const [allPermissions, setAllPermissions] = useState<Permission[]>([]);
 	const [selectedPermissions, setSelectedPermissions] = useState<number[]>(
 		[]
@@ -73,10 +70,8 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
 		}
 
 		setIsSaving(true);
-		const formData = {
-			name: roleName,
-			permissionIDs: selectedPermissions,
-		};
+		const formData = values;
+		console.log(formData);
 		postData({ endPoint: `/v1/admin/roles`, data: formData })
 			.then((data) => {
 				CustomToast(data?.message, "success");
