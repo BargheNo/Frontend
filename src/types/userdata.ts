@@ -1,3 +1,8 @@
+interface corp {
+	id: number;
+	name: string;
+	addresses: Address[];
+}
 interface userData {
 	firstName: string;
 	lastName: string;
@@ -5,5 +10,6 @@ interface userData {
 	refreshToken: string;
 	permissions: any;
 	isAuth: boolean;
+	corps?: corp[];
 	corpId?: number;
 }
