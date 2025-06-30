@@ -28,26 +28,26 @@ export default function Layout({
 		{
 			name: "مدیریت کاربران",
 			path: "/admin-dashboard/manage-users",
-			RNPName: "user.view_all",
+			RNPName: "user.viewAll",
 			icon: <Users />,
 		},
 
 		{
 			name: "نقش‌ها و دسترسی‌ها",
 			path: "/admin-dashboard/roles-and-permissions",
-			RNPName: "user.manage_roles_permissions",
+			RNPName: "user.manageRolePermissions",
 			icon: <LaptopMinimalCheck />,
 		},
 		{
 			name: "مدیریت شرکت‌ها",
 			path: "/admin-dashboard/corp-management",
-			RNPName: "corporation.view_all",
+			RNPName: "corporation.viewAll",
 			icon: <School />,
 		},
 		{
 			name: "مدیریت سفارشات",
 			path: "/admin-dashboard/manage-requests",
-			RNPName: "installation_request.view_all",
+			RNPName: "installationRequest.viewAll",
 			icon: <Package />,
 		},
 		// {
@@ -58,25 +58,25 @@ export default function Layout({
 		{
 			name: "پشتیبانی",
 			path: "/admin-dashboard/support",
-			RNPName: "ticket.view_all",
+			RNPName: "ticket.viewAll",
 			icon: <Headset />,
 		},
 		{
 			name: "بلاگ‌ها",
 			path: "/admin-dashboard/blogs",
-			RNPName: "admin_blog.view_all",
+			RNPName: "adminBlog.viewAll",
 			icon: <BookOpen />,
 		},
 		{
 			name: "گزارشات",
 			path: "/admin-dashboard/reports",
-			RNPName: "report.view_all",
+			RNPName: "report.viewAll",
 			icon: <AlertCircle />,
 		},
 		{
 			name: "اخبار و اطلاعیه‌ها",
 			path: "/admin-dashboard/announcements",
-			RNPName: "news.view",
+			RNPName: "news.viewAll",
 			icon: <Megaphone />,
 		},
 	];

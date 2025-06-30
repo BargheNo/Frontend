@@ -23,7 +23,7 @@ export default function Dashboard({ setLoading, accessToken, isCorp, isAdmin }) 
 					pathname?.startsWith("/dashboard") ? "text-[#FA682D]" : "",
 					vazirBold.className,
 				].join(" ")}`}
-				href={"/corpdashboard/installed-panels"}
+				href={"/dashboard"}
 			>
 				داشبورد
 			</Link>
