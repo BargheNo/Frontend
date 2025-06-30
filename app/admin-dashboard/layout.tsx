@@ -35,7 +35,7 @@ export default function Layout({
 		{
 			name: "نقش‌ها و دسترسی‌ها",
 			path: "/admin-dashboard/roles-and-permissions",
-			RNPName: "user.manageRolePermissions",
+			RNPName: "user.viewRoles",
 			icon: <LaptopMinimalCheck />,
 		},
 		{
@@ -95,7 +95,7 @@ export default function Layout({
 		{
 			name: "پنل‌ها",
 			path: "/admin-dashboard/panels",
-			RNPName: "panel.view_all",
+			RNPName: "panel.viewAll",
 			icon: <BarChart />,
 		},
 		{

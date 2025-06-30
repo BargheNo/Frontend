@@ -1,18 +1,9 @@
 "use client";
 import React from "react";
 import styles from "./RolesAndPermissions.module.css";
-import {
-	User,
-	SquareCheckBig,
-	Trash2,
-	Pencil,
-} from "lucide-react";
+import { User, SquareCheckBig, Trash2, Pencil } from "lucide-react";
 import { useSelector } from "react-redux";
-import {
-	Dialog,
-	DialogContent,
-	DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 import * as Yup from "yup";
 import { useEffect, useState } from "react";
@@ -24,6 +15,7 @@ import Header from "@/components/Header/Header";
 import { Badge } from "@/components/ui/badge";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 import { deleteData, getData } from "@/src/services/apiHub";
+import useHasPermission from "@/src/functions/hasPermission";
 
 const initialValuesForm = { name: "", permissionIDs: [] };
 
@@ -32,19 +24,20 @@ const validationSchemaForm = Yup.object({
 	permissionIDs: Yup.array().of(Yup.number()),
 });
 
-const RolesAndPermissions = () => {
-	type Permission = {
-		id: number;
-		name: string;
-		description: string;
-		category: string;
-	};
-	type Role = {
-		id: string;
-		name: string;
-		permissions: Permission[];
-	};
+type Permission = {
+	id: number;
+	name: string;
+	description: string;
+	category: string;
+};
+type Role = {
+	id: string;
+	name: string;
+	permissions: Permission[];
+};
 
+const RolesAndPermissions = () => {
+	const hasCreateRolePermission = useHasPermission("user.createRole");
 	const [roles, setRoles] = useState<any[]>([]);
 	const [allPermissions, setAllPermissions] = useState<Permission[]>([]);
 	const [editOpen, setEditOpen] = useState<boolean>(false);
@@ -80,15 +73,17 @@ const RolesAndPermissions = () => {
 		getAllPermissions();
 		getRoles();
 	}, []);
-	return (
+	return loading ? (
+		<LoadingSpinner />
+	) : (
 		<>
-			<CreateRoleModal onSaveSuccess={getRoles} />
+			{hasCreateRolePermission && (
+				<CreateRoleModal onSaveSuccess={getRoles} />
+			)}
 			<Header header="نقش‌های فعلی" />
 			<Dialog open={editOpen} onOpenChange={setEditOpen}>
 				<div className="flex flex-col bg-[#F0EDEF] text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
-					{loading ? (
-						<LoadingSpinner />
-					) : roles.length > 0 ? (
+					{roles.length > 0 ? (
 						roles.map((role, index) => (
 							<div
 								key={index}
@@ -205,12 +200,6 @@ const RolesAndPermissions = () => {
 					/>
 				</DialogContent>
 			</Dialog>
-			{/* <EditRoleModal
-				isOpen={isModalOpen}
-				onClose={() => setIsModalOpen(false)}
-				role={currentRole}
-				onSaveSuccess={getRoles}
-			/> */}
 		</>
 	);
 };
