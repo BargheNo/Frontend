@@ -1,5 +1,8 @@
 import { toast } from "sonner";
-export default function CustomToast(message: string, mode?: string) {
+export default function CustomToast(
+	message: string,
+	mode?: "success" | "error" | "warning" | "info" | undefined
+) {
 	if (mode === "success")
 		return toast.success(<div data-test="sonner-toast">{message}</div>);
 	else if (mode === "error")
