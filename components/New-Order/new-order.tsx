@@ -178,7 +178,7 @@ export default function Neworder() {
 						});
 					}}
 				>
-					{({ setFieldValue, values }) => (
+					{({ setFieldValue, values, errors, touched }) => (
 						<Form className="flex flex-col items-end w-full h-auto gap-4 rtl">
 							<div
 								className="flex md:flex-row flex-col justify-end w-full items-center"
@@ -190,6 +190,8 @@ export default function Neworder() {
 									placeholder="نام پنل"
 									icon={SquareMenu}
 									name="name"
+									inputClassName={`${errors.name && touched.name ?
+										'!border-red-500 !ring-1 !ring-red-700' : ''}`}
 								/>
 								<div className="flex flex-row justify-center mt-5 gap-x-1 text-gray-500 w-full">
 									<ShieldAlert />
@@ -296,6 +298,9 @@ export default function Neworder() {
 									name="address"
 									id="address"
 									placeholder="آدرس"
+									inputClassName={errors.address && touched.address ?
+										'!border-red-500 !ring-1 !ring-red-700' : ''
+									}
 								/>
 							</div>
 							<div
@@ -309,6 +314,9 @@ export default function Neworder() {
 									icon={Mailbox}
 									name="code"
 									placeholder="کد پستی"
+									inputClassName={errors.code && touched.code ? 
+										'!border-red-500 !ring-1 !ring-red-700' : ''
+									}
 								/>
 								<CustomInput
 									type="number"
@@ -317,6 +325,9 @@ export default function Neworder() {
 									icon={House}
 									placeholder="پلاک"
 									name="number"
+									inputClassName={errors.number && touched.number ?
+										'!border-red-500 !ring-1 !ring-red-700' : ''
+									}
 								/>
 								<CustomInput
 									type="number"
@@ -325,6 +336,9 @@ export default function Neworder() {
 									icon={BellRing}
 									placeholder="واحد"
 									name="unit"
+									inputClassName={errors.unit && touched.unit ?
+										'!border-red-500 !ring-1 !ring-red-700' : ''
+									}
 								/>
 							</div>
 
@@ -344,6 +358,9 @@ export default function Neworder() {
 									placeholder="مساحت(مترمربع)"
 									icon={LandPlot}
 									name="area"
+									inputClassName={errors.area && touched.area ?
+										'!border-red-500 !ring-1 !ring-red-700' : ''
+									}
 								/>
 								<div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
 									<ShieldAlert />
@@ -356,6 +373,9 @@ export default function Neworder() {
 									placeholder="میزان برق مورد نیاز(کیلووات)"
 									icon={Gauge}
 									name="electricity"
+									inputClassName={errors.electricity && touched.electricity ? 
+										'!border-red-500 !ring-1 !ring-red-700' : ''
+									}
 								/>
 								<div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
 									<ShieldAlert />
@@ -368,6 +388,9 @@ export default function Neworder() {
 									placeholder="سقف هزینه(ریال)"
 									icon={CircleDollarSign}
 									name="cost"
+									inputClassName={errors.cost && touched.cost ?
+										'!border-red-500 !ring-1 !ring-red-700' : ''
+									}
 								/>
 
 								<Select

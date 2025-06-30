@@ -370,7 +370,7 @@ export default function BidCard({
 											});
 										}}
 									>
-										{({ setFieldValue, values }) => (
+										{({ setFieldValue, values, errors, touched }) => (
 											<Form className="w-full flex flex-col gap-6">
 												<FormObserver
 													guaranteeID={Number(
@@ -442,6 +442,9 @@ export default function BidCard({
 															type="number"
 															autoFocus={true}
 															containerClassName="w-1/2"
+															inputClassName={errors.cost && touched.cost ?
+																'!border-red-500 !ring-1 !ring-red-700' : ''
+															}
 														/>
 														<div className="w-full">
 															<CustomDatePicker
@@ -468,6 +471,9 @@ export default function BidCard({
 															type="number"
 															autoFocus={true}
 															containerClassName="w-1/2"
+															inputClassName={errors.power && touched.power ?
+																'!border-red-500 !ring-1 !ring-red-700' : ''
+															}
 														/>
 														<CustomInput
 															placeholder="مساحت"
@@ -475,6 +481,9 @@ export default function BidCard({
 															icon={LandPlot}
 															type="number"
 															containerClassName="w-1/2"
+															inputClassName={errors.area && touched.area ?
+																'!border-red-500 !ring-1 !ring-red-700' : ''
+															}
 														/>
 													</div>
 													<div className="flex flex-row justify-evenly gap-6">
@@ -535,6 +544,9 @@ export default function BidCard({
 														name="description"
 														icon={MessageCircle}
 														containerClassName="w-full"
+														inputClassName={errors.description && touched.description ?
+															'!border-red-500 !ring-1 !ring-red-700' : ''
+														}
 													/>
 												</div>
 
