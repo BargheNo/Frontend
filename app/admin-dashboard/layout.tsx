@@ -50,25 +50,33 @@ export default function Layout({
 			RNPName: "installation_request.view_all",
 			icon: <Package />,
 		},
-		{
-			name: "مدیریت مالی",
-			path: "/admin-dashboard/finance",
-			icon: <DollarSign />,
-		},
+		// {
+		// 	name: "مدیریت مالی",
+		// 	path: "/admin-dashboard/finance",
+		// 	icon: <DollarSign />,
+		// },
 		{
 			name: "پشتیبانی",
 			path: "/admin-dashboard/support",
+			RNPName: "ticket.view_all",
 			icon: <Headset />,
 		},
-		{ name: "بلاگ‌ها", path: "/admin-dashboard/blogs", icon: <BookOpen /> },
+		{
+			name: "بلاگ‌ها",
+			path: "/admin-dashboard/blogs",
+			RNPName: "admin_blog.view_all",
+			icon: <BookOpen />,
+		},
 		{
 			name: "گزارشات",
 			path: "/admin-dashboard/reports",
+			RNPName: "report.view_all",
 			icon: <AlertCircle />,
 		},
 		{
 			name: "اخبار و اطلاعیه‌ها",
 			path: "/admin-dashboard/announcements",
+			RNPName: "news.view",
 			icon: <Megaphone />,
 		},
 	];

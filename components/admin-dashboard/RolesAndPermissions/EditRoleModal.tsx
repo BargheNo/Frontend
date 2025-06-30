@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Vote, UserRoundCog, Check } from "lucide-react";
 import { useSelector } from "react-redux";
 import styles from "./RolesAndPermissions.module.css";
@@ -7,10 +7,7 @@ import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 import * as Yup from "yup";
 import { Form, Formik, FieldArray } from "formik";
-import {
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
@@ -46,34 +43,30 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 	onSaveSuccess,
 }) => {
 	// const { setFieldValue } = useFormikContext<MyFormValues>();
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
 	const [allPermissions, setAllPermissions] = useState<Permission[]>([]);
 	const [selectedPermissions, setSelectedPermissions] = useState<number[]>(
 		[]
 	);
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 	const [isSaving, setIsSaving] = useState(false);
 	const [roleName, setRoleName] = useState(role?.name || "");
 
-	const initialValuesForm = {
-		name: role?.name || "",
-		permissionIDs: [],
-	};
+	// const initialValuesForm = {
+	// 	name: role?.name || "",
+	// 	permissionIDs: [],
+	// };
+	const initialValuesForm = useMemo(
+		() => ({
+			name: role?.name || "",
+			permissionIDs: selectedPermissions, // <- use fetched permissions
+		}),
+		[role?.name, selectedPermissions]
+	);
 
 	const validationSchemaForm = Yup.object({
 		name: Yup.string().required("نام نقش الزامی است"),
 		permissionIDs: Yup.array().of(Yup.number()),
 	});
-
-	useEffect(() => {
-		if (role) {
-			setRoleName(role.name);
-			// Fetch permissions when role changes
-			getRolePermissions(role.id);
-		}
-	}, [role]);
 
 	// Fetch all available permissions
 	const getAllPermissions = async () => {
@@ -85,12 +78,16 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 	// Fetch permissions for the current role
 	const getRolePermissions = async (roleId: string | undefined) => {
 		if (!roleId) return;
-		getData({ endPoint: `/v1/admin/roles/${roleId}` }).then((data) => {
-			const permissionIds = data.data.permissions.map(
-				(p: Permission) => p.id
-			);
-			setSelectedPermissions(permissionIds);
-		});
+		// setIsLoading(true);
+		getData({ endPoint: `/v1/admin/roles/${roleId}` })
+			.then((data) => {
+				const permissionIds = data.data.permissions.map(
+					(p: Permission) => p.id
+				);
+				setSelectedPermissions(permissionIds);
+				// setIsLoading(false);
+			})
+			// .finally(() => setIsLoading(false));
 	};
 
 	// Save updated permissions
@@ -100,7 +97,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 		setIsSaving(true);
 		const formData = {
 			name: values.name,
-			permissionIDs: values.permissionIDs.concat(selectedPermissions),
+			permissionIDs: values.permissionIDs,
 		};
 		putData({
 			endPoint: `/v1/admin/roles/${role.id}`,
@@ -127,12 +124,57 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 		return acc;
 	}, {} as Record<string, Permission[]>);
 	useEffect(() => {
-		setIsLoading(true);
-		Promise.all([
-			getAllPermissions(),
-			getRolePermissions(role?.id),
-		]).finally(() => setIsLoading(false));
-	}, []);
+		const fetchPermissions = async (role: any) => {
+			if (!role) return;
+
+			setIsLoading(true);
+			await getAllPermissions();
+			await getRolePermissions(role.id);
+			// await Promise.all([
+			// 	getAllPermissions(),
+			// 	getRolePermissions(role.id),
+			// ]);
+
+			setIsLoading(false);
+		};
+
+		fetchPermissions(role);
+	}, [role]);
+	// useEffect(() => {
+	// 	const fetchPermissions = async (role: any) => {
+	// 		if (role) {
+	// 			setIsLoading(true);
+	// 			setRoleName(role.name);
+	// 			Promise.all([
+	// 				getAllPermissions(),
+	// 				getRolePermissions(role?.id),
+	// 				getRolePermissions(role.id),
+	// 			])
+	// 			.finally(() => setIsLoading(false));
+	// 			// await getAllPermissions();
+	// 			// await getRolePermissions(role?.id);
+	// 			// await getRolePermissions(role.id);
+	// 			// setIsLoading(false);
+	// 		}
+	// 	};
+	// 	fetchPermissions(role);
+	// }, [role]);
+	// useEffect(() => {
+	// 	const fetchAllPermissions = async () => {
+	// 		if (role) {
+	// 			setIsLoading(true);
+	// 			await getAllPermissions();
+	// 			await getRolePermissions(role?.id);
+	// 			setIsLoading(false);
+	// 		}
+	// 	};
+	// 	fetchAllPermissions();
+	// 	// setIsLoading(true);
+	// 	// Promise.all([
+	// 	// 	getAllPermissions(),
+	// 	// 	getRolePermissions(role?.id),
+	// 	// ]).finally(() => setIsLoading(false));
+	// }, []);
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement>,
 		permissionId: number,
@@ -156,6 +198,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 	return (
 		<Formik
 			initialValues={initialValuesForm}
+			enableReinitialize
 			validationSchema={validationSchemaForm}
 			onSubmit={(values) => savePermissions(values)}
 		>

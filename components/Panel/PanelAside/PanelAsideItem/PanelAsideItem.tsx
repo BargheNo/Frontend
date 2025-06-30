@@ -5,9 +5,8 @@ import React from "react";
 
 export function PanelAsideIcon({ item, mode }) {
 	const pathname = usePathname();
-	const hasPermission = true;
-	// const hasPermission = useHasPermission(item?.RNPName ?? "general.all");
-	// const hasPermission = useHasPermission(item?.RNPName);
+	// const hasPermission = true;
+	const hasPermission = useHasPermission(item?.RNPName);
 	return hasPermission ? (
 		<Link key={item.path} href={item.path}>
 			<span
@@ -33,9 +32,8 @@ export function PanelAsideIcon({ item, mode }) {
 
 export function PanelAsideTitle({ item, mode }) {
 	const pathname = usePathname();
-	const hasPermission = true;
-	// const hasPermission = useHasPermission(item?.RNPName ?? "general.all");
-	// const hasPermission = useHasPermission(item?.RNPName);
+	// const hasPermission = true;
+	const hasPermission = useHasPermission(item?.RNPName);
 	return hasPermission ? (
 		<Link key={item.path} href={item.path}>
 			<span

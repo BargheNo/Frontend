@@ -166,46 +166,6 @@ const RolesAndPermissions = () => {
 												<Pencil className="text-orange-500" />
 											</button>
 										</DialogTrigger>
-										{/* <DialogTrigger asChild key={index}>
-											<button
-												key={index}
-												className={`cta-neu-button cursor-pointer w-1/8 flex flex-row ${styles.button} items-center content-center justify-center h-1/2 w-1/2`}
-											>
-												<p>تغییر</p>
-												<Pencil className="text-orange-500" />
-											</button>
-										</DialogTrigger>
-										<DialogContent
-											style={{
-												backgroundColor: "#F1F4FC",
-											}}
-											className="w-full sm:min-w-[750px] mx-auto no-scrollbar p-4 overflow-auto py-4 max-h-[90vh] h-[90vh] overflow-y-auto rtl"
-										>
-											<EditRoleModal
-												editOpen={editOpen}
-												setEditOpen={setEditOpen}
-												onClose={() =>
-													setIsModalOpen(false)
-												}
-												role={currentRole}
-												onSaveSuccess={getRoles}
-											/>
-										</DialogContent> */}
-
-										{/* <button
-											className={`cta-neu-button cursor-pointer w-1/8 flex flex-row ${styles.button} items-center content-center justify-center h-1/2 w-1/2`}
-											onClick={(editOpen) => setEditOpen(!editOpen)}
-											// onClick={() =>
-											// 	openEditModal({
-											// 		role.id,
-											// 		name,
-											// 		role.permissions,
-											// 	})
-											// }
-										>
-											<p>تغییر</p>
-											<Pencil className="text-orange-500" />
-										</button> */}
 										<button
 											className={`cta-neu-button flex cursor-pointer w-1/8 ${styles.button} items-center content-center justify-center h-1/2 w-1/2 cursor-pointer`}
 											onClick={() => deleteRole(role.id)}
@@ -223,13 +183,6 @@ const RolesAndPermissions = () => {
 									</div>
 								</div>
 							</div>
-							// <Roles
-							// 	key={index}
-							// 	id={role.id}
-							// 	name={role.name}
-							// 	permissions={role.permissions}
-							// 	deleting={deleting}
-							// />
 						))
 					) : (
 						<p className="text-gray-500 text-right">
