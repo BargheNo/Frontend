@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
+import useHasPermission from "@/src/functions/hasPermission";
 type UserType = {
 	id: number;
 	firstName: string;
@@ -38,6 +39,7 @@ type Role = {
 };
 
 export default function Users() {
+	const hasBanUnbanPermission = useHasPermission("user.ban_unban");
 	const [users, setUsers] = useState<UserType[]>([]);
 	const [loading, setLoading] = useState(true);
 
@@ -207,8 +209,8 @@ export default function Users() {
 														name={`role-${role.id}`}
 														type="checkbox"
 														defaultChecked={userRoles.includes(
-														role.id
-													)}
+															role.id
+														)}
 														onChange={() =>
 															handleRoleChange(
 																role.id
@@ -248,24 +250,26 @@ export default function Users() {
 								<DialogFooter className="grid grid-cols-2 gap-4 w-full">
 									{/* Left-aligned buttons container */}
 									<div className="flex justify-start">
-										<Button
-											onClick={handleBanAction}
-											// disabled={isBanning}
-											className={`px-4 py-2 rounded-lg cursor-pointer min-w-32 ${
-												status === "فعال"
-													? "bg-red-500 hover:bg-red-600"
-													: "bg-green-500 hover:bg-green-600"
-											}`}
-										>
-											{isBanning ? (
-												<LoadingOnButton />
-											) : // <Loader2 className="animate-spin h-4 w-4 ml-2" />
-											status === "فعال" ? (
-												<p>مسدود کردن</p>
-											) : (
-												<p>رفع انسداد</p>
-											)}
-										</Button>
+										{hasBanUnbanPermission && (
+											<Button
+												onClick={handleBanAction}
+												// disabled={isBanning}
+												className={`px-4 py-2 rounded-lg cursor-pointer min-w-32 ${
+													status === "فعال"
+														? "bg-red-500 hover:bg-red-600"
+														: "bg-green-500 hover:bg-green-600"
+												}`}
+											>
+												{isBanning ? (
+													<LoadingOnButton />
+												) : // <Loader2 className="animate-spin h-4 w-4 ml-2" />
+												status === "فعال" ? (
+													<p>مسدود کردن</p>
+												) : (
+													<p>رفع انسداد</p>
+												)}
+											</Button>
+										)}
 									</div>
 
 									{/* Right-aligned button container */}
