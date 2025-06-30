@@ -7,7 +7,11 @@ import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 import * as Yup from "yup";
 import { Form, Formik, FieldArray } from "formik";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
@@ -79,15 +83,14 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 	const getRolePermissions = async (roleId: string | undefined) => {
 		if (!roleId) return;
 		// setIsLoading(true);
-		getData({ endPoint: `/v1/admin/roles/${roleId}` })
-			.then((data) => {
-				const permissionIds = data.data.permissions.map(
-					(p: Permission) => p.id
-				);
-				setSelectedPermissions(permissionIds);
-				setIsLoading(false);
-			})
-			// .finally(() => setIsLoading(false));
+		getData({ endPoint: `/v1/admin/roles/${roleId}` }).then((data) => {
+			const permissionIds = data.data.permissions.map(
+				(p: Permission) => p.id
+			);
+			setSelectedPermissions(permissionIds);
+			setIsLoading(false);
+		});
+		// .finally(() => setIsLoading(false));
 	};
 
 	// Save updated permissions
@@ -134,7 +137,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 			// 	getAllPermissions(),
 			// 	getRolePermissions(role.id),
 			// ]);
-			
+
 			// setIsLoading(false);
 		};
 
@@ -218,7 +221,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 					// 		size={32}
 					// 	/>
 					// </div>
-					<div className="flex flex-col gap-6">
+					<div className="flex flex-col gap-6 relative flex-1 overflow-y-auto no-scrollbar">
 						<CustomInput
 							name="name"
 							placeholder="نام نقش"
@@ -288,21 +291,24 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 						</div>
 					</div>
 				)}
-				<div className="flex justify-end gap-96 mt-6">
-					<button
-						disabled={isSaving}
-						type="button"
-						onClick={() => setEditOpen(false)}
-						className="px-4 py-2 text-gray-600 border cta-neu-button border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 disabled:opacity-50"
-					>
-						انصراف
-					</button>
-					<button
-						disabled={isLoading || isSaving}
-						className="px-4 py-2 bg-orange-500 cta-neu-button place-content-center items-center text-white rounded-lg hover:bg-orange-600 cursor-pointer disabled:opacity-50 flex gap-2"
-					>
-						{isSaving ? <LoadingOnButton /> : <p>ذخیره</p>}
-					</button>
+				<div className="sticky bottom-0 bg-[#F1F4FC]">
+					<DialogFooter className="flex justify-end gap-96 mt-6 w-full py-4">
+						{/* <div className="flex justify-end gap-96 mt-6"> */}
+						<button
+							disabled={isSaving}
+							type="button"
+							onClick={() => setEditOpen(false)}
+							className="px-4 py-2 text-gray-600 border cta-neu-button border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 disabled:opacity-50"
+						>
+							انصراف
+						</button>
+						<button
+							disabled={isLoading || isSaving}
+							className="px-4 py-2 bg-orange-500 cta-neu-button place-content-center items-center text-white rounded-lg hover:bg-orange-600 cursor-pointer disabled:opacity-50 flex gap-2"
+						>
+							{isSaving ? <LoadingOnButton /> : <p>ذخیره</p>}
+						</button>
+					</DialogFooter>
 				</div>
 			</Form>
 		</Formik>

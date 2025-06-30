@@ -194,7 +194,7 @@ const RolesAndPermissions = () => {
 					style={{
 						backgroundColor: "#F1F4FC",
 					}}
-					className="w-full sm:min-w-[750px] mx-auto no-scrollbar p-4 overflow-auto py-4 max-h-[90vh] h-[90vh] overflow-y-auto rtl"
+					className="w-full sm:min-w-[750px] mx-auto no-scrollbar p-4 overflow-auto pb-0 max-h-[90vh] h-[90vh] overflow-y-auto rtl"
 				>
 					<EditRoleModal
 						editOpen={editOpen}
