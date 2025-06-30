@@ -92,10 +92,16 @@ export default function Layout({
 			path: "/admin-dashboard/maintenance",
 			icon: <History />,
 		},
-		{ name: "پنل‌ها", path: "/admin-dashboard/panels", icon: <BarChart /> },
+		{
+			name: "پنل‌ها",
+			path: "/admin-dashboard/panels",
+			RNPName: "panel.view_all",
+			icon: <BarChart />,
+		},
 		{
 			name: "کارکنان شرکت",
 			path: "/admin-dashboard/corp-staff",
+
 			icon: <MessageSquare />,
 		},
 	];

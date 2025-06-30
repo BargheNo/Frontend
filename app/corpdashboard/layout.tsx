@@ -38,6 +38,7 @@ export default function Layout({
     {
       name: "پیشنهادهای ارسال شده",
       path: "/corpdashboard/bids",
+			RNPName: "bid.view_all",
       icon: <Send />,
     },
     {
@@ -58,6 +59,7 @@ export default function Layout({
     {
       name: "تعمیرات پیش رو",
       path: "/corpdashboard/maintenances",
+      RNPName: "maintenance.view_all",
       icon: <Wrench />,
     },
     { name: "گزارشات", path: "/corpdashboard/reports", icon: <BarChart /> },
@@ -65,11 +67,13 @@ export default function Layout({
     {
       name: "اخبار و اطلاعیه‌ها",
       path: "/corpdashboard/announcements",
+      RNPName: "corp_blog.view_all",
       icon: <Megaphone />,
     },
     {
       name: "گارانتی",
       path: "/corpdashboard/warranties",
+      RNPName: "guarantee.view_all",
       icon: <ShieldCheck />
     }
   ];
