@@ -40,6 +40,7 @@ type Role = {
 
 export default function Users() {
 	const hasBanUnbanPermission = useHasPermission("user.ban_unban");
+	const hasChangeRolePermission = useHasPermission("user.changeRole");
 	const [users, setUsers] = useState<UserType[]>([]);
 	const [loading, setLoading] = useState(true);
 
@@ -208,6 +209,7 @@ export default function Users() {
 													<input
 														name={`role-${role.id}`}
 														type="checkbox"
+														disabled={!hasChangeRolePermission}
 														defaultChecked={userRoles.includes(
 															role.id
 														)}
@@ -216,7 +218,7 @@ export default function Users() {
 																role.id
 															)
 														}
-														className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500 mt-0.5"
+														className={`peer h-5 w-5 ${hasChangeRolePermission ? "cursor-pointer" : "cursor-not-allowed"} transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500 mt-0.5`}
 													/>
 													<Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-2/3 text-white opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5 " />
 												</div>
