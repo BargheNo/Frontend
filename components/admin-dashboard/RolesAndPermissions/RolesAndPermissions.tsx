@@ -38,6 +38,8 @@ type Role = {
 
 const RolesAndPermissions = () => {
 	const hasCreateRolePermission = useHasPermission("user.createRole");
+	const editRolePermission = useHasPermission("user.manageRolePermissions");
+	const removeRolePermission = useHasPermission("user.removeRole");
 	const [roles, setRoles] = useState<any[]>([]);
 	const [allPermissions, setAllPermissions] = useState<Permission[]>([]);
 	const [editOpen, setEditOpen] = useState<boolean>(false);
@@ -150,31 +152,37 @@ const RolesAndPermissions = () => {
 									</div>
 									<div className="flex flex-row w-full h-full px-4 gap-4 rtl justify-end">
 										<DialogTrigger asChild>
-											<button
-												key={index}
-												onClick={() =>
-													setCurrentRole(role)
-												}
-												className={`cta-neu-button cursor-pointer w-1/8 flex flex-row ${styles.button} items-center content-center justify-center h-1/2 w-1/2`}
-											>
-												<p>تغییر</p>
-												<Pencil className="text-orange-500" />
-											</button>
-										</DialogTrigger>
-										<button
-											className={`cta-neu-button flex cursor-pointer w-1/8 ${styles.button} items-center content-center justify-center h-1/2 w-1/2 cursor-pointer`}
-											onClick={() => deleteRole(role.id)}
-											key={role.id}
-										>
-											{deletingId === role.id ? (
-												<LoadingOnButton />
-											) : (
-												<>
-													<p>حذف</p>
-													<Trash2 className="text-orange-500" />
-												</>
+											{editRolePermission && (
+												<button
+													key={index}
+													onClick={() =>
+														setCurrentRole(role)
+													}
+													className={`cta-neu-button cursor-pointer w-1/8 flex flex-row ${styles.button} items-center content-center justify-center h-1/2 w-1/2`}
+												>
+													<p>تغییر</p>
+													<Pencil className="text-orange-500" />
+												</button>
 											)}
-										</button>
+										</DialogTrigger>
+										{removeRolePermission && (
+											<button
+												className={`cta-neu-button flex cursor-pointer w-1/8 ${styles.button} items-center content-center justify-center h-1/2 w-1/2 cursor-pointer`}
+												onClick={() =>
+													deleteRole(role.id)
+												}
+												key={role.id}
+											>
+												{deletingId === role.id ? (
+													<LoadingOnButton />
+												) : (
+													<>
+														<p>حذف</p>
+														<Trash2 className="text-orange-500" />
+													</>
+												)}
+											</button>
+										)}
 									</div>
 								</div>
 							</div>
