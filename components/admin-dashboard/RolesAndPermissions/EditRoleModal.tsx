@@ -85,7 +85,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 					(p: Permission) => p.id
 				);
 				setSelectedPermissions(permissionIds);
-				// setIsLoading(false);
+				setIsLoading(false);
 			})
 			// .finally(() => setIsLoading(false));
 	};
@@ -128,14 +128,14 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 			if (!role) return;
 
 			setIsLoading(true);
-			await getAllPermissions();
-			await getRolePermissions(role.id);
+			getAllPermissions();
+			getRolePermissions(role.id);
 			// await Promise.all([
 			// 	getAllPermissions(),
 			// 	getRolePermissions(role.id),
 			// ]);
-
-			setIsLoading(false);
+			
+			// setIsLoading(false);
 		};
 
 		fetchPermissions(role);
@@ -210,7 +210,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 				</DialogHeader>
 
 				{isLoading ? (
-					<LoadingSpinner />
+					<LoadingSpinner className="h-full" />
 				) : (
 					// <div className="flex justify-center items-center h-40">
 					// 	<Loader2
