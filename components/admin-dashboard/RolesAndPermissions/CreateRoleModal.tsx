@@ -10,6 +10,7 @@ import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import {
 	Dialog,
 	DialogContent,
+	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
@@ -18,6 +19,7 @@ import AddComponent from "@/components/AddComponent/AddComponent";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 import { getData, postData } from "@/src/services/apiHub";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 
 type Permission = {
 	id: number;
@@ -125,7 +127,7 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
 				</DialogTrigger>
 				<DialogContent
 					style={{ backgroundColor: "#F1F4FC" }}
-					className="w-full sm:min-w-[750px] mx-auto no-scrollbar p-4 overflow-auto py-4 max-h-[90vh] h-[90vh] overflow-y-auto rtl"
+					className="w-full sm:min-w-[750px] mx-auto no-scrollbar p-4 overflow-auto pb-0 max-h-[90vh] h-[90vh] overflow-y-auto rtl"
 				>
 					<Formik
 						initialValues={initialValuesForm}
@@ -140,14 +142,15 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
 							</DialogHeader>
 
 							{isLoading ? (
-								<div className="flex justify-center items-center h-40">
-									<Loader2
+								<div className="flex justify-center items-center">
+									<LoadingSpinner className="h-full" />
+									{/* <Loader2
 										className="animate-spin text-orange-500"
 										size={32}
-									/>
+									/> */}
 								</div>
 							) : (
-								<div className="flex flex-col gap-6">
+								<div className="flex flex-col gap-6 relative flex-1 overflow-y-auto no-scrollbar">
 									<CustomInput
 										name="name"
 										placeholder="نام نقش"
@@ -224,24 +227,27 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
 									</div>
 								</div>
 							)}
-							<div className="flex justify-end gap-96 mt-6">
-								<button
-									disabled={isSaving}
-									onClick={() => setOpen(false)}
-									className="px-4 py-2 text-gray-600 border cta-neu-button border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 disabled:opacity-50"
-								>
-									انصراف
-								</button>
-								<button
-									disabled={isLoading || isSaving}
-									className="px-4 py-2 bg-orange-500 cta-neu-button place-content-center items-center text-white rounded-lg hover:bg-orange-600 cursor-pointer disabled:opacity-50 flex gap-2"
-								>
-									{isSaving ? (
-										<LoadingOnButton />
-									) : (
-										<p>ایجاد نقش</p>
-									)}
-								</button>
+							<div className="sticky bottom-0 bg-[#F1F4FC]">
+								<DialogFooter className="flex justify-end gap-96 mt-6 w-full py-4">
+									{/* <div className="flex justify-end gap-96 mt-6"> */}
+									<button
+										disabled={isSaving}
+										onClick={() => setOpen(false)}
+										className="px-4 py-2 text-gray-600 border cta-neu-button bg-white border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 disabled:opacity-50"
+									>
+										انصراف
+									</button>
+									<button
+										disabled={isLoading || isSaving}
+										className="px-4 py-2 bg-orange-500 cta-neu-button place-content-center items-center text-white rounded-lg hover:bg-orange-600 cursor-pointer disabled:opacity-50 flex gap-2"
+									>
+										{isSaving ? (
+											<LoadingOnButton />
+										) : (
+											<p>ایجاد نقش</p>
+										)}
+									</button>
+								</DialogFooter>
 							</div>
 						</Form>
 					</Formik>

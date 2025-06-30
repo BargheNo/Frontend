@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Phone, Settings, User, CircleX, Loader2 } from "lucide-react";
+import { Phone, Settings, User, CircleX, Loader2, Check } from "lucide-react";
 import styles from "./Users.module.css";
 import UserRolesModal from "./UserRoleModal";
 import FilterUsers from "./FilterUsers";
@@ -191,9 +191,9 @@ export default function Users() {
 					></DialogClose> */}
 
 								{loadingRoles ? (
-									<div className="flex justify-center items-center h-40">
-										{/* <LoadingSpinner /> */}
-										<Loader2 className="animate-spin text-orange-500 h-8 w-8" />
+									<div className="flex justify-center items-center">
+										<LoadingSpinner className="w-full h-full" />
+										{/* <Loader2 className="animate-spin text-orange-500 h-8 w-8" /> */}
 									</div>
 								) : (
 									<div className="space-y-3 py-4">
@@ -202,7 +202,23 @@ export default function Users() {
 												key={role.id}
 												className="flex items-center gap-3 p-2"
 											>
-												<input
+												<div className="relative">
+													<input
+														name={`role-${role.id}`}
+														type="checkbox"
+														defaultChecked={userRoles.includes(
+														role.id
+													)}
+														onChange={() =>
+															handleRoleChange(
+																role.id
+															)
+														}
+														className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500 mt-0.5"
+													/>
+													<Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-2/3 text-white opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5 " />
+												</div>
+												{/* <input
 													type="checkbox"
 													id={`role-${role.id}`}
 													checked={userRoles.includes(
@@ -214,7 +230,7 @@ export default function Users() {
 														)
 													}
 													className="w-5 h-5 cursor-pointer text-orange-500 rounded focus:ring-orange-400 border-gray-300"
-												/>
+												/> */}
 												<label
 													htmlFor={`role-${role.id}`}
 													className="text-gray-700 cursor-pointer"
