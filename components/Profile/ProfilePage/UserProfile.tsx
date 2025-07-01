@@ -155,7 +155,7 @@ const UserProfile = () => {
 	];
 
 	return (
-		<div className="p-6 w-full md:w-1/2 neu-container">
+		<div className="p-6 w-full neu-container">
 			<h2 className="text-navy-blue text-2xl font-bold mb-6">
 				پروفایل کاربری
 			</h2>
