@@ -7,6 +7,7 @@ import {
   Calculator,
   Headset,
   Megaphone,
+  User,
 } from "lucide-react";
 import { NavItem } from "@/src/types/PanelAsideTypes";
 
@@ -26,6 +27,11 @@ export const navItems: NavItem[] = [
     name: "اخبار و اطلاعیه‌ها",
     path: "/dashboard/announcements",
     icon: <Megaphone />,
+  },
+  {
+    name: "پروفایل کاربری",
+    path: "/dashboard/profile",
+    icon: <User />,
   },
 ];
 
