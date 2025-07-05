@@ -9,7 +9,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 export default function AddComponent({ title, ...props }: Props) {
 	return (
 		<div className="flex flex-col">
-			<button className={`${styles.button} flex mx-auto`} {...props}>
+			<button className={`${styles.button} flex mx-auto  relative bg-white`} {...props}>
 				<Plus
 					className={`relative text-[#FA682D] cursor-pointer w-28 h-auto`}
 				/>

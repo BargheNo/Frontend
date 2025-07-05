@@ -107,7 +107,7 @@ export default function CorpMessagesPagination() {
 	return (
 		<>
 			<Header className="rtl" header="تنظیمات اعلان‌ها" />
-			<div className="flex flex-col text-white bg-transparent w-full">
+			<div className="flex flex-col text-white bg-transparent w-full relative">
 				<div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] mb-5">
 					<div className="flex flex-row mr-auto md:ml-30 m-auto md:gap-17 gap-6">
 						<p className="mt-8 whitespace-nowrap">
@@ -248,7 +248,7 @@ export default function CorpMessagesPagination() {
 
 			<Header className="rtl" header="اعلان‌ها" />
 			<div className="flex flex-col text-white bg-transparent w-full">
-				<div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] h-20 mb-5">
+				<div className="flex flex-col relative bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] h-20 mb-5">
 					<div
 						className={`${style.citypro} flex flex-row mr-4 justify-between m-auto md:w-2/10 w-5/10 `}
 					>
