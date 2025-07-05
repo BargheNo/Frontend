@@ -134,7 +134,7 @@ export default function Users() {
 				<div className="flex flex-row justify-between w-full h-full bg-[#F4F1F3] p-5 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 items-center">
 					<div className="flex items-center gap-3 w-1/4">
 						<div
-							className={`${styles.icon} bg-[#F4F1F3] bg-white text-[#FA682D]`}
+							className={`${styles.icon}  bg-white text-[#FA682D]`}
 						>
 							<User className="m-1" />
 						</div>
@@ -144,7 +144,7 @@ export default function Users() {
 					</div>
 					<div className="flex items-center gap-3 w-1/4">
 						<div
-							className={`${styles.icon} bg-[#F4F1F3] bg-white text-[#FA682D]`}
+							className={`${styles.icon} bg-white text-[#FA682D]`}
 						>
 							<Phone className="m-1" />
 						</div>
