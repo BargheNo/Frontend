@@ -5,7 +5,7 @@ import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { Edit, IdCard, Phone, Mail, UserRound, Save } from "lucide-react";
 import ProfilePicPicker from "@/components/Custom/ProfilePicPicker/ProfilePicPicker";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import { baseURL, getData, putDataFile } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
@@ -155,7 +155,7 @@ const UserProfile = () => {
 	];
 
 	return (
-		<div className="p-6 w-full md:w-1/2 neu-container">
+		<div className="p-6 w-full neu-container">
 			<h2 className="text-navy-blue text-2xl font-bold mb-6">
 				پروفایل کاربری
 			</h2>

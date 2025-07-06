@@ -292,7 +292,8 @@ const RepairDetailsDialog = ({
 												bg-gradient-to-br from-[#34C759] to-[#00A92B]
 												hover:from-[#2AAE4F] hover:to-[#008C25]
 												active:from-[#008C25] active:to-[#2AAE4F]
-												text-white py-2 px-4 rounded-md transition-all duration-300"
+												text-white py-2 px-4 rounded-md transition-all duration-300
+												cursor-pointer"
 										>
 											ارسال گزارش
 										</button>

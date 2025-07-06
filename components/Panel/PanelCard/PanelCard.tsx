@@ -10,10 +10,12 @@ import {
 	AlertCircle,
 	X,
 	Plus,
+	ChevronDown,
 } from "lucide-react";
 import { PanelCardProps } from "@/src/types/PanelCardTypes";
 import Link from "next/link";
 import IconWithBackground from "@/components/IconWithBackground/IconWithBackground";
+import PanelIconWithBackground from "./PanelIconWithBackground";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
@@ -35,10 +37,17 @@ const PanelCard = ({
 	technicalDetails,
 	address,
 	className,
+	status,
 }: PanelCardProps) => {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [open, setOpen] = useState(false);
-	// const [isModalOpen, setModalOpen] = useState(false);
+	const [isExpanded, setIsExpanded] = useState(false);
+
+	const MAXLENGTH: number = 135;
+	const truncateText = (text: string, maxLength: number = MAXLENGTH) => {
+		if (text.length <= maxLength) return text;
+		return text.slice(0, maxLength) + "...";
+	};
 
 	const handleSubmit = async (values: { problem: string }) => {
 		setLoading(true);
@@ -61,12 +70,13 @@ const PanelCard = ({
 	});
 
 	const getStatusColor = () => {
-		const efficiency = technicalDetails.efficiency;
-		if (efficiency >= 80)
+		if (status === "فعال")
 			return "bg-gradient-to-br from-green-400 to-green-500 border-1 border-gray-100/50 shadow-sm shadow-green-500";
-		if (efficiency >= 60)
+		if (status === "در حال نصب")
 			return "bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-yellow-500";
-		return "bg-gradient-to-br from-red-400 to-red-500 shadow-red-500";
+		if (status === "غیر فعال")
+			return "bg-gradient-to-br from-red-400 to-red-500 shadow-red-500";
+		return "bg-gradient-to-br from-gray-400 to-gray-500 shadow-gray-500";
 	};
 
 	const formatNumber = (num: number): string =>
@@ -78,125 +88,20 @@ const PanelCard = ({
 			<div
 				className={`${className} w-full border-t-1 border-gray-300 first:border-t-0`}
 			>
-				<div className="flex flex-row justify-between w-full h-full bg-[#F0EDEF] p-5 overflow-hidden relative">
-					{/* LEFT */}
-					<div className="flex flex-col justify-between w-full z-10">
-						<div className="space-y-3 w-full">
-							<h2 className="text-2xl font-bold text-gray-800">
-								{panelName}
-							</h2>
-							<div className="space-y-2 w-full">
-								<div className="flex text-sm text-gray-700 justify-between w-[28%] items-center">
-									<div className="flex items-center w-1/2">
-										<IconWithBackground
-											icon={Battery}
-											color="#6B7280"
-										/>
-										<span className="font-medium mr-2">
-											ظرفیت:
-										</span>
-									</div>
-									<div className="w-1/2">
-										<span className="mr-1">
-											{formatNumber(
-												technicalDetails.capacity
-											)}{" "}
-											کیلووات
-										</span>
-									</div>
-								</div>
-								<div className="flex text-sm text-gray-700 justify-between w-[28%] items-center">
-									<div className="flex items-center w-1/2">
-										<IconWithBackground
-											icon={Battery}
-											color="#6B7280"
-										/>
-										<span className="font-medium mr-2">
-											ظرفیت:
-										</span>
-									</div>
-									<div className="w-1/2">
-										<span className="mr-1">
-											{formatNumber(
-												technicalDetails.capacity
-											)}{" "}
-											کیلووات
-										</span>
-									</div>
-								</div>
-								{/* <div className="flex text-sm text-gray-700 justify-between w-[28%] items-center">
-									<div className="flex items-center w-1/2">
-										<IconWithBackground
-											icon={Sun}
-											color="#F59E0B"
-										/>
-										<span className="font-medium mr-2">
-											تولید امروز:
-										</span>
-									</div>
-									<div className="w-1/2">
-										<span className="mr-1">
-											{formatNumber(
-												technicalDetails.todayProduction
-											)}{" "}
-											کیلووات ساعت
-										</span>
-									</div>
-								</div>
-								<div className="flex text-sm text-gray-700 justify-between w-[28%] items-center">
-									<div className="flex items-center w-1/2">
-										<IconWithBackground
-											icon={TrendingUp}
-											color="#3B82F6"
-										/>
-										<span className="font-medium mr-2">
-											بازدهی:
-										</span>
-									</div>
-									<div className="w-1/2">
-										<span className="mr-1">
-											{technicalDetails.efficiency}%
-										</span>
-									</div>
-								</div> */}
-							</div>
-						</div>
-						<div className="flex items-start text-sm text-gray-700 mt-6">
-							<div className="flex flex-row items-center">
-								<IconWithBackground
-									icon={MapPin}
-									color="#6B7280"
-								/>
-								<div className="font-medium mx-2">آدرس:</div>
-							</div>
-							<div className="flex flex-row mt-[6px]">
-								<span className="mr-1">{address}</span>
-							</div>
-						</div>
+				<div className="flex flex-col w-full h-full bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] p-3 sm:p-5 overflow-hidden relative">
+					{/* PANEL NAME */}
+					<div className="mb-6">
+						<h2 className="text-2xl font-bold text-gray-800">{panelName}</h2>
 					</div>
 
-					{/* RIGHT */}
-					<div className="flex flex-col justify-around gap-4 items-center z-10 min-w-48">
-						<div className="flex flex-col gap-4">
-							<div className="text-gray-700 font-medium">
-								وضعیت پنل:
-							</div>
-							<div className="flex flex-col items-center justify-center gap-2 p-3 rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)] w-24">
-								<div
-									className={`h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
-								></div>
-								<span className="text-sm font-medium text-gray-600">
-									فعال
-								</span>
-							</div>
-						</div>
-						<div className="flex flex-col gap-3">
+					{/* MAIN CONTENT DIV */}
+					<div className="flex flex-col-reverse sm:flex-row-reverse justify-between w-full mb-6 gap-4">
+						{/* LEFT SIDE - BUTTONS */}
+						<div className="flex flex-row sm:flex-col gap-3 w-full sm:w-[20%]">
 							<Dialog open={open} onOpenChange={setOpen}>
 								<DialogTrigger asChild>
-									<button className="w-40 flex items-center justify-between bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
-										<span className="font-medium">
-											گزارش مشکل
-										</span>
+									<button className="w-full flex items-center justify-between bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
+										<span className="font-medium">گزارش مشکل</span>
 										<AlertCircle className="mr-2 w-4 h-4" />
 									</button>
 								</DialogTrigger>
@@ -239,21 +144,90 @@ const PanelCard = ({
 									</Formik>
 								</DialogContent>
 							</Dialog>
-							{/* <button
-								onClick={() => setModalOpen(true)}
-								className="w-40 flex items-center justify-between bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105"
-							>
-								<span className="font-medium">گزارش مشکل</span>
-								<AlertCircle className="mr-2 w-4 h-4" />
-							</button> */}
-							<Link href={`my-panels/123`}>
-								<button className="w-40 flex items-center justify-between bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
-									<span className="font-medium">
-										مدیریت پنل
-									</span>
+							<Link href={`my-panels/123`} className="w-full">
+								<button className="w-full flex items-center justify-between bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
+									<span className="font-medium">مدیریت پنل</span>
 									<MoveLeft className="mr-2 w-4 h-4" />
 								</button>
 							</Link>
+						</div>
+
+						{/* RIGHT SIDE - STATS */}
+						<div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full sm:w-[70%]">
+							<div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
+								<div className="flex items-center">
+									<PanelIconWithBackground icon={Battery} className="w-full justify-between" text={"ظرفیت"} color="#6B7280" />
+								</div>
+								<div className="flex flex-col m-2 sm:m-3 items-center justify-center">
+									<div className="flex flex-row-reverse items-center gap-1">
+										<span className="text-xl sm:text-3xl font-bold">
+											{formatNumber(technicalDetails.capacity)}
+										</span>
+										<span>kW</span>
+									</div>
+								</div>
+							</div>
+
+							<div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
+								<div className="flex items-center">
+									<PanelIconWithBackground icon={Sun} className="w-full justify-between" text={"تولید امروز"} color="#F59E0B" />
+								</div>
+								<div className="flex flex-col m-2 sm:m-3 items-center justify-center">
+									<div className="flex flex-row-reverse items-center gap-1">
+										<span className="text-xl sm:text-3xl font-bold">
+											{formatNumber(technicalDetails.todayProduction)}
+										</span>
+										<span>kWh</span>
+									</div>
+								</div>
+							</div>
+
+							<div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
+								<div className="flex items-center">
+									<PanelIconWithBackground icon={TrendingUp} className="w-full justify-between" text={"بازدهی"} color="#3B82F6" />
+								</div>
+								<div className="flex flex-col m-2 sm:m-3 items-center justify-center">
+									<div className="flex flex-row-reverse items-center gap-1">
+										<span className="text-xl sm:text-3xl font-bold">{technicalDetails.efficiency}</span>
+										<span>%</span>
+									</div>
+								</div>
+							</div>
+
+							<div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
+								<div className="flex items-center">
+									<PanelIconWithBackground icon={AlertCircle} className="w-full justify-between" text={"وضعیت پنل"} color="#6B7280" />
+								</div>
+								<div className="flex flex-col m-2 sm:m-3 items-center justify-center">
+									<div className="flex flex-row-reverse items-center gap-1">
+										<div
+											className={`h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
+										></div>
+										<span className="text-sm font-medium text-gray-600">{status}</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					{/* ADDRESS SECTION */}
+					<div className="flex items-start text-sm text-gray-700 mt-6">
+						<div className="flex flex-row items-center">
+							<IconWithBackground icon={MapPin} color="#6B7280" />
+							<div className="font-medium mx-2">آدرس:</div>
+						</div>
+						<div className="flex flex-row mt-[6px]">
+							<span className="mr-1">
+								{isExpanded ? address : truncateText(address)}
+								{address.length > MAXLENGTH && (
+									<button
+										onClick={() => setIsExpanded(!isExpanded)}
+										className="text-blue-500 hover:text-blue-700 mr-2"
+									>
+										{isExpanded ? "کمتر" : "بیشتر"}
+									</button>
+								)}
+							</span>
 						</div>
 					</div>
 				</div>

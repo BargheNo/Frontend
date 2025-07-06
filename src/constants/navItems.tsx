@@ -1,12 +1,13 @@
 import {
   Layers,
   FilePlus,
-  History,
   BarChart,
   MessageSquare,
   Calculator,
   Headset,
   Megaphone,
+  User,
+  Wrench,
 } from "lucide-react";
 import { NavItem } from "@/src/types/PanelAsideTypes";
 
@@ -16,7 +17,7 @@ export const navItems: NavItem[] = [
   {
     name: "سوابق تعمیرات",
     path: "/dashboard/repair-history",
-    icon: <History />,
+    icon: <Wrench />,
   },
   { name: "گزارشات", path: "/dashboard/reports", icon: <BarChart /> },
   { name: "پیام‌های من", path: "/dashboard/messages", icon: <MessageSquare /> },
@@ -26,6 +27,11 @@ export const navItems: NavItem[] = [
     name: "اخبار و اطلاعیه‌ها",
     path: "/dashboard/announcements",
     icon: <Megaphone />,
+  },
+  {
+    name: "پروفایل کاربری",
+    path: "/dashboard/profile",
+    icon: <User />,
   },
 ];
 

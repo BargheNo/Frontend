@@ -5,6 +5,7 @@ import BidCard from "@/components/CorpDashboard/Bids/BidCard";
 import { toast } from "sonner";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import Header from "@/components/Header/Header";
+import InteractiveGrid from "@/components/Decorative/InteractiveGrid";
 
 /**
  * Style Showcase Page
@@ -167,6 +168,11 @@ const StyleShowcase = () => {
 					</button>
 					{/* <TransparentLoading size="sm" /> */}
 				</div>
+			</section>
+
+
+			<section>
+				<InteractiveGrid rows={4} cols={14} size={30} />
 			</section>
 		</div>
 	);

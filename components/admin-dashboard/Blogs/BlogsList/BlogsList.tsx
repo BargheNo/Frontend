@@ -39,7 +39,7 @@ const BlogItem = ({
 
 export default function BlogsList() {
 	return (
-		<div className="list">
+		<div className="list relative">
 			<BlogItem
 				title="مطلب خیلی مهم"
 				author="مرتضی مرتضوی"
