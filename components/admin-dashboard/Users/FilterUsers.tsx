@@ -81,7 +81,7 @@ export default function FilterUsers({
 							lastName: user.lastName,
 							phone: user.phone,
 							status:
-								user.status === "active" ? "active" : "block", // Ensure consistent status values
+								user.status === "فعال" ? "فعال" : "مسدود", // Ensure consistent status values
 						}));
 
 					onFilteredUsers(formattedUsers);
