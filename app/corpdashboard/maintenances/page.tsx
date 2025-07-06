@@ -63,14 +63,14 @@ export default function Page() {
 	});
 
 	return (
-		<PageContainer>
+		<PageContainer className="max-w-6xl mx-auto">
 			<div className="space-y-8 relative">
 				{/* تعمیرات من Section */}
 				<div>
 					<div className="flex justify-between items-center mb-4">
 						<Header header="تعمیرات من" />
 						<Select dir="rtl" value={myRepairsFilter} onValueChange={(value: "تایید شده" | "تمام شده" | "همه") => setMyRepairsFilter(value)}>
-							<SelectTrigger className="w-[180px]">
+							<SelectTrigger className="w-[180px] relative bg-white">
 								<SelectValue placeholder="فیلتر وضعیت" />
 							</SelectTrigger>
 							<SelectContent>
@@ -112,7 +112,7 @@ export default function Page() {
 					<div className="flex justify-between items-center mb-4">
 						<Header header="کلیۀ درخواستهای تعمیرات" />
 						<Select dir="rtl" value={allRepairsFilter} onValueChange={(value: "در انتظار تایید" | "رد شده" | "همه") => setAllRepairsFilter(value)}>
-							<SelectTrigger className="w-[180px]">
+							<SelectTrigger className="w-[180px] relative bg-white">
 								<SelectValue placeholder="فیلتر وضعیت" />
 							</SelectTrigger>
 							<SelectContent>
