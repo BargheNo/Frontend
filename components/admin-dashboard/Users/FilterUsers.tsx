@@ -204,7 +204,7 @@ export default function FilterUsers({
 						defaultValue="all"
 						onValueChange={(value) => {
 							setFilterType(value);
-							setFilterValue("1");
+							setFilterValue("all");
 						}}
 					>
 						<SelectTrigger
