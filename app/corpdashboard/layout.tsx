@@ -44,6 +44,7 @@ export default function Layout({
     {
       name: "درخواست‌ها",
       path: "/corpdashboard/requests",
+      RNPName: "bid.viewInstallationRequests",
       icon: <ClipboardList />,
     },
     {

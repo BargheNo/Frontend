@@ -14,6 +14,7 @@ import {
 import React, { useState } from "react";
 import wordExpression from "@/src/functions/Calculations";
 import PlaceBidForm from "../../Bids/PlaceBidForm/PlaceBidForm";
+import useHasPermission from "@/src/functions/hasPermission";
 
 const ItemWithBackground = ({
 	icon: Icon,
@@ -62,6 +63,7 @@ export default function RequestCard({
 	panelDetails,
 	requestId,
 }: RequestCardProps) {
+	const hasCreateBidPermission = useHasPermission("bid.create");
 	const [open, setOpen] = useState<boolean>(false);
 	return (
 		<div
@@ -142,16 +144,18 @@ export default function RequestCard({
 						</div> */}
 						<div className="flex flex-col items-center gap-2">
 							<Dialog open={open} onOpenChange={setOpen}>
-								<DialogTrigger asChild>
-									<div className="flex flex-col items-center gap-4 hover:cursor-pointer">
-										<div className="bg-gradient-to-b from-[#EE4334] to-[#D73628] rounded-full w-16 h-16 flex items-center place-content-center text-white cursor-pointer shadow-md hover:shadow-lg transition duration-300 hover:scale-105">
-											<ArrowLeft />
+								{hasCreateBidPermission && (
+									<DialogTrigger asChild>
+										<div className="flex flex-col items-center gap-4 hover:cursor-pointer">
+											<div className="bg-gradient-to-b from-[#EE4334] to-[#D73628] rounded-full w-16 h-16 flex items-center place-content-center text-white cursor-pointer shadow-md hover:shadow-lg transition duration-300 hover:scale-105">
+												<ArrowLeft />
+											</div>
+											<span className="flex content-center">
+												ثبت پیشنهاد
+											</span>
 										</div>
-										<span className="flex content-center">
-											مشاهده جزئیات
-										</span>
-									</div>
-								</DialogTrigger>
+									</DialogTrigger>
+								)}
 
 								<DialogContent className="rtl border-0 overflow-scroll dialog-width">
 									<PlaceBidForm
