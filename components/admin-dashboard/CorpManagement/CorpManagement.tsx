@@ -30,10 +30,11 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
+	DialogContent,
 } from "@/components/ui/dialog";
-import { DialogContent } from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import useHasPermission from "@/src/functions/hasPermission";
 
 interface CorporationType {
 	id: number;
@@ -104,6 +105,9 @@ const CorporationItem = ({
 }: CorporationType & {
 	onManage: (id: number) => void;
 }) => {
+	const hasApproveDeclinePermission = useHasPermission(
+		"corporation.approveDecline"
+	);
 	const [open, setOpen] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [corporation, setCorporation] =
@@ -201,7 +205,7 @@ const CorporationItem = ({
 								size={32}
 							/> */}
 						</div>
-					) :  (
+					) : (
 						<>
 							<DialogHeader>
 								<DialogTitle className="text-right text-2xl text-blue-800">
@@ -275,7 +279,8 @@ const CorporationItem = ({
 								<h3 className="font-bold text-xl text-blue-800">
 									اطلاعات تماس
 								</h3>
-								{corporation?.contactInfo && corporation?.contactInfo?.length > 0 ? (
+								{corporation?.contactInfo &&
+								corporation?.contactInfo?.length > 0 ? (
 									corporation?.contactInfo.map((contact) => (
 										<div
 											key={contact.id}
@@ -302,7 +307,8 @@ const CorporationItem = ({
 								<h3 className="font-bold text-xl text-blue-800">
 									آدرس‌ها
 								</h3>
-								{corporation?.addresses && corporation?.addresses?.length > 0 ? (
+								{corporation?.addresses &&
+								corporation?.addresses?.length > 0 ? (
 									corporation?.addresses?.map((address) => (
 										<div
 											key={address?.id}
@@ -392,49 +398,52 @@ const CorporationItem = ({
 								<h3 className="font-bold text-xl text-blue-800">
 									امضا کنندگان
 								</h3>
-								{corporation?.signatories && corporation?.signatories?.length > 0 ? (
-									corporation?.signatories?.map((signatory) => (
-										<div
-											key={signatory?.id}
-											className="flex flex-row gap-1"
-										>
-											<div className="w-1/3 flex flex-row gap-1 ">
-												<div className="text-orange-400">
-													<User />
+								{corporation?.signatories &&
+								corporation?.signatories?.length > 0 ? (
+									corporation?.signatories?.map(
+										(signatory) => (
+											<div
+												key={signatory?.id}
+												className="flex flex-row gap-1"
+											>
+												<div className="w-1/3 flex flex-row gap-1 ">
+													<div className="text-orange-400">
+														<User />
+													</div>
+													<p>
+														<span className="font-semibold">
+															نام:
+														</span>
+														{signatory?.name}
+													</p>
 												</div>
-												<p>
-													<span className="font-semibold">
-														نام:
-													</span>
-													{signatory?.name}
-												</p>
-											</div>
-											<div className="w-1/3 flex flex-row gap-1">
-												<div className="text-orange-400">
-													<IdCard />
+												<div className="w-1/3 flex flex-row gap-1">
+													<div className="text-orange-400">
+														<IdCard />
+													</div>
+													<p>
+														<span className="font-semibold">
+															کد ملی:
+														</span>
+														{
+															signatory?.nationalCardNumber
+														}
+													</p>
 												</div>
-												<p>
-													<span className="font-semibold">
-														کد ملی:
-													</span>
-													{
-														signatory?.nationalCardNumber
-													}
-												</p>
-											</div>
-											<div className="w-1/3 flex flex-row gap-1">
-												<div className="text-orange-400">
-													<ContactRound />
+												<div className="w-1/3 flex flex-row gap-1">
+													<div className="text-orange-400">
+														<ContactRound />
+													</div>
+													<p>
+														<span className="font-semibold">
+															سمت:
+														</span>
+														{signatory?.position}
+													</p>
 												</div>
-												<p>
-													<span className="font-semibold">
-														سمت:
-													</span>
-													{signatory?.position}
-												</p>
 											</div>
-										</div>
-									))
+										)
+									)
 								) : (
 									<p>امضا کننده‌ای ثبت نشده است</p>
 								)}
@@ -505,27 +514,28 @@ const CorporationItem = ({
 									)}
 								</div>
 							</div>
-
-							<DialogFooter className="sm:justify-start gap-2">
-								<Button
-									className="bg-green-600 hover:bg-green-700 min-w-30"
-									onClick={handleAccept}
-								>
-									تایید
-								</Button>
-								<Button
-									className="min-w-30 bg-red-600 hover:bg-red-700"
-									onClick={handleReject}
-								>
-									رد
-								</Button>
-								<Button
-									className="min-w-30 bg-yellow-600 hover:bg-yellow-700"
-									onClick={handleSuspend}
-								>
-									معلق
-								</Button>
-							</DialogFooter>
+							{hasApproveDeclinePermission && (
+								<DialogFooter className="sm:justify-start gap-2">
+									<Button
+										className="bg-green-600 hover:bg-green-700 min-w-30 cursor-pointer"
+										onClick={handleAccept}
+									>
+										تایید
+									</Button>
+									<Button
+										className="min-w-30 bg-red-600 hover:bg-red-700 cursor-pointer"
+										onClick={handleReject}
+									>
+										رد
+									</Button>
+									<Button
+										className="min-w-30 bg-yellow-600 hover:bg-yellow-700 cursor-pointer"
+										onClick={handleSuspend}
+									>
+										معلق
+									</Button>
+								</DialogFooter>
+							)}
 						</>
 					)}
 				</DialogContent>
