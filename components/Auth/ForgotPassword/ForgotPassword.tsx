@@ -50,6 +50,7 @@ const ForgotPassword = () => {
 				setPhone(phoneNumber);
 				setOpen(true);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	};
 
@@ -87,7 +88,7 @@ const ForgotPassword = () => {
 			<div dir="rtl" className={styles.mainbg}>
 				<div className="w-full sm:max-w-md p-4 sm:p-6 space-y-4 shadow-2xl rounded-2xl bg-[#f1f4fc]">
 					<h2 className="text-3xl text-black text-center">
-						{"فراموشی رمز عبور"}
+						فراموشی رمز عبور
 					</h2>
 
 					<Formik

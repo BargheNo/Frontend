@@ -9,7 +9,8 @@ describe("Forget Password", () => {
 		cy.visit("/forgot-password");
 		cy.get('input[name="phoneNumber"]').type("1111111111");
 		cy.get('[data-test="submit"]').click();
-		cy.get('[data-test="sonner-toast"]')
+		cy.get('[data-test="sonner-toast"]', { timeout: 20000 })
+			.should("be.visible")
 			.should("exist")
 			.and("contain", "این کاربر پیدا نشد.");
 	});

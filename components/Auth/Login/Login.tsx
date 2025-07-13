@@ -58,7 +58,7 @@ const Login = () => {
 			},
 		})
 			.then(async (data) => {
-				console.log("data", data);
+				// console.log("data", data);
 				CustomToast(data?.message, "success");
 
 				dispatch(
@@ -72,7 +72,7 @@ const Login = () => {
 				);
 				await Promise.resolve();
 				getData({ endPoint: `/v1/user/corps` }).then((res) => {
-					console.log(res.data);
+					// console.log(res.data);
 					dispatch(setCorps(res.data));
 					window.location.href = "/dashboard/my-panels";
 				});
@@ -83,9 +83,7 @@ const Login = () => {
 		<div className={`${vazir.className} w-full`}>
 			<div dir="rtl" className={`${styles.mainbg} w-full`}>
 				<div className="w-full max-w-md p-6 space-y-4 shadow-2xl rounded-2xl bg-[#f1f4fc]">
-					<h2 className="text-3xl text-black text-center">
-						{"ورود"}
-					</h2>
+					<h2 className="text-3xl text-black text-center">ورود</h2>
 
 					<Formik
 						initialValues={initialValues}
@@ -128,7 +126,7 @@ const Login = () => {
 									<LoadingOnButton size={28} />
 								) : (
 									<>
-										ورود
+										<p>ورود</p>
 										<MoveLeft />
 									</>
 								)}
