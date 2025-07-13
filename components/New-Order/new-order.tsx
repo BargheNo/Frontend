@@ -114,7 +114,7 @@ export default function Neworder() {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<AddComponent title="ثبت سفارش جدید" />
+				<AddComponent title="ثبت سفارش جدید" data-test="plus" />
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}
