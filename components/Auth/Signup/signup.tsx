@@ -85,7 +85,8 @@ function Signup() {
 				route.push("/login");
 				CustomToast(data?.message, "success");
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => console.log(err))
+			.finally(() => setOtpCode(""));
 	};
 
 	useEffect(() => {
@@ -235,11 +236,13 @@ function Signup() {
 									</div>
 
 									<PhoneVerification
-										onlinkClick={() => setOpen(false)}
+										onLinkClick={() => {
+											setOtpCode("");
+											setOpen(false);
+										}}
 										onOtpChange={handleOtpChange}
-										onclick={() => setOpen(false)}
 										open={open}
-									></PhoneVerification>
+									/>
 									<div className={styles.loginText}>
 										<a
 											data-cy="navigate-login"

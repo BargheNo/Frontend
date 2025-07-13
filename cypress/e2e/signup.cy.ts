@@ -16,8 +16,13 @@ describe("Signup Form", () => {
 
 		cy.get("#signup").click();
 		// cy.contains("ثبت نام").click();
-
-		cy.get("#sonner-toast").should("exist").and("contain", "موفق");
+		for (let i = 0; i < 6; i++) {
+			cy.get('[data-test="digits"]').type("1");
+		}
+		cy.get("#sonner-toast")
+			.should("be.visible")
+			.should("exist", { timeout: 10000 })
+			.and("contain", "موفق");
 	});
 
 	it("navigate to /login route", () => {
