@@ -67,7 +67,6 @@ export default function DesktopNavbar() {
 									</Link>
 								)}
 								<Dashboard
-									setLoading={setLoading}
 									accessToken={accessToken}
 									isCorp={isCorp}
 									isAdmin={isAdmin}

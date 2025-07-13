@@ -2,11 +2,18 @@ import useHasPermission from "@/src/functions/hasPermission";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
+import { NavItem } from "@/src/types/PanelAsideTypes";
 
-export function PanelAsideIcon({ item, mode }) {
+export function PanelAsideIcon({
+	item,
+	mode,
+}: {
+	item: NavItem;
+	mode: string;
+}) {
 	const pathname = usePathname();
 	// const hasPermission = true;
-	const hasPermission = useHasPermission(item?.RNPName);
+	const hasPermission = useHasPermission(item?.RNPName || "");
 	return hasPermission ? (
 		<Link key={item.path} href={item.path}>
 			<span
@@ -30,10 +37,16 @@ export function PanelAsideIcon({ item, mode }) {
 	);
 }
 
-export function PanelAsideTitle({ item, mode }) {
+export function PanelAsideTitle({
+	item,
+	mode,
+}: {
+	item: NavItem;
+	mode: string;
+}) {
 	const pathname = usePathname();
 	// const hasPermission = true;
-	const hasPermission = useHasPermission(item?.RNPName);
+	const hasPermission = useHasPermission(item?.RNPName || "");
 	return hasPermission ? (
 		<Link key={item.path} href={item.path}>
 			<span

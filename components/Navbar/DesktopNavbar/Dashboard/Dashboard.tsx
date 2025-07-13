@@ -11,9 +11,15 @@ import {
 	NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 
-
-
-export default function Dashboard({ setLoading, accessToken, isCorp, isAdmin }) {
+export default function Dashboard({
+	accessToken,
+	isCorp,
+	isAdmin,
+}: {
+	accessToken: string;
+	isCorp: boolean;
+	isAdmin: boolean;
+}) {
 	const pathname = usePathname();
 	if (!accessToken) return <></>;
 	if (!isCorp && !isAdmin)
