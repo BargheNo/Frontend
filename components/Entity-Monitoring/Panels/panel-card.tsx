@@ -137,14 +137,6 @@ export default function PanelCard({
 									className="w-full cursor-pointer"
 									onClick={(e) => {
 										e.stopPropagation();
-<<<<<<< HEAD
-										PanelService.deletePanel(id).then(
-											(res) =>
-												toast.success(
-													"پنل با موفقیت حذف شد."
-												)
-										);
-=======
 										PanelService.deletePanel(id)
 											.then((res) =>
 												CustomToast(
@@ -153,7 +145,6 @@ export default function PanelCard({
 												)
 											)
 											.catch((err) => console.log(err));
->>>>>>> 2dadb8fb2c4cb98876ce46640a0036983350b529
 									}}
 								>
 									<p className="mt-1 mr-2">حذف</p>
@@ -398,11 +389,7 @@ export default function PanelCard({
 
 								PanelService.updatePanel(id, body)
 									.then((res) => {
-<<<<<<< HEAD
-										toast.success(res.message);
-=======
 										toast.success(res?.message);
->>>>>>> 2dadb8fb2c4cb98876ce46640a0036983350b529
 									})
 									.catch((err) => console.log(err));
 							}}
