@@ -62,19 +62,21 @@ const ForgotPassword = () => {
 				phone: fullPhone,
 				otp: otp,
 			},
-		}).then((data) => {
-			dispatch(
-				setUser({
-					firstName: data.data.firstName,
-					lastName: data.data.lastName,
-					accessToken: data.data.accessToken,
-					permissions: {},
-					refreshToken: data.data.accessToken,
-				})
-			);
-			CustomToast(data?.message, "success");
-			route.push("/reset-password");
-		});
+		})
+			.then((data) => {
+				dispatch(
+					setUser({
+						firstName: data.data.firstName,
+						lastName: data.data.lastName,
+						accessToken: data.data.accessToken,
+						permissions: {},
+						refreshToken: data.data.accessToken,
+					})
+				);
+				CustomToast(data?.message, "success");
+				route.push("/reset-password");
+			})
+			.catch((err) => console.log(err));
 	};
 
 	useEffect(() => {
