@@ -123,9 +123,8 @@ const ForgotPassword = () => {
 							</LoginButton>
 
 							<PhoneVerification
-								onlinkClick={() => setOpen(false)}
+								onLinkClick={() => setOpen(false)}
 								onOtpChange={handleOtpChange}
-								onclick={() => setOpen(false)}
 								open={open}
 							/>
 						</Form>
