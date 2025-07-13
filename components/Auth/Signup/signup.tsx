@@ -65,6 +65,7 @@ function Signup() {
 			ConfirmPassword: confirmPassword,
 			acceptedTerms: isAcceptTerms,
 		};
+		console.log(formData);
 		postData({ endPoint: `/v1/auth/register/basic`, data: formData })
 			.then((data) => {
 				setOpen(true);

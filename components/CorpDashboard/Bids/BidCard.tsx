@@ -42,6 +42,7 @@ import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { CustomDatePicker } from "@/components/Custom/CustomDatePicker/CustomDatePicker";
 import { GuaranteeProps } from "@/src/types/BidCardTypes";
+import useHasPermission from "@/src/functions/hasPermission";
 interface BidInfo {
 	id: number;
 	price: number;
@@ -209,10 +210,12 @@ export default function BidCard({
 	guaranteeID,
 	updateBids,
 }: BidInfo) {
+	const hasEditBidPermission = useHasPermission("bid.edit");
+	const hasCancelBidPermission = useHasPermission("bid.cancel");
 	const [guarantees, setGuarantees] = React.useState<GuaranteeProps[]>([]);
 	const [open, setOpen] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(false);
-	const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
+	const [cancelLoading, setCancelLoading] = useState<boolean>(false);
 	const corpId = useSelector((state: RootState) => state.user.corpId);
 
 	const initialValues = {
@@ -243,13 +246,13 @@ export default function BidCard({
 	}, []);
 
 	const cancelBid = () => {
-		setDeleteLoading(true);
+		setCancelLoading(true);
 		putData({ endPoint: `/v1/corp/${corpId}/bid/${id}/cancel` })
 			.then((data) => {
 				CustomToast(data?.message, "success");
 				setOpen(false);
 			})
-			.finally(() => setDeleteLoading(false));
+			.finally(() => setCancelLoading(false));
 	};
 
 	const updateBid = (values: BidSchema) => {
@@ -438,6 +441,9 @@ export default function BidCard({
 														<CustomInput
 															placeholder="قیمت پیشنهادی"
 															name="cost"
+															disabled={
+																!hasEditBidPermission
+															}
 															icon={DollarSign}
 															type="number"
 															autoFocus={true}
@@ -449,6 +455,9 @@ export default function BidCard({
 														<div className="w-full">
 															<CustomDatePicker
 																placeholder="زمان تخمینی نصب"
+																disabled={
+																	!hasEditBidPermission
+																}
 																date={
 																	values.installationTime
 																}
@@ -466,6 +475,9 @@ export default function BidCard({
 													<div className="flex flex-row justify-evenly gap-6">
 														<CustomInput
 															placeholder="ظرفیت"
+															disabled={
+																!hasEditBidPermission
+															}
 															name="power"
 															icon={Battery}
 															type="number"
@@ -477,6 +489,9 @@ export default function BidCard({
 														/>
 														<CustomInput
 															placeholder="مساحت"
+															disabled={
+																!hasEditBidPermission
+															}
 															name="area"
 															icon={LandPlot}
 															type="number"
@@ -489,6 +504,9 @@ export default function BidCard({
 													<div className="flex flex-row justify-evenly gap-6">
 														<Select
 															name="guaranteeID"
+															disabled={
+																!hasEditBidPermission
+															}
 															defaultValue={String(
 																values?.guaranteeID
 															)}
@@ -541,6 +559,9 @@ export default function BidCard({
 													</div>
 													<CustomTextArea
 														placeholder="جزئیات بیشتر"
+														disabled={
+															!hasEditBidPermission
+														}
 														name="description"
 														icon={MessageCircle}
 														containerClassName="w-full"
@@ -552,112 +573,44 @@ export default function BidCard({
 
 												<DialogFooter>
 													<div className="flex w-full justify-between">
-														<button
-															onClick={() => {
-																cancelBid();
-															}}
-															className="self-end w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#EE4334] to-[#D73628] hover:from-[#D73628] hover:to-[#EE4334] active:from-[#EE4334] active:to-[#D73628] text-white py-2 px-4 rounded-md transition-all duration-300"
-														>
-															{deleteLoading ? (
-																<LoadingOnButton />
-															) : (
-																<p>
-																	لغو پیشنهاد
-																</p>
-															)}
-														</button>
-														<button
-															type="submit"
-															className="self-end w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white py-2 px-4 rounded-md transition-all duration-300"
-														>
-															{loading ? (
-																<LoadingOnButton />
-															) : (
-																<p>
-																	ذخیره
-																	تغییرات
-																</p>
-															)}
-														</button>
+														{hasCancelBidPermission && (
+															<button
+																onClick={() => {
+																	cancelBid();
+																}}
+																className="self-end w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#EE4334] to-[#D73628] hover:from-[#D73628] hover:to-[#EE4334] active:from-[#EE4334] active:to-[#D73628] text-white py-2 px-4 rounded-md transition-all duration-300"
+															>
+																{cancelLoading ? (
+																	<LoadingOnButton />
+																) : (
+																	<p>
+																		لغو
+																		پیشنهاد
+																	</p>
+																)}
+															</button>
+														)}
+														{hasEditBidPermission && (
+															<button
+																type="submit"
+																className="self-end w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white py-2 px-4 rounded-md transition-all duration-300"
+															>
+																{loading ? (
+																	<LoadingOnButton />
+																) : (
+																	<p>
+																		ذخیره
+																		تغییرات
+																	</p>
+																)}
+															</button>
+														)}
 													</div>
 												</DialogFooter>
 											</Form>
 										)}
 									</Formik>
 								</DialogHeader>
-								{/* <Item
-									icon={Eclipse}
-									fieldName="نام پنل"
-									fieldValue={panelName}
-								/>
-								<Item
-									icon={Battery}
-									fieldName="ظرفیت"
-									fieldValue={power}
-									prefix="W"
-									english={true}
-								/>
-								<Item
-									icon={CalendarDays}
-									fieldName="زمان تخمینی نصب"
-									fieldValue={DateConverter(date)}
-									english={true}
-								/>
-								<Item
-									icon={DollarSign}
-									fieldName="قیمت پیشنهادی شما"
-									fieldValue={price}
-									prefix="تومان"
-								/>
-								<Item
-									icon={LandPlot}
-									fieldName="مساحت"
-									fieldValue={area}
-									prefix="متر مربع"
-								/>
-								<Item
-									icon={Building2}
-									fieldName="نوع ساختمان"
-									fieldValue={buildingType}
-								/>
-								<Item
-									icon={MapPin}
-									fieldName="آدرس"
-									fieldValue={`استان ${address.province}، شهر ${address.city}`}
-									smallValue={true}
-								/>
-								{description && (
-									<Item
-										icon={MessageCircle}
-										fieldName="توضیحات"
-										fieldValue={description}
-										smallValue={true}
-									/>
-								)}
-								<div className="flex w-full justify-between">
-									<button
-										onClick={() => {
-											cancelBid();
-										}}
-										className="self-end w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#EE4334] to-[#D73628] hover:from-[#D73628] hover:to-[#EE4334] active:from-[#EE4334] active:to-[#D73628] text-white py-2 px-4 rounded-md transition-all duration-300"
-									>
-										{deleteLoading ? (
-											<LoadingOnButton />
-										) : (
-											<p>لغو پیشنهاد</p>
-										)}
-									</button>
-									<button
-										type="submit"
-										className="self-end w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white py-2 px-4 rounded-md transition-all duration-300"
-									>
-										{loading ? (
-											<LoadingOnButton />
-										) : (
-											<p>ذخیره تغییرات</p>
-										)}
-									</button>
-								</div> */}
 							</DialogContent>
 						</Dialog>
 					</div>

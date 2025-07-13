@@ -10,6 +10,7 @@ import Image from "next/image";
 import panelNotFound from "@/public/images/panelNotFound/panelNotFound.png";
 import AnnounceAddCard from "../AnnounceAddCard/AnnounceAddCard";
 import Header from "@/components/Header/Header";
+import useHasPermission from "@/src/functions/hasPermission";
 
 interface News {
 	id: string;
@@ -23,21 +24,22 @@ export default function AnnounceView({
 }: {
 	onlyView?: boolean;
 }) {
+	const hasCreateNewsPermission = useHasPermission("news.create");
 	//   const [news, setNews] = useState<News[]>([]);
 	const { isLoading, data, error } = useQuery({
 		queryKey: ["news"],
 		queryFn: async () => {
 			if (onlyView) {
-				return await getData({ endPoint: "/v1/admin/news?statuses=1" });
+				return await getData({ endPoint: "/v1/admin/news?status=1" });
 			} else {
 				const r1 = await getData({
-					endPoint: "/v1/admin/news?statuses=2",
+					endPoint: "/v1/admin/news?status=2",
 				});
-				console.log("r1: ", r1);
+				// console.log("r1: ", r1);
 				const r2 = await getData({
-					endPoint: "/v1/admin/news?statuses=1",
+					endPoint: "/v1/admin/news?status=1",
 				});
-				console.log("r2: ", r2);
+				// console.log("r2: ", r2);
 				r1.data?.push(...r2.data);
 				return r1;
 			}
@@ -51,13 +53,13 @@ export default function AnnounceView({
 		return (
 			<>
 				{/* <div className="flex flex-row w-full items-center"> */}
-				{!onlyView && <AnnounceAddCard />}
+				{hasCreateNewsPermission && <AnnounceAddCard />}
 				{/* </div> */}
+				{isLoading && <LoadingSpinner />}
 				<AnnouncementBox
 					className="bg-warm-white h-[60vh] w-full"
 					insideClassName="gap-5"
 				>
-					{isLoading && <LoadingSpinner />}
 					{data?.data == 0 && (
 						<div className="text-center flex flex-col items-center justify-center gap-4">
 							<Image

@@ -2,11 +2,7 @@
 import { useEffect, useState } from "react";
 
 import { useSelector } from "react-redux";
-import {
-	MessageCirclePlus,
-	MessageCircleMore,
-	XIcon,
-} from "lucide-react";
+import { MessageCirclePlus, MessageCircleMore, XIcon } from "lucide-react";
 import React from "react";
 import styles from "./Tickets.module.css";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
@@ -16,6 +12,7 @@ import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 import { getData, postData } from "@/src/services/apiHub";
+import useHasPermission from "@/src/functions/hasPermission";
 
 interface Ticket {
 	id: string;
@@ -52,6 +49,9 @@ const commentValidationSchemaForm = Yup.object({
 });
 
 const TicketSupportPage = () => {
+	const hasCloseTicketPermission = useHasPermission("ticket.close");
+	const hasRespondTicketPermission = useHasPermission("ticket.respond");
+	const hasCommentTicketPermission = useHasPermission("ticket.comment");
 	const [putCommentLoading, setPutCommentLoading] = useState<boolean>(false);
 	const [resolveTicketLoading, setResolveTicketLoading] =
 		useState<boolean>(false);
@@ -64,9 +64,6 @@ const TicketSupportPage = () => {
 	>(null);
 	const [showCommentBoxFor, setShowCommentBoxFor] = useState<string | null>(
 		null
-	);
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
 	);
 	const translateSubjectToPersian = (subject: string): string => {
 		const translations: { [key: string]: string } = {
@@ -169,7 +166,7 @@ const TicketSupportPage = () => {
 									{translateSubjectToPersian(subject)}
 								</p>
 								<p className="text-start content-start w-full text-lg ">
-									از طرف {Owner.firstName} {Owner.lastName}
+									از طرف {Owner?.firstName} {Owner?.lastName}
 								</p>
 
 								<p className="break-words">{description}</p>
@@ -225,15 +222,19 @@ const TicketSupportPage = () => {
 					<div>
 						<div className="flex flex-row justify-between w-full gap-4 mt-4">
 							<div className="flex flex-row w-100 gap-4 mt-4">
-								<div
-									className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
-									onClick={() => setActiveCommentTicketId(id)}
-								>
-									<button className="cursor-pointer">
-										افزودن نظر
-									</button>
-									<MessageCirclePlus />
-								</div>
+								{hasRespondTicketPermission && (
+									<div
+										className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
+										onClick={() =>
+											setActiveCommentTicketId(id)
+										}
+									>
+										<button className="cursor-pointer">
+											افزودن نظر
+										</button>
+										<MessageCirclePlus />
+									</div>
+								)}
 								<div
 									className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
 									onClick={() => {
@@ -262,23 +263,24 @@ const TicketSupportPage = () => {
 							{/* <div
 								className={`cta-neu-button flex ${styles.button} items-center mt-4 content-center w-50 justify-center`}
 							> */}
-							{status === "بررسی نشده" && (
-								<button
-									className={`cursor-pointer cta-neu-button flex ${styles.button} items-center mt-4 content-center w-50 justify-center`}
-									onClick={() => {
-										resolveTicket(id);
-									}}
-								>
-									{resolveTicketLoading ? (
-										<LoadingOnButton />
-									) : (
-										<div className="flex gap-[2px] items-center">
-											بستن تیکت
-											<XIcon />
-										</div>
-									)}
-								</button>
-							)}
+							{status === "بررسی نشده" &&
+								hasCloseTicketPermission && (
+									<button
+										className={`cursor-pointer cta-neu-button flex ${styles.button} items-center mt-4 content-center w-50 justify-center`}
+										onClick={() => {
+											resolveTicket(id);
+										}}
+									>
+										{resolveTicketLoading ? (
+											<LoadingOnButton />
+										) : (
+											<div className="flex gap-[2px] items-center">
+												بستن تیکت
+												<XIcon />
+											</div>
+										)}
+									</button>
+								)}
 							{/* </div> */}
 						</div>
 					</div>
@@ -332,7 +334,7 @@ const TicketSupportPage = () => {
 			) : (
 				<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
 					{tickets.map((ticket, index) => (
-						<>
+						<div key={index}>
 							<Ticket
 								id={ticket.id}
 								key={index}
@@ -353,6 +355,7 @@ const TicketSupportPage = () => {
 							{activeCommentTicketId === ticket.id && (
 								<Formik
 									initialValues={initialValuesForm}
+									key={index}
 									validationSchema={
 										commentValidationSchemaForm
 									}
@@ -367,9 +370,11 @@ const TicketSupportPage = () => {
 										<Form>
 											<div className="flex bg-[#F0EDEF] pb-4 items-center justify-center">
 												<div className="px-10 rounded-lg w-full text-right space-y-8">
-													<h3 className="text-lg font-bold">
-														ثبت نظر
-													</h3>
+													{hasRespondTicketPermission && (
+														<h3 className="text-lg font-bold">
+															ثبت نظر
+														</h3>
+													)}
 													<CustomTextArea
 														textareaClassName="bg-white"
 														name="comment"
@@ -442,7 +447,7 @@ const TicketSupportPage = () => {
 									</button>
 								</div>
 							)}
-						</>
+						</div>
 					))}
 				</div>
 			)}

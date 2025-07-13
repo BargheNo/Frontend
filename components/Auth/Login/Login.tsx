@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MoveLeft, Lock, Unlock, Smartphone } from "lucide-react";
 import Link from "next/link";
 import styles from "./login.module.css";
@@ -8,8 +8,8 @@ import * as Yup from "yup";
 import CustomInput from "../../Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import LoginButton from "./LoginButton";
-import { postData } from "../../../src/services/apiHub";
-import { setUser } from "@/src/store/slices/userSlice";
+import { getData, postData } from "../../../src/services/apiHub";
+import { setCorps, setUser } from "@/src/store/slices/userSlice";
 import { useDispatch } from "react-redux";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
@@ -57,8 +57,10 @@ const Login = () => {
 				password: password,
 			},
 		})
-			.then((data) => {
+			.then(async (data) => {
+				console.log("data", data);
 				CustomToast(data?.message, "success");
+
 				dispatch(
 					setUser({
 						firstName: data.data.firstName,
@@ -68,7 +70,12 @@ const Login = () => {
 						refreshToken: data.data.accessToken,
 					})
 				);
-				window.location.href = "/dashboard";
+				await Promise.resolve();
+				getData({ endPoint: `/v1/user/corps` }).then((res) => {
+					console.log(res.data);
+					dispatch(setCorps(res.data));
+					window.location.href = "/dashboard/my-panels";
+				});
 			})
 			.finally(() => setLoading(false));
 	};

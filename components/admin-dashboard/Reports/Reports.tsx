@@ -15,8 +15,10 @@ import Header from "@/components/Header/Header";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import { getData, postData } from "@/src/services/apiHub";
+import useHasPermission from "@/src/functions/hasPermission";
 
 const Reports = () => {
+	const hasRespondReportPermission = useHasPermission("report.respond");
 	const [loadingRepair, setLoadingRepair] = useState<boolean>(true);
 	const [loadingPanel, setLoadingPanel] = useState<boolean>(true);
 	const [panelReports, setPanelReports] = useState<any[]>([]);
@@ -212,18 +214,20 @@ const Reports = () => {
 							/>
 						</div>
 					</div>
-					<div
-						className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
-					>
-						<button
-							className="cursor-pointer"
-							onClick={() => resolveReport(id)}
+					{hasRespondReportPermission && (
+						<div
+							className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
 						>
-							بررسی
-						</button>
+							<button
+								className="cursor-pointer"
+								onClick={() => resolveReport(id)}
+							>
+								بررسی
+							</button>
 
-						<ArrowLeft />
-					</div>
+							<ArrowLeft />
+						</div>
+					)}
 				</div>
 			</div>
 		);
