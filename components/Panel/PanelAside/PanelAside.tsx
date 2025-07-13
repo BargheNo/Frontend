@@ -6,6 +6,9 @@ import { usePathname } from "next/navigation";
 
 import localFont from "next/font/local";
 
+import { cn } from "@/lib/utils";
+import { InteractiveGridPattern } from "@/components/Background/InteractiveGridPattern";
+
 import { PanelAsideProps, NavItem } from "@/src/types/PanelAsideTypes";
 import styles from "./PanelAside.module.css";
 import {
@@ -180,15 +183,26 @@ const PanelAside = ({
 					</span>
 				</div>
 
-				<main className="rounded-xl ml-3 mb-2 flex-1 bg-white relative">
-					<div className="absolute no-scrollbar overflow-y-auto top-0 left-0 right-0 bottom-0 rounded-xl bg-white z-10">
-						{children}
-					</div>
-					<div className="absolute inset-0 rounded-xl pointer-events-none shadow-[inset_-4px_-4px_5px_rgba(255,255,255,1),inset_4px_4px_5px_rgba(0,0,0,0.3)] z-20"></div>
-				</main>
-			</SidebarProvider>
-		</div>
-	);
+        <main className="rounded-xl ml-3 mb-2 flex-1 bg-white relative">
+          <div className="absolute no-scrollbar overflow-y-auto top-0 left-0 right-0 bottom-0 rounded-xl bg-white z-10">
+            <InteractiveGridPattern
+              width={40}
+              height={40}
+              squares={[50, 50]}
+              x={-1}
+              y={-1}
+              strokeDasharray={"4 2"}
+              className={cn(
+                "absolute inset-0 h-full w-full [mask-image:radial-gradient(900px_circle_at_center,white,transparent)]",
+              )}
+            />
+            {children}
+          </div>
+          <div className="absolute inset-0 rounded-xl pointer-events-none shadow-[inset_-4px_-4px_5px_rgba(255,255,255,1),inset_4px_4px_5px_rgba(0,0,0,0.3)] z-20"></div>
+        </main>
+      </SidebarProvider>
+    </div>
+  );
 };
 
 export default PanelAside;

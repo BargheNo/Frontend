@@ -80,8 +80,8 @@ const Reports = () => {
 		return (
 			<div className="flex flex-row justify-between w-full h-full gap-10 py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 bg-[#F0EDEF] first:border-t-0 min-h-[250px]">
 				{/* Right section */}
-				<div className="w-5/6 flex flex-col justify-around">
-					<div className="flex flex-col gap-3">
+				<div className="w-5/6 flex flex-col justify-around relative">
+					<div className="flex flex-col gap-3 relative">
 						<p className="text-start content-start w-full text-2xl font-bold">
 							گزارش مربوط به سابقه تعمیر{" "}
 							{maintenanceRecord?.Title}
@@ -110,7 +110,7 @@ const Reports = () => {
 					</div>
 
 					{/* Bottom - description */}
-					<div className="flex flex-row gap-2">
+					<div className="flex flex-row gap-2 relative">
 						<CircleAlert className="text-orange-500"></CircleAlert>
 						<p className="max-w-[600px] break-words font-medium">
 							شرح گزارش : {description}
@@ -119,9 +119,9 @@ const Reports = () => {
 				</div>
 
 				{/* Left section */}
-				<div className="w-1/5 pr-5 flex flex-col gap-4">
+				<div className="w-1/5 pr-5 flex flex-col gap-4 relative">
 					<div
-						className={`flex flex-col items-center ${styles.status} py-4 gap-2`}
+						className={`flex flex-col items-center ${styles.status} py-4 gap-2 relative`}
 					>
 						<span className="text-[#636363] font-bold">
 							{new Date(
@@ -173,8 +173,8 @@ const Reports = () => {
 		return (
 			<div className="flex flex-row justify-between w-full h-full gap-10 py-5 px-10  overflow-hidden relative border-t border-gray-300 first:border-t-0 min-h-[150px]">
 				{/* Right section */}
-				<div className="w-5/6 flex flex-col gap-3 justify-between">
-					<div className="flex flex-col gap-3">
+				<div className="w-5/6 flex flex-col gap-3 justify-between relative">
+					<div className="flex flex-col gap-3 relative">
 						<p className="text-start w-full text-2xl font-bold">
 							گزارش مربوط به پنل: {Panel?.panelName}
 						</p>
@@ -201,9 +201,9 @@ const Reports = () => {
 				</div>
 
 				{/* Left section */}
-				<div className="w-1/5 pr-5 flex flex-col justify-around">
+				<div className="w-1/5 pr-5 flex flex-col justify-around relative">
 					<div
-						className={`flex flex-col items-center ${styles.status} py-4 gap-2`}
+						className={`flex flex-col items-center ${styles.status} py-4 gap-2 relative`}
 					>
 						<div className="flex items-center gap-2">
 							<span className="font-bold">{Status}</span>
@@ -241,7 +241,7 @@ const Reports = () => {
 				<LoadingSpinner />
 			) : (
 				<section
-					className={`no-scrollbar flex flex-col bg-[#F0EDEF] max-h-[80vh] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] mb-5`}
+					className={`no-scrollbar relative flex flex-col bg-[#F0EDEF] max-h-[80vh] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] mb-5`}
 				>
 					<div>
 						{maintenanceReports.length === 0 ? (
@@ -272,7 +272,7 @@ const Reports = () => {
 			{loadingPanel ? (
 				<LoadingSpinner />
 			) : (
-				<section className="no-scrollbar flex flex-col bg-[#F0EDEF] max-h-[80vh] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] mb-5">
+				<section className="no-scrollbar relative flex flex-col bg-[#F0EDEF] max-h-[80vh] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] mb-5">
 					<div>
 						{panelReports.length > 0 ? (
 							panelReports.map((report) => (

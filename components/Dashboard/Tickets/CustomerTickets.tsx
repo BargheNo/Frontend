@@ -344,7 +344,7 @@ const TicketSupportPage = () => {
 	};
 
 	return (
-		<div className="flex flex-col p-6 space-y-6">
+		<div className="flex flex-col p-6 space-y-6 relative">
 			{/* <h2 className="text-right text-2xl font-bold text-blue-800">ثبت تیکت</h2> */}
 			<Header header="ثبت تیکت" />
 

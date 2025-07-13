@@ -160,7 +160,7 @@ const Warranties = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
       <div className="flex flex-col neu-container p-4 gap-4">
         <WarrantyFilter
           currentStatus={status}
