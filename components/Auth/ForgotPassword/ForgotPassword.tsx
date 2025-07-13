@@ -115,7 +115,7 @@ const ForgotPassword = () => {
 							</div>
 
 							<LoginButton>
-								{"بازیابی رمز عبور"}
+								<p>بازیابی رمز عبور</p>
 								<MoveLeft />
 							</LoginButton>
 
