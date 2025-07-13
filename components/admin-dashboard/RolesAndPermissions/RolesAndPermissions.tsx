@@ -84,8 +84,10 @@ const RolesAndPermissions = () => {
 			)}
 			<Header header="نقش‌های فعلی" />
 			<Dialog open={editOpen} onOpenChange={setEditOpen}>
-				<div className="flex flex-col bg-[#F0EDEF] text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
-					{roles.length > 0 ? (
+				<div className="flex flex-col relative bg-[#F0EDEF] text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+					{loading ? (
+						<LoadingSpinner />
+					) : roles.length > 0 ? (
 						roles.map((role, index) => (
 							<div
 								key={index}
