@@ -127,22 +127,24 @@ export default function PlaceBidForm({
 		postData({
 			endPoint: `${baseURL}/v1/corp/${corpId}/installation/request/${requestId}/bid`,
 			data: formData,
-		}).then((data) => {
-			CustomToast(data?.message, "success");
-			setOpen(false);
-		});
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				setOpen(false);
+			})
+			.catch((err) => console.log(err));
 	};
 	useEffect(() => {
-		getData({ endPoint: `/v1/corp/${corpId}/guarantee?status=1` }).then(
-			(data) => {
+		getData({ endPoint: `/v1/corp/${corpId}/guarantee?status=1` })
+			.then((data) => {
 				setGuarantees(
 					data?.data?.filter(
 						(guarantee: GuaranteeProps) =>
 							guarantee.status === "فعال"
 					)
 				);
-			}
-		);
+			})
+			.catch((err) => console.log(err));
 	}, []);
 	return (
 		<Formik
@@ -226,8 +228,10 @@ export default function PlaceBidForm({
 								type="number"
 								autoFocus={true}
 								containerClassName="w-1/2"
-								inputClassName={errors.cost && touched.cost ?
-									'!border-red-500 !ring-1 !ring-red-700' : ''
+								inputClassName={
+									errors.cost && touched.cost
+										? "!border-red-500 !ring-1 !ring-red-700"
+										: ""
 								}
 							/>
 							<div className="w-full">
@@ -248,8 +252,10 @@ export default function PlaceBidForm({
 								type="number"
 								autoFocus={true}
 								containerClassName="w-1/2"
-								inputClassName={errors.power && touched.power ?
-									'!border-red-500 !ring-1 !ring-red-700' : ''
+								inputClassName={
+									errors.power && touched.power
+										? "!border-red-500 !ring-1 !ring-red-700"
+										: ""
 								}
 							/>
 							<CustomInput
@@ -258,8 +264,10 @@ export default function PlaceBidForm({
 								icon={LandPlot}
 								type="number"
 								containerClassName="w-1/2"
-								inputClassName={errors.area && touched.area ? 
-									'!border-red-500 !ring-1 !ring-red-700' : ''
+								inputClassName={
+									errors.area && touched.area
+										? "!border-red-500 !ring-1 !ring-red-700"
+										: ""
 								}
 							/>
 						</div>
@@ -303,8 +311,10 @@ export default function PlaceBidForm({
 							name="description"
 							icon={MessageCircle}
 							containerClassName="w-full"
-							inputClassName={errors.description && touched.description ?
-								'!border-red-500 !ring-1 !ring-red-700' : ''
+							inputClassName={
+								errors.description && touched.description
+									? "!border-red-500 !ring-1 !ring-red-700"
+									: ""
 							}
 						/>
 					</div>

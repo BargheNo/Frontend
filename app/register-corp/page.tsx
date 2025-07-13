@@ -210,13 +210,15 @@ export default function Page() {
 									putData({
 										endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/basic`,
 										data: formData,
-									}).then((res) => {
-										CustomToast(res.message, "success");
-										if (step < steps.length - 1) {
-											setStep(step + 1);
-										}
-										resetFormValues(setFieldValue);
-									});
+									})
+										.then((res) => {
+											CustomToast(res.message, "success");
+											if (step < steps.length - 1) {
+												setStep(step + 1);
+											}
+											resetFormValues(setFieldValue);
+										})
+										.catch((err) => console.log(err));
 								} else {
 									if (step < steps.length - 1) {
 										setStep(step + 1);
@@ -225,6 +227,7 @@ export default function Page() {
 							}
 						}
 					})
+					.catch((err) => console.log(err))
 					.finally(() => setLoadingButton(false));
 			} else {
 				console.log("formData in step 0", values);
@@ -275,6 +278,7 @@ export default function Page() {
 
 								resetFormValues(setFieldValue);
 							})
+							.catch((err) => console.log(err))
 							.finally(() => setLoadingButton(false));
 					}
 				}
@@ -283,49 +287,52 @@ export default function Page() {
 			if (corpId) {
 				getData({
 					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
-				}).then(async (res) => {
-					const formData: corpData = {};
-					if (values.contactInformation != res.data.contactInfo) {
-						formData["contactInformation"] =
-							values.contactInformation;
-					}
-					if (
-						values.contactInformation?.length === 0 &&
-						res.data.contactInfo.length === 0
-					) {
-						CustomToast(
-							"افزودن حداقل یک راه ارتباطی الزامی است",
-							"warning"
-						);
-						setLoadingButton(false);
-						return;
-					}
-					console.log("formData in step 1", formData);
-					const contactInformationOk =
-						await checkContactInformationOk(formData);
-					if (contactInformationOk) {
-						if (formData?.contactInformation?.length !== 0) {
-							postData({
-								endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts`,
-								data: formData,
-							})
-								.then((res) => {
-									console.log("res", res);
-									CustomToast(res?.message, "success");
-									setFieldValue("contactInformation", []);
-									if (step < steps.length - 1) {
-										setStep(step + 1);
-									}
+				})
+					.then(async (res) => {
+						const formData: corpData = {};
+						if (values.contactInformation != res.data.contactInfo) {
+							formData["contactInformation"] =
+								values.contactInformation;
+						}
+						if (
+							values.contactInformation?.length === 0 &&
+							res.data.contactInfo.length === 0
+						) {
+							CustomToast(
+								"افزودن حداقل یک راه ارتباطی الزامی است",
+								"warning"
+							);
+							setLoadingButton(false);
+							return;
+						}
+						console.log("formData in step 1", formData);
+						const contactInformationOk =
+							await checkContactInformationOk(formData);
+						if (contactInformationOk) {
+							if (formData?.contactInformation?.length !== 0) {
+								postData({
+									endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts`,
+									data: formData,
 								})
-								.finally(() => setLoadingButton(false));
-						} else {
-							if (step < steps.length - 1) {
-								setStep(step + 1);
-								setLoadingButton(false);
+									.then((res) => {
+										console.log("res", res);
+										CustomToast(res?.message, "success");
+										setFieldValue("contactInformation", []);
+										if (step < steps.length - 1) {
+											setStep(step + 1);
+										}
+									})
+									.catch((err) => console.log(err))
+									.finally(() => setLoadingButton(false));
+							} else {
+								if (step < steps.length - 1) {
+									setStep(step + 1);
+									setLoadingButton(false);
+								}
 							}
 						}
-					}
-				});
+					})
+					.catch((err) => console.log(err));
 			} else {
 				CustomToast("شرکتی برای شما ثبت نشده است", "info");
 				setLoadingButton(false);
@@ -334,50 +341,53 @@ export default function Page() {
 			if (corpId) {
 				getData({
 					endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
-				}).then(async (res) => {
-					const formData: corpData = {};
-					if (
-						values.addresses?.length === 0 &&
-						res.data.addresses.length === 0
-					) {
-						CustomToast(
-							"افزودن حداقل یک آدرس الزامی است",
-							"warning"
-						);
-						setLoadingButton(false);
-						return;
-					}
-					if (values.addresses != res.data.addresses) {
-						formData["addresses"] = values.addresses;
-					}
-					console.log("formData in step 2", values.addresses);
+				})
+					.then(async (res) => {
+						const formData: corpData = {};
+						if (
+							values.addresses?.length === 0 &&
+							res.data.addresses.length === 0
+						) {
+							CustomToast(
+								"افزودن حداقل یک آدرس الزامی است",
+								"warning"
+							);
+							setLoadingButton(false);
+							return;
+						}
+						if (values.addresses != res.data.addresses) {
+							formData["addresses"] = values.addresses;
+						}
+						console.log("formData in step 2", values.addresses);
 
-					const addressesOk = await checkAddressOk(formData);
-					if (addressesOk) {
-						if (formData?.addresses?.length !== 0) {
-							postData({
-								endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/address`,
-								data: {
-									addresses: values.addresses,
-								},
-							})
-								.then((res) => {
-									console.log("res", res);
-									CustomToast(res?.message);
-									setFieldValue("addresses", []);
-									if (step < steps.length - 1) {
-										setStep(step + 1);
-									}
+						const addressesOk = await checkAddressOk(formData);
+						if (addressesOk) {
+							if (formData?.addresses?.length !== 0) {
+								postData({
+									endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/address`,
+									data: {
+										addresses: values.addresses,
+									},
 								})
-								.finally(() => setLoadingButton(false));
-						} else {
-							if (step < steps.length - 1) {
-								setStep(step + 1);
-								setLoadingButton(false);
+									.then((res) => {
+										console.log("res", res);
+										CustomToast(res?.message);
+										setFieldValue("addresses", []);
+										if (step < steps.length - 1) {
+											setStep(step + 1);
+										}
+									})
+									.catch((err) => console.log(err))
+									.finally(() => setLoadingButton(false));
+							} else {
+								if (step < steps.length - 1) {
+									setStep(step + 1);
+									setLoadingButton(false);
+								}
 							}
 						}
-					}
-				});
+					})
+					.catch((err) => console.log(err));
 			} else {
 				CustomToast("شرکتی برای شما ثبت نشده است", "info");
 				setLoadingButton(false);
@@ -417,6 +427,7 @@ export default function Page() {
 						router.push("/");
 						setLoading(false);
 					})
+					.catch((err) => console.log(err))
 					.finally(() => setLoadingButton(false));
 			} else {
 				CustomToast("شرکتی برای شما ثبت نشده است", "info");

@@ -56,9 +56,11 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
 	const [roleName, setRoleName] = useState("");
 
 	const getAllPermissions = async () => {
-		getData({ endPoint: `/v1/admin/permissions` }).then((data) => {
-			setAllPermissions(data.data);
-		});
+		getData({ endPoint: `/v1/admin/permissions` })
+			.then((data) => {
+				setAllPermissions(data.data);
+			})
+			.catch((err) => console.log(err));
 	};
 
 	// Create new role
@@ -82,6 +84,7 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
 				setSelectedPermissions([]);
 				setOpen(false);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setIsSaving(false));
 	};
 

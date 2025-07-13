@@ -33,15 +33,18 @@ export default function ContactInfoForm({
 	const [contactTypesList, setContactTypesList] = useState([]);
 	const corpId = useSelector((state: RootState) => state.user.corpId);
 	useEffect(() => {
-		getData({ endPoint: `${baseURL}/v1/contact/types` }).then((res) => {
-			setContactTypes(res.data);
-		});
+		getData({ endPoint: `${baseURL}/v1/contact/types` })
+			.then((res) => {
+				setContactTypes(res.data);
+			})
+			.catch((err) => console.log(err));
 		getData({
 			endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
 		})
 			.then((res) => {
 				setContactTypesList(res.data.contactInfo);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	}, []);
 	if (loading)
@@ -119,13 +122,15 @@ export default function ContactInfoForm({
 										);
 										deleteData({
 											endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/${contactInfo?.ID}`,
-										}).then((res) => {
-											CustomToast(
-												res?.message,
-												"success"
-											);
-											// toast(res?.message);
-										});
+										})
+											.then((res) => {
+												CustomToast(
+													res?.message,
+													"success"
+												);
+												// toast(res?.message);
+											})
+											.catch((err) => console.log(err));
 									}}
 								/>
 							</div>
@@ -198,16 +203,21 @@ export default function ContactInfoForm({
 									deleteData({
 										endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/${contactInfo?.ID}`,
 										// endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/0`,
-									}).then((res) => {
-										CustomToast(res?.message, "success");
-										// toast(res?.message);
-										// setContactTypesList(
-										// 	contactTypesList.filter(
-										// 		(contact) =>
-										// 			contact.ID !== contactInfo.ID
-										// 	)
-										// );
-									});
+									})
+										.then((res) => {
+											CustomToast(
+												res?.message,
+												"success"
+											);
+											// toast(res?.message);
+											// setContactTypesList(
+											// 	contactTypesList.filter(
+											// 		(contact) =>
+											// 			contact.ID !== contactInfo.ID
+											// 	)
+											// );
+										})
+										.catch((err) => console.log(err));
 								}}
 							/>
 						</div>

@@ -58,11 +58,11 @@ export default function Bids() {
 	};
 	useEffect(() => {
 		updateBids();
-		getData({ endPoint: `/v1/corp/${corpId}/guarantee?status=1` }).then(
-			(data) => {
+		getData({ endPoint: `/v1/corp/${corpId}/guarantee?status=1` })
+			.then((data) => {
 				console.log("garanti", data);
-			}
-		);
+			})
+			.catch((err) => console.log(err));
 	}, []);
 
 	if (loading) {

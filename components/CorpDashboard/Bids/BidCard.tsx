@@ -233,16 +233,16 @@ export default function BidCard({
 		// 	console.log(`data of bid ${id}`, data);
 		// });
 		// console.log("guaranti", guarantee);
-		getData({ endPoint: `/v1/corp/${corpId}/guarantee?status=1` }).then(
-			(data) => {
+		getData({ endPoint: `/v1/corp/${corpId}/guarantee?status=1` })
+			.then((data) => {
 				setGuarantees(
 					data?.data?.filter(
 						(guarantee: GuaranteeProps) =>
 							guarantee.status === "فعال"
 					)
 				);
-			}
-		);
+			})
+			.catch((err) => console.log(err));
 	}, []);
 
 	const cancelBid = () => {
@@ -252,6 +252,7 @@ export default function BidCard({
 				CustomToast(data?.message, "success");
 				setOpen(false);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setCancelLoading(false));
 	};
 
@@ -276,6 +277,7 @@ export default function BidCard({
 				setOpen(false);
 				updateBids();
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	};
 
@@ -373,7 +375,12 @@ export default function BidCard({
 											});
 										}}
 									>
-										{({ setFieldValue, values, errors, touched }) => (
+										{({
+											setFieldValue,
+											values,
+											errors,
+											touched,
+										}) => (
 											<Form className="w-full flex flex-col gap-6">
 												<FormObserver
 													guaranteeID={Number(
@@ -448,8 +455,11 @@ export default function BidCard({
 															type="number"
 															autoFocus={true}
 															containerClassName="w-1/2"
-															inputClassName={errors.cost && touched.cost ?
-																'!border-red-500 !ring-1 !ring-red-700' : ''
+															inputClassName={
+																errors.cost &&
+																touched.cost
+																	? "!border-red-500 !ring-1 !ring-red-700"
+																	: ""
 															}
 														/>
 														<div className="w-full">
@@ -483,8 +493,11 @@ export default function BidCard({
 															type="number"
 															autoFocus={true}
 															containerClassName="w-1/2"
-															inputClassName={errors.power && touched.power ?
-																'!border-red-500 !ring-1 !ring-red-700' : ''
+															inputClassName={
+																errors.power &&
+																touched.power
+																	? "!border-red-500 !ring-1 !ring-red-700"
+																	: ""
 															}
 														/>
 														<CustomInput
@@ -496,8 +509,11 @@ export default function BidCard({
 															icon={LandPlot}
 															type="number"
 															containerClassName="w-1/2"
-															inputClassName={errors.area && touched.area ?
-																'!border-red-500 !ring-1 !ring-red-700' : ''
+															inputClassName={
+																errors.area &&
+																touched.area
+																	? "!border-red-500 !ring-1 !ring-red-700"
+																	: ""
 															}
 														/>
 													</div>
@@ -565,8 +581,11 @@ export default function BidCard({
 														name="description"
 														icon={MessageCircle}
 														containerClassName="w-full"
-														inputClassName={errors.description && touched.description ?
-															'!border-red-500 !ring-1 !ring-red-700' : ''
+														inputClassName={
+															errors.description &&
+															touched.description
+																? "!border-red-500 !ring-1 !ring-red-700"
+																: ""
 														}
 													/>
 												</div>

@@ -31,15 +31,17 @@ export default function Panels() {
 		all: "4",
 	} as const;
 	useEffect(() => {
-		PanelService.getPanelList(status, 1, 1).then((res) => {
-			setPanelList(res.data);
-			setLoading(false);
-		});
+		PanelService.getPanelList(status, 1, 1)
+			.then((res) => {
+				setPanelList(res.data);
+				setLoading(false);
+			})
+			.catch((err) => console.log(err));
 	}, [status]);
 	return (
 		<>
 			<div className="flex flex-col mt-10">
-				<Header className="px-20" header="پنل ها" />
+				<Header className="px-20" header="پنل‌ها" />
 			</div>
 
 			<div className="border-b-1 border-gray-300 py-4">

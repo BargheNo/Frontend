@@ -141,7 +141,8 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 	}, []);
 
 	useEffect(() => {
-		getUrgencyLevels.GetUrgencyLevels()
+		getUrgencyLevels
+			.GetUrgencyLevels()
 			.then((res) => {
 				setUrgencyLevels(res.data);
 				setLoadingUrgencyLevels(false);
@@ -164,12 +165,12 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 		const formData = {
 			panelID: selectedPanel,
 			corporationID: repairByManufacturer
-				? panels.find(p => p.id === selectedPanel)?.corporation.id
+				? panels.find((p) => p.id === selectedPanel)?.corporation.id
 				: selectedCompany,
 			subject: values.title,
 			description: values.note,
 			urgencyLevel: urgency,
-			isUsingGuarantee: isUsingGuarantee
+			isUsingGuarantee: isUsingGuarantee,
 		};
 
 		setButtonLoading(true);
@@ -177,21 +178,20 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 
 		postRepairRequest
 			.PostCustomerRepairRequest(formData)
-			.then(() => {
-				CustomToast("درخواست تعمیر با موفقیت ثبت شد!", "success");
+			.then((res) => {
+				CustomToast(res?.message, "success");
 				setButtonLoading(false);
 				onRefresh?.();
 				setOpen(false);
 			})
 			.catch(() => {
-				CustomToast("مشکلی در ثبت درخواست پیش آمد!", "error");
 				setButtonLoading(false);
 			});
 	};
 
 	const canUseGuarantee = () => {
 		if (!repairByManufacturer || !selectedPanel) return false;
-		const selectedPanelData = panels.find(p => p.id === selectedPanel);
+		const selectedPanelData = panels.find((p) => p.id === selectedPanel);
 		return selectedPanelData?.guaranteeStatus === "فعال";
 	};
 
@@ -233,7 +233,9 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 								>
 									<Select
 										name="panel"
-										onValueChange={(value) => setSelectedPanel(Number(value))}
+										onValueChange={(value) =>
+											setSelectedPanel(Number(value))
+										}
 									>
 										<SelectTrigger
 											className={`${styles.CustomInput} cursor-pointer rtl`}
@@ -247,17 +249,17 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 													انتخاب پنل
 												</SelectLabel>
 												{panels?.length > 0 ? (
-													panels.map(
-														(panel) => (
-															<SelectItem
-																key={panel.id}
-																value={String(panel.id)}
-																className="cursor-pointer"
-															>
-																{panel.name}
-															</SelectItem>
-														)
-													)
+													panels.map((panel) => (
+														<SelectItem
+															key={panel.id}
+															value={String(
+																panel.id
+															)}
+															className="cursor-pointer"
+														>
+															{panel.name}
+														</SelectItem>
+													))
 												) : (
 													<p>هیچ پنلی یافت نشد</p>
 												)}
@@ -272,8 +274,12 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 												icon={Tag}
 												type="text"
 												inputClassName={`!bg-[#FEFEFE]
-													${formik.errors.title && formik.touched.title ?
-													'!border-red-500 !ring-1 !ring-red-700' : ''}`}
+													${
+														formik.errors.title &&
+														formik.touched.title
+															? "!border-red-500 !ring-1 !ring-red-700"
+															: ""
+													}`}
 											>
 												عنوان
 											</CustomInput>
@@ -285,8 +291,11 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 											name="note"
 											icon={NotebookPen}
 											textareaClassName="!bg-[#FEFEFE]"
-											inputClassName={formik.errors.note && formik.touched.note ? 
-												'!border-red-500 !ring-1 !ring-red-700' : ''
+											inputClassName={
+												formik.errors.note &&
+												formik.touched.note
+													? "!border-red-500 !ring-1 !ring-red-700"
+													: ""
 											}
 										>
 											شرح مشکل
@@ -295,7 +304,9 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 
 									<Select
 										name="urgency"
-										onValueChange={(value) => setUrgency(Number(value))}
+										onValueChange={(value) =>
+											setUrgency(Number(value))
+										}
 									>
 										<SelectTrigger
 											className={`${styles.CustomInput} cursor-pointer rtl mt-4`}
@@ -310,16 +321,21 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 												</SelectLabel>
 												{loadingUrgencyLevels ? (
 													<LoadingSpinner />
-												) : urgencyLevels?.length > 0 ? (
-													urgencyLevels.map((level) => (
-														<SelectItem
-															key={level.id}
-															value={String(level.id)}
-															className="cursor-pointer"
-														>
-															{level.name}
-														</SelectItem>
-													))
+												) : urgencyLevels?.length >
+												  0 ? (
+													urgencyLevels.map(
+														(level) => (
+															<SelectItem
+																key={level.id}
+																value={String(
+																	level.id
+																)}
+																className="cursor-pointer"
+															>
+																{level.name}
+															</SelectItem>
+														)
+													)
 												) : (
 													<p>هیچ سطحی یافت نشد</p>
 												)}
@@ -327,20 +343,32 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 										</SelectContent>
 									</Select>
 
-									<div className="space-y-2 mt-10 mb-10" dir="rtl">
+									<div
+										className="space-y-2 mt-10 mb-10"
+										dir="rtl"
+									>
 										<div className="flex items-center">
 											<input
 												type="checkbox"
 												id="repairByManufacturer"
 												checked={repairByManufacturer}
 												onChange={() => {
-													setRepairByManufacturer(!repairByManufacturer);
+													setRepairByManufacturer(
+														!repairByManufacturer
+													);
 													if (!repairByManufacturer) {
-														const panel = panels.find(
-															(p) => p.id === selectedPanel
-														);
+														const panel =
+															panels.find(
+																(p) =>
+																	p.id ===
+																	selectedPanel
+															);
 														if (panel) {
-															setSelectedCompany(panel.corporation.id);
+															setSelectedCompany(
+																panel
+																	.corporation
+																	.id
+															);
 														}
 													}
 												}}
@@ -369,8 +397,15 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 																type="radio"
 																id={`company-${company.id}`}
 																name="company-selection"
-																checked={selectedCompany === company.id}
-																onChange={() => handleCompanySelection(company.id)}
+																checked={
+																	selectedCompany ===
+																	company.id
+																}
+																onChange={() =>
+																	handleCompanySelection(
+																		company.id
+																	)
+																}
 																className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
 															/>
 															<label
@@ -386,7 +421,10 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 										)}
 									</div>
 
-									<div className="space-y-2 mt-10 mb-10" dir="rtl">
+									<div
+										className="space-y-2 mt-10 mb-10"
+										dir="rtl"
+									>
 										<div className="flex items-center">
 											<TooltipProvider>
 												<Tooltip>
@@ -395,26 +433,49 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 															<input
 																type="checkbox"
 																id="isUsingGuarantee"
-																checked={isUsingGuarantee}
-																onChange={() => setIsUsingGuarantee(!isUsingGuarantee)}
-																disabled={!canUseGuarantee()}
+																checked={
+																	isUsingGuarantee
+																}
+																onChange={() =>
+																	setIsUsingGuarantee(
+																		!isUsingGuarantee
+																	)
+																}
+																disabled={
+																	!canUseGuarantee()
+																}
 																className={`h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded ${
-																	!canUseGuarantee() ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+																	!canUseGuarantee()
+																		? "opacity-50 cursor-not-allowed"
+																		: "cursor-pointer"
 																}`}
 															/>
-															<label 
-																htmlFor="isUsingGuarantee" 
+															<label
+																htmlFor="isUsingGuarantee"
 																className={`mr-2 block text-sm ${
-																	!canUseGuarantee() ? 'text-gray-400' : 'text-gray-700'
+																	!canUseGuarantee()
+																		? "text-gray-400"
+																		: "text-gray-700"
 																}`}
 															>
-																مایلم از گارانتی استفاده کنم
+																مایلم از گارانتی
+																استفاده کنم
 															</label>
 														</div>
 													</TooltipTrigger>
 													{!canUseGuarantee() && (
 														<TooltipContent className="max-w-[300px] text-right">
-															<p>برای استفاده از گارانتی، تعمیرات باید توسط شرکتی انجام شود که پنل را نصب کرده است، همچنین امکان گارانتی باید برای این پنل فعال باشد.</p>
+															<p>
+																برای استفاده از
+																گارانتی، تعمیرات
+																باید توسط شرکتی
+																انجام شود که پنل
+																را نصب کرده است،
+																همچنین امکان
+																گارانتی باید
+																برای این پنل
+																فعال باشد.
+															</p>
 														</TooltipContent>
 													)}
 												</Tooltip>
@@ -422,7 +483,7 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 										</div>
 									</div>
 
-									<div className='flex justify-end'>
+									<div className="flex justify-end">
 										<button
 											type="submit"
 											className="bg-gradient-to-br from-[#34C759] to-[#00A92B]

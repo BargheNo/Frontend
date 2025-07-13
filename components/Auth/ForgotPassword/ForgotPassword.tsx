@@ -50,6 +50,7 @@ const ForgotPassword = () => {
 				setPhone(phoneNumber);
 				setOpen(true);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	};
 
@@ -61,19 +62,21 @@ const ForgotPassword = () => {
 				phone: fullPhone,
 				otp: otp,
 			},
-		}).then((data) => {
-			dispatch(
-				setUser({
-					firstName: data.data.firstName,
-					lastName: data.data.lastName,
-					accessToken: data.data.accessToken,
-					permissions: {},
-					refreshToken: data.data.accessToken,
-				})
-			);
-			CustomToast(data?.message, "success");
-			route.push("/reset-password");
-		});
+		})
+			.then((data) => {
+				dispatch(
+					setUser({
+						firstName: data.data.firstName,
+						lastName: data.data.lastName,
+						accessToken: data.data.accessToken,
+						permissions: {},
+						refreshToken: data.data.accessToken,
+					})
+				);
+				CustomToast(data?.message, "success");
+				route.push("/reset-password");
+			})
+			.catch((err) => console.log(err));
 	};
 
 	useEffect(() => {
@@ -87,7 +90,7 @@ const ForgotPassword = () => {
 			<div dir="rtl" className={styles.mainbg}>
 				<div className="w-full sm:max-w-md p-4 sm:p-6 space-y-4 shadow-2xl rounded-2xl bg-[#f1f4fc]">
 					<h2 className="text-3xl text-black text-center">
-						{"فراموشی رمز عبور"}
+						فراموشی رمز عبور
 					</h2>
 
 					<Formik
@@ -115,14 +118,13 @@ const ForgotPassword = () => {
 							</div>
 
 							<LoginButton>
-								{"بازیابی رمز عبور"}
+								<p>بازیابی رمز عبور</p>
 								<MoveLeft />
 							</LoginButton>
 
 							<PhoneVerification
-								onlinkClick={() => setOpen(false)}
+								onLinkClick={() => setOpen(false)}
 								onOtpChange={handleOtpChange}
-								onclick={() => setOpen(false)}
 								open={open}
 							/>
 						</Form>
