@@ -52,11 +52,11 @@ const CorpRepairDialog = ({
 			})
 				.then((res) => {
 					setNotes(res.data.record);
-					console.log(res.data.record);
 					setIsLoadingNotes(false);
 				})
-				.catch(() => {
-					CustomToast("خطا در دریافت یادداشت‌‌های پنل", "error");
+				.catch((err) => {
+					console.log(err);
+					// CustomToast("خطا در دریافت یادداشت‌‌های پنل", "error");
 					setIsLoadingNotes(false);
 				});
 		}
@@ -69,13 +69,11 @@ const CorpRepairDialog = ({
 		putData({
 			endPoint: `${baseURL}/v1/corp/2/maintenance/request/${repairItem.id}/accept`, // TODO: corpIDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 		})
-			.then(() => {
-				CustomToast("درخواست با موفقیت تایید شد", "success");
+			.then((res) => {
+				CustomToast(res?.message, "success");
 				onClose();
 			})
-			.catch(() => {
-				CustomToast("خطا در تایید درخواست", "error");
-			})
+			.catch((err) => console.log(err))
 			.finally(() => {
 				setIsLoading(false);
 			});
@@ -86,13 +84,11 @@ const CorpRepairDialog = ({
 		putData({
 			endPoint: `${baseURL}/v1/corp/2/maintenance/request/${repairItem.id}/reject`, // TODO: corpIDDDDDDDD
 		})
-			.then(() => {
-				CustomToast("درخواست با موفقیت رد شد", "success");
+			.then((res) => {
+				CustomToast(res?.message, "success");
 				onClose();
 			})
-			.catch(() => {
-				CustomToast("خطا در رد درخواست", "error");
-			})
+			.catch((err) => console.log(err))
 			.finally(() => {
 				setIsLoading(false);
 			});

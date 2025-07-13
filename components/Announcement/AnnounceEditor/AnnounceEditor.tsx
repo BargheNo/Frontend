@@ -219,9 +219,11 @@ export default function AnnounceEditor({
 
 				editorRef.current = editor;
 
-				editor.isReady.then(() => {
-					setLoading(false);
-				});
+				editor.isReady
+					.then(() => {
+						setLoading(false);
+					})
+					.catch((err) => console.log(err));
 			}, 1000);
 		}
 

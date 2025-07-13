@@ -71,12 +71,15 @@ const Login = () => {
 					})
 				);
 				await Promise.resolve();
-				getData({ endPoint: `/v1/user/corps` }).then((res) => {
-					// console.log(res.data);
-					dispatch(setCorps(res.data));
-					window.location.href = "/dashboard/my-panels";
-				});
+				getData({ endPoint: `/v1/user/corps` })
+					.then((res) => {
+						// console.log(res.data);
+						dispatch(setCorps(res.data));
+						window.location.href = "/dashboard/my-panels";
+					})
+					.catch((err) => console.log(err));
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	};
 	return (

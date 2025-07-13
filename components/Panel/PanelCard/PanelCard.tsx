@@ -62,6 +62,7 @@ const PanelCard = ({
 				CustomToast(data?.message, "success");
 				setOpen(false);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	};
 
@@ -91,7 +92,9 @@ const PanelCard = ({
 				<div className="flex flex-col w-full h-full bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] p-3 sm:p-5 overflow-hidden relative">
 					{/* PANEL NAME */}
 					<div className="mb-6">
-						<h2 className="text-2xl font-bold text-gray-800">{panelName}</h2>
+						<h2 className="text-2xl font-bold text-gray-800">
+							{panelName}
+						</h2>
 					</div>
 
 					{/* MAIN CONTENT DIV */}
@@ -101,7 +104,9 @@ const PanelCard = ({
 							<Dialog open={open} onOpenChange={setOpen}>
 								<DialogTrigger asChild>
 									<button className="w-full flex items-center justify-between bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
-										<span className="font-medium">گزارش مشکل</span>
+										<span className="font-medium">
+											گزارش مشکل
+										</span>
 										<AlertCircle className="mr-2 w-4 h-4" />
 									</button>
 								</DialogTrigger>
@@ -146,7 +151,9 @@ const PanelCard = ({
 							</Dialog>
 							<Link href={`my-panels/123`} className="w-full">
 								<button className="w-full flex items-center justify-between bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
-									<span className="font-medium">مدیریت پنل</span>
+									<span className="font-medium">
+										مدیریت پنل
+									</span>
 									<MoveLeft className="mr-2 w-4 h-4" />
 								</button>
 							</Link>
@@ -156,12 +163,19 @@ const PanelCard = ({
 						<div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full sm:w-[70%]">
 							<div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
 								<div className="flex items-center">
-									<PanelIconWithBackground icon={Battery} className="w-full justify-between" text={"ظرفیت"} color="#6B7280" />
+									<PanelIconWithBackground
+										icon={Battery}
+										className="w-full justify-between"
+										text={"ظرفیت"}
+										color="#6B7280"
+									/>
 								</div>
 								<div className="flex flex-col m-2 sm:m-3 items-center justify-center">
 									<div className="flex flex-row-reverse items-center gap-1">
 										<span className="text-xl sm:text-3xl font-bold">
-											{formatNumber(technicalDetails.capacity)}
+											{formatNumber(
+												technicalDetails.capacity
+											)}
 										</span>
 										<span>kW</span>
 									</div>
@@ -170,12 +184,19 @@ const PanelCard = ({
 
 							<div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
 								<div className="flex items-center">
-									<PanelIconWithBackground icon={Sun} className="w-full justify-between" text={"تولید امروز"} color="#F59E0B" />
+									<PanelIconWithBackground
+										icon={Sun}
+										className="w-full justify-between"
+										text={"تولید امروز"}
+										color="#F59E0B"
+									/>
 								</div>
 								<div className="flex flex-col m-2 sm:m-3 items-center justify-center">
 									<div className="flex flex-row-reverse items-center gap-1">
 										<span className="text-xl sm:text-3xl font-bold">
-											{formatNumber(technicalDetails.todayProduction)}
+											{formatNumber(
+												technicalDetails.todayProduction
+											)}
 										</span>
 										<span>kWh</span>
 									</div>
@@ -184,11 +205,18 @@ const PanelCard = ({
 
 							<div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
 								<div className="flex items-center">
-									<PanelIconWithBackground icon={TrendingUp} className="w-full justify-between" text={"بازدهی"} color="#3B82F6" />
+									<PanelIconWithBackground
+										icon={TrendingUp}
+										className="w-full justify-between"
+										text={"بازدهی"}
+										color="#3B82F6"
+									/>
 								</div>
 								<div className="flex flex-col m-2 sm:m-3 items-center justify-center">
 									<div className="flex flex-row-reverse items-center gap-1">
-										<span className="text-xl sm:text-3xl font-bold">{technicalDetails.efficiency}</span>
+										<span className="text-xl sm:text-3xl font-bold">
+											{technicalDetails.efficiency}
+										</span>
 										<span>%</span>
 									</div>
 								</div>
@@ -196,14 +224,21 @@ const PanelCard = ({
 
 							<div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
 								<div className="flex items-center">
-									<PanelIconWithBackground icon={AlertCircle} className="w-full justify-between" text={"وضعیت پنل"} color="#6B7280" />
+									<PanelIconWithBackground
+										icon={AlertCircle}
+										className="w-full justify-between"
+										text={"وضعیت پنل"}
+										color="#6B7280"
+									/>
 								</div>
 								<div className="flex flex-col m-2 sm:m-3 items-center justify-center">
 									<div className="flex flex-row-reverse items-center gap-1">
 										<div
 											className={`h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
 										></div>
-										<span className="text-sm font-medium text-gray-600">{status}</span>
+										<span className="text-sm font-medium text-gray-600">
+											{status}
+										</span>
 									</div>
 								</div>
 							</div>
@@ -221,7 +256,9 @@ const PanelCard = ({
 								{isExpanded ? address : truncateText(address)}
 								{address.length > MAXLENGTH && (
 									<button
-										onClick={() => setIsExpanded(!isExpanded)}
+										onClick={() =>
+											setIsExpanded(!isExpanded)
+										}
 										className="text-blue-500 hover:text-blue-700 mr-2"
 									>
 										{isExpanded ? "کمتر" : "بیشتر"}

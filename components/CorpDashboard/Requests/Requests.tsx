@@ -33,6 +33,7 @@ export default function Requests() {
 			.then((data) => {
 				setRequestData(data.data);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	}, []);
 

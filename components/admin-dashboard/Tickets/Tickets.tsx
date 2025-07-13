@@ -83,6 +83,7 @@ const TicketSupportPage = () => {
 				CustomToast(data?.message, "success");
 				fetchTickets();
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setResolveTicketLoading(false));
 	};
 
@@ -100,6 +101,7 @@ const TicketSupportPage = () => {
 				CustomToast(data?.message, "success");
 				getComments(activeCommentTicketId);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => {
 				setPutCommentLoading(false);
 				setActiveCommentTicketId(null);
@@ -114,13 +116,16 @@ const TicketSupportPage = () => {
 			.then((data) => {
 				setComments(data.data);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setIsLoadingComments(false));
 	};
 
 	const fetchTickets = () => {
-		getData({ endPoint: `/v1/admin/ticket` }).then((data) => {
-			setTickets(data.data);
-		});
+		getData({ endPoint: `/v1/admin/ticket` })
+			.then((data) => {
+				setTickets(data.data);
+			})
+			.catch((err) => console.log(err));
 	};
 
 	useEffect(() => {

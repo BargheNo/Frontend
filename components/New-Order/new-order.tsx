@@ -60,25 +60,29 @@ export default function Neworder() {
 	const [buildingTypes, setBuildingTypes] = useState<BuildingTypeProps[]>();
 
 	const Getprovinces = () => {
-		getData({ endPoint: `/v1/address/province` }).then((data) => {
-			Setprovinces(data?.data);
-		});
+		getData({ endPoint: `/v1/address/province` })
+			.then((data) => {
+				Setprovinces(data?.data);
+			})
+			.catch((err) => console.log(err));
 	};
 	useEffect(() => {
 		Getprovinces();
-		getData({ endPoint: `/v1/installation/request/building` }).then(
-			(data) => {
+		getData({ endPoint: `/v1/installation/request/building` })
+			.then((data) => {
 				setBuildingTypes(data?.data);
-			}
-		);
+			})
+			.catch((err) => console.log(err));
 	}, []);
 
 	const UpdateCityList = (provinceId: number) => {
 		getData({
 			endPoint: `/v1/address/province/${provinceId}/city`,
-		}).then((data) => {
-			Setcities(data?.data);
-		});
+		})
+			.then((data) => {
+				Setcities(data?.data);
+			})
+			.catch((err) => console.log(err));
 	};
 	const Findprovinceid = (provinces: Province[], id: number) => {
 		const province = provinces.find((p) => p.ID === id);
@@ -104,6 +108,7 @@ export default function Neworder() {
 				CustomToast(res?.message, "success");
 				setOpen(false);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	};
 	return (
@@ -190,8 +195,11 @@ export default function Neworder() {
 									placeholder="نام پنل"
 									icon={SquareMenu}
 									name="name"
-									inputClassName={`${errors.name && touched.name ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''}`}
+									inputClassName={`${
+										errors.name && touched.name
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
+									}`}
 								/>
 								<div className="flex flex-row justify-center mt-5 gap-x-1 text-gray-500 w-full">
 									<ShieldAlert />
@@ -298,8 +306,10 @@ export default function Neworder() {
 									name="address"
 									id="address"
 									placeholder="آدرس"
-									inputClassName={errors.address && touched.address ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
+									inputClassName={
+										errors.address && touched.address
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
 									}
 								/>
 							</div>
@@ -314,8 +324,10 @@ export default function Neworder() {
 									icon={Mailbox}
 									name="code"
 									placeholder="کد پستی"
-									inputClassName={errors.code && touched.code ? 
-										'!border-red-500 !ring-1 !ring-red-700' : ''
+									inputClassName={
+										errors.code && touched.code
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
 									}
 								/>
 								<CustomInput
@@ -325,8 +337,10 @@ export default function Neworder() {
 									icon={House}
 									placeholder="پلاک"
 									name="number"
-									inputClassName={errors.number && touched.number ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
+									inputClassName={
+										errors.number && touched.number
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
 									}
 								/>
 								<CustomInput
@@ -336,8 +350,10 @@ export default function Neworder() {
 									icon={BellRing}
 									placeholder="واحد"
 									name="unit"
-									inputClassName={errors.unit && touched.unit ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
+									inputClassName={
+										errors.unit && touched.unit
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
 									}
 								/>
 							</div>
@@ -358,8 +374,10 @@ export default function Neworder() {
 									placeholder="مساحت(مترمربع)"
 									icon={LandPlot}
 									name="area"
-									inputClassName={errors.area && touched.area ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
+									inputClassName={
+										errors.area && touched.area
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
 									}
 								/>
 								<div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
@@ -373,8 +391,11 @@ export default function Neworder() {
 									placeholder="میزان برق مورد نیاز(کیلووات)"
 									icon={Gauge}
 									name="electricity"
-									inputClassName={errors.electricity && touched.electricity ? 
-										'!border-red-500 !ring-1 !ring-red-700' : ''
+									inputClassName={
+										errors.electricity &&
+										touched.electricity
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
 									}
 								/>
 								<div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
@@ -388,8 +409,10 @@ export default function Neworder() {
 									placeholder="سقف هزینه(ریال)"
 									icon={CircleDollarSign}
 									name="cost"
-									inputClassName={errors.cost && touched.cost ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
+									inputClassName={
+										errors.cost && touched.cost
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
 									}
 								/>
 

@@ -39,6 +39,7 @@ import {
 import style from "./style.module.css";
 import { toast } from "sonner";
 import { getPanel } from "@/src/types/Entity-Monitoring/panelType";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 export default function PanelCard({
 	id,
@@ -136,12 +137,14 @@ export default function PanelCard({
 									className="w-full cursor-pointer"
 									onClick={(e) => {
 										e.stopPropagation();
-										PanelService.deletePanel(id).then(
-											(res) =>
-												toast.success(
-													"پنل با موفقیت حذف شد."
+										PanelService.deletePanel(id)
+											.then((res) =>
+												CustomToast(
+													res.message,
+													"success"
 												)
-										);
+											)
+											.catch((err) => console.log(err));
 									}}
 								>
 									<p className="mt-1 mr-2">حذف</p>
@@ -386,7 +389,7 @@ export default function PanelCard({
 
 								PanelService.updatePanel(id, body)
 									.then((res) => {
-										toast.success(res.message);
+										toast.success(res?.message);
 									})
 									.catch((err) => console.log(err));
 							}}

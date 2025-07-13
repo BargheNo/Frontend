@@ -31,10 +31,12 @@ export default function Panels() {
 		all: "4",
 	} as const;
 	useEffect(() => {
-		PanelService.getPanelList(status, 1, 1).then((res) => {
-			setPanelList(res.data);
-			setLoading(false);
-		});
+		PanelService.getPanelList(status, 1, 1)
+			.then((res) => {
+				setPanelList(res.data);
+				setLoading(false);
+			})
+			.catch((err) => console.log(err));
 	}, [status]);
 	return (
 		<>

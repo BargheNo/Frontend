@@ -38,17 +38,20 @@ export default function InstalledPanelPagination() {
 				.then((res) => {
 					sethistory(res.data);
 				})
+				.catch((err) => console.log(err))
 				.finally(() => setIsLoading(false));
 		} else {
 			setIsLoading(false);
 		}
 	};
 	useEffect(() => {
-		getData({ endPoint: `/v1/user/corps` }).then((res) => {
-			const corpId = res?.data[0]?.id;
-			dispatch(setCorpId(corpId));
-			handelHistory("1", currpage, "3");
-		});
+		getData({ endPoint: `/v1/user/corps` })
+			.then((res) => {
+				const corpId = res?.data[0]?.id;
+				dispatch(setCorpId(corpId));
+				handelHistory("1", currpage, "3");
+			})
+			.catch((err) => console.log(err));
 	}, [currpage]);
 
 	return (

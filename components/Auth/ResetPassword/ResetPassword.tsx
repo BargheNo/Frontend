@@ -47,10 +47,12 @@ const ResetPassword = () => {
 				password,
 				confirmPassword,
 			},
-		}).then((data) => {
-			CustomToast(data?.message, "success");
-			window.location.href = "/dashboard";
-		});
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				window.location.href = "/dashboard";
+			})
+			.catch((err) => console.log(err));
 	};
 
 	return (

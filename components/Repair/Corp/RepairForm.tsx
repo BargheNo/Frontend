@@ -40,15 +40,14 @@ const RepairForm = ({ panelId, onSuccess }: RepairFormProps) => {
 
 	const handleSubmit = async (values: RepairFormValues) => {
 		postData({
-			endPoint: `${baseURL}/v1/corp/2/maintenance/request/${panelId}/record`,    // TODO: add corpIDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+			endPoint: `${baseURL}/v1/corp/2/maintenance/request/${panelId}/record`, // TODO: add corpIDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 			data: values,
-		}).then((res) => {
-			CustomToast("یادداشت با موفقیت ثبت شد", "success");
-			console.log("add record test" + res);
-			onSuccess();
-		}).catch((error) => {
-			CustomToast("خطا در ثبت یادداشت", "error");
 		})
+			.then((res) => {
+				CustomToast(res?.message, "success");
+				onSuccess();
+			})
+			.catch((err) => console.log(err));
 	};
 
 	return (

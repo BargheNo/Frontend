@@ -28,6 +28,7 @@ const Reports = () => {
 			.then((data) => {
 				setPanelReports(data.data);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoadingPanel(false));
 	};
 
@@ -36,17 +37,18 @@ const Reports = () => {
 			.then((data) => {
 				setMaintenanceReports(data.data);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoadingRepair(false));
 	};
 
 	const resolveReport = async (reportId: string) => {
-		postData({ endPoint: `/v1/admin/report/resolve/${reportId}` }).then(
-			(data) => {
+		postData({ endPoint: `/v1/admin/report/resolve/${reportId}` })
+			.then((data) => {
 				CustomToast(data?.message, "success");
 				fetchPanelReports();
 				fetchMaintenanceReports();
-			}
-		);
+			})
+			.catch((err) => console.log(err));
 	};
 
 	useEffect(() => {

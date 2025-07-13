@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react'
-import WarrantyCard from './WarrantyCard'
-import { Warranty } from './warrantyTypes.ts'
-import { useDispatch } from 'react-redux'
-import { fetchWarrantyTypes } from '@/src/store/slices/warrantyTypesSlice.ts'
-import { AppDispatch } from '@/src/store/store'
-import { baseURL, getData } from '@/src/services/apiHub.tsx'
-import CustomToast from '@/components/Custom/CustomToast/CustomToast.tsx'
-import WarrantyFilter from './WarrantyFilter'
+import React, { useEffect, useState } from "react";
+import WarrantyCard from "./WarrantyCard";
+import { Warranty } from "./warrantyTypes.ts";
+import { useDispatch } from "react-redux";
+import { fetchWarrantyTypes } from "@/src/store/slices/warrantyTypesSlice.ts";
+import { AppDispatch } from "@/src/store/store";
+import { baseURL, getData } from "@/src/services/apiHub.tsx";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast.tsx";
+import WarrantyFilter from "./WarrantyFilter";
 // import FilterSection from '../FilterSection'
-import LoadingSpinner from '@/components/Loading/LoadingSpinner/LoadingSpinner.tsx'
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner.tsx";
 
 /*const mockData: Warranty[] = [
     {
@@ -125,59 +125,59 @@ import LoadingSpinner from '@/components/Loading/LoadingSpinner/LoadingSpinner.t
 ]*/
 
 const Warranties = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const [warrantyData, setWarrantyData] = useState<Warranty[]>([]);
-  const [status, setStatus] = useState(1); // Default to active warranties
-  const [loadingGuarantees, setLoadingGuarantees] = useState(true);
+	const dispatch = useDispatch<AppDispatch>();
+	const [warrantyData, setWarrantyData] = useState<Warranty[]>([]);
+	const [status, setStatus] = useState(1); // Default to active warranties
+	const [loadingGuarantees, setLoadingGuarantees] = useState(true);
 
-  useEffect(() => {
-    dispatch(fetchWarrantyTypes());
+	useEffect(() => {
+		dispatch(fetchWarrantyTypes());
 
-    setLoadingGuarantees(true);
-    getData({
-        endPoint: `${baseURL}/v1/corp/2/guarantee?status=${status}`
-    }).then(res => {
-        setWarrantyData(res.data);
-        setLoadingGuarantees(false);
-    }).catch(() => {
-        CustomToast("مشکلی در دریافت اطلاعات گارانتیها پیش آمد!", "error");
-        setLoadingGuarantees(false);
-    })
-  }, [dispatch, status]);
+		setLoadingGuarantees(true);
+		getData({
+			endPoint: `${baseURL}/v1/corp/2/guarantee?status=${status}`,
+		})
+			.then((res) => {
+				setWarrantyData(res.data);
+				setLoadingGuarantees(false);
+			})
+			.catch((err) => {
+				console.log(err);
+				setLoadingGuarantees(false);
+			});
+	}, [dispatch, status]);
 
-  const handleStatusChange = (newStatus: number) => {
-    setStatus(newStatus);
-  };
+	const handleStatusChange = (newStatus: number) => {
+		setStatus(newStatus);
+	};
 
-  if (loadingGuarantees) {
-    return <LoadingSpinner />
-  }
+	if (loadingGuarantees) {
+		return <LoadingSpinner />;
+	}
 
-  if (!warrantyData) {
-    return <div>
-      هیچ گارانتی ای یافت نشد!
-    </div>
-  }
+	if (!warrantyData) {
+		return <div>هیچ گارانتی ای یافت نشد!</div>;
+	}
 
-  return (
-    <div className="space-y-6 relative">
-      <div className="flex flex-col neu-container p-4 gap-4">
-        <WarrantyFilter
-          currentStatus={status}
-          onStatusChange={handleStatusChange}
-        />
-      </div>
-      <div className='grid md:grid-cols-2 md:gap-x-7 gap-y-5'>
-          {warrantyData.map((warrantyItem) =>
-              <WarrantyCard
-                  key={warrantyItem.id}
-                  {...warrantyItem}
-                  isArchived={warrantyItem.status !== "فعال"}
-              />
-          )}
-      </div>
-    </div>
-  )
-}
+	return (
+		<div className="space-y-6 relative">
+			<div className="flex flex-col neu-container p-4 gap-4">
+				<WarrantyFilter
+					currentStatus={status}
+					onStatusChange={handleStatusChange}
+				/>
+			</div>
+			<div className="grid md:grid-cols-2 md:gap-x-7 gap-y-5">
+				{warrantyData.map((warrantyItem) => (
+					<WarrantyCard
+						key={warrantyItem.id}
+						{...warrantyItem}
+						isArchived={warrantyItem.status !== "فعال"}
+					/>
+				))}
+			</div>
+		</div>
+	);
+};
 
-export default Warranties
+export default Warranties;
