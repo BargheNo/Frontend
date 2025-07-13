@@ -68,7 +68,7 @@ export default function Layout({
     {
       name: "اخبار و اطلاعیه‌ها",
       path: "/corpdashboard/announcements",
-      RNPName: "corp_blog.viewAll",
+      RNPName: "corpBlog.viewAll",
       icon: <Megaphone />,
     },
     {

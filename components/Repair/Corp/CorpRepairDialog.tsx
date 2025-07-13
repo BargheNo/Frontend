@@ -102,7 +102,7 @@ const CorpRepairDialog = ({
 		<Dialog open={isOpen} onOpenChange={onClose}>
 			<DialogContent
 				style={{ backgroundColor: "#FEFEFE" }}
-				className="min-w-[57vw] max-h-[80vh]"
+				className="min-w-[57vw] max-h-[80vh] dialog-width"
 			>
 				<DialogHeader>
 					<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
@@ -110,7 +110,7 @@ const CorpRepairDialog = ({
 					</DialogTitle>
 				</DialogHeader>
 
-				<div className="overflow-y-auto max-h-[calc(80vh-100px)] pr-2">
+				<div className="overflow-y-auto max-h-[calc(80vh-100px)] pr-2 no-scrollbar">
 					<div dir="rtl" className="flex flex-col gap-5">
 						{isLoadingNotes ? (
 							<div className="flex justify-center items-center h-full">
@@ -164,7 +164,7 @@ const CorpRepairDialog = ({
 							{repairItem.status === "تایید شده" && (
 								<Button
 									onClick={() => setIsFormOpen(true)}
-									className="red-circle-button p-2 w-fit"
+									className="red-circle-button mx-2 p-2 w-fit"
 								>
 									افزودن یادداشت
 								</Button>
