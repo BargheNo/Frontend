@@ -74,22 +74,26 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 
 	// Fetch all available permissions
 	const getAllPermissions = async () => {
-		getData({ endPoint: `/v1/admin/permissions` }).then((data) => {
-			setAllPermissions(data.data);
-		});
+		getData({ endPoint: `/v1/admin/permissions` })
+			.then((data) => {
+				setAllPermissions(data.data);
+			})
+			.catch((err) => console.log(err));
 	};
 
 	// Fetch permissions for the current role
 	const getRolePermissions = async (roleId: string | undefined) => {
 		if (!roleId) return;
 		// setIsLoading(true);
-		getData({ endPoint: `/v1/admin/roles/${roleId}` }).then((data) => {
-			const permissionIds = data.data.permissions.map(
-				(p: Permission) => p.id
-			);
-			setSelectedPermissions(permissionIds);
-			setIsLoading(false);
-		});
+		getData({ endPoint: `/v1/admin/roles/${roleId}` })
+			.then((data) => {
+				const permissionIds = data.data.permissions.map(
+					(p: Permission) => p.id
+				);
+				setSelectedPermissions(permissionIds);
+				setIsLoading(false);
+			})
+			.catch((err) => console.log(err));
 		// .finally(() => setIsLoading(false));
 	};
 
@@ -112,7 +116,8 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 				onSaveSuccess();
 				onClose();
 			})
-			.catch(() => {
+			.catch((err) => {
+				console.log(err);
 				setEditOpen(false);
 			})
 			.finally(() => setIsSaving(false));

@@ -124,33 +124,39 @@ const CorpProfile = ({
 		postData({
 			endPoint: `/v1/admin/corporation/${corporationId}/approve`,
 			data: {},
-		}).then((data) => {
-			CustomToast(data?.message, "success");
-			onOpenChange(false);
-			fetchCorporationDetails();
-		});
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				onOpenChange(false);
+				fetchCorporationDetails();
+			})
+			.catch((err) => console.log(err));
 	};
 
 	const handleReject = async () => {
 		postData({
 			endPoint: `/v1/admin/corporation/${corporationId}/reject`,
 			data: { action: 2 },
-		}).then((data) => {
-			CustomToast(data?.message, "success");
-			onOpenChange(false);
-			fetchCorporationDetails();
-		});
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				onOpenChange(false);
+				fetchCorporationDetails();
+			})
+			.catch((err) => console.log(err));
 	};
 
 	const handleSuspend = async () => {
 		postData({
 			endPoint: `/v1/admin/corporation/${corporationId}/reject`,
 			data: { action: 3 },
-		}).then((data) => {
-			CustomToast(data?.message, "success");
-			onOpenChange(false);
-			fetchCorporationDetails();
-		});
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				onOpenChange(false);
+				fetchCorporationDetails();
+			})
+			.catch((err) => console.log(err));
 	};
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>

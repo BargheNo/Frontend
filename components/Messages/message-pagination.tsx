@@ -89,7 +89,10 @@ export default function CorpMessagesPagination() {
 				setNotifications(res.data);
 				setLoading2(false);
 			})
-			.catch(() => setLoading2(false));
+			.catch((err) => {
+				console.log(err);
+				setLoading2(false);
+			});
 	}, [notifId, currpage]);
 
 	useEffect(() => {

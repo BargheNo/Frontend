@@ -120,39 +120,46 @@ const CorporationItem = ({
 				console.log("data", data);
 				setCorporation(data?.data);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	};
 	const handleAccept = async () => {
 		postData({
 			endPoint: `/v1/admin/corporation/${id}/approve`,
 			data: {},
-		}).then((data) => {
-			CustomToast(data?.message, "success");
-			setOpen(false);
-			fetchCorporationDetails();
-		});
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				setOpen(false);
+				fetchCorporationDetails();
+			})
+			.catch((err) => console.log(err));
 	};
 
 	const handleReject = async () => {
 		postData({
 			endPoint: `/v1/admin/corporation/${id}/reject`,
 			data: { action: 2 },
-		}).then((data) => {
-			CustomToast(data?.message, "success");
-			setOpen(false);
-			fetchCorporationDetails();
-		});
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				setOpen(false);
+				fetchCorporationDetails();
+			})
+			.catch((err) => console.log(err));
 	};
 
 	const handleSuspend = async () => {
 		postData({
 			endPoint: `/v1/admin/corporation/${id}/reject`,
 			data: { action: 3 },
-		}).then((data) => {
-			CustomToast(data?.message, "success");
-			setOpen(false);
-			fetchCorporationDetails();
-		});
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				setOpen(false);
+				fetchCorporationDetails();
+			})
+			.catch((err) => console.log(err));
 	};
 	return (
 		<div className="flex flex-row justify-between w-full h-full bg-[#F4F1F3] p-5 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 items-center">
@@ -558,6 +565,7 @@ const CorpManagement = () => {
 			.then((data) => {
 				setCorporations(data?.data);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	};
 
@@ -584,6 +592,7 @@ const CorpManagement = () => {
 			.then((data) => {
 				CustomToast(data?.message, "success");
 			})
+			.catch((err) => console.log(err))
 			.finally(() => {
 				fetchAllCorporations();
 				// setLoading(false);

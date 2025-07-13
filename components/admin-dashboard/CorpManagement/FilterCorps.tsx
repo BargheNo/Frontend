@@ -43,6 +43,7 @@ export const FilterCorps = ({
 				console.log("data", data);
 				setStatuses(data?.data);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	};
 	useEffect(() => {

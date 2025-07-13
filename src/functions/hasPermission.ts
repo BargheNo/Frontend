@@ -18,7 +18,10 @@ export default function useHasPermission(permission: string): boolean {
 		(state: RootState) => state.user.permissions
 	);
 	if (!permission) return true;
+<<<<<<< HEAD
 	console.log("permissions", permissions);
+=======
+>>>>>>> 2dadb8fb2c4cb98876ce46640a0036983350b529
 	const names = Array.isArray(permissions)
 		? permissions.map((p: permission) => p.name)
 		: [];

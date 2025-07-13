@@ -16,7 +16,7 @@ describe("Forget Password", () => {
 
 	it("change password", () => {
 		cy.visit("/forgot-password");
-		cy.get('input[name="phoneNumber"]').type("9174911318");
+		cy.get('input[name="phoneNumber"]').type("9164911318");
 		cy.get('[data-test="submit"]').click();
 		cy.get('[data-test="sonner-toast"]')
 			.should("exist")
@@ -36,7 +36,7 @@ describe("Forget Password", () => {
 
 	it("checks wrongs OTP", () => {
 		cy.visit("/forgot-password");
-		cy.get('input[name="phoneNumber"]').type("9174911318");
+		cy.get('input[name="phoneNumber"]').type("9204306208");
 		cy.get('[data-test="submit"]').click();
 		cy.get('[data-test="sonner-toast"]')
 			.should("exist")

@@ -135,37 +135,37 @@ const RepairDetailsDialog = ({
 		postData({
 			endPoint: `/v1/user/report/maintenance/${repairHistoryId}`,
 			data: formData,
-		}).then((data) => {
-			CustomToast(data?.message, "success");
-			onClose();
-		});
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				onClose();
+			})
+			.catch((err) => console.log(err));
 	};
 
 	const handleOverrideRequest = async () => {
 		putData({
 			endPoint: `${baseURL}/v1/user/maintenance/request/${repairItem.id}/cancel`,
-		}).then((res) => {
-			CustomToast("درخواست نصب با موفقیت لغو شد!", "success");
-			onRefresh();
-			onClose();
-		}).catch(err => {
-			CustomToast("مشکلی در لغو درخواست پیش آمد!", "error");
 		})
-	}
+			.then((res) => {
+				CustomToast(res?.message, "success");
+				onRefresh();
+				onClose();
+			})
+			.catch((err) => console.log(err));
+	};
 
 	const handleFinalizeMaintenance = async () => {
-		console.log(repairItem.id)
+		console.log(repairItem.id);
 		putData({
 			endPoint: `${baseURL}/v1/user/maintenance/request/${repairItem.id}/record/approve`,
-		}).then(res => {
-			toast.success("تعمیرات با موفقیت به پایان رسید");
-			onRefresh();
-			onClose();
-		}).
-		catch (error => {
-			const errMsg = generateErrorMessage(error as ErrorResponse) || "هنگام نهایی کردن تعمیرات مشکلی پیش آمد.";
-			toast.error(errMsg);
 		})
+			.then((res) => {
+				CustomToast(res?.message, "success");
+				onRefresh();
+				onClose();
+			})
+			.catch((err) => console.log(err));
 	};
 
 	return (
@@ -275,7 +275,7 @@ const RepairDetailsDialog = ({
 								initialValues={{ problem: "" }}
 								validationSchema={validationSchema}
 								onSubmit={handleSubmit}
-						 >
+							>
 								{({ isSubmitting }) => (
 									<Form className="flex flex-col space-y-4">
 										<CustomTextArea
@@ -308,7 +308,9 @@ const RepairDetailsDialog = ({
 								نهایی کردن تعمیرات
 							</h4>
 							<p className="text-gray-700 mb-4">
-								در صورتی که تعمیرات پنل به پایان رسیده است، می‌توانید با کلیک روی دکمه زیر، تعمیرات را نهایی کنید.
+								در صورتی که تعمیرات پنل به پایان رسیده است،
+								می‌توانید با کلیک روی دکمه زیر، تعمیرات را نهایی
+								کنید.
 							</p>
 							<div className="w-full flex justify-end">
 								<button
@@ -325,11 +327,15 @@ const RepairDetailsDialog = ({
 
 						{/* Override Request */}
 						<div className="w-full flex flex-col sm:flex-row gap-2 justify-between items-start mt-5 border-t border-gray-300 pt-5">
-							<span>میتوانید از این بخش درخواست خود را حذف کنید.</span>
+							<span>
+								میتوانید از این بخش درخواست خود را حذف کنید.
+							</span>
 							<div className="flex gap-2">
 								{!showConfirmation ? (
-									<button 
-										onClick={() => setShowConfirmation(true)}
+									<button
+										onClick={() =>
+											setShowConfirmation(true)
+										}
 										className="cursor-pointer
 										bg-gradient-to-br from-[#ef3f3f] to-[#d00202]
 										hover:from-[#e33333] hover:to-[#bd0000]
@@ -361,7 +367,8 @@ const RepairDetailsDialog = ({
 											bg-gradient-to-br from-[#ef3f3f] to-[#d00202]
 											hover:from-[#e33333] hover:to-[#bd0000]
 											active:from-[#bd0000] active:to-[#e33333]
-											text-white py-2 px-4 rounded-md transition-all duration-300">
+											text-white py-2 px-4 rounded-md transition-all duration-300"
+										>
 											از لغو درخواست خود مطمئنم
 										</button>
 									</>

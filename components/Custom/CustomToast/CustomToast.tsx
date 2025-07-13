@@ -5,7 +5,8 @@ export default function CustomToast(
 ) {
 	function Toast(message: string) {
 		return (
-			<div data-test="sonner-toast" className="select-none">
+			<div data-test="sonner-toast">
+				{/* <div data-test="sonner-toast" className="select-none"> */}
 				{message}
 			</div>
 		);

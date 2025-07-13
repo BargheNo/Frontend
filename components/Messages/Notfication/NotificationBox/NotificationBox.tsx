@@ -263,6 +263,11 @@ export default function NotificationBox({
 																		"خوانده شده"
 																	)
 																)
+																.catch((err) =>
+																	console.log(
+																		err
+																	)
+																)
 														: toast.success(
 																"قبلا خوانده شده."
 														  );
@@ -301,17 +306,6 @@ export default function NotificationBox({
 										</button>
 										<MessageCirclePlus className="md:w-[1.5rem] w-[1.2rem]" />
 									</div>
-
-									{/* <div className={`cta-neu-button flex bg-white items-center content-center justify-center`}>
-                                <button onClick={()=>{notificationContent.isRead===false?notificationService.markAsRead(notificationContent.id).then(res=>setread("خوانده شده")):""}}  className="cursor-pointer whitespace-nowrap text-[1rem]">
-                                       {read}
-                                </button>
-                                <MessageCirclePlus />
-                        </div> */}
-
-									{/* <button onClick={()=>{notificationContent.isRead===false?notificationService.markAsRead(notificationContent.id).then(res=>setread("خوانده شده")):""}}  className="shadow-md cursor-pointer text-[0.8rem] w-28 rounded-lg bg-fire-orange text-white h-9">
-                            {read}
-						</button> */}
 								</div>
 							</div>
 						</div>

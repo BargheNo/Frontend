@@ -18,16 +18,14 @@ import {
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 	open: boolean;
-	onclick: () => void;
 	onOtpChange: (otp: string) => void;
-	onlinkClick?: () => void;
+	onLinkClick?: () => void;
 }
 
 export default function PhoneVerification({
 	open,
-	onclick,
 	onOtpChange,
-	onlinkClick,
+	onLinkClick,
 }: Props) {
 	const [otp, setOtp] = useState<string>("");
 
@@ -67,7 +65,7 @@ export default function PhoneVerification({
 								</InputOTPGroup>
 							</InputOTP>
 							<div>
-								<a className={style.link} onClick={onlinkClick}>
+								<a className={style.link} onClick={onLinkClick}>
 									تغییر شماره تلفن همراه
 								</a>
 							</div>

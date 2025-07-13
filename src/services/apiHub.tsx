@@ -105,7 +105,9 @@ export const getData = async ({ endPoint, headers, params }: getParams) => {
 	} catch (error: any) {
 		generateErrorMessage(error)
 			.split("\n")
+			.filter((errMsg) => errMsg !== "")
 			.map((errMsg) => CustomToast(errMsg, "error"));
+		console.log("error in getData", error)
 		throw error;
 	}
 };
@@ -122,6 +124,7 @@ export const postData = async ({ endPoint, data, headers }: postParams) => {
 		generateErrorMessage(error)
 			.split("\n")
 			.map((errMsg) => CustomToast(errMsg, "error"));
+		console.log("error in postData", error)
 		throw error;
 	}
 };
@@ -135,7 +138,9 @@ export const patchData = async ({ endPoint, data, headers }: postParams) => {
 	} catch (error: any) {
 		generateErrorMessage(error)
 			.split("\n")
+			.filter((errMsg) => errMsg !== "")
 			.map((errMsg) => CustomToast(errMsg, "error"));
+		console.log("error in patchData", error)
 		throw error;
 	}
 };
@@ -156,7 +161,9 @@ export const putDataFile = async ({
 	} catch (error: any) {
 		generateErrorMessage(error)
 			.split("\n")
+			.filter((errMsg) => errMsg !== "")
 			.map((errMsg) => CustomToast(errMsg, "error"));
+		console.log("error in putDataFile", error)
 		throw error;
 	}
 };
@@ -169,7 +176,9 @@ export const putData = async ({ endPoint, data, headers }: postParams) => {
 	} catch (error: any) {
 		generateErrorMessage(error)
 			.split("\n")
+			.filter((errMsg) => errMsg !== "")
 			.map((errMsg) => CustomToast(errMsg, "error"));
+		console.log("error in putData", error)
 		throw error;
 	}
 };
@@ -183,7 +192,9 @@ export const deleteData = async ({ endPoint, data, headers }: postParams) => {
 	} catch (error: any) {
 		generateErrorMessage(error)
 			.split("\n")
+			.filter((errMsg) => errMsg !== "")
 			.map((errMsg) => CustomToast(errMsg, "error"));
+		console.log("error in deleteData", error)
 		throw error;
 	}
 };

@@ -54,6 +54,7 @@ const RolesAndPermissions = () => {
 				setRoles(data.data);
 				setLoading(false);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	};
 	const deleteRole = async (roleToDeleteId: string) => {
@@ -63,13 +64,16 @@ const RolesAndPermissions = () => {
 				CustomToast(data?.message, "success");
 				getRoles();
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setDeletingId(null));
 	};
 
 	const getAllPermissions = async () => {
-		getData({ endPoint: `/v1/admin/permissions` }).then((data) => {
-			setAllPermissions(data.data);
-		});
+		getData({ endPoint: `/v1/admin/permissions` })
+			.then((data) => {
+				setAllPermissions(data.data);
+			})
+			.catch((err) => console.log(err));
 	};
 	useEffect(() => {
 		getAllPermissions();

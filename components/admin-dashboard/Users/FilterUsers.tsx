@@ -36,9 +36,10 @@ export default function FilterUsers({
 			.then((data) => {
 				setRoles(data.data);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoadingRoles(false));
 	}, []);
-	
+
 	// Fetch all users (no filtering)
 	const fetchAllUsers = useCallback(async () => {
 		setLoading(true);
@@ -46,6 +47,7 @@ export default function FilterUsers({
 			.then((data) => {
 				onFilteredUsers(data.data);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	}, [onFilteredUsers, setLoading]);
 
@@ -59,6 +61,7 @@ export default function FilterUsers({
 				.then((data) => {
 					onFilteredUsers(data.data);
 				})
+				.catch((err) => console.log(err))
 				.finally(() => setLoading(false));
 		},
 		[onFilteredUsers, setLoading]
@@ -86,6 +89,7 @@ export default function FilterUsers({
 
 					onFilteredUsers(formattedUsers);
 				})
+				.catch((err) => console.log(err))
 				.finally(() => setLoading(false));
 		},
 		[onFilteredUsers, setLoading]
@@ -197,7 +201,7 @@ export default function FilterUsers({
 
 	return (
 		<div className="flex flex-row justify-between w-full h-full bg-[#F4F1F3] overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 items-center">
-		{/* <div className="flex flex-col w-full text-gray-800 rounded-2xl overflow-hidden bg-white shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]"> */}
+			{/* <div className="flex flex-col w-full text-gray-800 rounded-2xl overflow-hidden bg-white shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]"> */}
 			<div className="p-5 items-center flex gap-6">
 				<div className="flex gap-4 items-center">
 					<Select

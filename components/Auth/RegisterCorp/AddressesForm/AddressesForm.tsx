@@ -80,6 +80,7 @@ export default function AddressesForm({
 			.then((res) => {
 				setAddresses(res.data.addresses);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	}, []);
 	useEffect(() => {
@@ -107,10 +108,12 @@ export default function AddressesForm({
 								deleteData({
 									endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/address/${address.ID}`,
 									// endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/0`,
-								}).then((res) => {
-									CustomToast(res?.message, "success");
-									// toast(res.message);
-								});
+								})
+									.then((res) => {
+										CustomToast(res?.message, "success");
+										// toast(res.message);
+									})
+									.catch((err) => console.log(err));
 								// removeAddress(id);
 							}}
 						>
