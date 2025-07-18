@@ -11,7 +11,6 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import moment from "jalali-moment";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
 // import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import { baseURL, postData, putData } from "@/src/services/apiHub";

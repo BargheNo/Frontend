@@ -16,7 +16,6 @@ import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import { Formik } from "formik";
 import CompaniesService from "@/src/services/getCompaniesService";
 import getCustomerMyPanels from "@/src/services/getCustomerMyPanels";
-import postRepairRequest from "@/src/services/postRepairRequest";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
 import getUrgencyLevels from "@/src/services/getUrgencyLevelsService";
