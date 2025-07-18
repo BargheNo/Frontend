@@ -16,6 +16,7 @@ import { getData, postData, putData } from "@/src/services/apiHub.tsx";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast.tsx";
 
 export default function AnnounceEditor({
 	newsID,
@@ -29,7 +30,7 @@ export default function AnnounceEditor({
 	const [data, setData] = useState<OutputData | null>(null);
 	const [title, setTitle] = useState("");
 	const [status, setStatus] = useState(2);
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
 	const router = useRouter();
 
 	const getter = async (id: string) => {
@@ -103,11 +104,11 @@ export default function AnnounceEditor({
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["news"] });
-			toast.success("خبر با موفقیت ذخیره شد");
+			CustomToast("خبر با موفقیت ذخیره شد", "success");
 		},
 		onError: (error) => {
-			console.error("Mutation error:", error);
-			toast.error("خطایی رخ داده است");
+			console.log("Mutation error:", error);
+			// toast.error("خطایی رخ داده است");
 		},
 	});
 	const handelPublish = useMutation({
@@ -115,7 +116,7 @@ export default function AnnounceEditor({
 			putData({ endPoint: `/v1/admin/news/${newsID}/publish` }),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["news"] });
-			toast.success("خبر با موفقیت منتشر شد");
+			CustomToast("خبر با موفقیت منتشر شد", "success");
 		},
 		onError: (error) => {
 			console.error("Mutation error:", error);
@@ -127,11 +128,10 @@ export default function AnnounceEditor({
 			putData({ endPoint: `/v1/admin/news/${newsID}/unpublish` }),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["news"] });
-			toast.success("خبر با موفقیت از انتشار خارج شد");
+			CustomToast("خبر با موفقیت از انتشار خارج شد", "success");
 		},
 		onError: (error) => {
-			console.error("Mutation error:", error);
-			toast.error("خطایی رخ داده است");
+			console.log("Mutation error:", error);
 		},
 	});
 	///v1/admin/news/1/unpublish
@@ -149,16 +149,29 @@ export default function AnnounceEditor({
 					if (responce.data.content != "") {
 						setData(JSON.parse(responce.data.content));
 					} else {
-						setData({
-							blocks: [
-								{
-									type: "paragraph",
-									data: {
-										text: "متن اعلان خود را اینجا بنویسید...",
+						if (onlyView) {
+							setData({
+								blocks: [
+									{
+										type: "paragraph",
+										data: {
+											text: "این اعلان خالی است!",
+										},
 									},
-								},
-							],
-						});
+								],
+							});
+						} else {
+							setData({
+								blocks: [
+									{
+										type: "paragraph",
+										data: {
+											text: "متن اعلان خود را اینجا بنویسید...",
+										},
+									},
+								],
+							});
+						}
 					}
 				}
 				return responce;
@@ -239,73 +252,82 @@ export default function AnnounceEditor({
 
 	return (
 		<>
-			{loading && (
-				<LoadingSpinner className="absolute top-0 left-0 right-0 bottom-0 bg-white z-50" />
+			{loading ? (
+				<LoadingSpinner className="z-50" />
+			) : (
+				<div className="flex w-full! flex-col items-center gap-3 py-8 mx-auto">
+					{onlyView ? (
+						<h1
+							className={`text-[#003a8b] text-3xl mb-6 font-black w-full`}
+						>
+							متن خبر
+						</h1>
+					) : (
+						<h1
+							className={`text-[#003a8b] text-3xl mb-6 font-black w-full`}
+						>
+							ویرایشگر خبر
+						</h1>
+					)}
+					{onlyView ? (
+						<div className="flex w-full! flex-col justify-center items-center p-5 h-[80vh]">
+							<div className="w-full! h-full bg-warm-white neo-card rounded-md p-2 ">
+								<div className="overflow-y-auto overflow-x-hidden no-scrollbar neo-card-rev w-full h-full rounded-md p-3">
+									<div
+										ref={holderRef}
+										id="editorjs"
+										className={cn("rtl h-full w-full")}
+									></div>
+								</div>
+							</div>
+						</div>
+					) : (
+						<div className="w-full flex flex-col items-center gap-3">
+							<div className="h-[60vh]! bg-warm-white neo-card rounded-md p-2 ">
+								<div className="overflow-y-auto overflow-x-hidden no-scrollbar neo-card-rev w-full h-full rounded-md p-3">
+									<div
+										ref={holderRef}
+										id="editorjs"
+										className={cn("rtl h-full w-full")}
+									></div>
+								</div>
+							</div>
+							<div className="flex items-center gap-10 mt-2">
+								<button
+									className="flex gap-3 items-center bg-fire-orange px-8 py-2 rounded-full! neo-btn text-white font-bold text-lg"
+									onClick={() => {
+										handelSave.mutate();
+									}}
+								>
+									<span>ذخیره</span>
+									<Save />
+								</button>
+								{status == 2 ? (
+									<button
+										className="flex gap-3 items-center bg-fire-orange px-8 py-2 rounded-full! neo-btn text-white font-bold text-lg"
+										onClick={() => {
+											handelPublish.mutate();
+										}}
+									>
+										<span>انتشار</span>
+										<FileUp />
+									</button>
+								) : (
+									<button
+										className="flex gap-3 items-center bg-fire-orange px-8 py-2 rounded-full! neo-btn text-white font-bold text-lg"
+										onClick={() => {
+											handelUnpublish.mutate();
+										}}
+									>
+										<span>پیش نویس</span>
+										<FileUp />
+									</button>
+								)}
+							</div>
+						</div>
+					)}
+				</div>
 			)}
-			<div className="flex flex-col items-center gap-3 w-[70vw] mx-auto">
-				{!onlyView && (
-					<div className="text-bold text-2xl self-start">
-						ویرایشگر:{" "}
-					</div>
-				)}
-				{onlyView ? (
-					<div className="flex flex-col justify-center items-center p-5 h-[80vh]">
-						<div className=" w-[90vw]! h-full bg-warm-white neo-card rounded-md p-2 ">
-							<div className="overflow-y-auto overflow-x-hidden no-scrollbar neo-card-rev w-full h-full rounded-md p-3">
-								<div
-									ref={holderRef}
-									id="editorjs"
-									className={cn("rtl h-full w-full")}
-								></div>
-							</div>
-						</div>
-					</div>
-				) : (
-					<div className="flex flex-col items-center gap-3">
-						<div className=" w-[70vw]! h-[60vh]! bg-warm-white neo-card rounded-md p-2 ">
-							<div className="overflow-y-auto overflow-x-hidden no-scrollbar neo-card-rev w-full h-full rounded-md p-3">
-								<div
-									ref={holderRef}
-									id="editorjs"
-									className={cn("rtl h-full w-full")}
-								></div>
-							</div>
-						</div>
-						<div className="flex items-center gap-10 mt-2">
-							<button
-								className="flex gap-3 items-center bg-fire-orange px-8 py-2 rounded-full! neo-btn text-white font-bold text-lg"
-								onClick={() => {
-									handelSave.mutate();
-								}}
-							>
-								<span>ذخیره</span>
-								<Save />
-							</button>
-							{status == 2 ? (
-								<button
-									className="flex gap-3 items-center bg-fire-orange px-8 py-2 rounded-full! neo-btn text-white font-bold text-lg"
-									onClick={() => {
-										handelPublish.mutate();
-									}}
-								>
-									<span>انتشار</span>
-									<FileUp />
-								</button>
-							) : (
-								<button
-									className="flex gap-3 items-center bg-fire-orange px-8 py-2 rounded-full! neo-btn text-white font-bold text-lg"
-									onClick={() => {
-										handelUnpublish.mutate();
-									}}
-								>
-									<span>پیش نویس</span>
-									<FileUp />
-								</button>
-							)}
-						</div>
-					</div>
-				)}
-			</div>
 		</>
 	);
 }

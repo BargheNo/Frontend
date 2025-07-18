@@ -19,7 +19,7 @@ export default function Page() {
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [selectedItem, setSelectedItem] = useState<CorpRepairItem | null>(null);
 	const [repairItems, setRepairItems] = useState<CorpRepairItem[]>([]);
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 	const [myRepairsFilter, setMyRepairsFilter] = useState<"تایید شده" | "تمام شده" | "همه">("همه");
 	const [allRepairsFilter, setAllRepairsFilter] = useState<"در انتظار تایید" | "رد شده" | "همه">("همه");
 

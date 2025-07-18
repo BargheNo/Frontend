@@ -11,7 +11,6 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import moment from "jalali-moment";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
 // import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import { baseURL, postData, putData } from "@/src/services/apiHub";
@@ -158,7 +157,7 @@ const RepairDetailsDialog = ({
 	const handleFinalizeMaintenance = async () => {
 		console.log(repairItem.id);
 		putData({
-			endPoint: `${baseURL}/v1/user/maintenance/request/${repairItem.id}/record/approve`,
+			endPoint: `${baseURL}/v1/user/maintenance/request/${repairItem?.id}/record/approve`,
 		})
 			.then((res) => {
 				CustomToast(res?.message, "success");
@@ -180,7 +179,7 @@ const RepairDetailsDialog = ({
 					</DialogTitle>
 				</DialogHeader>
 
-				<div className="overflow-y-auto max-h-[calc(80vh-100px)] pr-2">
+				<div className="overflow-y-auto max-h-[calc(80vh-100px)] pr-2 no-scrollbar">
 					<div dir="rtl" className="flex flex-col gap-5">
 						{/* Repair Info Section */}
 						<div className="inset-neu-container !w-full !p-5 !bg-[#FEFEFE]">

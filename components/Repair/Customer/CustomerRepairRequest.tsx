@@ -5,6 +5,7 @@ import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
+	DialogOverlay,
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
@@ -15,7 +16,6 @@ import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import { Formik } from "formik";
 import CompaniesService from "@/src/services/getCompaniesService";
 import getCustomerMyPanels from "@/src/services/getCustomerMyPanels";
-import postRepairRequest from "@/src/services/postRepairRequest";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import TransparentLoading from "@/components/Loading/LoadingSpinner/TransparentLoading";
 import getUrgencyLevels from "@/src/services/getUrgencyLevelsService";
@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/tooltip";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import AddComponent from "@/components/AddComponent/AddComponent";
+import { postData } from "@/src/services/apiHub";
 
 interface UrgencyLevel {
 	id: number;
@@ -119,11 +120,11 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 		getCustomerMyPanels
 			.GetCustomerMyPanels()
 			.then((res) => {
-				setPanels(res.data);
+				setPanels(res?.data);
 				setLoadingPanels(false);
 			})
 			.catch((err) => {
-				console.error("Error fetching panels", err);
+				console.log("Error fetching panels", err);
 				setLoadingPanels(false);
 			});
 	}, []);
@@ -131,11 +132,11 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 	useEffect(() => {
 		CompaniesService.GetCompanies()
 			.then((res) => {
-				setCompanies(res.data);
+				setCompanies(res?.data);
 				setIsLoading(false);
 			})
 			.catch((err) => {
-				console.error("Error fetching companies:", err);
+				console.log("Error fetching companies:", err);
 				setIsLoading(false);
 			});
 	}, []);
@@ -144,11 +145,11 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 		getUrgencyLevels
 			.GetUrgencyLevels()
 			.then((res) => {
-				setUrgencyLevels(res.data);
+				setUrgencyLevels(res?.data);
 				setLoadingUrgencyLevels(false);
 			})
 			.catch((err) => {
-				console.error("Error fetching urgency levels:", err);
+				console.log("Error fetching urgency levels:", err);
 				setLoadingUrgencyLevels(false);
 			});
 	}, []);
@@ -176,15 +177,18 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 		setButtonLoading(true);
 		console.log(formData);
 
-		postRepairRequest
-			.PostCustomerRepairRequest(formData)
+		postData({
+			endPoint: `/v1/user/maintenance/request`,
+			data: formData,
+		})
 			.then((res) => {
 				CustomToast(res?.message, "success");
 				setButtonLoading(false);
 				onRefresh?.();
 				setOpen(false);
 			})
-			.catch(() => {
+			.catch((err) => {
+				console.log(err);
 				setButtonLoading(false);
 			});
 	};
@@ -203,12 +207,13 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
+			{/* <DialogOverlay className="bg-black/80" /> */}
 			<DialogTrigger asChild>
 				<AddComponent title="درخواست تعمیرات فوری" />
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}
-				className="w-full sm:min-w-[950px] max-w-xl mx-auto p-6 overflow-auto max-h-[90vh] overflow-y-auto"
+				className="w-full sm:min-w-[950px] max-w-xl p-6 overflow-auto max-h-[90vh] overflow-y-auto"
 			>
 				<DialogHeader>
 					<DialogTitle className="flex justify-center items-end font-bold mt-3.5 cursor-pointer">
