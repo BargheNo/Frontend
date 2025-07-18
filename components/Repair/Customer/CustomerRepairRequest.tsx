@@ -5,6 +5,7 @@ import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
+	DialogOverlay,
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
@@ -37,6 +38,7 @@ import {
 } from "@/components/ui/tooltip";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import AddComponent from "@/components/AddComponent/AddComponent";
+import { postData } from "@/src/services/apiHub";
 
 interface UrgencyLevel {
 	id: number;
@@ -176,8 +178,10 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 		setButtonLoading(true);
 		console.log(formData);
 
-		postRepairRequest
-			.PostCustomerRepairRequest(formData)
+		postData({
+			endPoint: `/v1/user/maintenance/request`,
+			data: formData,
+		})
 			.then((res) => {
 				CustomToast(res?.message, "success");
 				setButtonLoading(false);
@@ -204,12 +208,13 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
+			{/* <DialogOverlay className="bg-black/80" /> */}
 			<DialogTrigger asChild>
 				<AddComponent title="درخواست تعمیرات فوری" />
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}
-				className="w-full sm:min-w-[950px] max-w-xl mx-auto p-6 overflow-auto max-h-[90vh] overflow-y-auto"
+				className="w-full sm:min-w-[950px] max-w-xl p-6 overflow-auto max-h-[90vh] overflow-y-auto"
 			>
 				<DialogHeader>
 					<DialogTitle className="flex justify-center items-end font-bold mt-3.5 cursor-pointer">
