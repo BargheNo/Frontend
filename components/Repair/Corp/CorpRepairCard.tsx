@@ -103,7 +103,7 @@ const CorpRepairCard = ({
                                     </span>
                                 </div>
                             </div>
-                            <div className="flex">
+                            <div className="flex items-center">
                                 <div className="flex items-center">
                                     <IconWithBackground
                                         icon={Calendar}
@@ -119,7 +119,7 @@ const CorpRepairCard = ({
                                     </span>
                                 </div>
                             </div>
-                            <div className="flex">
+                            <div className="flex items-center">
                                 <div className="flex items-center">
                                     <IconWithBackground
                                         icon={MapPin}
