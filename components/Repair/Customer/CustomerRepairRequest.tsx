@@ -119,11 +119,11 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 		getCustomerMyPanels
 			.GetCustomerMyPanels()
 			.then((res) => {
-				setPanels(res.data);
+				setPanels(res?.data);
 				setLoadingPanels(false);
 			})
 			.catch((err) => {
-				console.error("Error fetching panels", err);
+				console.log("Error fetching panels", err);
 				setLoadingPanels(false);
 			});
 	}, []);
@@ -131,11 +131,11 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 	useEffect(() => {
 		CompaniesService.GetCompanies()
 			.then((res) => {
-				setCompanies(res.data);
+				setCompanies(res?.data);
 				setIsLoading(false);
 			})
 			.catch((err) => {
-				console.error("Error fetching companies:", err);
+				console.log("Error fetching companies:", err);
 				setIsLoading(false);
 			});
 	}, []);
@@ -144,11 +144,11 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 		getUrgencyLevels
 			.GetUrgencyLevels()
 			.then((res) => {
-				setUrgencyLevels(res.data);
+				setUrgencyLevels(res?.data);
 				setLoadingUrgencyLevels(false);
 			})
 			.catch((err) => {
-				console.error("Error fetching urgency levels:", err);
+				console.log("Error fetching urgency levels:", err);
 				setLoadingUrgencyLevels(false);
 			});
 	}, []);
@@ -184,7 +184,8 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 				onRefresh?.();
 				setOpen(false);
 			})
-			.catch(() => {
+			.catch((err) => {
+				console.log(err);
 				setButtonLoading(false);
 			});
 	};
