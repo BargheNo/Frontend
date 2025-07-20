@@ -31,6 +31,7 @@ import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import { postData } from "@/src/services/apiHub";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 import wordExpression from "@/src/functions/Calculations";
+import StickyFooter from "@/components/StickyFooter/StickyFooter";
 
 const PanelCard = ({
 	id,
@@ -113,38 +114,43 @@ const PanelCard = ({
 								</DialogTrigger>
 								<DialogContent
 									style={{ backgroundColor: "#F1F4FC" }}
-									className="w-full sm:min-w-[750px] max-w-xl mx-auto p-6 overflow-auto max-h-[90vh] overflow-y-auto rtl"
+									className="max-h-[80vh] overflow-y-auto no-scrollbar rtl vazir dialog-width flex flex-col"
+									// className="w-full dialog-width max-h-[80vh] overflow-y-auto rtl"
 								>
-									<DialogHeader>
-										<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
-											گزارش مشکل
-										</DialogTitle>
-									</DialogHeader>
 									<Formik
 										initialValues={{ problem: "" }}
 										validationSchema={validationSchema}
 										onSubmit={handleSubmit}
 									>
 										{({ isSubmitting }) => (
-											<Form className="flex flex-col space-y-4">
-												<CustomTextArea
-													name="problem"
-													icon={AlertCircle}
-													textareaClassName="!bg-[#FEFEFE] h-32"
-												>
-													توضیحات مشکل
-												</CustomTextArea>
-												<button
-													type="submit"
-													disabled={isSubmitting}
-													className="self-end w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white py-2 px-4 rounded-md transition-all duration-300"
-												>
-													{loading ? (
-														<LoadingOnButton />
-													) : (
-														<p>ارسال گزارش</p>
-													)}
-												</button>
+											<Form>
+												<div className="overflow-y-auto relative flex-1 no-scrollbar">
+													<DialogHeader>
+														<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
+															گزارش مشکل
+														</DialogTitle>
+													</DialogHeader>
+													<CustomTextArea
+														name="problem"
+														icon={AlertCircle}
+														textareaClassName="!bg-[#FEFEFE] h-32"
+													>
+														توضیحات مشکل
+													</CustomTextArea>
+												</div>
+												<StickyFooter className="bg-[#F1F4FC]">
+													<button
+														type="submit"
+														disabled={isSubmitting}
+														className=" w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white py-2 px-4 rounded-md transition-all duration-300"
+													>
+														{loading ? (
+															<LoadingOnButton />
+														) : (
+															<p>ارسال گزارش</p>
+														)}
+													</button>
+												</StickyFooter>
 											</Form>
 										)}
 									</Formik>

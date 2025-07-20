@@ -183,7 +183,7 @@ export default function Users() {
 							</div>
 						</DialogTrigger>
 						<DialogContent
-							className={`sm:max-w-[800px] max-h-[80vh] overflow-y-auto no-scrollbar rtl vazir dialog-width flex flex-col`}
+							className={`max-h-[80vh] overflow-y-auto no-scrollbar rtl vazir dialog-width flex flex-col`}
 						>
 							<div className="relative flex-1 overflow-y-auto no-scrollbar">
 								<DialogHeader>
@@ -191,11 +191,6 @@ export default function Users() {
 										مدیریت نقش‌های کاربر
 									</DialogTitle>
 								</DialogHeader>
-
-								{/* <DialogClose
-						className="absolute left-4 top-0 p-1 rounded-sm opacity-70 hover:bg-gray-100 disabled:pointer-events-none"
-						disabled={isSaving || isBanning}
-					></DialogClose> */}
 
 								{loadingRoles ? (
 									<div className="flex justify-center items-center">
