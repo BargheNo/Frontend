@@ -30,6 +30,7 @@ import {
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import { postData } from "@/src/services/apiHub";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
+import wordExpression from "@/src/functions/Calculations";
 
 const PanelCard = ({
 	id,
@@ -80,8 +81,8 @@ const PanelCard = ({
 		return "bg-gradient-to-br from-gray-400 to-gray-500 shadow-gray-500";
 	};
 
-	const formatNumber = (num: number): string =>
-		num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	// const formatNumber = (num: number): string =>
+	// 	num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 	return (
 		<>
@@ -103,7 +104,7 @@ const PanelCard = ({
 						<div className="flex flex-row sm:flex-col gap-3 w-full sm:w-[20%]">
 							<Dialog open={open} onOpenChange={setOpen}>
 								<DialogTrigger asChild>
-									<button className="w-full flex items-center justify-between bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
+									<button className="w-full flex items-center justify-evenly bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
 										<span className="font-medium">
 											گزارش مشکل
 										</span>
@@ -150,7 +151,7 @@ const PanelCard = ({
 								</DialogContent>
 							</Dialog>
 							<Link href={`my-panels/123`} className="w-full">
-								<button className="w-full flex items-center justify-between bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
+								<button className="w-full flex items-center justify-evenly bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
 									<span className="font-medium">
 										مدیریت پنل
 									</span>
@@ -171,13 +172,18 @@ const PanelCard = ({
 									/>
 								</div>
 								<div className="flex flex-col m-2 sm:m-3 items-center justify-center">
-									<div className="flex flex-row-reverse items-center gap-1">
+									<div className="flex flex-row-reverse items-center">
 										<span className="text-xl sm:text-3xl font-bold">
-											{formatNumber(
-												technicalDetails.capacity
-											)}
+											{
+												wordExpression(
+													technicalDetails?.capacity,
+													true
+												).value
+											}
 										</span>
-										<span>kW</span>
+										<span className="text-xl sm:text-3xl font-bold">
+											W
+										</span>
 									</div>
 								</div>
 							</div>
@@ -192,13 +198,18 @@ const PanelCard = ({
 									/>
 								</div>
 								<div className="flex flex-col m-2 sm:m-3 items-center justify-center">
-									<div className="flex flex-row-reverse items-center gap-1">
+									<div className="flex flex-row-reverse items-center">
 										<span className="text-xl sm:text-3xl font-bold">
-											{formatNumber(
-												technicalDetails.todayProduction
-											)}
+											{
+												wordExpression(
+													technicalDetails?.todayProduction,
+													true
+												).value
+											}
 										</span>
-										<span>kWh</span>
+										<span className="text-xl sm:text-3xl font-bold">
+											Wh
+										</span>
 									</div>
 								</div>
 							</div>
@@ -213,11 +224,13 @@ const PanelCard = ({
 									/>
 								</div>
 								<div className="flex flex-col m-2 sm:m-3 items-center justify-center">
-									<div className="flex flex-row-reverse items-center gap-1">
+									<div className="flex flex-row-reverse items-center">
 										<span className="text-xl sm:text-3xl font-bold">
 											{technicalDetails.efficiency}
 										</span>
-										<span>%</span>
+										<span className="text-xl sm:text-3xl font-bold">
+											%
+										</span>
 									</div>
 								</div>
 							</div>
@@ -232,10 +245,10 @@ const PanelCard = ({
 									/>
 								</div>
 								<div className="flex flex-col m-2 sm:m-3 items-center justify-center">
-									<div className="flex flex-row-reverse items-center gap-1">
+									<div className="flex flex-row-reverse items-center place-items-center gap-1">
 										<div
 											className={`h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
-										></div>
+										/>
 										<span className="text-sm font-medium text-gray-600">
 											{status}
 										</span>
