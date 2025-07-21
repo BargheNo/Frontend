@@ -47,6 +47,9 @@ import AddComponent from "../AddComponent/AddComponent";
 import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
 import { useSelector } from "react-redux";
 import { getData } from "@/src/services/apiHub";
+import StickyFooter from "../Dialog/StickyFooter/StickyFooter";
+import CancelButton from "../Dialog/CancelButton/CancelButton";
+import SubmitButton from "../Dialog/SubmitButton/SubmitButton";
 
 interface BuildingTypeProps {
 	id: number;
@@ -127,7 +130,7 @@ export default function AddPanel() {
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}
-				className="w-full sm:min-w-[750px] max-w-xl max-h-[90vh] no-scrollbar mx-auto p-4 overflow-auto py-4"
+				className="w-full dialog-width max-h-[90vh] no-scrollbar mx-auto overflow-y-auto pb-0"
 			>
 				<DialogHeader>
 					<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
@@ -496,9 +499,13 @@ export default function AddPanel() {
 									}
 								/>
 							</div>
-
-							<DialogFooter className="flex flex-row justify-center items-center self-center">
-								{/* <div className="flex flex-row justify-center items-center self-center"> */}
+							<StickyFooter>
+								<CancelButton />
+								<SubmitButton loading={loading}>
+									ثبت پنل
+								</SubmitButton>
+							</StickyFooter>
+							{/* <DialogFooter className="flex flex-row justify-center items-center self-center">
 								<SignupButton
 									className="text-[#FA682D]"
 									type="submit"
@@ -513,9 +520,8 @@ export default function AddPanel() {
 										<p>ثبت پنل</p>
 									)}
 								</SignupButton>
-								{/* </div> */}
 								<DialogClose />
-							</DialogFooter>
+							</DialogFooter> */}
 						</Form>
 					)}
 				</Formik>
