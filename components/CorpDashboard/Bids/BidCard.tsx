@@ -43,6 +43,9 @@ import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { CustomDatePicker } from "@/components/Custom/CustomDatePicker/CustomDatePicker";
 import { GuaranteeProps } from "@/src/types/BidCardTypes";
 import useHasPermission from "@/src/functions/hasPermission";
+import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
+import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
+import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
 interface BidInfo {
 	id: number;
 	price: number;
@@ -346,7 +349,7 @@ export default function BidCard({
 							</DialogTrigger>
 							<DialogContent
 								style={{ backgroundColor: "#F1F4FC" }}
-								className="w-full sm:min-w-[750px] max-w-xl max-h-[90vh] no-scrollbar mx-auto p-4 overflow-auto py-4 rtl dialog-width"
+								className="w-full pb-0 max-h-[90vh] no-scrollbar mx-auto overflow-auto rtl dialog-width"
 							>
 								<DialogHeader>
 									<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
@@ -589,8 +592,13 @@ export default function BidCard({
 														}
 													/>
 												</div>
-
-												<DialogFooter>
+												<StickyFooter>
+													<CancelButton />
+													<SubmitButton loading={loading}>
+														ذخیره تغییرات
+													</SubmitButton>
+												</StickyFooter>
+												{/* <DialogFooter>
 													<div className="flex w-full justify-between">
 														{hasCancelBidPermission && (
 															<button
@@ -625,7 +633,7 @@ export default function BidCard({
 															</button>
 														)}
 													</div>
-												</DialogFooter>
+												</DialogFooter> */}
 											</Form>
 										)}
 									</Formik>

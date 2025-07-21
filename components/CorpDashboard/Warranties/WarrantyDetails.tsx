@@ -19,6 +19,8 @@ import MetricBox from "@/components/IconWithBackground/MetricBox";
 import { Warranty, TermItem } from "./warrantyTypes.ts";
 import { baseURL, putData } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter.tsx";
+import { Button } from "@/components/ui/button.tsx";
 
 const TermItemSection = ({ title, description, limitations }: TermItem) => {
 	return (
@@ -87,7 +89,7 @@ const WarrantyDetails = ({
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}
-				className="w-full sm:min-w-[750px] max-w-xl mx-auto p-4  overflow-auto py-4 space-y-3 px-8"
+				className="w-full mx-auto overflow-auto space-y-3 pb-0"
 				dir="rtl"
 				data-test="warranty-details-dialog"
 			>
@@ -130,7 +132,7 @@ const WarrantyDetails = ({
 
 				<div className="">
 					<h2 className="font-black text-xl mb-2">شرایط</h2>
-					<div className="inset-neu-container w-full max-h-56 p-5 overflow-y-auto">
+					<div className="inset-neu-container w-full p-5">
 						{terms.map((termItem, index) => (
 							<TermItemSection
 								key={index}
@@ -141,8 +143,21 @@ const WarrantyDetails = ({
 						))}
 					</div>
 				</div>
-
-				<div>
+				<StickyFooter>
+					<button
+						onClick={handleArchive}
+						className={`${
+							isArchived && "grayscale-100 cursor-auto"
+						} red-circle-button px-12 w-full h-11 gap-2`}
+						data-test="warranty-archive-button"
+					>
+						{isArchived
+							? "این گارانتی آرشیو شده است!"
+							: "آرشیو کردن"}
+						{!isArchived && <Archive size={20} />}
+					</button>
+				</StickyFooter>
+				{/* <div>
 					<button
 						onClick={handleArchive}
 						className={`${
@@ -155,7 +170,7 @@ const WarrantyDetails = ({
 							: "آرشیو کردن"}
 						{!isArchived && <Archive size={20} />}
 					</button>
-				</div>
+				</div> */}
 			</DialogContent>
 		</Dialog>
 	);

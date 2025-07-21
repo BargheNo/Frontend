@@ -20,6 +20,8 @@ import { Button } from "@/components/ui/button";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 import useHasPermission from "@/src/functions/hasPermission";
+import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
+import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
 type UserType = {
 	id: number;
 	firstName: string;
@@ -183,7 +185,7 @@ export default function Users() {
 							</div>
 						</DialogTrigger>
 						<DialogContent
-							className={`sm:max-w-[800px] max-h-[80vh] overflow-y-auto no-scrollbar rtl vazir dialog-width flex flex-col`}
+							className={`max-h-[80vh] overflow-y-auto no-scrollbar rtl vazir dialog-width flex flex-col pb-0`}
 						>
 							<div className="relative flex-1 overflow-y-auto no-scrollbar">
 								<DialogHeader>
@@ -191,11 +193,6 @@ export default function Users() {
 										مدیریت نقش‌های کاربر
 									</DialogTitle>
 								</DialogHeader>
-
-								{/* <DialogClose
-						className="absolute left-4 top-0 p-1 rounded-sm opacity-70 hover:bg-gray-100 disabled:pointer-events-none"
-						disabled={isSaving || isBanning}
-					></DialogClose> */}
 
 								{loadingRoles ? (
 									<div className="flex justify-center items-center">
@@ -258,35 +255,35 @@ export default function Users() {
 							</div>
 
 							{/* Sticky footer */}
-							<div className="sticky bottom-0 bg-white">
-								<DialogFooter className="grid grid-cols-2 gap-4 w-full">
-									{/* Left-aligned buttons container */}
-									<div className="flex justify-start">
-										{hasBanUnbanPermission && (
-											<Button
-												onClick={handleBanAction}
-												// disabled={isBanning}
-												className={`px-4 py-2 rounded-lg cursor-pointer min-w-32 ${
-													status === "فعال"
-														? "bg-red-500 hover:bg-red-600"
-														: "bg-green-500 hover:bg-green-600"
-												}`}
-											>
-												{isBanning ? (
-													<LoadingOnButton />
-												) : // <Loader2 className="animate-spin h-4 w-4 ml-2" />
-												status === "فعال" ? (
-													<p>مسدود کردن</p>
-												) : (
-													<p>رفع انسداد</p>
-												)}
-											</Button>
-										)}
-									</div>
+							<StickyFooter footerClassName="grid grid-cols-2 gap-4">
+								{/* Left-aligned buttons container */}
+								<div className="flex justify-start">
+									{hasBanUnbanPermission && (
+										<Button
+											onClick={handleBanAction}
+											// disabled={isBanning}
+											className={`px-4 py-2 rounded-lg cursor-pointer min-w-32 ${
+												status === "فعال"
+													? "bg-red-500 hover:bg-red-600"
+													: "bg-green-500 hover:bg-green-600"
+											}`}
+										>
+											{isBanning ? (
+												<LoadingOnButton />
+											) : // <Loader2 className="animate-spin h-4 w-4 ml-2" />
+											status === "فعال" ? (
+												<p>مسدود کردن</p>
+											) : (
+												<p>رفع انسداد</p>
+											)}
+										</Button>
+									)}
+								</div>
 
-									{/* Right-aligned button container */}
-									<div className="flex justify-end gap-2">
-										<DialogClose asChild>
+								{/* Right-aligned button container */}
+								<div className="flex justify-end gap-2">
+									<CancelButton />
+									{/* <DialogClose asChild>
 											<Button
 												variant="outline"
 												// disabled={isSaving || isBanning}
@@ -294,24 +291,26 @@ export default function Users() {
 											>
 												انصراف
 											</Button>
-										</DialogClose>
+										</DialogClose> */}
 
-										<Button
-											onClick={saveRoles}
-											// disabled={
-											// 	isLoading || isSaving || isBanning
-											// }
-											className="bg-orange-500 cursor-pointer hover:bg-orange-600 min-w-28"
-										>
-											{isSaving ? (
-												<LoadingOnButton />
-											) : (
-												<p>ذخیره تغییرات</p>
-											)}
-										</Button>
-									</div>
-								</DialogFooter>
-							</div>
+									<Button
+										onClick={saveRoles}
+										// disabled={
+										// 	isLoading || isSaving || isBanning
+										// }
+										className="bg-orange-500 cursor-pointer hover:bg-orange-600 min-w-28"
+									>
+										{isSaving ? (
+											<LoadingOnButton />
+										) : (
+											<p>ذخیره تغییرات</p>
+										)}
+									</Button>
+								</div>
+							</StickyFooter>
+							{/* <div className="sticky bottom-0 bg-white">
+								<DialogFooter className="grid grid-cols-2 gap-4 w-full"></DialogFooter>
+							</div> */}
 						</DialogContent>
 					</Dialog>
 					{/* <button

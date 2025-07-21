@@ -20,6 +20,9 @@ import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 import { getData, postData } from "@/src/services/apiHub";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
+import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
+import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
 
 type Permission = {
 	id: number;
@@ -230,9 +233,14 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
 									</div>
 								</div>
 							)}
-							<div className="sticky bottom-0 bg-[#F1F4FC]">
+							<StickyFooter>
+								<CancelButton />
+								<SubmitButton loading={isSaving}>
+									ایجاد نقش
+								</SubmitButton>
+							</StickyFooter>
+							{/* <div className="sticky bottom-0 bg-[#F1F4FC]">
 								<DialogFooter className="flex justify-end gap-96 mt-6 w-full py-4">
-									{/* <div className="flex justify-end gap-96 mt-6"> */}
 									<button
 										disabled={isSaving}
 										onClick={() => setOpen(false)}
@@ -251,7 +259,7 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
 										)}
 									</button>
 								</DialogFooter>
-							</div>
+							</div> */}
 						</Form>
 					</Formik>
 				</DialogContent>

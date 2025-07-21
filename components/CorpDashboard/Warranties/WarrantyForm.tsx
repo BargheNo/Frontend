@@ -6,6 +6,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { FormValues, WarrantyType } from './warrantyTypes';
 import { validationSchema, initialValues } from './constants';
 import WarrantyTermCard from './WarrantyTermCard';
+import StickyFooter from '@/components/Dialog/StickyFooter/StickyFooter';
+import CancelButton from '@/components/Dialog/CancelButton/CancelButton';
+import SubmitButton from '@/components/Dialog/SubmitButton/SubmitButton';
 
 interface WarrantyFormProps {
   warrantyTypes: WarrantyType[];
@@ -134,7 +137,13 @@ const WarrantyForm = ({ warrantyTypes, isLoading, onSubmit }: WarrantyFormProps)
           </div>
 
           {/* Submit Button */}
-          <div className="w-full py-4">
+          <StickyFooter>
+            <CancelButton />
+            <SubmitButton loading={isSubmitting}>
+              ثبت گارانتی
+            </SubmitButton>
+          </StickyFooter>
+          {/* <div className="w-full py-4">
             <button
               type="submit"
               disabled={isSubmitting}
@@ -147,7 +156,7 @@ const WarrantyForm = ({ warrantyTypes, isLoading, onSubmit }: WarrantyFormProps)
             >
               {isSubmitting ? 'در حال ثبت...' : 'ثبت گارانتی'}
             </button>
-          </div>
+          </div> */}
         </Form>
       )}
     </Formik>

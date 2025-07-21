@@ -66,11 +66,11 @@ const ForgotPassword = () => {
 			.then((data) => {
 				dispatch(
 					setUser({
-						firstName: data.data.firstName,
-						lastName: data.data.lastName,
-						accessToken: data.data.accessToken,
-						permissions: {},
-						refreshToken: data.data.accessToken,
+						firstName: data?.data?.firstName,
+						lastName: data?.data?.lastName,
+						accessToken: data?.data?.accessToken,
+						permissions: data?.data?.permissions,
+						refreshToken: data?.data?.accessToken,
 					})
 				);
 				CustomToast(data?.message, "success");

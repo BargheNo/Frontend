@@ -140,7 +140,7 @@ const CorpRepairDialog = ({
 									<>
 										<Button
 											variant="outline"
-											className="flex items-center gap-2 text-red-600 hover:text-red-700"
+											className="flex items-center gap-2 cursor-pointer text-red-600 hover:text-red-700"
 											onClick={handleReject}
 											disabled={isLoading}
 										>
@@ -148,7 +148,7 @@ const CorpRepairDialog = ({
 											رد درخواست
 										</Button>
 										<Button
-											className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+											className="flex items-center gap-2 cursor-pointer bg-green-600 hover:bg-green-700"
 											onClick={handleAccept}
 											disabled={isLoading}
 										>
