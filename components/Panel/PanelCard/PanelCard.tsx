@@ -22,6 +22,7 @@ import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 
 import {
 	Dialog,
+	DialogClose,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
@@ -31,7 +32,9 @@ import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import { postData } from "@/src/services/apiHub";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 import wordExpression from "@/src/functions/Calculations";
-import StickyFooter from "@/components/StickyFooter/StickyFooter";
+import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
+import { Button } from "@/components/ui/button";
+import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
 
 const PanelCard = ({
 	id,
@@ -114,7 +117,7 @@ const PanelCard = ({
 								</DialogTrigger>
 								<DialogContent
 									style={{ backgroundColor: "#F1F4FC" }}
-									className="max-h-[80vh] overflow-y-auto no-scrollbar rtl vazir dialog-width flex flex-col"
+									className="max-h-[80vh] overflow-y-auto no-scrollbar rtl vazir pb-0 dialog-width flex flex-col"
 									// className="w-full dialog-width max-h-[80vh] overflow-y-auto rtl"
 								>
 									<Formik
@@ -123,7 +126,7 @@ const PanelCard = ({
 										onSubmit={handleSubmit}
 									>
 										{({ isSubmitting }) => (
-											<Form>
+											<Form className="relative">
 												<div className="overflow-y-auto relative flex-1 no-scrollbar">
 													<DialogHeader>
 														<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
@@ -138,18 +141,19 @@ const PanelCard = ({
 														توضیحات مشکل
 													</CustomTextArea>
 												</div>
-												<StickyFooter className="bg-[#F1F4FC]">
-													<button
+												<StickyFooter className="bg-[#F1F4FC] relative pb-6 pt-4">
+													<CancelButton />
+													<Button
 														type="submit"
 														disabled={isSubmitting}
-														className=" w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white py-2 px-4 rounded-md transition-all duration-300"
+														className="min-w-28 flex place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white px-4 rounded-md transition-all duration-300"
 													>
 														{loading ? (
 															<LoadingOnButton />
 														) : (
 															<p>ارسال گزارش</p>
 														)}
-													</button>
+													</Button>
 												</StickyFooter>
 											</Form>
 										)}
