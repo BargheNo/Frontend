@@ -11,8 +11,8 @@ export default function StickyFooter({
 	footerClassName?: string;
 }>) {
 	return (
-		<div className={`sticky !bottom-0 ${className}`}>
-			<DialogFooter className={`w-full items-end ${footerClassName}`}>
+		<div className={`w-full sticky bottom-0 pb-6 ${className}`}>
+			<DialogFooter className={`w-full pt-4 ${footerClassName}`}>
 				{children}
 			</DialogFooter>
 		</div>

@@ -126,7 +126,7 @@ const PanelCard = ({
 										onSubmit={handleSubmit}
 									>
 										{({ isSubmitting }) => (
-											<Form className="relative">
+											<Form>
 												<div className="overflow-y-auto relative flex-1 no-scrollbar">
 													<DialogHeader>
 														<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
@@ -141,7 +141,7 @@ const PanelCard = ({
 														توضیحات مشکل
 													</CustomTextArea>
 												</div>
-												<StickyFooter className="bg-[#F1F4FC] relative pb-6 pt-4">
+												<StickyFooter className="bg-[#F1F4FC] relative pb-6 pt-0">
 													<CancelButton />
 													<Button
 														type="submit"
