@@ -157,7 +157,7 @@ export default function RequestCard({
 									</DialogTrigger>
 								)}
 
-								<DialogContent className="rtl border-0 overflow-scroll dialog-width">
+								<DialogContent className="rtl border-0 overflow-y-auto dialog-width pb-0">
 									<PlaceBidForm
 										setOpen={setOpen}
 										requestId={requestId}
