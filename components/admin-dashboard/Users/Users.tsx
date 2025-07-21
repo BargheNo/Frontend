@@ -185,7 +185,7 @@ export default function Users() {
 							</div>
 						</DialogTrigger>
 						<DialogContent
-							className={`max-h-[80vh] overflow-y-auto no-scrollbar rtl vazir dialog-width flex flex-col`}
+							className={`max-h-[80vh] overflow-y-auto no-scrollbar rtl vazir dialog-width flex flex-col pb-0`}
 						>
 							<div className="relative flex-1 overflow-y-auto no-scrollbar">
 								<DialogHeader>
@@ -255,7 +255,7 @@ export default function Users() {
 							</div>
 
 							{/* Sticky footer */}
-							<StickyFooter className="bg-white" footerClassName="grid grid-cols-2 gap-4">
+							<StickyFooter footerClassName="grid grid-cols-2 gap-4">
 								{/* Left-aligned buttons container */}
 								<div className="flex justify-start">
 									{hasBanUnbanPermission && (

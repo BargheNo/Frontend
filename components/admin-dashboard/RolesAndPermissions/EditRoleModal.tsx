@@ -16,6 +16,9 @@ import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import { getData, putData } from "@/src/services/apiHub";
+import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
+import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
+import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
 
 type Permission = {
 	id: number;
@@ -296,9 +299,12 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 						</div>
 					</div>
 				)}
-				<div className="sticky bottom-0 bg-[#F1F4FC]">
+				<StickyFooter>
+					<CancelButton />
+					<SubmitButton loading={isSaving}>ذخیره تغییرات</SubmitButton>
+				</StickyFooter>
+				{/* <div className="sticky bottom-0 bg-[#F1F4FC]">
 					<DialogFooter className="flex justify-end gap-96 mt-6 w-full py-4">
-						{/* <div className="flex justify-end gap-96 mt-6"> */}
 						<button
 							disabled={isSaving}
 							type="button"
@@ -314,7 +320,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 							{isSaving ? <LoadingOnButton /> : <p>ذخیره</p>}
 						</button>
 					</DialogFooter>
-				</div>
+				</div> */}
 			</Form>
 		</Formik>
 	);
