@@ -127,7 +127,7 @@ const PanelCard = ({
 									>
 										{({ isSubmitting }) => (
 											<Form>
-												<div className="overflow-y-auto relative flex-1 no-scrollbar">
+												<div className="overflow-y-auto relative flex-1 no-scrollbar pb-4">
 													<DialogHeader>
 														<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
 															گزارش مشکل
@@ -141,7 +141,7 @@ const PanelCard = ({
 														توضیحات مشکل
 													</CustomTextArea>
 												</div>
-												<StickyFooter className="bg-[#F1F4FC] relative pb-6 pt-0">
+												<StickyFooter>
 													<CancelButton />
 													<Button
 														type="submit"

@@ -13,7 +13,7 @@ import styles from "./CustomRepairRequest.module.css";
 import * as Yup from "yup";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
-import { Formik } from "formik";
+import { Form, Formik } from "formik";
 import CompaniesService from "@/src/services/getCompaniesService";
 import getCustomerMyPanels from "@/src/services/getCustomerMyPanels";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
@@ -38,6 +38,10 @@ import {
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import AddComponent from "@/components/AddComponent/AddComponent";
 import { postData } from "@/src/services/apiHub";
+import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
+import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
+import { Button } from "@/components/ui/button";
+import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 
 interface UrgencyLevel {
 	id: number;
@@ -213,7 +217,7 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}
-				className="w-full sm:min-w-[950px] max-w-xl p-6 overflow-auto max-h-[90vh] overflow-y-auto"
+				className="w-full dialog-width overflow-auto max-h-[80vh] overflow-y-auto pb-0"
 			>
 				<DialogHeader>
 					<DialogTitle className="flex justify-center items-end font-bold mt-3.5 cursor-pointer">
@@ -232,8 +236,8 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 							onSubmit={handleSubmit}
 						>
 							{(formik) => (
-								<form
-									onSubmit={formik.handleSubmit}
+								<Form
+									// onSubmit={formik.handleSubmit}
 									className="space-y-0"
 								>
 									<Select
@@ -487,8 +491,23 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 											</TooltipProvider>
 										</div>
 									</div>
-
-									<div className="flex justify-end">
+									<StickyFooter
+										className="bg-[#F1F4FC]"
+									>
+										<CancelButton />
+										<Button
+											type="submit"
+											disabled={buttonLoading}
+											className="min-w-28 flex place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white rounded-md transition-all duration-300"
+										>
+											{buttonLoading ? (
+												<LoadingOnButton />
+											) : (
+												<p>ثبت سفارش</p>
+											)}
+										</Button>
+									</StickyFooter>
+									{/* <div className="flex justify-end">
 										<button
 											type="submit"
 											className="bg-gradient-to-br from-[#34C759] to-[#00A92B]
@@ -501,8 +520,8 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 											)}
 											ثبت درخواست تعمیر
 										</button>
-									</div>
-								</form>
+									</div> */}
+								</Form>
 							)}
 						</Formik>
 					</div>
