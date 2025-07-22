@@ -7,6 +7,7 @@ import panelNotFound from "@/public/images/panelNotFound/panelNotFound.png";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import FilterSection from "@/components/CorpDashboard/FilterSection";
 
 interface PanelProps {
 	id: number;
@@ -34,7 +35,7 @@ const Settings = () => {
 	useEffect(() => {
 		setLoading(true);
 		getData({
-			endPoint: `/v1/user/installation/panel?status=1&offset=5&limit=1`,
+			endPoint: `/v1/user/installation/panel?status=1&offset=10&limit=15`,
 		})
 			.then((data) => {
 				setPanels(data?.data);
@@ -43,8 +44,9 @@ const Settings = () => {
 			.finally(() => setLoading(false));
 	}, []);
 	return (
-		<PageContainer className="max-w-6xl mx-auto">
+		<PageContainer>
 			<Header header="پنل‌های من" />
+			<FilterSection />
 			<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden border-1 mt-2 border-gray-200 shadow-[-6px_-6px_16px_rgba(255,255,255,1),6px_6px_16px_rgba(0,0,0,0.3)]">
 				{loading ? (
 					<LoadingSpinner />

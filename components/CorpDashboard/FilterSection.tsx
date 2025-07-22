@@ -25,7 +25,7 @@ const validationSchema = Yup.object({
 	resultPerPage: Yup.string()
 		.required()
 		.oneOf(
-			["10", "20", "50", "100"],
+			["5", "10", "20", "50", "100"],
 			"مقدار تعداد نتایج در هر صفحه درست نیست"
 		),
 });
@@ -37,9 +37,9 @@ export default function FilterSection() {
 		sorting,
 		resultPerPage,
 	}: {
-		search: string;
-		sorting: string;
-		resultPerPage: string;
+		search?: string;
+		sorting?: string;
+		resultPerPage?: string;
 	}) => {
 		setSorting(sorting);
 		setResultPerPage(resultPerPage);
@@ -52,7 +52,7 @@ export default function FilterSection() {
 				onSubmit={handleFormSubmit}
 			>
 				<div className="p-5 items-center flex gap-6">
-					<div className="w-4/5">
+					{/* <div className="w-4/5">
 						<CustomInput
 							placeholder="جستجو"
 							name="search"
@@ -60,10 +60,8 @@ export default function FilterSection() {
 							type="text"
 							containerClassName="-translate-y-[11px]"
 							inputClassName="bg-white"
-						>
-							{" "}
-						</CustomInput>
-					</div>
+						/>
+					</div> */}
 					<div className="flex gap-4 items-center">
 						<Select
 							defaultValue="most-recent"
