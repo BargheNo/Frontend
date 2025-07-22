@@ -559,6 +559,7 @@ const CorpManagement = () => {
 
 	const fetchAllCorporations = () => {
 		// setLoading(true);
+		console.log(`/v1/admin/corporation?status=${filterStatus}`);
 		getData({
 			endPoint: `/v1/admin/corporation?status=${filterStatus}`,
 		})
@@ -571,7 +572,7 @@ const CorpManagement = () => {
 
 	useEffect(() => {
 		fetchAllCorporations();
-	}, []);
+	}, [filterStatus]);
 
 	const handleManageCorporation = (id: number) => {
 		setSelectedCorpId(id);
