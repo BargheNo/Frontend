@@ -25,7 +25,11 @@ export default function OrderHistoryPagination() {
 	const [isLoading, setIsLoading] = useState(true);
 	const handelHistory = (status: string, offset: string, limit: string) => {
 		orderService
-			.orderHistory({status: status ?? "1", offset: status ?? "1", limit: limit ?? "1"})
+			.orderHistory({
+				status: status ?? "1",
+				offset: status ?? "1",
+				limit: limit ?? "1",
+			})
 			.then((res) => {
 				sethistory(res.data);
 				setIsLoading(false);
@@ -47,7 +51,9 @@ export default function OrderHistoryPagination() {
 	return (
 		<>
 			{isLoading ? (
-				<LoadingSpinner />
+				<div className="bg-[#F0EDEF] relative">
+					<LoadingSpinner />
+				</div>
 			) : history?.length > 0 ? (
 				<>
 					<div className="flex flex-col text-white bg-transparent">
