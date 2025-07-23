@@ -45,11 +45,16 @@ const Settings = () => {
 	}, []);
 	return (
 		<PageContainer>
-			<Header header="پنل‌های من" />
-			<FilterSection />
+			<div className="flex">
+				<Header header="پنل‌های من" />
+				{/* <div className="w-full place-items-end">
+					<p>select filter</p>
+				</div> */}
+			</div>
+			{/* <FilterSection /> */}
 			<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden border-1 mt-2 border-gray-200 shadow-[-6px_-6px_16px_rgba(255,255,255,1),6px_6px_16px_rgba(0,0,0,0.3)]">
 				{loading ? (
-					<LoadingSpinner />
+					<LoadingSpinner className="bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]" />
 				) : panels.length > 0 ? (
 					panels.map((panel: PanelProps, index) => (
 						<PanelCard
@@ -66,7 +71,7 @@ const Settings = () => {
 						/>
 					))
 				) : panels ? (
-					<div className="text-center place-items-center py-18">
+					<div className="relative text-center place-items-center py-18 bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]">
 						<Image
 							className="w-1/3"
 							src={panelNotFound}
@@ -74,7 +79,7 @@ const Settings = () => {
 						/>
 						<div className="">
 							<p
-								className=" mt-6 text-navy-blue font-bold rtl"
+								className="mt-6 text-navy-blue font-bold rtl"
 								style={{ fontSize: "1.1rem" }}
 							>
 								هیچ پنلی یافت نشد.
