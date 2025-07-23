@@ -266,7 +266,10 @@ const Page = () => {
 			<div>
 				<Header header="سوابق تعمیرات" />
 				{isLoading ? (
+					<div className="relative">
+
 					<LoadingSpinner />
+					</div>
 				) : (
 					<div className="flex flex-col neu-container">
 						{repairItems.length === 0 ? (

@@ -39,21 +39,10 @@ export default function OrderHistoryPagination() {
 	useEffect(() => {
 		handelHistory("1", currpage, "3");
 	}, [currpage]);
-	// const address = {
-	//   ID: 2,
-	//   province: "mazandaran",
-	//   city: "amol",
-	//   streetAddress: "khiaban haraz",
-	//   postalCode: "9473647546",
-	//   houseNumber: "1",
-	//   unit: 1,
-	// };
 	return (
 		<>
 			{isLoading ? (
-				<div className="bg-[#F0EDEF] relative">
-					<LoadingSpinner />
-				</div>
+				<LoadingSpinner />
 			) : history?.length > 0 ? (
 				<>
 					<div className="flex flex-col text-white bg-transparent">

@@ -54,7 +54,7 @@ const Settings = () => {
 			{/* <FilterSection /> */}
 			<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden border-1 mt-2 border-gray-200 shadow-[-6px_-6px_16px_rgba(255,255,255,1),6px_6px_16px_rgba(0,0,0,0.3)]">
 				{loading ? (
-					<LoadingSpinner className="bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]" />
+					<LoadingSpinner />
 				) : panels.length > 0 ? (
 					panels.map((panel: PanelProps, index) => (
 						<PanelCard
