@@ -24,6 +24,7 @@ import {
 } from "../ui/select";
 import { getData } from "@/src/services/apiHub";
 import NoRecordFound from "../NoRecordFound/NoRecordFound";
+import Header from "../Header/Header";
 
 interface status {
 	id: number;
@@ -63,33 +64,36 @@ export default function OrderHistoryPagination() {
 	}, [status, currpage]);
 	return (
 		<>
-			{statuses && (
-				<Select
-					value={String(status)}
-					onValueChange={(value) => setStatus(value)}
-					data-test="warranty-filter"
-				>
-					<SelectTrigger
-						dir="rtl"
-						className="flex w-40 cursor-pointer place-self-end relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
-						data-test="warranty-filter-trigger"
+			<div className="flex place-items-center">
+				<Header header="سابقه سفارشات" />
+				{statuses && (
+					<Select
+						value={String(status)}
+						onValueChange={(value) => setStatus(value)}
+						data-test="warranty-filter"
 					>
-						<SelectValue placeholder="وضعیت گارانتی" />
-					</SelectTrigger>
-					<SelectContent dir="rtl">
-						{statuses?.map((status: status, index: number) => (
-							<SelectItem
-								key={index}
-								value={String(status.id)}
-								className="cursor-pointer"
-								data-test="warranty-filter-option-archived"
-							>
-								{status.name}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			)}
+						<SelectTrigger
+							dir="rtl"
+							className="flex min-w-32 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+							data-test="warranty-filter-trigger"
+						>
+							<SelectValue placeholder="وضعیت گارانتی" />
+						</SelectTrigger>
+						<SelectContent dir="rtl">
+							{statuses?.map((status: status, index: number) => (
+								<SelectItem
+									key={index}
+									value={String(status.id)}
+									className="cursor-pointer"
+									data-test="warranty-filter-option-archived"
+								>
+									{status.name}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				)}
+			</div>
 			{isLoading ? (
 				<LoadingSpinner />
 			) : history?.length > 0 ? (

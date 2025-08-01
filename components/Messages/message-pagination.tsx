@@ -38,12 +38,17 @@ import Header from "../Header/Header";
 import NotificationBox from "./Notfication/NotificationBox/NotificationBox";
 import NotificationHeader from "./Notfication/NotificationHeader/NotificationHeader";
 import NotificationContent from "./Notfication/NotificationContent/NotificationContent";
+import { getData } from "@/src/services/apiHub";
+import NoRecordFound from "../NoRecordFound/NoRecordFound";
 
 export default function CorpMessagesPagination() {
 	const [loading, setLoading] = useState(true);
 	const [loading2, setLoading2] = useState(true);
 
 	const [currpage, Setcurrpage] = useState<string>("1");
+	const [statuses, setStatuses] = useState<notifType[] | null>(null);
+	const [status, setStatus] = useState<string>("1");
+
 	const [notifTypes, setNotifTypes] = useState<notifType[]>([]);
 	const [notifSetting, setNotifSetting] = useState<notificationSetting[]>([]);
 	const [disable, setDisable] = useState(true);
@@ -62,38 +67,44 @@ export default function CorpMessagesPagination() {
 		setLoading(true);
 		notificationService
 			.getNotificationType()
-			.then((res) => {
-				setNotifTypes(res.data);
-				setLoading(false);
+			.then((data) => {
+				// setNotifTypes(data?.data);
+				setStatuses(data?.data);
+				// setLoading(false);
 			})
-			.catch((err) => {
-				console.log(err.message);
-				setLoading(false);
-			});
+			.catch((err) => console.log(err))
+			.finally(() => setLoading(false));
 		notificationService
 			.getNotificationSetting()
-			.then((res) => {
-				console.log(res);
-				setNotifSetting(res.data);
+			.then((data) => {
+				// console.log(data);
+				setNotifSetting(data?.data);
 			})
-			.catch((err) => console.log(err.message));
-	}, []);
+			.catch((err) => console.log(err));
+	}, [status]);
 
 	useEffect(() => {
-		notificationService
-			.getNotificationFielter(notifId, {
-				page: currpage,
-				pageSize: "4",
+		setLoading2(true);
+		getData({
+			endPoint: `/v1/user/notifications`,
+			params: { notificationTypes: status },
+		})
+			.then((data) => {
+				console.log(data?.data);
+				setNotifications(data?.data);
 			})
-			.then((res) => {
-				setNotifications(res.data);
-				setLoading2(false);
-			})
-			.catch((err) => {
-				console.log(err);
-				setLoading2(false);
-			});
-	}, [notifId, currpage]);
+			.catch((err) => console.log(err))
+			.finally(() => setLoading2(false));
+		// notificationService
+		// 	.getNotificationFielter(notifId, {
+		// 		page: currpage,
+		// 		pageSize: "4",
+		// 	})
+		// 	.then((data) => {
+		// 		setNotifications(data?.data);
+		// 	})
+		// 	.catch((err) => console.log(err));
+	}, [status, notifId, currpage]);
 
 	useEffect(() => {
 		if (notifSetting && notifSetting.length > 0) {
@@ -109,7 +120,7 @@ export default function CorpMessagesPagination() {
 
 	return (
 		<>
-			<Header className="rtl" header="تنظیمات اعلان‌ها" />
+			<Header header="تنظیمات اعلان‌ها" />
 			<div className="flex flex-col text-white bg-transparent w-full relative">
 				<div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] mb-5">
 					<div className="flex flex-row mr-auto md:ml-30 m-auto md:gap-17 gap-6">
@@ -242,23 +253,95 @@ export default function CorpMessagesPagination() {
 							}}
 							className="bg-[#FA682D]  text-white"
 						>
-							{disable ? "تنظیمات اعلان ها" : "ذخیرۀ تغییرات"}
+							{disable ? "تنظیمات اعلان‌ها" : "ذخیرۀ تغییرات"}
 							{disable ? <Settings /> : <Save />}
 						</SignupButton>
 					</div>
 				</div>
 			</div>
 
-			<Header className="rtl" header="اعلان‌ها" />
-			<div className="flex flex-col text-white bg-transparent w-full">
-				<div className="flex flex-col relative bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] h-20 mb-5">
+			<div className="flex flex-col bg-transparent w-full gap-4">
+				<div className="flex place-items-center">
+					<Header header="اعلان‌ها" />
+					{/* <Header header="پنل‌های من" /> */}
+					{statuses && (
+						// <Select
+						// 	name="notiftype"
+						// 	onValueChange={(value) => {
+						// 		if (value === "همه پیام‌ها") {
+						// 			setNotifId([1, 2, 3, 4]);
+						// 		} else {
+						// 			setNotifId([
+						// 				Object.fromEntries(
+						// 					notifTypes.map((item) => [
+						// 						item?.name,
+						// 						item?.id,
+						// 					])
+						// 				)[value],
+						// 			]);
+						// 		}
+						// 	}}
+						// >
+						// 	<SelectTrigger
+						// 		className={`${style?.CustomInput} cursor-pointer`}
+						// 	>
+						// 		<SelectValue placeholder="دسته بندی اعلان‌ها" />
+						// 	</SelectTrigger>
+						// 	<SelectContent>
+						// 		<SelectGroup>
+						// 			<SelectLabel>اعلان‌ها</SelectLabel>
+						// 			<SelectItem value="همه پیام‌ها">
+						// 				همه پیام‌ها
+						// 			</SelectItem>
+						// 			{notifTypes.map((item, index) => (
+						// 				<SelectItem
+						// 					value={item?.name}
+						// 					key={index}
+						// 					className="cursor-pointer"
+						// 				>
+						// 					{item?.name}
+						// 				</SelectItem>
+						// 			))}
+						// 		</SelectGroup>
+						// 	</SelectContent>
+						// </Select>
+						<Select
+							value={String(status)}
+							onValueChange={(value) => setStatus(value)}
+							data-test="warranty-filter"
+						>
+							<SelectTrigger
+								dir="rtl"
+								className="flex min-w-48 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+								data-test="warranty-filter-trigger"
+							>
+								<SelectValue placeholder="وضعیت گارانتی" />
+							</SelectTrigger>
+							<SelectContent dir="rtl">
+								{statuses?.map(
+									(status: notifType, index: number) => (
+										<SelectItem
+											key={index}
+											value={String(status.id)}
+											className="cursor-pointer"
+											data-test="warranty-filter-option-archived"
+										>
+											{status.name}
+										</SelectItem>
+									)
+								)}
+							</SelectContent>
+						</Select>
+					)}
+				</div>
+				{/* <div className="flex flex-col relative bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] h-20 mb-5">
 					<div
 						className={`${style.citypro} flex flex-row mr-4 justify-between m-auto md:w-2/10 w-5/10 `}
 					>
 						<Select
 							name="notiftype"
 							onValueChange={(value) => {
-								if (value === "همه پیام ها") {
+								if (value === "همه پیام‌ها") {
 									setNotifId([1, 2, 3, 4]);
 								} else {
 									setNotifId([
@@ -280,8 +363,8 @@ export default function CorpMessagesPagination() {
 							<SelectContent>
 								<SelectGroup>
 									<SelectLabel>اعلان‌ها</SelectLabel>
-									<SelectItem value="همه پیام ها">
-										همه پیام ها
+									<SelectItem value="همه پیام‌ها">
+										همه پیام‌ها
 									</SelectItem>
 									{notifTypes.map((item, index) => (
 										<SelectItem
@@ -296,14 +379,15 @@ export default function CorpMessagesPagination() {
 							</SelectContent>
 						</Select>
 					</div>
-				</div>
+				</div> */}
 				{loading2 ? (
-					<div className="flex justify-center mt-6">
+					<div className="neu-container">
 						<LoadingSpinner />
 					</div>
 				) : notifications && notifications.length > 0 ? (
 					<>
-						<div className="flex flex-col text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+						<div className="flex flex-col neu-container">
+							{/* <div className="flex flex-col text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]"> */}
 							{notifications.map((item, index) => (
 								<NotificationBox
 									key={index}
@@ -318,6 +402,7 @@ export default function CorpMessagesPagination() {
 									<NotificationContent />
 								</NotificationBox>
 							))}
+							{/* </div> */}
 						</div>
 
 						<div className="flex justify-center w-full p-5 rtl mt-5">
@@ -376,16 +461,19 @@ export default function CorpMessagesPagination() {
 						</div>
 					</>
 				) : (
-					<div className="text-center place-items-center mt-6">
-						<div className="-mt-8">
-							<p
-								className="mt-6 text-navy-blue font-bold rtl"
-								style={{ fontSize: "1.1rem" }}
-							>
-								هیچ پیامی یافت نشد.
-							</p>
-						</div>
+					<div className="flex flex-col neu-container">
+						<NoRecordFound text="هیچ اعلانی یافت نشد." />
 					</div>
+					// <div className="text-center place-items-center mt-6">
+					// 	<div className="-mt-8">
+					// 		<p
+					// 			className="mt-6 text-navy-blue font-bold rtl"
+					// 			style={{ fontSize: "1.1rem" }}
+					// 		>
+					// 			هیچ پیامی یافت نشد.
+					// 		</p>
+					// 	</div>
+					// </div>
 				)}
 			</div>
 		</>

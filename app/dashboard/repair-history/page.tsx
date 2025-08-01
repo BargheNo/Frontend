@@ -187,7 +187,7 @@ const Page = () => {
 					</div>
 				)}
 			</div>
-			<div>
+			<div className="flex flex-col gap-4">
 				<div className="flex place-items-center">
 					<Header header="سوابق تعمیرات" />
 					{statuses && (
@@ -198,7 +198,7 @@ const Page = () => {
 						>
 							<SelectTrigger
 								dir="rtl"
-								className="flex w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+								className="flex min-w-32 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
 								data-test="warranty-filter-trigger"
 							>
 								<SelectValue placeholder="وضعیت گارانتی" />

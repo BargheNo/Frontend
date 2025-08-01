@@ -9,7 +9,7 @@ export default function Header({
 }) {
 	return (
 		<h1
-			className={`${className} text-[#003a8b] text-3xl mb-6 font-black w-full`}
+			className={`${className} text-[#003a8b] text-3xl my-3 font-black w-full`}
 		>
 			{header}
 		</h1>
