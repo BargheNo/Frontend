@@ -29,7 +29,11 @@ export default function Layout({
 }: Readonly<{ children: React.ReactNode }>) {
 	const dispatch = useDispatch();
 	const navItems = [
-		// { name: "داشبورد", path: "/dashboard/dashboard", icon: <Gauge /> },
+		{
+			name: "تکمیل و ویرایش اطلاعات",
+			path: "/corpdashboard/editprofile",
+			icon: <SquarePen />,
+		},
 		{
 			name: "پنل‌های نصب شده",
 			path: "/corpdashboard/installed-panels",
@@ -47,11 +51,7 @@ export default function Layout({
 			RNPName: "bid.viewInstallationRequests",
 			icon: <ClipboardList />,
 		},
-		{
-			name: "تکمیل و ویرایش اطلاعات",
-			path: "/corpdashboard/editprofile",
-			icon: <SquarePen />,
-		},
+		{ name: "گزارشات", path: "/corpdashboard/reports", icon: <BarChart /> },
 		{
 			name: "پیام‌های من",
 			path: "/corpdashboard/messages",
@@ -63,16 +63,15 @@ export default function Layout({
 			RNPName: "maintenance.viewAll",
 			icon: <Wrench />,
 		},
-		{ name: "گزارشات", path: "/corpdashboard/reports", icon: <BarChart /> },
-		{
-			name: "تکنسین‌ها",
-			path: "/corpdashboard/technicians",
-			icon: <Users />,
-		},
 		{
 			name: "اخبار و اطلاعیه‌ها",
 			path: "/corpdashboard/announcements",
 			icon: <Megaphone />,
+		},
+		{
+			name: "تکنسین‌ها",
+			path: "/corpdashboard/technicians",
+			icon: <Users />,
 		},
 		{
 			name: "گارانتی",
