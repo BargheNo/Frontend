@@ -31,13 +31,13 @@ export default function OrderHistoryPagination() {
 				limit: limit ?? "1",
 			})
 			.then((res) => {
-				sethistory(res.data);
+				sethistory(res?.data);
 				setIsLoading(false);
 			})
 			.catch((err) => console.log(err));
 	};
 	useEffect(() => {
-		handelHistory("1", currpage, "3");
+		handelHistory("1", currpage, "10");
 	}, [currpage]);
 	return (
 		<>
@@ -79,7 +79,7 @@ export default function OrderHistoryPagination() {
 			)}
 			{history?.length > 0 && (
 				<div className="p-5 rtl">
-					<Pagination className="lg:mb-0 mb-20">
+					<Pagination className="lg:mb-0 mb-20 relative">
 						<PaginationContent>
 							<PaginationItem>
 								{Number(currpage) > 1 && (
