@@ -23,6 +23,7 @@ import {
 	SelectValue,
 } from "../ui/select";
 import { getData } from "@/src/services/apiHub";
+import NoRecordFound from "../NoRecordFound/NoRecordFound";
 
 interface status {
 	id: number;
@@ -33,7 +34,7 @@ export default function OrderHistoryPagination() {
 	const [history, sethistory] = useState<Orderhistory[]>([]);
 	const [currpage, Setcurrpage] = useState<string>("1");
 	const [isLoading, setIsLoading] = useState(true);
-	const [statuses, setStatuses] = useState(null);
+	const [statuses, setStatuses] = useState<status[] | null>(null);
 	const [status, setStatus] = useState<string>("1");
 	const handelHistory = (status: string, offset: string, limit: string) => {
 		orderService
@@ -109,21 +110,22 @@ export default function OrderHistoryPagination() {
 					</div>
 				</>
 			) : (
-				<div className="relative text-center place-items-center py-18 bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]">
-					<Image
-						className="w-1/3"
-						src={panelNotFound}
-						alt="orderNotFound"
-					/>
-					<div className="">
-						<p
-							className="mt-6 text-navy-blue font-bold rtl"
-							style={{ fontSize: "1.1rem" }}
-						>
-							هیچ پنلی یافت نشد.
-						</p>
-					</div>
-				</div>
+				<NoRecordFound />
+				// <div className="relative text-center place-items-center py-18 bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]">
+				// 	<Image
+				// 		className="w-1/3"
+				// 		src={panelNotFound}
+				// 		alt="orderNotFound"
+				// 	/>
+				// 	<div className="">
+				// 		<p
+				// 			className="mt-6 text-navy-blue font-bold rtl"
+				// 			style={{ fontSize: "1.1rem" }}
+				// 		>
+				// 			هیچ پنلی یافت نشد.
+				// 		</p>
+				// 	</div>
+				// </div>
 				// <div className="text-center place-items-center mt-6">
 				// 	<Image
 				// 		className="w-1/3"

@@ -15,6 +15,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 
 interface PanelProps {
 	id: number;
@@ -44,8 +45,8 @@ interface status {
 const Settings = () => {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [panels, setPanels] = useState<PanelProps[]>([]);
-	const [statuses, setStatuses] = useState([]);
-	const [status, setStatus] = useState(1);
+	const [statuses, setStatuses] = useState<status[] | null>(null);
+	const [status, setStatus] = useState<string>("1");
 	useEffect(() => {
 		setLoading(true);
 		getData({
@@ -67,10 +68,10 @@ const Settings = () => {
 		<PageContainer>
 			<div className="flex place-items-center">
 				<Header header="پنل‌های من" />
-				{statuses.length > 0 && (
+				{statuses && (
 					<Select
 						value={String(status)}
-						onValueChange={(value) => setStatus(Number(value))}
+						onValueChange={(value) => setStatus(value)}
 						data-test="warranty-filter"
 					>
 						<SelectTrigger
@@ -81,7 +82,7 @@ const Settings = () => {
 							<SelectValue placeholder="وضعیت گارانتی" />
 						</SelectTrigger>
 						<SelectContent dir="rtl">
-							{statuses.map((status: status, index: number) => (
+							{statuses?.map((status: status, index: number) => (
 								<SelectItem
 									key={index}
 									value={String(status.id)}
@@ -115,22 +116,23 @@ const Settings = () => {
 						/>
 					))
 				) : panels ? (
-					<div className="relative text-center place-items-center py-18 bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]">
-						<Image
-							className="w-1/3"
-							src={panelNotFound}
-							alt="orderNotFound"
-						/>
-						<div className="">
-							<p
-								className="mt-6 text-navy-blue font-bold rtl"
-								style={{ fontSize: "1.1rem" }}
-							>
-								هیچ پنلی یافت نشد.
-							</p>
-						</div>
-					</div>
+					<NoRecordFound />
 				) : (
+					// <div className="relative text-center place-items-center py-18 bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]">
+					// 	<Image
+					// 		className="w-1/3"
+					// 		src={panelNotFound}
+					// 		alt="orderNotFound"
+					// 	/>
+					// 	<div className="">
+					// 		<p
+					// 			className="mt-6 text-navy-blue font-bold rtl"
+					// 			style={{ fontSize: "1.1rem" }}
+					// 		>
+					// 			هیچ پنلی یافت نشد.
+					// 		</p>
+					// 	</div>
+					// </div>
 					<></>
 				)}
 			</div>
