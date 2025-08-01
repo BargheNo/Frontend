@@ -53,7 +53,7 @@ export default function AnnounceView({
 		return (
 			<>
 				{/* <div className="flex flex-row w-full items-center"> */}
-				{hasCreateNewsPermission && <AnnounceAddCard />}
+				{hasCreateNewsPermission && !onlyView && <AnnounceAddCard />}
 				{/* </div> */}
 				{isLoading && <LoadingSpinner />}
 				<AnnouncementBox

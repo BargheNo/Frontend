@@ -61,8 +61,7 @@ const Settings = () => {
 					.catch((err) => console.log(err))
 					.finally(() => setLoading(false));
 			})
-			.catch((err) => console.log(err))
-			.finally(() => setLoading(false));
+			.catch((err) => console.log(err));
 	}, [status]);
 	return (
 		<PageContainer>
@@ -118,21 +117,6 @@ const Settings = () => {
 				) : panels ? (
 					<NoRecordFound />
 				) : (
-					// <div className="relative text-center place-items-center py-18 bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]">
-					// 	<Image
-					// 		className="w-1/3"
-					// 		src={panelNotFound}
-					// 		alt="orderNotFound"
-					// 	/>
-					// 	<div className="">
-					// 		<p
-					// 			className="mt-6 text-navy-blue font-bold rtl"
-					// 			style={{ fontSize: "1.1rem" }}
-					// 		>
-					// 			هیچ پنلی یافت نشد.
-					// 		</p>
-					// 	</div>
-					// </div>
 					<></>
 				)}
 			</div>

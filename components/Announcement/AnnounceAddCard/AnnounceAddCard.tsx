@@ -123,7 +123,7 @@ export default function AnnounceAddCard() {
 							{/* <button className="flex items-center justify-center w-16 h-16 bg-fire-orange rounded-full! neo-btn border-none!">
 							<Plus className="text-white" size={30} />
 						</button> */}
-              <AddComponent title="ثبت خبر جدید" />
+							<AddComponent title="ثبت خبر جدید" />
 						</DialogTrigger>
 
 						<DialogContent className="w-[40vw]! max-w-none! h-[40vh]! rtl p-8">
