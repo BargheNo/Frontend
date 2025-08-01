@@ -102,7 +102,6 @@ export default function InstalledPanelPagination() {
 												key={index}
 												value={String(status.id)}
 												className="cursor-pointer"
-												data-test="warranty-filter-option-archived"
 											>
 												{status.name}
 											</SelectItem>

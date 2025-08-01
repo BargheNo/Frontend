@@ -14,21 +14,28 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 
 export default function Page() {
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
-	const [selectedItem, setSelectedItem] = useState<CorpRepairItem | null>(null);
+	const [selectedItem, setSelectedItem] = useState<CorpRepairItem | null>(
+		null
+	);
 	const [repairItems, setRepairItems] = useState<CorpRepairItem[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
-	const [myRepairsFilter, setMyRepairsFilter] = useState<"تایید شده" | "تمام شده" | "همه">("همه");
-	const [allRepairsFilter, setAllRepairsFilter] = useState<"در انتظار تایید" | "رد شده" | "همه">("همه");
+	const [myRepairsFilter, setMyRepairsFilter] = useState<
+		"تایید شده" | "تمام شده" | "همه"
+	>("همه");
+	const [allRepairsFilter, setAllRepairsFilter] = useState<
+		"در انتظار تایید" | "رد شده" | "همه"
+	>("همه");
 
 	useEffect(() => {
 		setIsLoading(true);
 		getCorpRepairRecords
 			.GetRepairRequest()
 			.then((res) => {
-				console.log(res.data)
+				console.log(res.data);
 				setRepairItems(res.data);
 				setIsLoading(false);
 			})
@@ -48,16 +55,18 @@ export default function Page() {
 		setSelectedItem(null);
 	};
 
-	const filteredMyRepairs = repairItems.filter(item => {
+	const filteredMyRepairs = repairItems.filter((item) => {
 		if (myRepairsFilter === "همه") {
 			return item.status === "تایید شده" || item.status === "تمام شده";
 		}
 		return item.status === myRepairsFilter;
 	});
 
-	const filteredAllRepairs = repairItems.filter(item => {
+	const filteredAllRepairs = repairItems.filter((item) => {
 		if (allRepairsFilter === "همه") {
-			return item.status === "در انتظار تایید" || item.status === "رد شده";
+			return (
+				item.status === "در انتظار تایید" || item.status === "رد شده"
+			);
 		}
 		return item.status === allRepairsFilter;
 	});
@@ -69,14 +78,24 @@ export default function Page() {
 				<div>
 					<div className="flex justify-between items-center mb-4">
 						<Header header="تعمیرات من" />
-						<Select dir="rtl" value={myRepairsFilter} onValueChange={(value: "تایید شده" | "تمام شده" | "همه") => setMyRepairsFilter(value)}>
+						<Select
+							dir="rtl"
+							value={myRepairsFilter}
+							onValueChange={(
+								value: "تایید شده" | "تمام شده" | "همه"
+							) => setMyRepairsFilter(value)}
+						>
 							<SelectTrigger className="w-[180px] bg-[#F0EDEF]">
 								<SelectValue placeholder="فیلتر وضعیت" />
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem value="همه">همه</SelectItem>
-								<SelectItem value="تایید شده">تایید شده</SelectItem>
-								<SelectItem value="تمام شده">تمام شده</SelectItem>
+								<SelectItem value="تایید شده">
+									تایید شده
+								</SelectItem>
+								<SelectItem value="تمام شده">
+									تمام شده
+								</SelectItem>
 							</SelectContent>
 						</Select>
 					</div>
@@ -84,10 +103,11 @@ export default function Page() {
 						{isLoading ? (
 							<LoadingSpinner />
 						) : filteredMyRepairs.length === 0 ? (
-							<div className="text-center py-8 text-gray-500">
-								هیچ درخواست تعمیراتی موجود نیست
-							</div>
+							<NoRecordFound text="هیچ درخواست تعمیراتی موجود نیست." />
 						) : (
+							// <div className="text-center py-8 text-gray-500">
+							// 	هیچ درخواست تعمیراتی موجود نیست
+							// </div>
 							filteredMyRepairs.map((item) => (
 								<div key={item.id} className="">
 									<CorpRepairCard
@@ -96,10 +116,19 @@ export default function Page() {
 										owner={`${item.panel.customer.firstName} ${item.panel.customer.lastName}`}
 										date={item.createdAt}
 										status={item.status}
-										UrgencyLevel={item.urgencyLevel.toLowerCase() as "low" | "medium" | "high"}
-										address={item.panel.address.streetAddress}
+										UrgencyLevel={
+											item.urgencyLevel.toLowerCase() as
+												| "low"
+												| "medium"
+												| "high"
+										}
+										address={
+											item.panel.address.streetAddress
+										}
 										className="w-full"
-										onDetailsClick={() => handleOpenDialog(item)}
+										onDetailsClick={() =>
+											handleOpenDialog(item)
+										}
 									/>
 								</div>
 							))
@@ -111,13 +140,21 @@ export default function Page() {
 				<div>
 					<div className="flex justify-between items-center mb-4">
 						<Header header="کلیۀ درخواستهای تعمیرات" />
-						<Select dir="rtl" value={allRepairsFilter} onValueChange={(value: "در انتظار تایید" | "رد شده" | "همه") => setAllRepairsFilter(value)}>
+						<Select
+							dir="rtl"
+							value={allRepairsFilter}
+							onValueChange={(
+								value: "در انتظار تایید" | "رد شده" | "همه"
+							) => setAllRepairsFilter(value)}
+						>
 							<SelectTrigger className="w-[180px] bg-[#F0EDEF]">
 								<SelectValue placeholder="فیلتر وضعیت" />
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem value="همه">همه</SelectItem>
-								<SelectItem value="در انتظار تایید">در انتظار تایید</SelectItem>
+								<SelectItem value="در انتظار تایید">
+									در انتظار تایید
+								</SelectItem>
 								<SelectItem value="رد شده">رد شده</SelectItem>
 							</SelectContent>
 						</Select>
@@ -126,10 +163,11 @@ export default function Page() {
 						{isLoading ? (
 							<LoadingSpinner />
 						) : filteredAllRepairs.length === 0 ? (
-							<div className="text-center py-8 text-gray-500">
-								هیچ درخواست تعمیراتی موجود نیست
-							</div>
+							<NoRecordFound text="هیچ درخواست تعمیراتی موجود نیست." />
 						) : (
+							// <div className="text-center py-8 text-gray-500">
+							// 	هیچ درخواست تعمیراتی موجود نیست
+							// </div>
 							filteredAllRepairs.map((item) => (
 								<div key={item.id} className="">
 									<CorpRepairCard
@@ -138,10 +176,19 @@ export default function Page() {
 										owner={`${item.panel.customer.firstName} ${item.panel.customer.lastName}`}
 										date={item.createdAt}
 										status={item.status}
-										UrgencyLevel={item.urgencyLevel.toLowerCase() as "low" | "medium" | "high"}
-										address={item.panel.address.streetAddress}
+										UrgencyLevel={
+											item.urgencyLevel.toLowerCase() as
+												| "low"
+												| "medium"
+												| "high"
+										}
+										address={
+											item.panel.address.streetAddress
+										}
 										className="w-full"
-										onDetailsClick={() => handleOpenDialog(item)}
+										onDetailsClick={() =>
+											handleOpenDialog(item)
+										}
 									/>
 								</div>
 							))

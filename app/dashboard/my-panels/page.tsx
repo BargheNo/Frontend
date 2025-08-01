@@ -3,11 +3,8 @@ import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 import Header from "@/components/Header/Header";
 import PanelCard from "@/components/Panel/PanelCard/PanelCard";
 import { getData } from "@/src/services/apiHub";
-import panelNotFound from "@/public/images/panelNotFound/panelNotFound.png";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
-import FilterSection from "@/components/CorpDashboard/FilterSection";
 import {
 	Select,
 	SelectContent,
@@ -86,7 +83,6 @@ const Settings = () => {
 									key={index}
 									value={String(status.id)}
 									className="cursor-pointer"
-									data-test="warranty-filter-option-archived"
 								>
 									{status.name}
 								</SelectItem>
