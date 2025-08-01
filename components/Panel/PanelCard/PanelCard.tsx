@@ -270,12 +270,10 @@ const PanelCard = ({
 
 					{/* ADDRESS SECTION */}
 					<div className="flex items-start text-sm text-gray-700 mt-6">
-						<div className="flex flex-row items-center">
+						<div className="flex flex-row">
 							<IconWithBackground icon={MapPin} color="#6B7280" />
-							<div className="font-medium mx-2">آدرس:</div>
-						</div>
-						<div className="flex flex-row mt-[6px]">
-							<span className="mr-1">
+							<div className="font-medium mx-2 mt-[10px]">آدرس:</div>
+							<span className="mr-1 mt-[10px]">
 								{isExpanded ? address : truncateText(address)}
 								{address.length > MAXLENGTH && (
 									<button
@@ -289,6 +287,9 @@ const PanelCard = ({
 								)}
 							</span>
 						</div>
+						{/* <div className="flex flex-row place-items-center">
+							
+						</div> */}
 					</div>
 				</div>
 			</div>
