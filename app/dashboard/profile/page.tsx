@@ -15,10 +15,6 @@ const Profile = () => {
 			>
 				<div className="flex justify-center items-center">
 					<UserProfile />
-					{/* <RolesAndPermissions
-          profileData={profileData}
-          isEditable={isEditable}
-          /> */}
 				</div>
 			</div>
 		</PageContainer>

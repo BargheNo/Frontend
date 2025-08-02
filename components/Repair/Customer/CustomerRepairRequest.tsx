@@ -283,12 +283,8 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 												icon={Tag}
 												type="text"
 												inputClassName={`!bg-[#FEFEFE]
-													${
-														formik.errors.title &&
-														formik.touched.title
-															? "!border-red-500 !ring-1 !ring-red-700"
-															: ""
-													}`}
+													${formik.errors.title && formik.touched.title ?
+													'!border-red-500 !ring-1 !ring-red-700' : ''}`}
 											>
 												عنوان
 											</CustomInput>
@@ -300,11 +296,8 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 											name="note"
 											icon={NotebookPen}
 											textareaClassName="!bg-[#FEFEFE]"
-											inputClassName={
-												formik.errors.note &&
-												formik.touched.note
-													? "!border-red-500 !ring-1 !ring-red-700"
-													: ""
+											inputClassName={formik.errors.note && formik.touched.note ? 
+												'!border-red-500 !ring-1 !ring-red-700' : ''
 											}
 										>
 											شرح مشکل

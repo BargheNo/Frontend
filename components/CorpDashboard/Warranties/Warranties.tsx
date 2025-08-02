@@ -158,7 +158,6 @@ const Warranties = () => {
 	if (!warrantyData) {
 		return <div>هیچ گارانتی ای یافت نشد!</div>;
 	}
-
 	return (
 		<div className="space-y-6 relative">
 			<div className="flex flex-col neu-container p-4 gap-4">
