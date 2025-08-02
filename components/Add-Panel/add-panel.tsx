@@ -47,6 +47,9 @@ import AddComponent from "../AddComponent/AddComponent";
 import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
 import { useSelector } from "react-redux";
 import { getData } from "@/src/services/apiHub";
+import StickyFooter from "../Dialog/StickyFooter/StickyFooter";
+import CancelButton from "../Dialog/CancelButton/CancelButton";
+import SubmitButton from "../Dialog/SubmitButton/SubmitButton";
 
 interface BuildingTypeProps {
 	id: number;
@@ -73,18 +76,21 @@ export default function AddPanel() {
 			});
 	};
 	useEffect(() => {
-		getData({ endPoint: `/v1/installation/request/building` }).then(
-			(data) => {
+		getData({ endPoint: `/v1/installation/request/building` })
+			.then((data) => {
 				setBuildingTypes(data?.data);
-			}
-		);
+			})
+			.catch((err) => console.log(err));
 		Getprovinces();
 	}, []);
 
 	const UpdateCityList = (provinceId: number) => {
-		provinceService.GetCities(provinceId).then((res) => {
-			Setcities(res?.data);
-		});
+		provinceService
+			.GetCities(provinceId)
+			.then((res) => {
+				Setcities(res?.data);
+			})
+			.catch((err) => console.log(err));
 	};
 	const Findprovinceid = (provinces: Province[], name: string) => {
 		const province = provinces.find((p) => String(p.ID) === name);
@@ -111,6 +117,7 @@ export default function AddPanel() {
 				console.log(res);
 				setOpen(false);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	};
 	return (
@@ -123,7 +130,7 @@ export default function AddPanel() {
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}
-				className="w-full sm:min-w-[750px] max-w-xl max-h-[90vh] no-scrollbar mx-auto p-4 overflow-auto py-4"
+				className="w-full dialog-width max-h-[90vh] no-scrollbar mx-auto overflow-y-auto pb-0"
 			>
 				<DialogHeader>
 					<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
@@ -223,8 +230,10 @@ export default function AddPanel() {
 									placeholder="نام پنل"
 									icon={SquareMenu}
 									name="name"
-									inputClassName={errors.name && touched.name ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
+									inputClassName={
+										errors.name && touched.name
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
 									}
 								/>
 							</div>
@@ -247,7 +256,10 @@ export default function AddPanel() {
 									name="building"
 									onValueChange={(value) => {
 										console.log(values);
-										setFieldValue("buildingType", Number(value));
+										setFieldValue(
+											"buildingType",
+											Number(value)
+										);
 									}}
 								>
 									<SelectTrigger
@@ -337,7 +349,10 @@ export default function AddPanel() {
 									value={values.provinceID}
 									onValueChange={(value) => {
 										Setdisable(false);
-										setFieldValue("provinceID", Number(value));
+										setFieldValue(
+											"provinceID",
+											Number(value)
+										);
 										setFieldValue("cityID", "");
 										const id = Findprovinceid(
 											provinces,
@@ -462,9 +477,13 @@ export default function AddPanel() {
 									}
 								/>
 							</div>
-
-							<DialogFooter className="flex flex-row justify-center items-center self-center">
-								{/* <div className="flex flex-row justify-center items-center self-center"> */}
+							<StickyFooter>
+								<CancelButton />
+								<SubmitButton loading={loading}>
+									ثبت پنل
+								</SubmitButton>
+							</StickyFooter>
+							{/* <DialogFooter className="flex flex-row justify-center items-center self-center">
 								<SignupButton
 									className="text-[#FA682D]"
 									type="submit"
@@ -479,9 +498,8 @@ export default function AddPanel() {
 										<p>ثبت پنل</p>
 									)}
 								</SignupButton>
-								{/* </div> */}
 								<DialogClose />
-							</DialogFooter>
+							</DialogFooter> */}
 						</Form>
 					)}
 				</Formik>

@@ -8,8 +8,8 @@ import {
 	SelectGroup,
 	SelectLabel,
 } from "@/components/ui/select";
+import { getData } from "@/src/services/apiHub";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 
 interface StatusType {
 	id: number;
@@ -19,6 +19,7 @@ interface StatusType {
 interface FilterCorpsProps {
 	value: string;
 	onChange: (value: string) => void;
+	setLoading: any;
 }
 
 const statusColors: Record<number, string> = {
@@ -29,37 +30,25 @@ const statusColors: Record<number, string> = {
 	5: "bg-gray-500", // همه
 };
 
-export const FilterCorps = ({ value, onChange }: FilterCorpsProps) => {
+export const FilterCorps = ({
+	value,
+	onChange,
+	setLoading,
+}: FilterCorpsProps) => {
 	const [statuses, setStatuses] = useState<StatusType[]>([]);
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
-
+	const getStatuses = () => {
+		// setLoading(true);
+		getData({ endPoint: `/v1/admin/corporation/status` })
+			.then((data) => {
+				console.log("data", data);
+				setStatuses(data?.data);
+			})
+			.catch((err) => console.log(err))
+			.finally(() => setLoading(false));
+	};
 	useEffect(() => {
-		const fetchStatuses = async () => {
-			try {
-				const response = await fetch(
-					"http://46.249.99.69:8080/v1/admin/corporation/status",
-					{
-						headers: {
-							Authorization: `Bearer ${accessToken}`,
-						},
-					}
-				);
-
-				if (!response.ok) {
-					throw new Error("Failed to fetch statuses");
-				}
-
-				const data = await response.json();
-				setStatuses(data.data);
-			} catch (err) {
-				console.error("Error fetching statuses:", err);
-			}
-		};
-
-		fetchStatuses();
-	}, [accessToken]);
+		getStatuses();
+	}, []);
 
 	return (
 		<Select onValueChange={onChange} value={value}>

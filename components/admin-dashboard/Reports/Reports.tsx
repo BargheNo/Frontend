@@ -15,8 +15,10 @@ import Header from "@/components/Header/Header";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import { getData, postData } from "@/src/services/apiHub";
+import useHasPermission from "@/src/functions/hasPermission";
 
 const Reports = () => {
+	const hasRespondReportPermission = useHasPermission("report.respond");
 	const [loadingRepair, setLoadingRepair] = useState<boolean>(true);
 	const [loadingPanel, setLoadingPanel] = useState<boolean>(true);
 	const [panelReports, setPanelReports] = useState<any[]>([]);
@@ -26,6 +28,7 @@ const Reports = () => {
 			.then((data) => {
 				setPanelReports(data.data);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoadingPanel(false));
 	};
 
@@ -34,17 +37,18 @@ const Reports = () => {
 			.then((data) => {
 				setMaintenanceReports(data.data);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoadingRepair(false));
 	};
 
 	const resolveReport = async (reportId: string) => {
-		postData({ endPoint: `/v1/admin/report/resolve/${reportId}` }).then(
-			(data) => {
+		postData({ endPoint: `/v1/admin/report/resolve/${reportId}` })
+			.then((data) => {
 				CustomToast(data?.message, "success");
 				fetchPanelReports();
 				fetchMaintenanceReports();
-			}
-		);
+			})
+			.catch((err) => console.log(err));
 	};
 
 	useEffect(() => {
@@ -212,18 +216,20 @@ const Reports = () => {
 							/>
 						</div>
 					</div>
-					<div
-						className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
-					>
-						<button
-							className="cursor-pointer"
-							onClick={() => resolveReport(id)}
+					{hasRespondReportPermission && (
+						<div
+							className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
 						>
-							بررسی
-						</button>
+							<button
+								className="cursor-pointer"
+								onClick={() => resolveReport(id)}
+							>
+								بررسی
+							</button>
 
-						<ArrowLeft />
-					</div>
+							<ArrowLeft />
+						</div>
+					)}
 				</div>
 			</div>
 		);

@@ -11,7 +11,6 @@ export default function Page() {
 	return (
 		<PageContainer>
 			<Header header="پیشنهادهای ارسال شده" />
-			{/* <FilterSection /> */}
 			<Bids />
 		</PageContainer>
 	);

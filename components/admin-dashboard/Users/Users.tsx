@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Phone, Settings, User, CircleX, Loader2 } from "lucide-react";
+import { Phone, Settings, User, CircleX, Loader2, Check } from "lucide-react";
 import styles from "./Users.module.css";
 import UserRolesModal from "./UserRoleModal";
 import FilterUsers from "./FilterUsers";
@@ -19,6 +19,9 @@ import {
 import { Button } from "@/components/ui/button";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
+import useHasPermission from "@/src/functions/hasPermission";
+import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
+import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
 type UserType = {
 	id: number;
 	firstName: string;
@@ -38,6 +41,8 @@ type Role = {
 };
 
 export default function Users() {
+	const hasBanUnbanPermission = useHasPermission("user.ban_unban");
+	const hasChangeRolePermission = useHasPermission("user.changeRole");
 	const [users, setUsers] = useState<UserType[]>([]);
 	const [loading, setLoading] = useState(true);
 
@@ -56,6 +61,7 @@ export default function Users() {
 			.then((data) => {
 				setUsers(data.data);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	}, []);
 
@@ -89,16 +95,17 @@ export default function Users() {
 				);
 			};
 			useEffect(() => {
-				getData({ endPoint: `/v1/admin/users/${id}/roles` }).then(
-					(data) => {
+				getData({ endPoint: `/v1/admin/users/${id}/roles` })
+					.then((data) => {
 						setUserRoles(data.data.map((role: Role) => role.id));
-					}
-				);
+					})
+					.catch((err) => console.log(err));
 				setLoadingRoles(true);
 				getData({ endPoint: `/v1/admin/roles` })
 					.then((data) => {
 						setAllRoles(data.data);
 					})
+					.catch((err) => console.log(err))
 					.finally(() => setLoadingRoles(false));
 			}, []);
 			const saveRoles = async () => {
@@ -115,6 +122,7 @@ export default function Users() {
 						fetchAllUsers();
 						setOpen(false);
 					})
+					.catch((err) => console.log(err))
 					.finally(() => setIsSaving(false));
 			};
 			const handleBanAction = async () => {
@@ -128,6 +136,7 @@ export default function Users() {
 						// );
 						fetchAllUsers();
 					})
+					.catch((err) => console.log(err))
 					.finally(() => setIsBanning(false));
 			};
 			return (
@@ -176,7 +185,7 @@ export default function Users() {
 							</div>
 						</DialogTrigger>
 						<DialogContent
-							className={`sm:max-w-[800px] max-h-[80vh] overflow-y-auto no-scrollbar rtl vazir dialog-width flex flex-col`}
+							className={`max-h-[80vh] overflow-y-auto no-scrollbar rtl vazir dialog-width flex flex-col pb-0`}
 						>
 							<div className="relative flex-1 overflow-y-auto no-scrollbar">
 								<DialogHeader>
@@ -185,15 +194,10 @@ export default function Users() {
 									</DialogTitle>
 								</DialogHeader>
 
-								{/* <DialogClose
-						className="absolute left-4 top-0 p-1 rounded-sm opacity-70 hover:bg-gray-100 disabled:pointer-events-none"
-						disabled={isSaving || isBanning}
-					></DialogClose> */}
-
 								{loadingRoles ? (
-									<div className="flex justify-center items-center h-40">
-										{/* <LoadingSpinner /> */}
-										<Loader2 className="animate-spin text-orange-500 h-8 w-8" />
+									<div className="flex justify-center items-center">
+										<LoadingSpinner className="w-full h-full" />
+										{/* <Loader2 className="animate-spin text-orange-500 h-8 w-8" /> */}
 									</div>
 								) : (
 									<div className="space-y-3 py-4">
@@ -202,7 +206,30 @@ export default function Users() {
 												key={role.id}
 												className="flex items-center gap-3 p-2"
 											>
-												<input
+												<div className="relative">
+													<input
+														name={`role-${role.id}`}
+														type="checkbox"
+														disabled={
+															!hasChangeRolePermission
+														}
+														defaultChecked={userRoles.includes(
+															role.id
+														)}
+														onChange={() =>
+															handleRoleChange(
+																role.id
+															)
+														}
+														className={`peer h-5 w-5 ${
+															hasChangeRolePermission
+																? "cursor-pointer"
+																: "cursor-not-allowed"
+														} transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500 mt-0.5`}
+													/>
+													<Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-2/3 text-white opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5 " />
+												</div>
+												{/* <input
 													type="checkbox"
 													id={`role-${role.id}`}
 													checked={userRoles.includes(
@@ -214,7 +241,7 @@ export default function Users() {
 														)
 													}
 													className="w-5 h-5 cursor-pointer text-orange-500 rounded focus:ring-orange-400 border-gray-300"
-												/>
+												/> */}
 												<label
 													htmlFor={`role-${role.id}`}
 													className="text-gray-700 cursor-pointer"
@@ -228,10 +255,10 @@ export default function Users() {
 							</div>
 
 							{/* Sticky footer */}
-							<div className="sticky bottom-0 bg-white">
-								<DialogFooter className="grid grid-cols-2 gap-4 w-full">
-									{/* Left-aligned buttons container */}
-									<div className="flex justify-start">
+							<StickyFooter footerClassName="grid grid-cols-2 gap-4">
+								{/* Left-aligned buttons container */}
+								<div className="flex justify-start">
+									{hasBanUnbanPermission && (
 										<Button
 											onClick={handleBanAction}
 											// disabled={isBanning}
@@ -250,11 +277,13 @@ export default function Users() {
 												<p>رفع انسداد</p>
 											)}
 										</Button>
-									</div>
+									)}
+								</div>
 
-									{/* Right-aligned button container */}
-									<div className="flex justify-end gap-2">
-										<DialogClose asChild>
+								{/* Right-aligned button container */}
+								<div className="flex justify-end gap-2">
+									<CancelButton />
+									{/* <DialogClose asChild>
 											<Button
 												variant="outline"
 												// disabled={isSaving || isBanning}
@@ -262,24 +291,26 @@ export default function Users() {
 											>
 												انصراف
 											</Button>
-										</DialogClose>
+										</DialogClose> */}
 
-										<Button
-											onClick={saveRoles}
-											// disabled={
-											// 	isLoading || isSaving || isBanning
-											// }
-											className="bg-orange-500 cursor-pointer hover:bg-orange-600 min-w-28"
-										>
-											{isSaving ? (
-												<LoadingOnButton />
-											) : (
-												<p>ذخیره تغییرات</p>
-											)}
-										</Button>
-									</div>
-								</DialogFooter>
-							</div>
+									<Button
+										onClick={saveRoles}
+										// disabled={
+										// 	isLoading || isSaving || isBanning
+										// }
+										className="bg-orange-500 cursor-pointer hover:bg-orange-600 min-w-28"
+									>
+										{isSaving ? (
+											<LoadingOnButton />
+										) : (
+											<p>ذخیره تغییرات</p>
+										)}
+									</Button>
+								</div>
+							</StickyFooter>
+							{/* <div className="sticky bottom-0 bg-white">
+								<DialogFooter className="grid grid-cols-2 gap-4 w-full"></DialogFooter>
+							</div> */}
 						</DialogContent>
 					</Dialog>
 					{/* <button
@@ -347,7 +378,7 @@ export default function Users() {
 					{/* <Loader2 className="animate-spin text-orange-500" size={32} /> */}
 				</div>
 			) : users.length === 0 ? (
-				<div className="flex flex-row text-center items-center justify-center">
+				<div className="flex bg-[#F4F1F3] flex-row text-center items-center justify-center">
 					<h2 className="text-gray-500 py-5 px-2 text-center">
 						کاربری پیدا نشد
 					</h2>

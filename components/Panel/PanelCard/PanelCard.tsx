@@ -22,6 +22,7 @@ import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 
 import {
 	Dialog,
+	DialogClose,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
@@ -30,6 +31,10 @@ import {
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import { postData } from "@/src/services/apiHub";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
+import wordExpression from "@/src/functions/Calculations";
+import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
+import { Button } from "@/components/ui/button";
+import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
 
 const PanelCard = ({
 	id,
@@ -62,6 +67,7 @@ const PanelCard = ({
 				CustomToast(data?.message, "success");
 				setOpen(false);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	};
 
@@ -79,8 +85,8 @@ const PanelCard = ({
 		return "bg-gradient-to-br from-gray-400 to-gray-500 shadow-gray-500";
 	};
 
-	const formatNumber = (num: number): string =>
-		num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	// const formatNumber = (num: number): string =>
+	// 	num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 	return (
 		<>
@@ -91,7 +97,9 @@ const PanelCard = ({
 				<div className="flex flex-col w-full h-full bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] p-3 sm:p-5 overflow-hidden relative">
 					{/* PANEL NAME */}
 					<div className="mb-6">
-						<h2 className="text-2xl font-bold text-gray-800">{panelName}</h2>
+						<h2 className="text-2xl font-bold text-gray-800">
+							{panelName}
+						</h2>
 					</div>
 
 					{/* MAIN CONTENT DIV */}
@@ -100,53 +108,63 @@ const PanelCard = ({
 						<div className="flex flex-row sm:flex-col gap-3 w-full sm:w-[20%]">
 							<Dialog open={open} onOpenChange={setOpen}>
 								<DialogTrigger asChild>
-									<button className="w-full flex items-center justify-between bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
-										<span className="font-medium">گزارش مشکل</span>
+									<button className="w-full flex items-center justify-evenly bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
+										<span className="font-medium">
+											گزارش مشکل
+										</span>
 										<AlertCircle className="mr-2 w-4 h-4" />
 									</button>
 								</DialogTrigger>
 								<DialogContent
 									style={{ backgroundColor: "#F1F4FC" }}
-									className="w-full sm:min-w-[750px] max-w-xl mx-auto p-6 overflow-auto max-h-[90vh] overflow-y-auto rtl"
+									className="max-h-[80vh] overflow-y-auto no-scrollbar rtl vazir pb-0 dialog-width flex flex-col"
+									// className="w-full dialog-width max-h-[80vh] overflow-y-auto rtl"
 								>
-									<DialogHeader>
-										<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
-											گزارش مشکل
-										</DialogTitle>
-									</DialogHeader>
 									<Formik
 										initialValues={{ problem: "" }}
 										validationSchema={validationSchema}
 										onSubmit={handleSubmit}
 									>
 										{({ isSubmitting }) => (
-											<Form className="flex flex-col space-y-4">
-												<CustomTextArea
-													name="problem"
-													icon={AlertCircle}
-													textareaClassName="!bg-[#FEFEFE] h-32"
-												>
-													توضیحات مشکل
-												</CustomTextArea>
-												<button
-													type="submit"
-													disabled={isSubmitting}
-													className="self-end w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white py-2 px-4 rounded-md transition-all duration-300"
-												>
-													{loading ? (
-														<LoadingOnButton />
-													) : (
-														<p>ارسال گزارش</p>
-													)}
-												</button>
+											<Form>
+												<div className="overflow-y-auto relative flex-1 no-scrollbar pb-4">
+													<DialogHeader>
+														<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
+															گزارش مشکل
+														</DialogTitle>
+													</DialogHeader>
+													<CustomTextArea
+														name="problem"
+														icon={AlertCircle}
+														textareaClassName="!bg-[#FEFEFE] h-32"
+													>
+														توضیحات مشکل
+													</CustomTextArea>
+												</div>
+												<StickyFooter>
+													<CancelButton />
+													<Button
+														type="submit"
+														disabled={isSubmitting}
+														className="min-w-28 flex place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white px-4 rounded-md transition-all duration-300"
+													>
+														{loading ? (
+															<LoadingOnButton />
+														) : (
+															<p>ارسال گزارش</p>
+														)}
+													</Button>
+												</StickyFooter>
 											</Form>
 										)}
 									</Formik>
 								</DialogContent>
 							</Dialog>
 							<Link href={`my-panels/123`} className="w-full">
-								<button className="w-full flex items-center justify-between bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
-									<span className="font-medium">مدیریت پنل</span>
+								<button className="w-full flex items-center justify-evenly bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
+									<span className="font-medium">
+										مدیریت پنل
+									</span>
 									<MoveLeft className="mr-2 w-4 h-4" />
 								</button>
 							</Link>
@@ -156,54 +174,94 @@ const PanelCard = ({
 						<div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full sm:w-[70%]">
 							<div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
 								<div className="flex items-center">
-									<PanelIconWithBackground icon={Battery} className="w-full justify-between" text={"ظرفیت"} color="#6B7280" />
+									<PanelIconWithBackground
+										icon={Battery}
+										className="w-full justify-between"
+										text={"ظرفیت"}
+										color="#6B7280"
+									/>
 								</div>
 								<div className="flex flex-col m-2 sm:m-3 items-center justify-center">
-									<div className="flex flex-row-reverse items-center gap-1">
+									<div className="flex flex-row-reverse items-center">
 										<span className="text-xl sm:text-3xl font-bold">
-											{formatNumber(technicalDetails.capacity)}
+											{
+												wordExpression(
+													technicalDetails?.capacity,
+													true
+												).value
+											}
 										</span>
-										<span>kW</span>
-									</div>
-								</div>
-							</div>
-
-							<div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
-								<div className="flex items-center">
-									<PanelIconWithBackground icon={Sun} className="w-full justify-between" text={"تولید امروز"} color="#F59E0B" />
-								</div>
-								<div className="flex flex-col m-2 sm:m-3 items-center justify-center">
-									<div className="flex flex-row-reverse items-center gap-1">
 										<span className="text-xl sm:text-3xl font-bold">
-											{formatNumber(technicalDetails.todayProduction)}
+											W
 										</span>
-										<span>kWh</span>
 									</div>
 								</div>
 							</div>
 
 							<div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
 								<div className="flex items-center">
-									<PanelIconWithBackground icon={TrendingUp} className="w-full justify-between" text={"بازدهی"} color="#3B82F6" />
+									<PanelIconWithBackground
+										icon={Sun}
+										className="w-full justify-between"
+										text={"تولید امروز"}
+										color="#F59E0B"
+									/>
 								</div>
 								<div className="flex flex-col m-2 sm:m-3 items-center justify-center">
-									<div className="flex flex-row-reverse items-center gap-1">
-										<span className="text-xl sm:text-3xl font-bold">{technicalDetails.efficiency}</span>
-										<span>%</span>
+									<div className="flex flex-row-reverse items-center">
+										<span className="text-xl sm:text-3xl font-bold">
+											{
+												wordExpression(
+													technicalDetails?.todayProduction,
+													true
+												).value
+											}
+										</span>
+										<span className="text-xl sm:text-3xl font-bold">
+											Wh
+										</span>
 									</div>
 								</div>
 							</div>
 
 							<div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
 								<div className="flex items-center">
-									<PanelIconWithBackground icon={AlertCircle} className="w-full justify-between" text={"وضعیت پنل"} color="#6B7280" />
+									<PanelIconWithBackground
+										icon={TrendingUp}
+										className="w-full justify-between"
+										text={"بازدهی"}
+										color="#3B82F6"
+									/>
 								</div>
 								<div className="flex flex-col m-2 sm:m-3 items-center justify-center">
-									<div className="flex flex-row-reverse items-center gap-1">
+									<div className="flex flex-row-reverse items-center">
+										<span className="text-xl sm:text-3xl font-bold">
+											{technicalDetails.efficiency}
+										</span>
+										<span className="text-xl sm:text-3xl font-bold">
+											%
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
+								<div className="flex items-center">
+									<PanelIconWithBackground
+										icon={AlertCircle}
+										className="w-full justify-between"
+										text={"وضعیت پنل"}
+										color="#6B7280"
+									/>
+								</div>
+								<div className="flex flex-col m-2 sm:m-3 items-center justify-center">
+									<div className="flex flex-row-reverse items-center place-items-center gap-1">
 										<div
 											className={`h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
-										></div>
-										<span className="text-sm font-medium text-gray-600">{status}</span>
+										/>
+										<span className="text-sm font-medium text-gray-600">
+											{status}
+										</span>
 									</div>
 								</div>
 							</div>
@@ -221,7 +279,9 @@ const PanelCard = ({
 								{isExpanded ? address : truncateText(address)}
 								{address.length > MAXLENGTH && (
 									<button
-										onClick={() => setIsExpanded(!isExpanded)}
+										onClick={() =>
+											setIsExpanded(!isExpanded)
+										}
 										className="text-blue-500 hover:text-blue-700 mr-2"
 									>
 										{isExpanded ? "کمتر" : "بیشتر"}

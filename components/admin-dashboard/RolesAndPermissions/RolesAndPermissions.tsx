@@ -1,18 +1,9 @@
 "use client";
 import React from "react";
 import styles from "./RolesAndPermissions.module.css";
-import {
-	User,
-	SquareCheckBig,
-	Trash2,
-	Pencil,
-} from "lucide-react";
+import { User, SquareCheckBig, Trash2, Pencil } from "lucide-react";
 import { useSelector } from "react-redux";
-import {
-	Dialog,
-	DialogContent,
-	DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 import * as Yup from "yup";
 import { useEffect, useState } from "react";
@@ -24,6 +15,7 @@ import Header from "@/components/Header/Header";
 import { Badge } from "@/components/ui/badge";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 import { deleteData, getData } from "@/src/services/apiHub";
+import useHasPermission from "@/src/functions/hasPermission";
 
 const initialValuesForm = { name: "", permissionIDs: [] };
 
@@ -32,19 +24,22 @@ const validationSchemaForm = Yup.object({
 	permissionIDs: Yup.array().of(Yup.number()),
 });
 
-const RolesAndPermissions = () => {
-	type Permission = {
-		id: number;
-		name: string;
-		description: string;
-		category: string;
-	};
-	type Role = {
-		id: string;
-		name: string;
-		permissions: Permission[];
-	};
+type Permission = {
+	id: number;
+	name: string;
+	description: string;
+	category: string;
+};
+type Role = {
+	id: string;
+	name: string;
+	permissions: Permission[];
+};
 
+const RolesAndPermissions = () => {
+	const hasCreateRolePermission = useHasPermission("user.createRole");
+	const editRolePermission = useHasPermission("user.manageRolePermissions");
+	const removeRolePermission = useHasPermission("user.removeRole");
 	const [roles, setRoles] = useState<any[]>([]);
 	const [allPermissions, setAllPermissions] = useState<Permission[]>([]);
 	const [editOpen, setEditOpen] = useState<boolean>(false);
@@ -59,6 +54,7 @@ const RolesAndPermissions = () => {
 				setRoles(data.data);
 				setLoading(false);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	};
 	const deleteRole = async (roleToDeleteId: string) => {
@@ -68,21 +64,28 @@ const RolesAndPermissions = () => {
 				CustomToast(data?.message, "success");
 				getRoles();
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setDeletingId(null));
 	};
 
 	const getAllPermissions = async () => {
-		getData({ endPoint: `/v1/admin/permissions` }).then((data) => {
-			setAllPermissions(data.data);
-		});
+		getData({ endPoint: `/v1/admin/permissions` })
+			.then((data) => {
+				setAllPermissions(data.data);
+			})
+			.catch((err) => console.log(err));
 	};
 	useEffect(() => {
 		getAllPermissions();
 		getRoles();
 	}, []);
-	return (
+	return loading ? (
+		<LoadingSpinner />
+	) : (
 		<>
-			<CreateRoleModal onSaveSuccess={getRoles} />
+			{hasCreateRolePermission && (
+				<CreateRoleModal onSaveSuccess={getRoles} />
+			)}
 			<Header header="نقش‌های فعلی" />
 			<Dialog open={editOpen} onOpenChange={setEditOpen}>
 				<div className="flex flex-col relative bg-[#F0EDEF] text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
@@ -155,81 +158,40 @@ const RolesAndPermissions = () => {
 									</div>
 									<div className="flex flex-row w-full h-full px-4 gap-4 rtl justify-end">
 										<DialogTrigger asChild>
-											<button
-												key={index}
-												onClick={() =>
-													setCurrentRole(role)
-												}
-												className={`cta-neu-button cursor-pointer w-1/8 flex flex-row ${styles.button} items-center content-center justify-center h-1/2 w-1/2`}
-											>
-												<p>تغییر</p>
-												<Pencil className="text-orange-500" />
-											</button>
-										</DialogTrigger>
-										{/* <DialogTrigger asChild key={index}>
-											<button
-												key={index}
-												className={`cta-neu-button cursor-pointer w-1/8 flex flex-row ${styles.button} items-center content-center justify-center h-1/2 w-1/2`}
-											>
-												<p>تغییر</p>
-												<Pencil className="text-orange-500" />
-											</button>
-										</DialogTrigger>
-										<DialogContent
-											style={{
-												backgroundColor: "#F1F4FC",
-											}}
-											className="w-full sm:min-w-[750px] mx-auto no-scrollbar p-4 overflow-auto py-4 max-h-[90vh] h-[90vh] overflow-y-auto rtl"
-										>
-											<EditRoleModal
-												editOpen={editOpen}
-												setEditOpen={setEditOpen}
-												onClose={() =>
-													setIsModalOpen(false)
-												}
-												role={currentRole}
-												onSaveSuccess={getRoles}
-											/>
-										</DialogContent> */}
-
-										{/* <button
-											className={`cta-neu-button cursor-pointer w-1/8 flex flex-row ${styles.button} items-center content-center justify-center h-1/2 w-1/2`}
-											onClick={(editOpen) => setEditOpen(!editOpen)}
-											// onClick={() =>
-											// 	openEditModal({
-											// 		role.id,
-											// 		name,
-											// 		role.permissions,
-											// 	})
-											// }
-										>
-											<p>تغییر</p>
-											<Pencil className="text-orange-500" />
-										</button> */}
-										<button
-											className={`cta-neu-button flex cursor-pointer w-1/8 ${styles.button} items-center content-center justify-center h-1/2 w-1/2 cursor-pointer`}
-											onClick={() => deleteRole(role.id)}
-											key={role.id}
-										>
-											{deletingId === role.id ? (
-												<LoadingOnButton />
-											) : (
-												<>
-													<p>حذف</p>
-													<Trash2 className="text-orange-500" />
-												</>
+											{editRolePermission && (
+												<button
+													key={index}
+													onClick={() =>
+														setCurrentRole(role)
+													}
+													className={`cta-neu-button cursor-pointer w-1/8 flex flex-row ${styles.button} items-center content-center justify-center h-1/2 w-1/2`}
+												>
+													<p>تغییر</p>
+													<Pencil className="text-orange-500" />
+												</button>
 											)}
-										</button>
+										</DialogTrigger>
+										{removeRolePermission && (
+											<button
+												className={`cta-neu-button flex cursor-pointer w-1/8 ${styles.button} items-center content-center justify-center h-1/2 w-1/2 cursor-pointer`}
+												onClick={() =>
+													deleteRole(role.id)
+												}
+												key={role.id}
+											>
+												{deletingId === role.id ? (
+													<LoadingOnButton />
+												) : (
+													<>
+														<p>حذف</p>
+														<Trash2 className="text-orange-500" />
+													</>
+												)}
+											</button>
+										)}
 									</div>
 								</div>
 							</div>
-							// <Roles
-							// 	key={index}
-							// 	id={role.id}
-							// 	name={role.name}
-							// 	permissions={role.permissions}
-							// 	deleting={deleting}
-							// />
 						))
 					) : (
 						<p className="text-gray-500 text-right">
@@ -241,7 +203,7 @@ const RolesAndPermissions = () => {
 					style={{
 						backgroundColor: "#F1F4FC",
 					}}
-					className="w-full sm:min-w-[750px] mx-auto no-scrollbar p-4 overflow-auto py-4 max-h-[90vh] h-[90vh] overflow-y-auto rtl"
+					className="w-full sm:min-w-[750px] mx-auto no-scrollbar p-4 overflow-auto pb-0 max-h-[90vh] h-[90vh] overflow-y-auto rtl"
 				>
 					<EditRoleModal
 						editOpen={editOpen}
@@ -252,12 +214,6 @@ const RolesAndPermissions = () => {
 					/>
 				</DialogContent>
 			</Dialog>
-			{/* <EditRoleModal
-				isOpen={isModalOpen}
-				onClose={() => setIsModalOpen(false)}
-				role={currentRole}
-				onSaveSuccess={getRoles}
-			/> */}
 		</>
 	);
 };

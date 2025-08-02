@@ -13,11 +13,11 @@ import { putData } from "@/src/services/apiHub";
 
 const validationSchema = Yup.object({
 	password: Yup.string()
-		.min(8, "رمز عبور باید حداقل 8 کاراکتر باشد.")
-		.matches(/[a-z]/, ".رمز عبور باید شامل حداقل یک حرف کوچک باشد")
-		.matches(/[A-Z]/, ".رمز عبور باید شامل حداقل یک حرف بزرگ باشد")
-		.matches(/\d/, ".رمز عبور باید شامل حداقل یک عدد باشد")
-		.matches(/[\W_]/, ".رمز عبور باید شامل حداقل یک نماد باشد")
+		// .min(8, "رمز عبور باید حداقل 8 کاراکتر باشد.")
+		// .matches(/[a-z]/, ".رمز عبور باید شامل حداقل یک حرف کوچک باشد")
+		// .matches(/[A-Z]/, ".رمز عبور باید شامل حداقل یک حرف بزرگ باشد")
+		// .matches(/\d/, ".رمز عبور باید شامل حداقل یک عدد باشد")
+		// .matches(/[\W_]/, ".رمز عبور باید شامل حداقل یک نماد باشد")
 		.required("رمز عبور جدید الزامی است"),
 	confirmPassword: Yup.string()
 		.oneOf(
@@ -47,10 +47,12 @@ const ResetPassword = () => {
 				password,
 				confirmPassword,
 			},
-		}).then((data) => {
-			CustomToast(data?.message, "success");
-			window.location.href = "/dashboard";
-		});
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				window.location.href = "/dashboard";
+			})
+			.catch((err) => console.log(err));
 	};
 
 	return (

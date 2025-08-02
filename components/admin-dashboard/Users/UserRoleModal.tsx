@@ -53,18 +53,20 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 
 	// Fetch all available roles
 	const getAllRoles = async () => {
-		getData({ endPoint: `/v1/admin/roles` }).then((data) => {
-			setAllRoles(data.data);
-		});
+		getData({ endPoint: `/v1/admin/roles` })
+			.then((data) => {
+				setAllRoles(data.data);
+			})
+			.catch((err) => console.log(err));
 	};
 
 	// Fetch roles for the current user
 	const getUserRoles = async (userId: number) => {
-		getData({ endPoint: `/v1/admin/users/${userId}/roles` }).then(
-			(data) => {
+		getData({ endPoint: `/v1/admin/users/${userId}/roles` })
+			.then((data) => {
 				setUserRoles(data.data.map((role: Role) => role.id));
-			}
-		);
+			})
+			.catch((err) => console.log(err));
 	};
 	// Save updated roles
 	const saveRoles = async () => {
@@ -81,6 +83,7 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 				onSaveSuccess();
 				onClose(false);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setIsSaving(false));
 	};
 
@@ -95,6 +98,7 @@ const UserRolesModal: React.FC<UserRolesModalProps> = ({
 				);
 				onSaveSuccess();
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setIsBanning(false));
 	};
 	const handleRoleChange = (roleId: number) => {

@@ -4,9 +4,9 @@ export default function wordExpression(
 ) {
 	if (typeof value === "number") {
 		if (english) {
-			if (value > 1e3) return { value: `${value / 1e3}k`, changed: true };
-			if (value > 1e6) return { value: `${value / 1e6}M`, changed: true };
-			if (value > 1e9) return { value: `${value / 1e9}G`, changed: true };
+			if (value > 1e9) return { value: `${Math.round(value / 1e9)}G`, changed: true };
+			if (value > 1e6) return { value: `${Math.round(value / 1e6)}M`, changed: true };
+			if (value > 1e3) return { value: `${Math.round(value / 1e3)}k`, changed: true };
 			return { value: `${value}`, changed: true };
 		} else {
 			let res = "";

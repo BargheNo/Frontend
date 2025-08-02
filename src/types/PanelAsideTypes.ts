@@ -3,6 +3,7 @@ import { ReactNode, JSX } from "react";
 interface NavItem {
   path: string;
   name: string;
+  RNPName?: string;
   icon: JSX.Element;
 }
 

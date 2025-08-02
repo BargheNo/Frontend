@@ -15,11 +15,13 @@ import styles from "./CustomDatePicker.module.css";
 import DateConverter from "@/src/functions/toJalali";
 export function CustomDatePicker({
 	placeholder,
+	disabled,
 	className,
 	date,
 	setDate,
 }: {
 	placeholder: string;
+	disabled?: boolean;
 	className?: string;
 	date: string;
 	setDate?: any;
@@ -35,11 +37,11 @@ export function CustomDatePicker({
 		console.log("date", date, timeZonedDateISO);
 		return timeZonedDateISO;
 	};
-	
+
 	return (
 		<div className="flex flex-col gap-3">
 			<Popover open={open} onOpenChange={setOpen}>
-				<PopoverTrigger asChild>
+				<PopoverTrigger asChild disabled={disabled}>
 					<div
 						className={`cursor-pointer w-full ${styles.Wrapper} ${styles.Conter}`}
 					>
@@ -49,6 +51,7 @@ export function CustomDatePicker({
 							} cursor-pointer ${className} ${
 								styles.CustomInput
 							}`}
+							disabled={disabled}
 							type="button"
 						>
 							{date ? DateConverter(date) : placeholder}
@@ -56,26 +59,27 @@ export function CustomDatePicker({
 						<CalendarDays className={`${styles.icon}`} />
 					</div>
 				</PopoverTrigger>
-				<PopoverContent
-					className="w-auto overflow-hidden p-0"
-					align="start"
-				>
-					<Calendar
-						mode="single"
-						selected={date ? new Date(date) : undefined}
-						onSelect={(newDate) => {
-							const timeZonedNewDate =
-								newDate === undefined
-									? ""
-									: String(applyTimeZone(newDate));
-							console.log(date, timeZonedNewDate);
-							setDate(timeZonedNewDate);
-							if (timeZonedNewDate) {
-								setOpen(false);
-							}
-						}}
-					/>
-				</PopoverContent>
+				{!disabled && (
+					<PopoverContent
+						className="w-auto overflow-hidden p-0"
+						align="start"
+					>
+						<Calendar
+							mode="single"
+							selected={date ? new Date(date) : undefined}
+							onSelect={(newDate) => {
+								const timeZonedNewDate =
+									newDate === undefined
+										? ""
+										: String(applyTimeZone(newDate));
+								setDate(timeZonedNewDate);
+								if (timeZonedNewDate) {
+									setOpen(false);
+								}
+							}}
+						/>
+					</PopoverContent>
+				)}
 			</Popover>
 		</div>
 	);

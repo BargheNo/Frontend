@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 // import { toast } from "sonner";
 import { baseURL, getData, putDataFile } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import { Button } from "@/components/ui/button";
 
 export interface ProfileData {
 	firstName: string;
@@ -34,7 +35,7 @@ const UserProfile = () => {
 	const [previewImage, setPreviewImage] = useState<string | null>(null);
 	const [profileData, setProfileData] = useState<ProfileData | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
-	const [isEditable, setIsEditable] = useState(false);
+	const [isEditable, setIsEditable] = useState(true);
 
 	useEffect(() => {
 		fetchProfileData();
@@ -45,8 +46,8 @@ const UserProfile = () => {
 			const response = await getData({
 				endPoint: `${baseURL}/v1/user/profile`,
 			});
-			// console.log(response.data);
-			setProfileData(response.data);
+			console.log(response.data);
+			setProfileData(response?.data);
 		} catch (error) {
 			console.error("Error fetching profile:", error);
 			CustomToast("خطا در دریافت اطلاعات پروفایل", "error");
@@ -59,15 +60,16 @@ const UserProfile = () => {
 	const getInitialValues = (): ProfileData => ({
 		firstName: profileData?.firstName || "",
 		lastName: profileData?.lastName || "",
-		phone: profileData?.phone ? "0" + profileData.phone.slice(3, 13) : "",
+		phone: profileData?.phone || "",
+		// phone: profileData?.phone ? "0" + profileData.phone.slice(3, 13) : "",
 		email: profileData?.email || "",
 		nationalCode: profileData?.nationalCode || "",
 		profilePic: profileData?.profilePic || null,
 		status: profileData?.status || "",
 	});
 
-	console.log(profileData);
-	console.log(getInitialValues());
+	// console.log(profileData);
+	// console.log(getInitialValues());
 
 	const handleImageChange = (
 		event: React.ChangeEvent<HTMLInputElement>,
@@ -115,9 +117,9 @@ const UserProfile = () => {
 			setProfileData(values);
 			setIsEditable(false);
 		} catch (error) {
-			console.error("Error updating profile:", error);
+			console.log("Error updating profile:", error);
 			// toast.error("خطا در بروزرسانی اطلاعات");
-			CustomToast("خطا در بروزرسانی اطلاعات", "error");
+			// CustomToast("خطا در بروزرسانی اطلاعات", "error");
 		}
 	};
 
@@ -156,9 +158,9 @@ const UserProfile = () => {
 
 	return (
 		<div className="p-6 w-full neu-container">
-			<h2 className="text-navy-blue text-2xl font-bold mb-6">
+			{/* <h2 className="text-navy-blue text-2xl font-bold mb-6">
 				پروفایل کاربری
-			</h2>
+			</h2> */}
 
 			{isLoading ? (
 				<div>Loading...</div>
@@ -214,7 +216,16 @@ const UserProfile = () => {
 							))}
 
 							<div className="flex justify-end">
-								<button
+								<Button
+									type="submit"
+									className="px-4 py-2 font-black active:brightness-90 flex justify-center w-fit gap-4 min-w-28  place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white rounded-md transition-all duration-300"
+								>
+									{isEditable
+										? "ذخیره تغییرات"
+										: "ویرایش اطلاعات"}
+									{isEditable ? <Save /> : <Edit />}
+								</Button>
+								{/* <button
 									type="submit"
 									className={`px-4 py-2 flex justify-center w-fit gap-4 !rounded-lg ${
 										isEditable
@@ -226,7 +237,7 @@ const UserProfile = () => {
 										? "ذخیره تغییرات"
 										: "ویرایش اطلاعات"}
 									{isEditable ? <Save /> : <Edit />}
-								</button>
+								</button> */}
 							</div>
 						</Form>
 					)}

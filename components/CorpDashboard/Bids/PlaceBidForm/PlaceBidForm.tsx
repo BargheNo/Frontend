@@ -33,6 +33,9 @@ import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import { CustomDatePicker } from "@/components/Custom/CustomDatePicker/CustomDatePicker";
 import { GuaranteeProps } from "@/src/types/BidCardTypes";
+import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
+import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
+import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
 
 const Item = ({
 	icon: Icon,
@@ -127,22 +130,24 @@ export default function PlaceBidForm({
 		postData({
 			endPoint: `${baseURL}/v1/corp/${corpId}/installation/request/${requestId}/bid`,
 			data: formData,
-		}).then((data) => {
-			CustomToast(data?.message, "success");
-			setOpen(false);
-		});
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				setOpen(false);
+			})
+			.catch((err) => console.log(err));
 	};
 	useEffect(() => {
-		getData({ endPoint: `/v1/corp/${corpId}/guarantee?status=1` }).then(
-			(data) => {
+		getData({ endPoint: `/v1/corp/${corpId}/guarantee?status=1` })
+			.then((data) => {
 				setGuarantees(
 					data?.data?.filter(
 						(guarantee: GuaranteeProps) =>
 							guarantee.status === "فعال"
 					)
 				);
-			}
-		);
+			})
+			.catch((err) => console.log(err));
 	}, []);
 	return (
 		<Formik
@@ -308,15 +313,20 @@ export default function PlaceBidForm({
 							}
 						/>
 					</div>
-
-					<DialogFooter>
+					<StickyFooter>
+						<CancelButton />
+						<SubmitButton>
+							ارسال پیشنهاد
+						</SubmitButton>
+					</StickyFooter>
+					{/* <DialogFooter>
 						<button
 							type="submit"
 							className={`${vazir.className} ml-3 bg-[#11B33A] hover:cursor-pointer shadow-md rounded-md px-2 py-1 text-white`}
 						>
 							ارسال پیشنهاد
 						</button>
-					</DialogFooter>
+					</DialogFooter> */}
 				</Form>
 			)}
 		</Formik>

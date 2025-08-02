@@ -169,7 +169,7 @@ const Page = () => {
 		});
 	};
 
-	useEffect(() => {		
+	useEffect(() => {
 		// For testing, use mock data instead of API call
 		// setRepairItems(mockRepairItems);
 		// setIsLoading(false);
@@ -178,16 +178,18 @@ const Page = () => {
 		getData({
 			endPoint: `${baseURL}/v1/user/maintenance/request?status=1`,
 		})
-		.then((res) => {
-			// console.log(res);
-			setRepairItems(res.data);
-			setIsLoading(false);
-		})
-		.catch((err) => {
-			setError(err instanceof Error ? err : new Error('Failed to fetch repair items'));
-			CustomToast("مشکلی در دریافت سوابق تعمیرات پیش آمد!", "error");
-			setIsLoading(false);
-		});
+			.then((res) => {
+				// console.log(res);
+				setRepairItems(res.data);
+				setIsLoading(false);
+			})
+			.catch((err) => console.log(err))
+			.finally(() => setIsLoading(false));
+		// .catch((err) => {
+		// 	setError(err instanceof Error ? err : new Error('Failed to fetch repair items'));
+		// 	CustomToast("مشکلی در دریافت سوابق تعمیرات پیش آمد!", "error");
+		// 	setIsLoading(false);
+		// });
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	}, [refreshTrigger]);
 
@@ -204,7 +206,7 @@ const Page = () => {
 
 	// Function to trigger refresh
 	const triggerRefresh = () => {
-		setRefreshTrigger(prev => prev + 1);
+		setRefreshTrigger((prev) => prev + 1);
 	};
 
 	const recentRepairs = getRecentRepairs(repairItems);
