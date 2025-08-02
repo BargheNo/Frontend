@@ -285,131 +285,103 @@ export default function Neworder() {
 											setFieldValue("cityID", value);
 										}}
 									>
-										<SelectValue placeholder="شهر" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectGroup>
-											<SelectLabel>شهر</SelectLabel>
-											{cities?.length > 0 ? (
-												cities.map((city, index) => (
-													<SelectItem
-														key={index}
-														value={String(city?.ID)}
-														className="cursor-pointer"
-														id={String(index)}
-													>
-														{Object.values(
-															city.name
-														)}
-													</SelectItem>
-												))
-											) : (
-												<p>هیچ شهری یافت نشد</p>
-											)}
-										</SelectGroup>
-									</SelectContent>
-								</Select>
-							</div>
-							<div className="-mt-5 w-full">
-								<CustomTextArea
-									icon={MapPinHouse}
-									name="address"
-									id="address"
-									placeholder="آدرس"
-									inputClassName={errors.address && touched.address ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
-									}
-								/>
-							</div>
-							<div
-								className="flex md:flex-row flex-col justify-end w-full -mt-4"
-								style={{ gap: "1vw" }}
-							>
-								<CustomInput
-									type="number"
-									// style={{ width: "25vw" }}
-									dir="rtl"
-									icon={Mailbox}
-									name="code"
-									placeholder="کد پستی"
-									inputClassName={errors.code && touched.code ? 
-										'!border-red-500 !ring-1 !ring-red-700' : ''
-									}
-								/>
-								<CustomInput
-									type="number"
-									style={{ width: "12vw" }}
-									dir="rtl"
-									icon={House}
-									placeholder="پلاک"
-									name="number"
-									inputClassName={errors.number && touched.number ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
-									}
-								/>
-								<CustomInput
-									type="number"
-									style={{ width: "12vw" }}
-									dir="rtl"
-									icon={BellRing}
-									placeholder="واحد"
-									name="unit"
-									inputClassName={errors.unit && touched.unit ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
-									}
-								/>
-							</div>
-
-							<div className="flex w-full gap-x-1 text-gray-500 -mb-6 mt-2">
-								<ShieldAlert />
-								<p>مکانی که برای نصب پنل در نظر دارید.</p>
-							</div>
-
-							<div
-								className="grid grid-cols-2 grid-rows-3 h-52 gap-x-3 w-full items-center -mt-2"
-								// style={{ gap: "1vw" }}
-							>
-								<CustomInput
-									type="number"
-									dir="rtl"
-									// style={{ width: "25vw" }}
-									placeholder="مساحت(مترمربع)"
-									icon={LandPlot}
-									name="area"
-									inputClassName={errors.area && touched.area ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
-									}
-								/>
-								<div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
-									<ShieldAlert />
-									<p>مساحت محل نصب پنل (متر مربع)</p>
+										<SelectTrigger
+											disabled={disable}
+											className={`${style.CustomInput} cursor-pointer`}
+										>
+											<SelectValue placeholder="شهر" />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectGroup>
+												<SelectLabel>شهر</SelectLabel>
+												{cities?.length > 0 ? (
+													cities.map(
+														(city, index) => (
+															<SelectItem
+																key={index}
+																value={String(
+																	city?.ID
+																)}
+																className="cursor-pointer"
+																id={String(
+																	index
+																)}
+															>
+																{Object.values(
+																	city.name
+																)}
+															</SelectItem>
+														)
+													)
+												) : (
+													<p>هیچ شهری یافت نشد</p>
+												)}
+											</SelectGroup>
+										</SelectContent>
+									</Select>
 								</div>
-								<CustomInput
-									type="number"
-									dir="rtl"
-									// style={{ width: "25vw" }}
-									placeholder="میزان برق مورد نیاز(کیلووات)"
-									icon={Gauge}
-									name="electricity"
-									inputClassName={errors.electricity && touched.electricity ? 
-										'!border-red-500 !ring-1 !ring-red-700' : ''
-									}
-								/>
-								<div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
-									<ShieldAlert />
-									<p className="">میزان برق مورد نیاز </p>
+								<div className="-mt-5 w-full">
+									<CustomTextArea
+										icon={MapPinHouse}
+										name="address"
+										id="address"
+										placeholder="آدرس"
+										inputClassName={
+											errors.address && touched.address
+												? "!border-red-500 !ring-1 !ring-red-700"
+												: ""
+										}
+									/>
+								</div>
+								<div
+									className="flex md:flex-row flex-col justify-end w-full -mt-4"
+									style={{ gap: "1vw" }}
+								>
+									<CustomInput
+										type="number"
+										// style={{ width: "25vw" }}
+										dir="rtl"
+										icon={Mailbox}
+										name="code"
+										placeholder="کد پستی"
+										inputClassName={
+											errors.code && touched.code
+												? "!border-red-500 !ring-1 !ring-red-700"
+												: ""
+										}
+									/>
+									<CustomInput
+										type="number"
+										style={{ width: "12vw" }}
+										dir="rtl"
+										icon={House}
+										placeholder="پلاک"
+										name="number"
+										inputClassName={
+											errors.number && touched.number
+												? "!border-red-500 !ring-1 !ring-red-700"
+												: ""
+										}
+									/>
+									<CustomInput
+										type="number"
+										style={{ width: "12vw" }}
+										dir="rtl"
+										icon={BellRing}
+										placeholder="واحد"
+										name="unit"
+										inputClassName={
+											errors.unit && touched.unit
+												? "!border-red-500 !ring-1 !ring-red-700"
+												: ""
+										}
+									/>
 								</div>
 
-								<CustomInput
-									type="number"
-									dir="rtl"
-									placeholder="سقف هزینه(ریال)"
-									icon={CircleDollarSign}
-									name="cost"
-									inputClassName={errors.cost && touched.cost ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
-									}
-								/>
+								<div className="flex w-full gap-x-1 text-gray-500 -mb-6 mt-2">
+									<ShieldAlert />
+									<p>مکانی که برای نصب پنل در نظر دارید.</p>
+								</div>
 
 								<div
 									className="grid grid-cols-2 grid-rows-3 h-52 gap-x-3 w-full items-center -mt-2"
