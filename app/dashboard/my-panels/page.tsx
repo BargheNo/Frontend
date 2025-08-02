@@ -72,7 +72,7 @@ const Settings = () => {
 					>
 						<SelectTrigger
 							dir="rtl"
-							className="flex w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+							className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
 							data-test="warranty-filter-trigger"
 						>
 							<SelectValue placeholder="وضعیت گارانتی" />
