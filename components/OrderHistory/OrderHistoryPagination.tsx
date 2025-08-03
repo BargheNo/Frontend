@@ -77,7 +77,7 @@ export default function OrderHistoryPagination() {
 							className="flex min-w-32 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
 							data-test="warranty-filter-trigger"
 						>
-							<SelectValue placeholder="وضعیت گارانتی" />
+							<SelectValue placeholder="وضعیت درخواست" />
 						</SelectTrigger>
 						<SelectContent dir="rtl">
 							{statuses?.map((status: status, index: number) => (

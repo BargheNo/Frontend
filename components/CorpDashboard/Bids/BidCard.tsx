@@ -344,7 +344,7 @@ export default function BidCard({
 									<div className="bg-gradient-to-b from-[#EE4334] to-[#D73628] rounded-full w-16 h-16 flex items-center place-content-center text-white cursor-pointer shadow-md hover:shadow-lg transition duration-300 hover:scale-105">
 										<ArrowLeft />
 									</div>
-									<span>مشاهده جزئیات</span>
+									<span>ویرایش پیشنهاد</span>
 								</div>
 							</DialogTrigger>
 							<DialogContent

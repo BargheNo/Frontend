@@ -315,7 +315,7 @@ export default function CorpMessagesPagination() {
 								className="flex min-w-48 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
 								data-test="warranty-filter-trigger"
 							>
-								<SelectValue placeholder="وضعیت گارانتی" />
+								<SelectValue placeholder="نوع اعلان" />
 							</SelectTrigger>
 							<SelectContent dir="rtl">
 								{statuses?.map(
