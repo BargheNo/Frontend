@@ -31,17 +31,17 @@ interface Request {
 	maxCost: number;
 }
 
-interface status {
-	id: number;
-	name: string;
-}
+// interface status {
+// 	id: number;
+// 	name: string;
+// }
 
 export default function Requests() {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [requestData, setRequestData] = useState<Request[] | null>(null);
 
-	const [statuses, setStatuses] = useState<status[] | null>(null);
-	const [status, setStatus] = useState<string>("1");
+	// const [statuses, setStatuses] = useState<status[] | null>(null);
+	// const [status, setStatus] = useState<string>("1");
 
 	const corpId = useSelector((state: RootState) => state.user.corpId);
 	useEffect(() => {
@@ -49,7 +49,7 @@ export default function Requests() {
 		console.log("new req with status", status);
 		getData({
 			endPoint: `/v1/corp/${corpId}/installation/request`,
-			params: { status: status, offset: "1", limit: "3" },
+			params: { page: "1", pageSize: "12" },
 		})
 			.then((data) => {
 				console.log(data);
@@ -68,7 +68,7 @@ export default function Requests() {
 		<>
 			<div className="flex place-items-center">
 				<Header header="درخواست‌های موجود در سرتاسر سامانه" />
-				{statuses && (
+				{/* {statuses && (
 					<Select
 						value={String(status)}
 						onValueChange={(value) => setStatus(value)}
@@ -93,7 +93,7 @@ export default function Requests() {
 							))}
 						</SelectContent>
 					</Select>
-				)}
+				)} */}
 			</div>
 			<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F0EDEF] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
 				{loading ? (
