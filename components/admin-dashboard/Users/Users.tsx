@@ -30,6 +30,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 
 type UserType = {
 	id: number;
@@ -78,9 +79,9 @@ export default function Users() {
 
 	const fetchAllUsers = useCallback(async () => {
 		setLoading(true);
-		getData({ endPoint: `/v1/admin/users?statuses=1&statuses=2` })
+		getData({ endPoint: `/v1/admin/users`, params: {statuses: "1"} })
 			.then((data) => {
-				setUsers(data.data);
+				setUsers(data?.data);
 			})
 			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
@@ -105,7 +106,7 @@ export default function Users() {
 						defaultValue="all"
 						onValueChange={(value) => {
 							setFilterType(value);
-							setFilterValue("1");
+							setFilterValue("all");
 						}}
 					>
 						<SelectTrigger
@@ -162,6 +163,7 @@ export default function Users() {
 						</Select>
 					) : filterType === "status" ? (
 						<Select
+							value={filterValue}
 							onValueChange={(value) => setFilterValue(value)}
 							defaultValue="all"
 						>
@@ -208,14 +210,17 @@ export default function Users() {
 						{/* <Loader2 className="animate-spin text-orange-500" size={32} /> */}
 					</div>
 				) : users.length === 0 ? (
-					<div className="flex bg-[#F4F1F3] flex-row text-center items-center justify-center">
-						<h2 className="text-gray-500 py-5 px-2 text-center">
-							کاربری پیدا نشد
-						</h2>
-						<div className="text-orange-400">
-							<CircleX />
-						</div>
+					<div className="neu-container">
+						<NoRecordFound text="کاربری پیدا نشد" />
 					</div>
+					// <div className="flex bg-[#F4F1F3] flex-row text-center items-center justify-center">
+					// 	<h2 className="text-gray-500 py-5 px-2 text-center">
+					// 		کاربری پیدا نشد
+					// 	</h2>
+					// 	<div className="text-orange-400">
+					// 		<CircleX />
+					// 	</div>
+					// </div>
 				) : (
 					users.map((user) => (
 						<UserItem

@@ -35,6 +35,7 @@ import {
 import { Button } from "@/components/ui/button";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import useHasPermission from "@/src/functions/hasPermission";
+import Header from "@/components/Header/Header";
 
 interface CorporationType {
 	id: number;
@@ -644,15 +645,23 @@ const CorpManagement = () => {
 
 	return (
 		<div className="flex flex-col">
-			<div className="pb-6">
+			<div className="flex place-items-center">
+				<Header header="شرکت های فعلی" />
 				<FilterCorps
 					value={filterStatus}
 					onChange={setFilterStatus}
 					setLoading={setLoading}
 				/>
 			</div>
+			{/* <div className="pb-6">
+				<FilterCorps
+					value={filterStatus}
+					onChange={setFilterStatus}
+					setLoading={setLoading}
+				/>
+			</div> */}
 
-			<div className="flex flex-col w-full">
+			<div className="flex flex-col w-full neu-container">
 				{corporations.map((corporation) => (
 					<CorporationItem
 						key={corporation.id}
