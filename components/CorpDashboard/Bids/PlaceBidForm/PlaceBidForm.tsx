@@ -231,10 +231,8 @@ export default function PlaceBidForm({
 								type="number"
 								autoFocus={true}
 								containerClassName="w-1/2"
-								inputClassName={
-									errors.cost && touched.cost
-										? "!border-red-500 !ring-1 !ring-red-700"
-										: ""
+								inputClassName={errors.cost && touched.cost ?
+									'!border-red-500 !ring-1 !ring-red-700' : ''
 								}
 							/>
 							<div className="w-full">
@@ -255,10 +253,8 @@ export default function PlaceBidForm({
 								type="number"
 								autoFocus={true}
 								containerClassName="w-1/2"
-								inputClassName={
-									errors.power && touched.power
-										? "!border-red-500 !ring-1 !ring-red-700"
-										: ""
+								inputClassName={errors.power && touched.power ?
+									'!border-red-500 !ring-1 !ring-red-700' : ''
 								}
 							/>
 							<CustomInput
@@ -267,10 +263,8 @@ export default function PlaceBidForm({
 								icon={LandPlot}
 								type="number"
 								containerClassName="w-1/2"
-								inputClassName={
-									errors.area && touched.area
-										? "!border-red-500 !ring-1 !ring-red-700"
-										: ""
+								inputClassName={errors.area && touched.area ? 
+									'!border-red-500 !ring-1 !ring-red-700' : ''
 								}
 							/>
 						</div>
@@ -314,10 +308,8 @@ export default function PlaceBidForm({
 							name="description"
 							icon={MessageCircle}
 							containerClassName="w-full"
-							inputClassName={
-								errors.description && touched.description
-									? "!border-red-500 !ring-1 !ring-red-700"
-									: ""
+							inputClassName={errors.description && touched.description ?
+								'!border-red-500 !ring-1 !ring-red-700' : ''
 							}
 						/>
 					</div>
