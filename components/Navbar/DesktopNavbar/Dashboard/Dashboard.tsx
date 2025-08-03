@@ -62,7 +62,7 @@ export default function Dashboard({
 											? "text-[#FA682D]"
 											: ""
 									} hover:cursor-pointer hover:bg-accent/50 rounded-lg p-1`}
-									href={"/dashboard/my-panels"}
+									href={"/dashboard/profile"}
 								>
 									داشبورد
 								</Link>
@@ -75,7 +75,7 @@ export default function Dashboard({
 												? "text-[#FA682D]"
 												: ""
 										} hover:cursor-pointer hover:bg-accent/50 rounded-lg p-1`}
-										href={"/corpdashboard/installed-panels"}
+										href={"/corpdashboard/editprofile"}
 									>
 										داشبورد شرکت
 									</Link>

@@ -44,12 +44,12 @@ export default function Layout({
 			RNPName: "corporation.viewAll",
 			icon: <School />,
 		},
-		{
-			name: "مدیریت سفارشات",
-			path: "/admin-dashboard/manage-requests",
-			RNPName: "installationRequest.viewAll",
-			icon: <Package />,
-		},
+		// {
+		// 	name: "مدیریت سفارشات",
+		// 	path: "/admin-dashboard/manage-requests",
+		// 	RNPName: "installationRequest.viewAll",
+		// 	icon: <Package />,
+		// },
 		// {
 		// 	name: "مدیریت مالی",
 		// 	path: "/admin-dashboard/finance",

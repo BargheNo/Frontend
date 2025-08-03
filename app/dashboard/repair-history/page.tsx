@@ -1,6 +1,5 @@
 "use client";
 
-// import Layout from "../../layout"
 import { useState, useEffect } from "react";
 import Carousel from "@/components/Slider/Slider";
 
@@ -12,7 +11,14 @@ import { baseURL, getData } from "@/src/services/apiHub";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import Header from "@/components/Header/Header";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
-import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 
 interface RepairHistoryItem {
 	id: number;
@@ -77,6 +83,11 @@ interface ContactInfo {
 	value: string;
 }
 
+interface status {
+	id: number;
+	name: string;
+}
+
 interface Address {
 	id: number;
 	province: string;
@@ -89,76 +100,18 @@ interface Address {
 	unit: number;
 }
 
-// Mock data for testing
-/*const mockRepairItems: RepairHistoryItem[] = [
-    {
-        ID: 1,
-        Subject: "تعمیر پنل خورشیدی شماره 1",
-        Description: "پنل خورشیدی نیاز به تعمیر و نگهداری دارد",
-        Status: "در انتظار بررسی",
-        UrgencyLevel: "بالا",
-        CreatedAt: new Date().toISOString(),
-        OwnerID: 1,
-        CorporationID: 1,
-        PanelID: 1,
-        Panel: {
-            id: 1,
-            panelName: "پنل خورشیدی A",
-            corporationName: "شرکت انرژی خورشیدی",
-            power: 100,
-            area: 50
-        }
-    },
-    {
-        ID: 2,
-        Subject: "بازرسی دوره‌ای پنل‌ها",
-        Description: "نیاز به بازرسی دوره‌ای پنل‌های خورشیدی",
-        Status: "در حال انجام",
-        UrgencyLevel: "متوسط",
-        CreatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-        OwnerID: 1,
-        CorporationID: 1,
-        PanelID: 2,
-        Panel: {
-            id: 2,
-            panelName: "پنل خورشیدی B",
-            corporationName: "شرکت انرژی خورشیدی",
-            power: 150,
-            area: 75
-        }
-    },
-    {
-        ID: 3,
-        Subject: "تعویض قطعات فرسوده",
-        Description: "نیاز به تعویض برخی قطعات فرسوده",
-        Status: "تکمیل شده",
-        UrgencyLevel: "پایین",
-        CreatedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
-        OwnerID: 1,
-        CorporationID: 1,
-        PanelID: 3,
-        Panel: {
-            id: 3,
-            panelName: "پنل خورشیدی C",
-            corporationName: "شرکت انرژی خورشیدی",
-            power: 200,
-            area: 100
-        }
-    }
-];*/
-
 const Page = () => {
-	// State for the dialog
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [selectedItem, setSelectedItem] = useState<RepairHistoryItem | null>(
 		null
 	);
 	const [repairItems, setRepairItems] = useState<RepairHistoryItem[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
-	const [error, setError] = useState<Error | null>(null);
 	const [refreshTrigger, setRefreshTrigger] = useState(0);
+	const [statuses, setStatuses] = useState<status[] | null>(null);
+	const [status, setStatus] = useState<string>("1");
 
-	// Function to filter repairs simce the last month
+	// Function to filter repairs since the last month
 	const getRecentRepairs = (items: RepairHistoryItem[]) => {
 		const oneMonthAgo = new Date();
 		oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
@@ -170,28 +123,24 @@ const Page = () => {
 	};
 
 	useEffect(() => {
-		// For testing, use mock data instead of API call
-		// setRepairItems(mockRepairItems);
-		// setIsLoading(false);
-
-		// Comment out the actual API call for now ////////////////////////////////////////////////////////////////////////////////////////
-		getData({
-			endPoint: `${baseURL}/v1/user/maintenance/request?status=1`,
-		})
-			.then((res) => {
-				// console.log(res);
-				setRepairItems(res.data);
-				setIsLoading(false);
+		setIsLoading(true);
+		getData({ endPoint: `/v1/maintenance/status` })
+			.then((data) => {
+				console.log(data?.data);
+				setStatuses(data?.data);
+				getData({
+					endPoint: `${baseURL}/v1/user/maintenance/request?status=${status}`,
+				})
+					.then((data) => {
+						setRepairItems(data?.data);
+					})
+					.catch((err) => console.log(err))
+					.finally(() => setIsLoading(false));
 			})
-			.catch((err) => console.log(err))
-			.finally(() => setIsLoading(false));
-		// .catch((err) => {
-		// 	setError(err instanceof Error ? err : new Error('Failed to fetch repair items'));
-		// 	CustomToast("مشکلی در دریافت سوابق تعمیرات پیش آمد!", "error");
-		// 	setIsLoading(false);
-		// });
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	}, [refreshTrigger]);
+			.catch((err) => {
+				console.log(err);
+			});
+	}, [refreshTrigger, status]);
 
 	const handleOpenDialog = (item: RepairHistoryItem) => {
 		setSelectedItem(item);
@@ -214,23 +163,6 @@ const Page = () => {
 		text: item.subject,
 		date: item.createdAt,
 	}));
-
-	// if (isLoading) {
-	// 	return <LoadingSpinner />;
-	// }
-
-	if (error) {
-		return (
-			<div className="min-h-[90vh] w-full flex items-center justify-center">
-				<div className="w-3xl flex flex-col items-center justify-center rounded-2xl text-center space-y-2 sm:space-y-2 place-items-center py-6 sm:py-10 relative z-20 bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] neu-container">
-					<p dir='ltr' className='text-navy-blue text-2xl sm:text-5xl font-black'>¯\_(ツ)_/¯</p>
-					<p className="mt-4 sm:mt-6 text-navy-blue text-2xl sm:text-3xl font-bold rtl">مشکلی پیش آمد!</p>
-					<p className='mt-4'>{error.message}</p>
-				</div>
- 			</div>
-		);
-	}
-
 	return (
 		<PageContainer>
 			{/* <div className="min-h-full w-full flex flex-col gap-8 text-white py-8 px-3 md:px-14 bg-transparent" dir='rtl'> */}
@@ -256,16 +188,46 @@ const Page = () => {
 					</div>
 				)}
 			</div>
-			<div>
-				<Header header="سوابق تعمیرات" />
+			<div className="flex flex-col gap-4">
+				<div className="flex place-items-center">
+					<Header header="سوابق تعمیرات" />
+					{statuses && (
+						<Select
+							value={String(status)}
+							onValueChange={(value) => setStatus(value)}
+							data-test="warranty-filter"
+						>
+							<SelectTrigger
+								dir="rtl"
+								className="flex min-w-32 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+								data-test="warranty-filter-trigger"
+							>
+								<SelectValue placeholder="وضعیت تعمیر" />
+							</SelectTrigger>
+							<SelectContent dir="rtl">
+								{statuses?.map(
+									(status: status, index: number) => (
+										<SelectItem
+											key={index}
+											value={String(status.id)}
+											className="cursor-pointer"
+										>
+											{status.name}
+										</SelectItem>
+									)
+								)}
+							</SelectContent>
+						</Select>
+					)}
+				</div>
 				{isLoading ? (
-					<LoadingSpinner />
+					<div className="relative">
+						<LoadingSpinner />
+					</div>
 				) : (
 					<div className="flex flex-col neu-container">
 						{repairItems.length === 0 ? (
-							<div className="text-center py-8 text-gray-500">
-								هیچ سابقه تعمیراتی موجود نیست
-							</div>
+							<NoRecordFound text="هیچ سابقه تعمیراتی موجود نیست." />
 						) : (
 							repairItems.map(
 								(item: RepairHistoryItem, index: number) => (
@@ -284,7 +246,6 @@ const Page = () => {
 				)}
 			</div>
 
-			{/* Dialog for displaying repair details */}
 			<RepairDetailsDialog
 				isOpen={isDialogOpen}
 				onClose={handleCloseDialog}

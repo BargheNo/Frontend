@@ -34,7 +34,7 @@ export default function FilterUsers({
 		setLoadingRoles(true);
 		getData({ endPoint: `/v1/admin/roles` })
 			.then((data) => {
-				setRoles(data.data);
+				setRoles(data?.data);
 			})
 			.catch((err) => console.log(err))
 			.finally(() => setLoadingRoles(false));
@@ -177,7 +177,7 @@ export default function FilterUsers({
 					>
 						<SelectTrigger
 							dir="rtl"
-							className="bg-[#F4F1F3] bg-white w-36 cursor-pointer"
+							className="bg-white w-36 cursor-pointer"
 						>
 							<SelectValue placeholder="وضعیت" />
 						</SelectTrigger>
@@ -213,7 +213,7 @@ export default function FilterUsers({
 					>
 						<SelectTrigger
 							dir="rtl"
-							className="bg-[#F4F1F3] bg-white w-40 cursor-pointer"
+							className="bg-white w-40 cursor-pointer"
 						>
 							<SelectValue placeholder="فیلتر بر اساس" />
 						</SelectTrigger>

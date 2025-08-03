@@ -20,7 +20,7 @@ export default function Page() {
 						<Neworder />
 					</div>
 				</div> */}
-				<Header header="سابقه سفارشات" />
+				{/* <Header header="سابقه سفارشات" /> */}
 				<Neworder />
 				<OrderHistoryPagination />
 			</PageContainer>

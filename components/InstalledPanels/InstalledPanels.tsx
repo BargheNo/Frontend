@@ -25,20 +25,20 @@ const InstalledPanel = ({
               {/* </h2> */}
               <div className=" w-full">
                 <div className="flex text-gray-700 justify-between items-center">
-                  <div className="flex items-center  text-black">
+                  <div className="flex place-items-center text-black">
                     <IconWithBackground icon={Eclipse} color="#FA682D" />
-                    <span className=" mr-2 whitespace-nowrap">نام پنل :</span>
+                    <span className="font-medium mr-2 whitespace-nowrap">نام پنل:</span>
                     <span className="text-2xl font-bold text-gray-800 mr-2 whitespace-nowrap">
                       {name}
                     </span>
                   </div>
                 </div>
 
-                <div className="flex  text-gray-700 justify-between mt-6 items-center">
-                  <div className="flex items-start text-black">
+                <div className="flex text-gray-700 justify-between mt-6 items-center">
+                  <div className="flex place-items-center text-black">
                     <IconWithBackground icon={User} color="#FA682D" />
                     <span className="font-medium mr-2 whitespace-nowrap">
-                      نام مشتری :
+                      نام مشتری:
                     </span>
                     <span className="text-2xl font-bold text-gray-800 mr-2 whitespace-nowrap">
                       {customer.firstName + " " + customer.lastName}
@@ -46,8 +46,8 @@ const InstalledPanel = ({
                   </div>
                 </div>
 
-                <div className="flex  text-gray-700 justify-between mt-6 items-center">
-                  <div className="flex items-start text-black">
+                <div className="flex text-gray-700 justify-between mt-6 items-center">
+                  <div className="flex place-items-center text-black">
                     <IconWithBackground icon={Battery} color="#FA682D" />
                     <span className="font-medium mr-2 whitespace-nowrap">
                       توان مصرفی:
@@ -60,12 +60,12 @@ const InstalledPanel = ({
                 </div>
               </div>
             </div>
-            <div className="flex items-start  text-gray-700 mt-6 ">
-              <div className="flex flex-row items-start text-black">
+            <div className="flex items-start text-gray-700 mt-6 ">
+              <div className="flex flex-row place-items-center text-black">
                 <IconWithBackground icon={MapPin} color="#FA682D" />
                 <div className="font-medium mx-2">
-                  استان {address.province}،شهر {address.city}،
-                  {address.streetAddress}،پلاک {address.houseNumber}، واحد{" "}
+                  استان {address.province}، شهر {address.city}،{" "}
+                  {address.streetAddress}، پلاک {address.houseNumber}، واحد{" "}
                   {address.unit}
                 </div>
               </div>

@@ -54,7 +54,7 @@ export const FilterCorps = ({
 		<Select onValueChange={onChange} value={value}>
 			<SelectTrigger
 				dir="rtl"
-				className="bg-[#F4F1F3] w-48 cursor-pointer"
+				className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
 			>
 				<SelectValue placeholder="وضعیت" />
 			</SelectTrigger>

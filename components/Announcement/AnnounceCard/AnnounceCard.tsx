@@ -94,7 +94,7 @@ export default function AnnounceCard({
 						<ContextMenuTrigger asChild>
 							<div
 								className={cn(
-									"cursor-pointer",
+									"cursor-pointer w-full",
 									selected &&
 										"bg-sunset-orange hover:opacity-80 py-2 rounded transition-all duration-300 ease-in-out relative",
 									selectMode && ""
@@ -111,11 +111,11 @@ export default function AnnounceCard({
 								{/* <CircleCheckBig className={cn("opacity-0",selected &&"absolute top-2 left-2 cursor-pointer opacity-100 transition-all duration-1000 ease-in-out")} /> */}
 								<div
 									className={cn(
-										"flex flex-col gap-2 w-[70vw]! neo-card-rev  bg-white p-6 rounded-lg transition-all duration-300 ease-in-out",
+										"flex flex-col gap-2 w-full neo-card-rev  bg-white p-6 rounded-lg transition-all duration-300 ease-in-out",
 										selected && "scale-95"
 									)}
 								>
-									<div className="text-xl font-bold ">
+									<div className="text-xl font-bold">
 										{title}
 									</div>
 									{status == 1 ? (
@@ -180,7 +180,7 @@ export default function AnnounceCard({
 			) : (
 				<div
 					className={cn(
-						"cursor-pointer",
+						"cursor-pointer w-full",
 						selected &&
 							"bg-sunset-orange hover:opacity-80 py-2 rounded transition-all duration-300 ease-in-out relative",
 						selectMode && ""
@@ -197,11 +197,11 @@ export default function AnnounceCard({
 					{/* <CircleCheckBig className={cn("opacity-0",selected &&"absolute top-2 left-2 cursor-pointer opacity-100 transition-all duration-1000 ease-in-out")} /> */}
 					<div
 						className={cn(
-							"flex flex-col gap-2 w-[70vw]! neo-card-rev  bg-white p-6 rounded-lg transition-all duration-300 ease-in-out",
+							"flex flex-col gap-2 w-full neo-card-rev bg-white p-6 rounded-lg transition-all duration-300 ease-in-out",
 							selected && "scale-95"
 						)}
 					>
-						<div className="text-xl font-bold ">{title}</div>
+						<div className="text-xl font-bold">{title}</div>
 						{/* <div className="short-par">
                 {content}
                 </div> */}

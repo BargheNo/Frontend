@@ -11,6 +11,20 @@ import panelNotFound from "@/public/images/panelNotFound/panelNotFound.png";
 import AnnounceAddCard from "../AnnounceAddCard/AnnounceAddCard";
 import Header from "@/components/Header/Header";
 import useHasPermission from "@/src/functions/hasPermission";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import { useState } from "react";
+import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
+
+interface status {
+	id: number;
+	name: string;
+}
 
 interface News {
 	id: string;
@@ -24,13 +38,17 @@ export default function AnnounceView({
 }: {
 	onlyView?: boolean;
 }) {
+	const [statuses, setStatuses] = useState<status[] | null>(null);
+	const [status, setStatus] = useState<string>("1");
 	const hasCreateNewsPermission = useHasPermission("news.create");
 	//   const [news, setNews] = useState<News[]>([]);
 	const { isLoading, data, error } = useQuery({
 		queryKey: ["news"],
 		queryFn: async () => {
 			if (onlyView) {
-				return await getData({ endPoint: "/v1/admin/news?status=1" });
+				return await getData({
+					endPoint: `/v1/admin/news?status=${status}`,
+				});
 			} else {
 				const r1 = await getData({
 					endPoint: "/v1/admin/news?status=2",
@@ -46,16 +64,43 @@ export default function AnnounceView({
 		},
 	});
 
-	if (error) {
-		console.error("error in fetching");
-		toast.error("مشکلی پیش آمده است");
-	} else {
-		return (
-			<>
-				{/* <div className="flex flex-row w-full items-center"> */}
-				{hasCreateNewsPermission && <AnnounceAddCard />}
-				{/* </div> */}
-				{isLoading && <LoadingSpinner />}
+	return (
+		<>
+			{/* <div className="flex flex-row w-full items-center"> */}
+			{hasCreateNewsPermission && !onlyView && <AnnounceAddCard />}
+
+			<div className="flex place-items-center">
+				<Header header="اخبار و اطلاعیه‌ها" />
+				{statuses && (
+					<Select
+						value={String(status)}
+						onValueChange={(value) => setStatus(value)}
+						data-test="warranty-filter"
+					>
+						<SelectTrigger
+							dir="rtl"
+							className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+							data-test="warranty-filter-trigger"
+						>
+							<SelectValue placeholder="وضعیت پنل" />
+						</SelectTrigger>
+						<SelectContent dir="rtl">
+							{statuses?.map((status: status, index: number) => (
+								<SelectItem
+									key={index}
+									value={String(status.id)}
+									className="cursor-pointer"
+								>
+									{status.name}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				)}
+			</div>
+			{isLoading ? (
+				<LoadingSpinner />
+			) : (
 				<AnnouncementBox
 					className="bg-warm-white h-[60vh] w-full"
 					insideClassName="gap-5"
@@ -67,14 +112,15 @@ export default function AnnounceView({
 								src={panelNotFound}
 								alt="orderNotFound"
 							/>
-							<div className="-mt-8">
+							<NoRecordFound text="هیچ خبری یافت نشد." />
+							{/* <div className="-mt-8">
 								<p
 									className=" mt-6 text-navy-blue font-bold rtl"
 									style={{ fontSize: "1.1rem" }}
 								>
 									هیچ خبری یافت نشد.
 								</p>
-							</div>
+							</div> */}
 						</div>
 					)}
 					{data?.data?.map((item: News) => (
@@ -90,7 +136,7 @@ export default function AnnounceView({
 						/>
 					))}
 				</AnnouncementBox>
-			</>
-		);
-	}
+			)}
+		</>
+	);
 }

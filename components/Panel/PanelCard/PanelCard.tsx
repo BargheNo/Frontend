@@ -105,7 +105,7 @@ const PanelCard = ({
 					{/* MAIN CONTENT DIV */}
 					<div className="flex flex-col-reverse sm:flex-row-reverse justify-between w-full mb-6 gap-4">
 						{/* LEFT SIDE - BUTTONS */}
-						<div className="flex flex-row sm:flex-col gap-3 w-full sm:w-[20%]">
+						<div className="flex flex-row sm:flex-col gap-5 sm:w-[20%] lg:w-[15%]">
 							<Dialog open={open} onOpenChange={setOpen}>
 								<DialogTrigger asChild>
 									<button className="w-full flex items-center justify-evenly bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
@@ -171,7 +171,7 @@ const PanelCard = ({
 						</div>
 
 						{/* RIGHT SIDE - STATS */}
-						<div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full sm:w-[70%]">
+						<div className="grid grid-cols-2 sm:grid-cols-4 gap-6 w-full sm:w-[80%] lg:w-[85%]">
 							<div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
 								<div className="flex items-center">
 									<PanelIconWithBackground
@@ -270,12 +270,10 @@ const PanelCard = ({
 
 					{/* ADDRESS SECTION */}
 					<div className="flex items-start text-sm text-gray-700 mt-6">
-						<div className="flex flex-row items-center">
+						<div className="flex flex-row">
 							<IconWithBackground icon={MapPin} color="#6B7280" />
-							<div className="font-medium mx-2">آدرس:</div>
-						</div>
-						<div className="flex flex-row mt-[6px]">
-							<span className="mr-1">
+							<div className="font-medium mx-2 mt-[10px]">آدرس:</div>
+							<span className="mr-1 mt-[10px]">
 								{isExpanded ? address : truncateText(address)}
 								{address.length > MAXLENGTH && (
 									<button
@@ -289,39 +287,12 @@ const PanelCard = ({
 								)}
 							</span>
 						</div>
+						{/* <div className="flex flex-row place-items-center">
+							
+						</div> */}
 					</div>
 				</div>
 			</div>
-
-			{/* <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
-				<h4 className="text-lg font-semibold text-navy-blue mb-4">
-					گزارش مشکل
-				</h4>
-				<Formik
-					initialValues={{ problem: "" }}
-					validationSchema={validationSchema}
-					onSubmit={handleSubmit}
-				>
-					{({ isSubmitting }) => (
-						<Form className="flex flex-col space-y-4">
-							<CustomTextArea
-								name="problem"
-								icon={AlertCircle}
-								textareaClassName="!bg-[#FEFEFE] h-32"
-							>
-								توضیحات مشکل
-							</CustomTextArea>
-							<button
-								type="submit"
-								disabled={isSubmitting}
-								className="self-end bg-gradient-to-br from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white py-2 px-4 rounded-md transition-all duration-300"
-							>
-								ارسال گزارش
-							</button>
-						</Form>
-					)}
-				</Formik>
-			</Modal> */}
 		</>
 	);
 };
