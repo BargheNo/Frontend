@@ -111,7 +111,7 @@ const Page = () => {
 	const [statuses, setStatuses] = useState<status[] | null>(null);
 	const [status, setStatus] = useState<string>("1");
 
-	// Function to filter repairs simce the last month
+	// Function to filter repairs since the last month
 	const getRecentRepairs = (items: RepairHistoryItem[]) => {
 		const oneMonthAgo = new Date();
 		oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
@@ -124,8 +124,9 @@ const Page = () => {
 
 	useEffect(() => {
 		setIsLoading(true);
-		getData({ endPoint: `/v1/guarantee/status` })
+		getData({ endPoint: `/v1/maintenance/status` })
 			.then((data) => {
+				console.log(data?.data);
 				setStatuses(data?.data);
 				getData({
 					endPoint: `${baseURL}/v1/user/maintenance/request?status=${status}`,
