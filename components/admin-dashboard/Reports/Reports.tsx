@@ -16,6 +16,7 @@ import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import { getData, postData } from "@/src/services/apiHub";
 import useHasPermission from "@/src/functions/hasPermission";
+import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 
 const Reports = () => {
 	const hasRespondReportPermission = useHasPermission("report.respond");
@@ -139,6 +140,7 @@ const Reports = () => {
 							/>
 						</div>
 					</div>
+
 					<div
 						className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
 						onClick={() => resolveReport(id)}
@@ -216,7 +218,7 @@ const Reports = () => {
 							/>
 						</div>
 					</div>
-					{hasRespondReportPermission && (
+					{hasRespondReportPermission && Status === "بررسی نشده" && (
 						<div
 							className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
 						>
@@ -247,9 +249,7 @@ const Reports = () => {
 				>
 					<div>
 						{maintenanceReports.length === 0 ? (
-							<p className="text-gray-500 text-right p-5">
-								هیچ گزارشی موجود نیست.
-							</p>
+							<NoRecordFound text="هیچ گزارشی موجود نیست." />
 						) : (
 							maintenanceReports.map((report) => (
 								<MaintenanceReport
@@ -291,9 +291,7 @@ const Reports = () => {
 								/>
 							))
 						) : (
-							<p className="text-gray-500 text-right p-5">
-								هیچ گزارشی موجود نیست.
-							</p>
+							<NoRecordFound text="هیچ گزارشی موجود نیست." />
 						)}
 					</div>
 				</section>
