@@ -63,7 +63,6 @@ const Settings = () => {
 	}, [status]);
 	return (
 		<PageContainer>
-			<button onClick={() => CustomToast("تست بکنیم", "success")} className="relative bg-black w-full cursor-pointer">do</button>
 			<div className="flex place-items-center">
 				<Header header="پنل‌های من" />
 				{statuses && (
