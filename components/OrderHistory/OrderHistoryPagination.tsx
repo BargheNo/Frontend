@@ -125,7 +125,7 @@ export default function OrderHistoryPagination({
 									<PaginationPrevious
 										href="#"
 										onClick={() =>
-											setCurrpage((prev) =>
+											setCurrpage((prev: string) =>
 												String(
 													Math.max(
 														Number(prev) - 1,
@@ -155,7 +155,7 @@ export default function OrderHistoryPagination({
 								<PaginationNext
 									href="#"
 									onClick={() =>
-										setCurrpage((prev) =>
+										setCurrpage((prev: string) =>
 											String(Number(prev) + 1)
 										)
 									}

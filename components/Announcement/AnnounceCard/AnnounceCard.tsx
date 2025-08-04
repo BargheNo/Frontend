@@ -82,7 +82,6 @@ export default function AnnounceCard({
 		},
 		onError: (error) => {
 			console.log("Mutation error:", error);
-			toast.log("خطایی رخ داده است");
 		},
 	});
 

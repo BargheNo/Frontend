@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { postData } from "@/src/services/apiHub";
 import { Form, Formik } from "formik";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
-import { ArrowLeft, Newspaper, Plus } from "lucide-react";
+import { ArrowLeft, Newspaper } from "lucide-react";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -21,7 +21,6 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import SignupButton from "@/components/SignupButton/SignupButton";
 import AddComponent from "@/components/AddComponent/AddComponent";
 
 export default function AnnounceAddCard() {
@@ -52,7 +51,6 @@ export default function AnnounceAddCard() {
 		},
 		onError: (error) => {
 			console.log("Mutation error:", error);
-			toast.log("خطایی رخ داده است");
 		},
 	});
 	switch (step) {

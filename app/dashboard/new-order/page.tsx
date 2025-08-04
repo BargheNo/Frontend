@@ -40,7 +40,6 @@ export default function Page() {
 					currpage={currpage}
 					status={status}
 					handelHistory={handelHistory}
-					setIsLoading={setIsLoading}
 				/>
 				<OrderHistoryPagination
 					currpage={currpage}
