@@ -81,8 +81,8 @@ export default function AnnounceCard({
 			toast.success("خبر با موفقیت حذف شد.");
 		},
 		onError: (error) => {
-			console.error("Mutation error:", error);
-			toast.error("خطایی رخ داده است");
+			console.log("Mutation error:", error);
+			toast.log("خطایی رخ داده است");
 		},
 	});
 

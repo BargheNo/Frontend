@@ -72,7 +72,6 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
 		// if (!roleName.trim()) {
 		if (values.name === "") {
 			CustomToast("نام نقش نمی‌تواند خالی باشد", "warning");
-			// toast.error("نام نقش نمی‌تواند خالی باشد");
 			return;
 		}
 

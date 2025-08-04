@@ -246,7 +246,7 @@ export default function CorpMessagesPagination() {
 											"error"
 										);
 
-										console.error(error);
+										console.log(error);
 									}
 								}
 								setDisable(!disable);

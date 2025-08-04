@@ -51,8 +51,8 @@ export default function AnnounceAddCard() {
 			toast.success("خبر با موفقیت ساخته شد");
 		},
 		onError: (error) => {
-			console.error("Mutation error:", error);
-			toast.error("خطایی رخ داده است");
+			console.log("Mutation error:", error);
+			toast.log("خطایی رخ داده است");
 		},
 	});
 	switch (step) {

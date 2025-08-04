@@ -49,7 +49,7 @@ const UserProfile = () => {
 			console.log(response.data);
 			setProfileData(response?.data);
 		} catch (error) {
-			console.error("Error fetching profile:", error);
+			console.log("Error fetching profile:", error);
 			CustomToast("خطا در دریافت اطلاعات پروفایل", "error");
 			// toast("خطا در دریافت اطلاعات پروفایل");
 		} finally {
