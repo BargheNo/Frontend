@@ -13,6 +13,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 interface PanelProps {
 	id: number;

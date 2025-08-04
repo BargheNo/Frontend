@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MoveLeft, Lock, Unlock, Smartphone } from "lucide-react";
 import Link from "next/link";
 import styles from "./login.module.css";
@@ -9,6 +9,7 @@ import CustomInput from "../../Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import LoginButton from "./LoginButton";
 import { getData, postData } from "../../../src/services/apiHub";
+import { useWebSocket } from "@/src/hooks/useWebSocket";
 import { setCorps, setUser } from "@/src/store/slices/userSlice";
 import { useDispatch } from "react-redux";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
@@ -60,24 +61,26 @@ const Login = () => {
 			.then(async (data) => {
 				// console.log("data", data);
 				CustomToast(data?.message, "success");
-
 				dispatch(
 					setUser({
-						firstName: data.data.firstName,
-						lastName: data.data.lastName,
-						permissions: data.data.permissions,
-						accessToken: data.data.accessToken,
-						refreshToken: data.data.accessToken,
+						firstName: data?.data?.firstName,
+						lastName: data?.data?.lastName,
+						permissions: data?.data?.permissions,
+						accessToken: data?.data?.accessToken,
+						refreshToken: data?.data?.accessToken,
 					})
 				);
 				await Promise.resolve();
 				getData({ endPoint: `/v1/user/corps` })
-					.then((res) => {
-						// console.log(res.data);
-						dispatch(setCorps(res.data));
+					.then((data) => {
+						dispatch(setCorps(data?.data));
 						window.location.href = "/dashboard/my-panels";
 					})
 					.catch((err) => console.log(err));
+				const websocketUrl = data?.data?.accessToken
+					? `ws://localhost:8080/v1/user/notifications/token/${data?.data?.accessToken}`
+					: null;
+
 			})
 			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));

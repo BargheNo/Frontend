@@ -128,9 +128,7 @@ export default function Orders() {
 			</div>
 
 			{loading ? (
-				<div className="flex justify-center mt-6">
-					<LoadingSpinner />
-				</div>
+				<LoadingSpinner />
 			) : orderlist && orderlist.length > 0 ? (
 				<div className="rounded-xl overflow-hidden w-[90%] m-auto">
 					{orderlist.map((Item, index) => (

@@ -39,6 +39,10 @@
 	--sidebar-accent-foreground: oklch(0.205 0 0);
 	--sidebar-border: oklch(0.922 0 0);
 	--sidebar-ring: oklch(0.708 0 0);
+	--neumo-sonner-base: #fa682d; /* The main orange color */
+	--neumo-sonner-light-shadow: #ff9c6f; /* Slightly lighter for the highlight */
+	--neumo-sonner-dark-shadow: #c45224; /* Slightly darker for the deep shadow */
+	--neumo-sonner-text: #ffffff;
 }
 
 @theme inline {
@@ -109,6 +113,25 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 } */
+
+.neumo-sonner-toast {
+	/* Apply colors from your new CSS variables */
+	background-color: var(--neumo-sonner-base);
+	color: var(--neumo-sonner-text);
+
+	/* Essential Neumorphism styling */
+	border-radius: 16px; /* Soft rounded corners */
+	padding: 18px 25px; /* Adjust padding for desired size */
+	border: none; /* Remove any default borders from sonner */
+
+	/* The core box-shadow for the neumorphic effect */
+	box-shadow: 8px 8px 16px var(--neumo-sonner-dark-shadow),
+		/* Dark shadow (bottom-right) */ -8px -8px 16px
+			var(--neumo-sonner-light-shadow); /* Light shadow (top-left) */
+
+	/* Optional: Smooth transition for hover/active states if you add them later */
+	transition: all 0.3s ease-in-out;
+}
 
 .dark {
 	--background: oklch(0.145 0 0);

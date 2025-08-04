@@ -40,7 +40,7 @@ export default function Page() {
 				setIsLoading(false);
 			})
 			.catch((err) => {
-				console.error("err fetching repair records", err);
+				console.log("err fetching repair records", err);
 				setIsLoading(false);
 			});
 	}, []);

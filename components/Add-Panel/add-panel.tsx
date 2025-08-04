@@ -97,11 +97,6 @@ export default function AddPanel() {
 		return province?.ID ?? null;
 	};
 
-	const FindCityid = (cities: City[], name: string) => {
-		const city = cities.find((p) => String(p.ID) === name);
-		return city?.ID ?? null;
-	};
-
 	useEffect(() => {
 		UpdateCityList(provinceid ?? 1);
 	}, [provinceid]);
@@ -112,9 +107,8 @@ export default function AddPanel() {
 		setLoading(true);
 		addpanelService
 			.AddPanel(panel, corpId)
-			.then((res) => {
-				CustomToast(res?.message, "success");
-				console.log(res);
+			.then((data) => {
+				CustomToast(data?.message, "success");
 				setOpen(false);
 			})
 			.catch((err) => console.log(err))
@@ -220,8 +214,11 @@ export default function AddPanel() {
 									placeholder="شماره مشتری"
 									icon={IdCard}
 									name="phonenumber"
-									inputClassName={errors.phonenumber && touched.phonenumber ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
+									inputClassName={
+										errors.phonenumber &&
+										touched.phonenumber
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
 									}
 								/>
 
@@ -246,9 +243,12 @@ export default function AddPanel() {
 									dir="rtl"
 									icon={Tally5}
 									name="modulecount"
-									placeholder="تعداد ماژول ها"
-									inputClassName={errors.modulecount && touched.modulecount ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
+									placeholder="تعداد ماژول‌ها"
+									inputClassName={
+										errors.modulecount &&
+										touched.modulecount
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
 									}
 								/>
 
@@ -299,8 +299,10 @@ export default function AddPanel() {
 									icon={DatabaseZap}
 									placeholder="مجموع توان تولید شده (کیلووات)"
 									name="power"
-									inputClassName={errors.power && touched.power ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
+									inputClassName={
+										errors.power && touched.power
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
 									}
 								/>
 								<CustomInput
@@ -309,8 +311,10 @@ export default function AddPanel() {
 									icon={TriangleRight}
 									name="angel"
 									placeholder="زاویه نصب (درجه)"
-									inputClassName={errors.angel && touched.angel ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
+									inputClassName={
+										errors.angel && touched.angel
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
 									}
 								/>
 							</div>
@@ -325,8 +329,10 @@ export default function AddPanel() {
 									icon={Compass}
 									placeholder="جهت نصب (درجه)"
 									name="direction"
-									inputClassName={errors.direction && touched.direction ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
+									inputClassName={
+										errors.direction && touched.direction
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
 									}
 								/>
 								<CustomInput
@@ -336,8 +342,10 @@ export default function AddPanel() {
 									icon={LandPlot}
 									placeholder="مساحت (مترمربع)"
 									name="area"
-									inputClassName={errors.area && touched.area ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
+									inputClassName={
+										errors.area && touched.area
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
 									}
 								/>
 							</div>
@@ -348,11 +356,7 @@ export default function AddPanel() {
 									name="provinceID"
 									value={values.provinceID}
 									onValueChange={(value) => {
-										Setdisable(false);
-										setFieldValue(
-											"provinceID",
-											Number(value)
-										);
+										setFieldValue("provinceID", value);
 										setFieldValue("cityID", "");
 										const id = Findprovinceid(
 											provinces,
@@ -360,10 +364,11 @@ export default function AddPanel() {
 										);
 										Setprovinceid(id ?? 1);
 										if (id) UpdateCityList(id);
+										Setdisable(false);
 									}}
 								>
 									<SelectTrigger
-										className={style.CustomInput}
+										className={`${style.CustomInput} cursor-pointer`}
 										// style={{ width: "25vw" }}
 									>
 										<SelectValue placeholder="استان" />
@@ -376,12 +381,12 @@ export default function AddPanel() {
 													(provincearr, index) => (
 														<SelectItem
 															key={index}
-															value={String(
-																provincearr.ID
-															)}
 															className="cursor-pointer"
+															value={String(
+																provincearr?.ID
+															)}
 														>
-															{provincearr.name}
+															{provincearr?.name}
 														</SelectItem>
 													)
 												)
@@ -396,14 +401,12 @@ export default function AddPanel() {
 									value={values.cityID}
 									disabled={disable}
 									onValueChange={(value) => {
-										// const iD = FindCityid(cities, value);
-										// Setcityid(iD ?? 1);
-										setFieldValue("cityID", Number(value));
+										setFieldValue("cityID", value);
 									}}
 								>
 									<SelectTrigger
 										disabled={disable}
-										className={style.CustomInput}
+										className={`${style.CustomInput} cursor-pointer`}
 									>
 										<SelectValue placeholder="شهر" />
 									</SelectTrigger>
@@ -414,11 +417,11 @@ export default function AddPanel() {
 												cities.map((city, index) => (
 													<SelectItem
 														key={index}
-														value={String(city.ID)}
+														value={String(city?.ID)}
 														className="cursor-pointer"
 													>
 														{Object.values(
-															city.name
+															city?.name
 														)}
 													</SelectItem>
 												))
@@ -434,8 +437,10 @@ export default function AddPanel() {
 									icon={MapPinHouse}
 									name="address"
 									placeholder="آدرس"
-									inputClassName={errors.address && touched.address ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
+									inputClassName={
+										errors.address && touched.address
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
 									}
 								/>
 							</div>
@@ -450,8 +455,10 @@ export default function AddPanel() {
 									icon={Mailbox}
 									name="code"
 									placeholder="کد پستی"
-									inputClassName={errors.code && touched.code ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
+									inputClassName={
+										errors.code && touched.code
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
 									}
 								/>
 								<CustomInput
@@ -461,9 +468,11 @@ export default function AddPanel() {
 									icon={House}
 									placeholder="پلاک"
 									name="number"
-									inputClassName={errors.number && touched.number ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
-									} 
+									inputClassName={
+										errors.number && touched.number
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
+									}
 								/>
 								<CustomInput
 									type="number"
@@ -472,8 +481,10 @@ export default function AddPanel() {
 									icon={BellRing}
 									placeholder="واحد"
 									name="unit"
-									inputClassName={errors.unit && touched.unit ?
-										'!border-red-500 !ring-1 !ring-red-700' : ''
+									inputClassName={
+										errors.unit && touched.unit
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
 									}
 								/>
 							</div>

@@ -4,7 +4,8 @@ import { getParams, postParams } from "../types/apiHubType";
 import generateErrorMessage from "../functions/handleAPIErrors";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
-export const baseURL = "http://46.249.99.69:8080";
+export const serverIPAndPort = "46.249.99.69:8080";
+export const baseURL = `http://${serverIPAndPort}`;
 // export const baseURL = "https://a50e-212-64-199-253.ngrok-free.app";
 
 const apiClient = axios.create({

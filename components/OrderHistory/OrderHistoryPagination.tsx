@@ -31,26 +31,27 @@ interface status {
 	name: string;
 }
 
-export default function OrderHistoryPagination() {
-	const [history, sethistory] = useState<Orderhistory[]>([]);
-	const [currpage, Setcurrpage] = useState<string>("1");
-	const [isLoading, setIsLoading] = useState(true);
+export default function OrderHistoryPagination({
+	currpage,
+	setCurrpage,
+	status,
+	setStatus,
+	isLoading,
+	setIsLoading,
+	history,
+	handelHistory,
+}: {
+	currpage: string;
+	setCurrpage: any;
+	status: string;
+	setStatus: any;
+	isLoading: boolean;
+	setIsLoading: any;
+	history: Orderhistory[];
+	handelHistory: any;
+}) {
 	const [statuses, setStatuses] = useState<status[] | null>(null);
-	const [status, setStatus] = useState<string>("1");
-	const handelHistory = (status: string, offset: string, limit: string) => {
-		orderService
-			.orderHistory({
-				status: status ?? "1",
-				offset: offset ?? "1",
-				limit: limit ?? "10",
-			})
-			.then((res) => {
-				sethistory(res?.data);
-				// setIsLoading(false);
-			})
-			.catch((err) => console.log(err))
-			.finally(() => setIsLoading(false));
-	};
+
 	useEffect(() => {
 		setIsLoading(true);
 		getData({ endPoint: `/v1/installation/request/status` })
@@ -114,36 +115,6 @@ export default function OrderHistoryPagination() {
 				</>
 			) : (
 				<NoRecordFound />
-				// <div className="relative text-center place-items-center py-18 bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]">
-				// 	<Image
-				// 		className="w-1/3"
-				// 		src={panelNotFound}
-				// 		alt="orderNotFound"
-				// 	/>
-				// 	<div className="">
-				// 		<p
-				// 			className="mt-6 text-navy-blue font-bold rtl"
-				// 			style={{ fontSize: "1.1rem" }}
-				// 		>
-				// 			هیچ پنلی یافت نشد.
-				// 		</p>
-				// 	</div>
-				// </div>
-				// <div className="text-center place-items-center mt-6">
-				// 	<Image
-				// 		className="w-1/3"
-				// 		src={panelNotFound}
-				// 		alt="orderNotFound"
-				// 	/>
-				// 	<div className="-mt-8">
-				// 		<p
-				// 			className=" mt-6 text-navy-blue font-bold rtl"
-				// 			style={{ fontSize: "1.1rem" }}
-				// 		>
-				// 			هیچ سفارشی یافت نشد.
-				// 		</p>
-				// 	</div>
-				// </div>
 			)}
 			{history?.length > 0 && (
 				<div className="p-5 rtl">
@@ -154,7 +125,7 @@ export default function OrderHistoryPagination() {
 									<PaginationPrevious
 										href="#"
 										onClick={() =>
-											Setcurrpage((prev) =>
+											setCurrpage((prev: string) =>
 												String(
 													Math.max(
 														Number(prev) - 1,
@@ -170,7 +141,7 @@ export default function OrderHistoryPagination() {
 								<PaginationItem key={page}>
 									<PaginationLink
 										href="#"
-										onClick={() => Setcurrpage(page)}
+										onClick={() => setCurrpage(page)}
 										isActive={page === currpage}
 									>
 										{page}
@@ -184,7 +155,7 @@ export default function OrderHistoryPagination() {
 								<PaginationNext
 									href="#"
 									onClick={() =>
-										Setcurrpage((prev) =>
+										setCurrpage((prev: string) =>
 											String(Number(prev) + 1)
 										)
 									}

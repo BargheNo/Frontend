@@ -41,7 +41,7 @@ export default function AnnounceEditor({
 			});
 			return responce.data;
 		} catch (error) {
-			console.error("Error getting image: url", error);
+			console.log("Error getting image: url", error);
 			return {
 				success: 0,
 				error: "Image upload failed",
@@ -77,7 +77,7 @@ export default function AnnounceEditor({
 				},
 			};
 		} catch (error) {
-			console.error("Error uploading image:", error);
+			console.log("Error uploading image:", error);
 			return {
 				success: 0,
 				error: "Image upload failed",
@@ -119,7 +119,7 @@ export default function AnnounceEditor({
 			CustomToast("خبر با موفقیت منتشر شد", "success");
 		},
 		onError: (error) => {
-			console.error("Mutation error:", error);
+			console.log("Mutation error:", error);
 			toast.error("خطایی رخ داده است");
 		},
 	});
@@ -176,7 +176,7 @@ export default function AnnounceEditor({
 				}
 				return responce;
 			} catch (error) {
-				console.error(error);
+				console.log(error);
 				router.push("/not-found");
 			}
 		},

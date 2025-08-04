@@ -133,9 +133,7 @@ export default function CorpMessagesPagination() {
 					</div>
 					<div className="flex flex-col text-gray-800 rounded-2xl no-scrollbar w-90/100 overflow-auto shadow-[inset_-6px_-6px_16px_rgba(255,255,255,0.8),inset_6px_6px_16px_rgba(0,0,0,0.2)] mt-6 m-auto md:h-65 h-60">
 						{notifSetting.length <= 0 && loading ? (
-							<div className="flex flex-1 items-center justify-center h-full">
-								<LoadingSpinner />
-							</div>
+							<LoadingSpinner />
 						) : (
 							notifSetting.map((item, index) => (
 								<div
@@ -246,7 +244,7 @@ export default function CorpMessagesPagination() {
 											"error"
 										);
 
-										console.error(error);
+										console.log(error);
 									}
 								}
 								setDisable(!disable);
