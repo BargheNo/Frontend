@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { baseURL, getData, putDataFile } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import { Button } from "@/components/ui/button";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 
 export interface ProfileData {
 	firstName: string;
@@ -44,9 +45,8 @@ const UserProfile = () => {
 	const fetchProfileData = async () => {
 		try {
 			const response = await getData({
-				endPoint: `${baseURL}/v1/user/profile`,
+				endPoint: `/v1/user/profile`,
 			});
-			console.log(response.data);
 			setProfileData(response?.data);
 		} catch (error) {
 			console.log("Error fetching profile:", error);
@@ -91,7 +91,7 @@ const UserProfile = () => {
 			console.log(values);
 
 			const response = await putDataFile({
-				endPoint: `${baseURL}/v1/user/profile`,
+				endPoint: `/v1/user/profile`,
 				formData: values,
 			});
 
@@ -163,7 +163,7 @@ const UserProfile = () => {
 			</h2> */}
 
 			{isLoading ? (
-				<div>Loading...</div>
+				<LoadingSpinner />
 			) : (
 				<Formik
 					initialValues={getInitialValues()}

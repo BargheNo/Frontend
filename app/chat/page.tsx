@@ -12,6 +12,7 @@ import { useMediaQuery } from "@/src/hooks/useMediaQuery";
 import { Sidebar, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { SidebarContent } from "@/components/ui/sidebar";
 import { Menu } from "lucide-react";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 export default function Page() {
   const [panelWidth, setPanelWidth] = useState(0.1);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -23,7 +24,7 @@ export default function Page() {
 
   const isClient = useClientCheck();
   if (!isClient)
-    return <div className="h-full w-full bg-gray-100 p-4">Loading...</div>;
+    return <LoadingSpinner />
 
   if (isMobile) {
     return (
