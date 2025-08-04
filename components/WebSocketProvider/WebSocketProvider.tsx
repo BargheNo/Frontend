@@ -56,7 +56,7 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
 			if (typeof lastMessage === "object" && lastMessage !== null) {
 				// Assuming your NotificationMessage has 'content' and potentially 'type'
 				toastMessage =
-					lastMessage.content || "You received a new message!";
+					lastMessage.description || "You received a new message!";
 
 				// Example: If your message object has a 'notificationType' field
 				if (lastMessage.type === "success") {
