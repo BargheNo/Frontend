@@ -51,7 +51,15 @@ interface BuildingTypeProps {
 	name: string;
 }
 
-export default function Neworder() {
+export default function Neworder({
+	handelHistory,
+	currpage,
+	status,
+}: {
+	handelHistory: any;
+	currpage: string;
+	status: string;
+}) {
 	const [loading, setLoading] = useState(false);
 	const [open, setOpen] = useState(false);
 	const [disable, Setdisable] = useState(true);
@@ -100,14 +108,14 @@ export default function Neworder() {
 		UpdateCityList(provinceid ?? 1);
 	}, [provinceid]);
 
-	const handelOrderrequest = (orderinfo: order) => {
-		console.log(orderinfo);
+	const handleOrderRequest = (orderinfo: order) => {
 		setLoading(true);
 		orderService
 			.orderRequest(orderinfo)
 			.then((res) => {
 				console.log(res);
 				CustomToast(res?.message, "success");
+				handelHistory(status, currpage, "10");
 				setOpen(false);
 			})
 			.catch((err) => console.log(err))
@@ -169,7 +177,7 @@ export default function Neworder() {
 					})}
 					onSubmit={(values) => {
 						// setOpen(false);
-						handelOrderrequest({
+						handleOrderRequest({
 							name: values.name,
 							area: Number(values.area),
 							power: Number(values.electricity),

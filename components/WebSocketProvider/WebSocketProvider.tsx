@@ -50,7 +50,7 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
 
 			// Customize your toast message and type based on the incoming message structure
 			// For example, if your NotificationMessage has a 'type' property like 'alert' or 'info'
-			let toastType: "success" | "error" | "info" | "warning" = "info"; // Default type
+			// let toastType: "success" | "error" | "info" | "warning" = "info"; // Default type
 			let toastMessage = "New notification"; // Default message
 
 			if (typeof lastMessage === "object" && lastMessage !== null) {
@@ -59,20 +59,14 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
 					lastMessage.description || "You received a new message!";
 
 				// Example: If your message object has a 'notificationType' field
-				if (lastMessage.type === "success") {
-					toastType = "success";
-				} else if (lastMessage.type === "error") {
-					toastType = "error";
-				} else if (lastMessage.type === "warning") {
-					toastType = "warning";
-				}
+
 				// Add more conditions based on your message types
 			} else {
 				// Fallback for non-object messages (though we parse JSON)
 				toastMessage = String(lastMessage);
 			}
 
-			CustomToast(toastMessage, toastType); // <--- Call CustomToast here!
+			CustomToast(toastMessage); // <--- Call CustomToast here!
 
 			// Dispatch the notification to your Redux store for persistent display/management
 			// if (addNotification) { // Check if addNotification is defined/imported

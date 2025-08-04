@@ -97,11 +97,6 @@ export default function AddPanel() {
 		return province?.ID ?? null;
 	};
 
-	const FindCityid = (cities: City[], name: string) => {
-		const city = cities.find((p) => String(p.ID) === name);
-		return city?.ID ?? null;
-	};
-
 	useEffect(() => {
 		UpdateCityList(provinceid ?? 1);
 	}, [provinceid]);
@@ -112,9 +107,8 @@ export default function AddPanel() {
 		setLoading(true);
 		addpanelService
 			.AddPanel(panel, corpId)
-			.then((res) => {
-				CustomToast(res?.message, "success");
-				console.log(res);
+			.then((data) => {
+				CustomToast(data?.message, "success");
 				setOpen(false);
 			})
 			.catch((err) => console.log(err))
