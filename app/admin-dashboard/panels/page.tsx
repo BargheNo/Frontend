@@ -124,9 +124,7 @@ export default function Panels() {
 			</div>
 
 			{loading ? (
-				<div className="flex justify-center mt-6">
-					<LoadingSpinner />
-				</div>
+				<LoadingSpinner />
 			) : panellist && panellist.length > 0 ? (
 				<div className="rounded-xl overflow-hidden w-[90%] m-auto">
 					{panellist.map((Item, index) => (

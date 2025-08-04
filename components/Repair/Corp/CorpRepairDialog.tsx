@@ -15,6 +15,7 @@ import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, XCircle } from "lucide-react";
 import useHasPermission from "@/src/functions/hasPermission";
+import { useSelector } from "react-redux";
 
 interface RepairHistoryProps {
 	id: string;
@@ -39,6 +40,7 @@ const CorpRepairDialog = ({
 	const hasAcceptMaintenanceRequestPermission = useHasPermission(
 		"maintenance.acceptRequest"
 	);
+	const corpId = useSelector((state: RootState) => state.corp.id);
 	// const [notes, setNotes] = useState<MaintenanceRecord[] | null>(null);
 	const [notes, setNotes] = useState<RepairHistoryProps | null>(null);
 	const [isLoadingNotes, setIsLoadingNotes] = useState(true);
@@ -48,7 +50,7 @@ const CorpRepairDialog = ({
 	useEffect(() => {
 		if (repairItem) {
 			getData({
-				endPoint: `${baseURL}/v1/corp/2/maintenance/request/${repairItem.id}`, // TODO: corpIDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+				endPoint: `${baseURL}/v1/corp/${corpId}/maintenance/request/${repairItem.id}`, // TODO: corpIDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 			})
 				.then((res) => {
 					setNotes(res.data.record);
@@ -67,7 +69,7 @@ const CorpRepairDialog = ({
 	const handleAccept = async () => {
 		setIsLoading(true);
 		putData({
-			endPoint: `${baseURL}/v1/corp/2/maintenance/request/${repairItem.id}/accept`, // TODO: corpIDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+			endPoint: `${baseURL}/v1/corp/${corpId}/maintenance/request/${repairItem.id}/accept`, // TODO: corpIDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 		})
 			.then((res) => {
 				CustomToast(res?.message, "success");
@@ -82,7 +84,7 @@ const CorpRepairDialog = ({
 	const handleReject = async () => {
 		setIsLoading(true);
 		putData({
-			endPoint: `${baseURL}/v1/corp/2/maintenance/request/${repairItem.id}/reject`, // TODO: corpIDDDDDDDD
+			endPoint: `${baseURL}/v1/corp/${corpId}/maintenance/request/${repairItem.id}/reject`, // TODO: corpIDDDDDDDD
 		})
 			.then((res) => {
 				CustomToast(res?.message, "success");
@@ -109,9 +111,7 @@ const CorpRepairDialog = ({
 				<div className="overflow-y-auto max-h-[calc(80vh-100px)] pr-2 no-scrollbar">
 					<div dir="rtl" className="flex flex-col gap-5">
 						{isLoadingNotes ? (
-							<div className="flex justify-center items-center h-full">
-								<LoadingSpinner />
-							</div>
+							<LoadingSpinner />
 						) : notes ? (
 							<RepairHistory note={notes} />
 						) : (
