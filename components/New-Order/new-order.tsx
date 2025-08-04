@@ -59,7 +59,6 @@ export default function Neworder() {
 	const [provinces, Setprovinces] = useState<Province[]>([]);
 	const [cities, Setcities] = useState<City[]>([]);
 	const [building, Setbuilding] = useState(1);
-	const [cityid, Setcityid] = useState<number>();
 	const [buildingTypes, setBuildingTypes] = useState<BuildingTypeProps[]>();
 
 	const Getprovinces = () => {
@@ -87,8 +86,8 @@ export default function Neworder() {
 			})
 			.catch((err) => console.log(err));
 	};
-	const Findprovinceid = (provinces: Province[], id: number) => {
-		const province = provinces.find((p) => p.ID === id);
+	const Findprovinceid = (provinces: Province[], name: string) => {
+		const province = provinces.find((p) => String(p.ID) === name);
 		return province?.ID ?? null;
 	};
 
@@ -221,13 +220,11 @@ export default function Neworder() {
 										name="province"
 										value={values.provinceID}
 										onValueChange={(value) => {
-											setFieldValue("cityID", null);
 											setFieldValue("provinceID", value);
-
-											console.log(values.cityID);
+											setFieldValue("cityID", "");
 											const id = Findprovinceid(
 												provinces,
-												Number(value)
+												value
 											);
 											Setprovinceid(id ?? 1);
 											if (id) UpdateCityList(id);
@@ -236,7 +233,7 @@ export default function Neworder() {
 									>
 										<SelectTrigger
 											className={`${style.CustomInput} cursor-pointer`}
-											id="province"
+											// id="province"
 											// style={{ width: "25vw" }}
 										>
 											<SelectValue placeholder="استان" />
@@ -251,9 +248,6 @@ export default function Neworder() {
 															index
 														) => (
 															<SelectItem
-																id={String(
-																	index
-																)}
 																key={index}
 																className="cursor-pointer"
 																value={String(
@@ -277,11 +271,6 @@ export default function Neworder() {
 										value={values?.cityID}
 										disabled={disable}
 										onValueChange={(value) => {
-											const iD = FindCityid(
-												cities,
-												value
-											);
-											Setcityid(iD ?? 1);
 											setFieldValue("cityID", value);
 										}}
 									>
@@ -303,12 +292,9 @@ export default function Neworder() {
 																	city?.ID
 																)}
 																className="cursor-pointer"
-																id={String(
-																	index
-																)}
 															>
 																{Object.values(
-																	city.name
+																	city?.name
 																)}
 															</SelectItem>
 														)

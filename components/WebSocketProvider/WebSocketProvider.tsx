@@ -28,20 +28,20 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
 	const { isConnected, lastMessage, error } = useWebSocket(websocketUrl);
 
 	// Optional: Effects for logging or global error/status handling
-	useEffect(() => {
-		if (isConnected) {
-			console.log("Global WebSocket connected!");
-		} else if (!isConnected && accessToken) {
-			console.warn(
-				"Global WebSocket disconnected. Reconnection attempt in progress..."
-			);
-		}
-		if (error) {
-			console.log("Global WebSocket Error:", error);
-			// Optional: Show a toast for critical connection errors
-			// CustomToast('WebSocket connection error!', 'error');
-		}
-	}, [isConnected, error, accessToken]);
+	// useEffect(() => {
+	// 	if (isConnected) {
+	// 		console.log("Global WebSocket connected!");
+	// 	} else if (!isConnected && accessToken) {
+	// 		console.warn(
+	// 			"Global WebSocket disconnected. Reconnection attempt in progress..."
+	// 		);
+	// 	}
+	// 	if (error) {
+	// 		console.log("Global WebSocket Error:", error);
+	// 		// Optional: Show a toast for critical connection errors
+	// 		// CustomToast('WebSocket connection error!', 'error');
+	// 	}
+	// }, [isConnected, error, accessToken]);
 
 	// --- KEY CHANGE: Show CustomToast for incoming messages ---
 	useEffect(() => {
