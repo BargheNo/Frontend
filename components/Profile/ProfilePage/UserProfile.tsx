@@ -156,76 +156,79 @@ const UserProfile = () => {
 		},
 	];
 
-	return (
-		<div className="p-6 w-full neu-container">
-			{/* <h2 className="text-navy-blue text-2xl font-bold mb-6">
+	return isLoading ? (
+		<LoadingSpinner />
+	) : (
+		<div
+			className={`vazir w-[40vw] mx-auto min-h-full flex flex-col gap-8 text-white py-4 md:py-8 px-4 md:px-14 bg-transparent relative`}
+		>
+			<div className="flex justify-center items-center">
+				<div className="p-6 w-full neu-container">
+					{/* <h2 className="text-navy-blue text-2xl font-bold mb-6">
 				پروفایل کاربری
 			</h2> */}
 
-			{isLoading ? (
-				<LoadingSpinner />
-			) : (
-				<Formik
-					initialValues={getInitialValues()}
-					validationSchema={validationSchema}
-					onSubmit={handleSubmit}
-					enableReinitialize
-				>
-					{({ setFieldValue }) => (
-						<Form className="space-y-4">
-							<div className="flex justify-center mb-10">
-								<ProfilePicPicker
-									previewImage={previewImage}
-									existingImage={
-										typeof profileData?.profilePic ===
-										"string"
-											? profileData.profilePic
-											: null
-									}
-									isEditable={isEditable}
-									onImageChange={handleImageChange}
-									onRemoveImage={() => {
-										setPreviewImage(null);
-										setFieldValue("profilePic", null);
-										setIsEditable(true);
-									}}
-									setFieldValue={setFieldValue}
-									size="large"
-								/>
-							</div>
+					<Formik
+						initialValues={getInitialValues()}
+						validationSchema={validationSchema}
+						onSubmit={handleSubmit}
+						enableReinitialize
+					>
+						{({ setFieldValue }) => (
+							<Form className="space-y-4">
+								<div className="flex justify-center mb-10">
+									<ProfilePicPicker
+										previewImage={previewImage}
+										existingImage={
+											typeof profileData?.profilePic ===
+											"string"
+												? profileData.profilePic
+												: null
+										}
+										isEditable={isEditable}
+										onImageChange={handleImageChange}
+										onRemoveImage={() => {
+											setPreviewImage(null);
+											setFieldValue("profilePic", null);
+											setIsEditable(true);
+										}}
+										setFieldValue={setFieldValue}
+										size="large"
+									/>
+								</div>
 
-							{inputFields.map((field) => (
-								<CustomInput
-									key={field.name}
-									name={field.name}
-									type={field.type}
-									placeholder={field.placeholder}
-									icon={field.icon}
-									containerClassName="w-full"
-									disabled={
-										field.name === "email" ||
-										field.name === "phone"
-											? true
-											: !isEditable
-									}
-									// readOnly={field.name === "email" || field.name === "phone"}
-									inputClassName={
-										!isEditable ? "!bg-warm-white" : ""
-									}
-								/>
-							))}
+								{inputFields.map((field) => (
+									<CustomInput
+										key={field.name}
+										name={field.name}
+										type={field.type}
+										placeholder={field.placeholder}
+										icon={field.icon}
+										containerClassName="w-full"
+										disabled={
+											field.name === "email" ||
+											field.name === "phone"
+												? true
+												: !isEditable
+										}
+										// readOnly={field.name === "email" || field.name === "phone"}
+										inputClassName={
+											!isEditable ? "!bg-warm-white" : ""
+										}
+									/>
+								))}
 
-							<div className="flex justify-end">
-								<Button
-									type="submit"
-									className="px-4 py-2 font-black active:brightness-90 flex justify-center w-fit gap-4 min-w-28  place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white rounded-md transition-all duration-300"
-								>
-									{isEditable
-										? "ذخیره تغییرات"
-										: "ویرایش اطلاعات"}
-									{isEditable ? <Save /> : <Edit />}
-								</Button>
-								{/* <button
+								<div className="flex justify-end">
+									<Button
+										type="submit"
+										className="px-4 py-2 font-black active:brightness-90 flex justify-center w-fit gap-4 min-w-28  place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white rounded-md transition-all duration-300"
+									>
+										{isEditable
+											? "ذخیره تغییرات"
+											: "ویرایش اطلاعات"}
+										{isEditable ? <Save /> : <Edit />}
+									</Button>
+									{/* <button
 									type="submit"
 									className={`px-4 py-2 flex justify-center w-fit gap-4 !rounded-lg ${
 										isEditable
@@ -238,11 +241,12 @@ const UserProfile = () => {
 										: "ویرایش اطلاعات"}
 									{isEditable ? <Save /> : <Edit />}
 								</button> */}
-							</div>
-						</Form>
-					)}
-				</Formik>
-			)}
+								</div>
+							</Form>
+						)}
+					</Formik>
+				</div>
+			</div>
 		</div>
 	);
 };
