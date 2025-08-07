@@ -8,9 +8,8 @@ import NewsLanding from "./NewsLanding/NewsLanding";
 export default function Landing() {
   return (
     <div
-      className={`items-center bg-[#F4F7F9] ${vazir.className} w-full overflow-x-hidden`}
-      dir="rtl"
-    >
+			className={`items-center rtl no-scrollbar bg-[#F4F7F9] ${vazir.className} w-full`}
+		>
       <BargheNoLanding />
       <NewsLanding />
       <AboutUsLanding />

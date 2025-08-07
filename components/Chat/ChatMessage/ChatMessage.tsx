@@ -44,7 +44,7 @@ export default function ChatMessage({
 		} catch (err) {
 			// toast.error("Failed to copy message");
 			CustomToast("Failed to copy message", "error");
-			console.error("Failed to copy message:", err);
+			console.log("Failed to copy message:", err);
 		}
 	};
 

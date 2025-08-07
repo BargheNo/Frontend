@@ -46,6 +46,16 @@ import CustomToast from "../Custom/CustomToast/CustomToast";
 import AddComponent from "../AddComponent/AddComponent";
 import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
 import { useSelector } from "react-redux";
+import { getData } from "@/src/services/apiHub";
+import StickyFooter from "../Dialog/StickyFooter/StickyFooter";
+import CancelButton from "../Dialog/CancelButton/CancelButton";
+import SubmitButton from "../Dialog/SubmitButton/SubmitButton";
+
+interface BuildingTypeProps {
+	id: number;
+	name: string;
+}
+
 export default function AddPanel() {
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -53,8 +63,8 @@ export default function AddPanel() {
 	const [provinceid, Setprovinceid] = useState<number>();
 	const [provinces, Setprovinces] = useState<Province[]>([]);
 	const [cities, Setcities] = useState<City[]>([]);
-	const [building, Setbuilding] = useState("");
-	const [cityid, Setcityid] = useState<number>();
+	const [buildingTypes, setBuildingTypes] = useState<BuildingTypeProps[]>();
+
 	const Getprovinces = () => {
 		provinceService
 			.GetProvinces()
@@ -66,23 +76,25 @@ export default function AddPanel() {
 			});
 	};
 	useEffect(() => {
+		getData({ endPoint: `/v1/installation/request/building` })
+			.then((data) => {
+				setBuildingTypes(data?.data);
+			})
+			.catch((err) => console.log(err));
 		Getprovinces();
 	}, []);
 
 	const UpdateCityList = (provinceId: number) => {
-		provinceService.GetCities(provinceId).then((res) => {
-			console.log(res);
-			Setcities(res?.data);
-		});
+		provinceService
+			.GetCities(provinceId)
+			.then((res) => {
+				Setcities(res?.data);
+			})
+			.catch((err) => console.log(err));
 	};
 	const Findprovinceid = (provinces: Province[], name: string) => {
 		const province = provinces.find((p) => String(p.ID) === name);
 		return province?.ID ?? null;
-	};
-
-	const FindCityid = (cities: City[], name: string) => {
-		const city = cities.find((p) => String(p.ID) === name);
-		return city?.ID ?? null;
 	};
 
 	useEffect(() => {
@@ -91,14 +103,15 @@ export default function AddPanel() {
 	const corpId = useSelector((state: RootState) => state.user.corpId);
 	const handelAddPanelrequest = (panel: InitPanel) => {
 		// setOpen(false);
+		console.log(panel);
 		setLoading(true);
 		addpanelService
 			.AddPanel(panel, corpId)
-			.then((res) => {
-				CustomToast(res?.message, "success");
-				console.log(res);
+			.then((data) => {
+				CustomToast(data?.message, "success");
 				setOpen(false);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	};
 	return (
@@ -111,7 +124,7 @@ export default function AddPanel() {
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}
-				className="w-full sm:min-w-[750px] max-w-xl max-h-[90vh] no-scrollbar mx-auto p-4 overflow-auto py-4"
+				className="w-full dialog-width max-h-[90vh] no-scrollbar mx-auto overflow-y-auto pb-0"
 			>
 				<DialogHeader>
 					<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
@@ -128,9 +141,9 @@ export default function AddPanel() {
 						direction: "",
 						area: "",
 						address: "",
-						province: "",
-						city: "",
-						building: "",
+						provinceID: "",
+						cityID: "",
+						buildingType: "",
 						code: "",
 						unit: "",
 						number: "",
@@ -149,7 +162,9 @@ export default function AddPanel() {
 								".نام پنل نمی تواند بیش از 50 کارکتر باشد"
 							),
 						address: Yup.string().required("این فیلد الزامی است."),
-						building: Yup.string().required("این فیلد الزامی است."),
+						buildingType: Yup.number().required(
+							"این فیلد الزامی است."
+						),
 						area: Yup.number().required("این فیلد الزامی است."),
 						power: Yup.number().required("این فیلد الزامی است."),
 						modulecount: Yup.number().required(
@@ -159,9 +174,10 @@ export default function AddPanel() {
 						direction: Yup.number().required(
 							"این فیلد الزامی است."
 						),
-						province: Yup.string().required("این فیلد الزامی است."),
-						city: Yup.string().required("این فیلد الزامی است."),
-						number: Yup.string().required("این فیلد الزامی است."),
+						provinceID: Yup.number().required(
+							"این فیلد الزامی است."
+						),
+						cityID: Yup.number().required("این فیلد الزامی است."),
 						code: Yup.string()
 							.required("این فیلد الزامی است.")
 							.length(10, "کد پستی وارد شده اشتباه است."),
@@ -174,12 +190,12 @@ export default function AddPanel() {
 							customerPhone: "+98" + values.phonenumber,
 							power: Number(values.power),
 							area: Number(values.area),
-							buildingType: Number(building),
+							buildingType: Number(values.buildingType),
 							tilt: Number(values.angel),
 							azimuth: Number(values.direction),
 							totalNumberOfModules: Number(values.modulecount),
-							provinceID: provinceid ?? 1,
-							cityID: cityid ?? 1,
+							provinceID: Number(values.provinceID),
+							cityID: Number(values.cityID),
 							streetAddress: values.address,
 							postalCode: String(values.code),
 							houseNumber: String(values.number),
@@ -187,7 +203,7 @@ export default function AddPanel() {
 						});
 					}}
 				>
-					{({ setFieldValue, values }) => (
+					{({ setFieldValue, values, errors, touched }) => (
 						<Form className="flex flex-col items-end w-full h-auto gap-4 rtl">
 							<div
 								className="flex md:flex-row flex-col justify-between w-full mt-2"
@@ -198,7 +214,12 @@ export default function AddPanel() {
 									placeholder="شماره مشتری"
 									icon={IdCard}
 									name="phonenumber"
-									type="number"
+									inputClassName={
+										errors.phonenumber &&
+										touched.phonenumber
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
+									}
 								/>
 
 								<CustomInput
@@ -206,6 +227,11 @@ export default function AddPanel() {
 									placeholder="نام پنل"
 									icon={SquareMenu}
 									name="name"
+									inputClassName={
+										errors.name && touched.name
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
+									}
 								/>
 							</div>
 							<div
@@ -217,14 +243,23 @@ export default function AddPanel() {
 									dir="rtl"
 									icon={Tally5}
 									name="modulecount"
-									placeholder="تعداد ماژول ها"
+									placeholder="تعداد ماژول‌ها"
+									inputClassName={
+										errors.modulecount &&
+										touched.modulecount
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
+									}
 								/>
 
 								<Select
 									name="building"
 									onValueChange={(value) => {
-										Setbuilding(value);
-										setFieldValue("building", value);
+										console.log(values);
+										setFieldValue(
+											"buildingType",
+											Number(value)
+										);
 									}}
 								>
 									<SelectTrigger
@@ -237,36 +272,19 @@ export default function AddPanel() {
 											<SelectLabel>
 												نوع ساختمان
 											</SelectLabel>
-											<SelectItem
-												value="1"
-												className="cursor-pointer"
-											>
-												مسکونی
-											</SelectItem>
-											<SelectItem
-												value="2"
-												className="cursor-pointer"
-											>
-												تجاری
-											</SelectItem>
-											<SelectItem
-												value="3"
-												className="cursor-pointer"
-											>
-												صنعتی
-											</SelectItem>
-											<SelectItem
-												value="4"
-												className="cursor-pointer"
-											>
-												کشاورزی
-											</SelectItem>
-											<SelectItem
-												value="5"
-												className="cursor-pointer"
-											>
-												سایر
-											</SelectItem>
+											{buildingTypes?.map(
+												(buildingType, index) => (
+													<SelectItem
+														key={index}
+														value={String(
+															buildingType?.id
+														)}
+														className="cursor-pointer"
+													>
+														{buildingType?.name}
+													</SelectItem>
+												)
+											)}
 										</SelectGroup>
 									</SelectContent>
 								</Select>
@@ -281,6 +299,11 @@ export default function AddPanel() {
 									icon={DatabaseZap}
 									placeholder="مجموع توان تولید شده (کیلووات)"
 									name="power"
+									inputClassName={
+										errors.power && touched.power
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
+									}
 								/>
 								<CustomInput
 									type="number"
@@ -288,6 +311,11 @@ export default function AddPanel() {
 									icon={TriangleRight}
 									name="angel"
 									placeholder="زاویه نصب (درجه)"
+									inputClassName={
+										errors.angel && touched.angel
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
+									}
 								/>
 							</div>
 							<div
@@ -301,6 +329,11 @@ export default function AddPanel() {
 									icon={Compass}
 									placeholder="جهت نصب (درجه)"
 									name="direction"
+									inputClassName={
+										errors.direction && touched.direction
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
+									}
 								/>
 								<CustomInput
 									type="number"
@@ -309,27 +342,33 @@ export default function AddPanel() {
 									icon={LandPlot}
 									placeholder="مساحت (مترمربع)"
 									name="area"
+									inputClassName={
+										errors.area && touched.area
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
+									}
 								/>
 							</div>
 							<div
 								className={`${style.citypro} flex md:flex-row flex-col justify-between w-full mt-2`}
 							>
 								<Select
-									name="province"
+									name="provinceID"
+									value={values.provinceID}
 									onValueChange={(value) => {
-										Setdisable(false);
-										setFieldValue("province", value);
-										setFieldValue("city", "");
+										setFieldValue("provinceID", value);
+										setFieldValue("cityID", "");
 										const id = Findprovinceid(
 											provinces,
 											value
 										);
 										Setprovinceid(id ?? 1);
 										if (id) UpdateCityList(id);
+										Setdisable(false);
 									}}
 								>
 									<SelectTrigger
-										className={style.CustomInput}
+										className={`${style.CustomInput} cursor-pointer`}
 										// style={{ width: "25vw" }}
 									>
 										<SelectValue placeholder="استان" />
@@ -342,12 +381,12 @@ export default function AddPanel() {
 													(provincearr, index) => (
 														<SelectItem
 															key={index}
-															value={String(
-																provincearr.ID
-															)}
 															className="cursor-pointer"
+															value={String(
+																provincearr?.ID
+															)}
 														>
-															{provincearr.name}
+															{provincearr?.name}
 														</SelectItem>
 													)
 												)
@@ -358,17 +397,16 @@ export default function AddPanel() {
 									</SelectContent>
 								</Select>
 								<Select
-									name="city"
+									name="cityID"
+									value={values.cityID}
 									disabled={disable}
 									onValueChange={(value) => {
-										const iD = FindCityid(cities, value);
-										Setcityid(iD ?? 1);
-										setFieldValue("city", value);
+										setFieldValue("cityID", value);
 									}}
 								>
 									<SelectTrigger
 										disabled={disable}
-										className={style.CustomInput}
+										className={`${style.CustomInput} cursor-pointer`}
 									>
 										<SelectValue placeholder="شهر" />
 									</SelectTrigger>
@@ -379,11 +417,11 @@ export default function AddPanel() {
 												cities.map((city, index) => (
 													<SelectItem
 														key={index}
-														value={String(city.ID)}
+														value={String(city?.ID)}
 														className="cursor-pointer"
 													>
 														{Object.values(
-															city.name
+															city?.name
 														)}
 													</SelectItem>
 												))
@@ -399,9 +437,12 @@ export default function AddPanel() {
 									icon={MapPinHouse}
 									name="address"
 									placeholder="آدرس"
-								>
-									{" "}
-								</CustomTextArea>
+									inputClassName={
+										errors.address && touched.address
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
+									}
+								/>
 							</div>
 							<div
 								className="flex md:flex-row flex-col justify-end w-full -mt-4"
@@ -414,9 +455,12 @@ export default function AddPanel() {
 									icon={Mailbox}
 									name="code"
 									placeholder="کد پستی"
-								>
-									{" "}
-								</CustomInput>
+									inputClassName={
+										errors.code && touched.code
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
+									}
+								/>
 								<CustomInput
 									type="number"
 									style={{ width: "12vw" }}
@@ -424,9 +468,12 @@ export default function AddPanel() {
 									icon={House}
 									placeholder="پلاک"
 									name="number"
-								>
-									{" "}
-								</CustomInput>
+									inputClassName={
+										errors.number && touched.number
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
+									}
+								/>
 								<CustomInput
 									type="number"
 									style={{ width: "12vw" }}
@@ -434,13 +481,20 @@ export default function AddPanel() {
 									icon={BellRing}
 									placeholder="واحد"
 									name="unit"
-								>
-									{" "}
-								</CustomInput>
+									inputClassName={
+										errors.unit && touched.unit
+											? "!border-red-500 !ring-1 !ring-red-700"
+											: ""
+									}
+								/>
 							</div>
-
-							<DialogFooter className="flex flex-row justify-center items-center self-center">
-								{/* <div className="flex flex-row justify-center items-center self-center"> */}
+							<StickyFooter>
+								<CancelButton />
+								<SubmitButton loading={loading}>
+									ثبت پنل
+								</SubmitButton>
+							</StickyFooter>
+							{/* <DialogFooter className="flex flex-row justify-center items-center self-center">
 								<SignupButton
 									className="text-[#FA682D]"
 									type="submit"
@@ -455,9 +509,8 @@ export default function AddPanel() {
 										<p>ثبت پنل</p>
 									)}
 								</SignupButton>
-								{/* </div> */}
 								<DialogClose />
-							</DialogFooter>
+							</DialogFooter> */}
 						</Form>
 					)}
 				</Formik>

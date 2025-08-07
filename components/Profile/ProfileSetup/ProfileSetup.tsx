@@ -55,7 +55,7 @@ const ProfileSetup = () => {
 				router.push("/dashboard");
 			}
 		} catch (error) {
-			console.error("Error submitting form:", error);
+			console.log("Error submitting form:", error);
 			CustomToast("خطا در ذخیرۀ اطلاعات", "error");
 			// toast.error("خطا در ذخیرۀ اطلاعات");
 		}

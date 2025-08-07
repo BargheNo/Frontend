@@ -1,4 +1,5 @@
 "use client";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import { cn } from "@/lib/utils";
 import { deleteData } from "@/src/services/apiHub";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -11,62 +12,70 @@ import { toast } from "sonner";
 // import { any } from "cypress/types/bluebird";
 
 type State = {
-  selectedCount: number;
-  selectedIds: string[];
+	selectedCount: number;
+	selectedIds: string[];
 };
 
 type Action =
-  | { type: "INCREMENT" }
-  | { type: "DECREMENT" }
-  | { type: "RESET" }
-  | { type: "ADDID"; payload: string }
-  | { type: "REMOVEID"; payload: string }
-  | { type: "RESETID" };
+	| { type: "INCREMENT" }
+	| { type: "DECREMENT" }
+	| { type: "RESET" }
+	| { type: "ADDID"; payload: string }
+	| { type: "REMOVEID"; payload: string }
+	| { type: "RESETID" };
 
 const reducer = (state: State, action: Action): State => {
-  switch (action.type) {
-    case "INCREMENT":
-      return { ...state, selectedCount: state.selectedCount + 1 };
-    case "DECREMENT":
-      return { ...state, selectedCount: Math.max(0, state.selectedCount - 1) };
-    case "RESET":
-      return { ...state, selectedCount: 0 };
-    case "ADDID":
-      return { ...state, selectedIds: [...state.selectedIds, action.payload] };
-    case "REMOVEID":
-      return {
-        ...state,
-        selectedIds: state.selectedIds.filter((id) => id !== action.payload),
-      };
-    case "RESETID":
-      return { ...state, selectedIds: [] };
-    default:
-      return state;
-  }
+	switch (action.type) {
+		case "INCREMENT":
+			return { ...state, selectedCount: state.selectedCount + 1 };
+		case "DECREMENT":
+			return {
+				...state,
+				selectedCount: Math.max(0, state.selectedCount - 1),
+			};
+		case "RESET":
+			return { ...state, selectedCount: 0 };
+		case "ADDID":
+			return {
+				...state,
+				selectedIds: [...state.selectedIds, action.payload],
+			};
+		case "REMOVEID":
+			return {
+				...state,
+				selectedIds: state.selectedIds.filter(
+					(id) => id !== action.payload
+				),
+			};
+		case "RESETID":
+			return { ...state, selectedIds: [] };
+		default:
+			return state;
+	}
 };
 
 export const AnnounceContex = createContext<{
-  selectMode: boolean;
-  setSelectMode: (value: boolean) => void;
-  selectedCount: number;
-  selectedIds: string[];
-  incrementCount: () => void;
-  decrementCount: () => void;
-  resetCount: () => void;
-  addId: (id: string) => void;
-  removeId: (id: string) => void;
-  resetId: () => void;
+	selectMode: boolean;
+	setSelectMode: (value: boolean) => void;
+	selectedCount: number;
+	selectedIds: string[];
+	incrementCount: () => void;
+	decrementCount: () => void;
+	resetCount: () => void;
+	addId: (id: string) => void;
+	removeId: (id: string) => void;
+	resetId: () => void;
 }>({
-  selectMode: false,
-  setSelectMode: () => {},
-  selectedCount: 0,
-  selectedIds: [],
-  incrementCount: () => {},
-  decrementCount: () => {},
-  resetCount: () => {},
-  addId: () => {},
-  removeId: () => {},
-  resetId: () => {},
+	selectMode: false,
+	setSelectMode: () => {},
+	selectedCount: 0,
+	selectedIds: [],
+	incrementCount: () => {},
+	decrementCount: () => {},
+	resetCount: () => {},
+	addId: () => {},
+	removeId: () => {},
+	resetId: () => {},
 });
 
 export default function AnnouncementBox({
@@ -80,47 +89,49 @@ export default function AnnouncementBox({
   className?: string;
   insideClassName?: string;
 }) {
-  const holder = useRef<HTMLDivElement>(null);
-  // const scrollTween = useRef<gsap.core.Tween | null>(null);
-  const [selectMode, setSelectMode] = useState(false);
-  const [state, dispatch] = useReducer(reducer, {
-    selectedCount: 0,
-    selectedIds: [],
-  });
-  // const [currentPos, setCurrentPos] = useState(0);
-  // const [scrollable, setScrollable] = useState(true);
+	const holder = useRef<HTMLDivElement>(null);
+	// const scrollTween = useRef<gsap.core.Tween | null>(null);
+	const [selectMode, setSelectMode] = useState(false);
+	const [state, dispatch] = useReducer(reducer, {
+		selectedCount: 0,
+		selectedIds: [],
+	});
+	// const [currentPos, setCurrentPos] = useState(0);
+	// const [scrollable, setScrollable] = useState(true);
 
-  const incrementCount = () => dispatch({ type: "INCREMENT" });
-  const decrementCount = () => dispatch({ type: "DECREMENT" });
-  const resetCount = () => dispatch({ type: "RESET" });
-  const addId = (id: string) => dispatch({ type: "ADDID", payload: id });
-  const removeId = (id: string) => dispatch({ type: "REMOVEID", payload: id });
-  const resetId = () => dispatch({ type: "RESETID" });
+	const incrementCount = () => dispatch({ type: "INCREMENT" });
+	const decrementCount = () => dispatch({ type: "DECREMENT" });
+	const resetCount = () => dispatch({ type: "RESET" });
+	const addId = (id: string) => dispatch({ type: "ADDID", payload: id });
+	const removeId = (id: string) =>
+		dispatch({ type: "REMOVEID", payload: id });
+	const resetId = () => dispatch({ type: "RESETID" });
 
-  useEffect(() => {
-    if (state.selectedCount === 0) {
-      setSelectMode(false);
-    }
-  }, [state.selectedCount]);
+	useEffect(() => {
+		if (state.selectedCount === 0) {
+			setSelectMode(false);
+		}
+	}, [state.selectedCount]);
 
-  const queryClient = useQueryClient();
-  const handleDelete = useMutation({
-    mutationFn: () =>
-      deleteData({
-        endPoint: "/v1/admin/news",
-        data: { newsIDs: state.selectedIds },
-      }),
-    onSuccess: (responce) => {
-      console.log("Mutation successful, response:", responce);
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["news"] });
-      toast.success("خبر با موفقیت حذف شد.");
-    },
-    onError: (error) => {
-      console.error("Mutation error:", error);
-      toast.error("خطایی رخ داده است");
-    },
-  });
+	const queryClient = useQueryClient();
+	const handleDelete = useMutation({
+		mutationFn: () =>
+			deleteData({
+				endPoint: "/v1/admin/news",
+				data: { newsIDs: state.selectedIds },
+			}),
+		onSuccess: (response) => {
+			console.log("Mutation successful, response:", response);
+			// Invalidate and refetch
+			queryClient.invalidateQueries({ queryKey: ["news"] });
+			CustomToast("خبر با موفقیت حذف شد.", "success");
+			// toast.success("خبر با موفقیت حذف شد.");
+		},
+		onError: (error) => {
+			console.log("Mutation error:", error);
+			// toast.error("خطایی رخ داده است");
+		},
+	});
 
   return (
     <AnnounceContex.Provider

@@ -45,6 +45,7 @@ export default function CorpInfoForm({
 					setFieldValue("iban", res.data.iban);
 					setFieldValue("signatories", res.data.signatories);
 				})
+				.catch((err) => console.log(err))
 				.finally(() => setLoading(false));
 		} else {
 			setLoading(false);

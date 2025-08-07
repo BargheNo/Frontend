@@ -5,22 +5,78 @@ import IconWithBackground from "@/components/IconWithBackground/IconWithBackgrou
 import moment from 'jalali-moment'
 import { Eclipse, CalendarCheck, ChevronDown, TextSearch } from "lucide-react";
 
+interface ContactInfo {
+    type: string;
+    value: string;
+}
+
+interface Address {
+    id: number;
+    province: string;
+    provinceID: number;
+    cityID: number;
+    city: string;
+    streetAddress: string;
+    postalCode: string;
+    houseNumber: string;
+    unit: number;
+}
+
 interface RepairHistoryItem {
-    ID: number;
-    Subject: string;
-    Description: string;
-    Status: string;
-    UrgencyLevel: string;
-    CreatedAt: string;
-    OwnerID: number;
-    CorporationID: number;
-    PanelID: number;
-    Panel: {
+    id: number;
+    createdAt: string;
+    panel: {
         id: number;
-        panelName: string;
-        corporationName: string;
-        power: number;
+        name: string;
+        status: string;
+        buildingType: string;
         area: number;
+        power: number;
+        tilt: number;
+        azimuth: number;
+        totalNumberOfModules: number;
+        guaranteeStatus: string;
+        corporation: {
+            id: number;
+            name: string;
+            logo: string;
+            contactInfo: ContactInfo[];
+            addresses: Address[];
+        };
+        address: Address;
+        guarantee: {
+            id: number;
+            name: string;
+            status: string;
+            guaranteeType: string;
+            durationMonths: number;
+            description: string;
+            terms: Record<string, unknown>;
+        };
+    };
+    corporation: {
+        id: number;
+        name: string;
+        logo: string;
+        contactInfo: ContactInfo[];
+        addresses: Address[];
+    };
+    subject: string;
+    description: string;
+    urgencyLevel: string;
+    status: string;
+    isGuaranteeRequested: boolean;
+    record: {
+        id: number;
+        createdAt: string;
+        title: string;
+        details: string;
+        date: string;
+        isApproved: boolean;
+        violation: {
+            reason: string;
+            details: string;
+        };
     };
 }
 
@@ -38,8 +94,8 @@ const CustomerRepairCard = ({
     const [isExpanded, setIsExpanded] = useState(false);
 
     const getStatusColor = () => {
-        if (repairItem.Status === "completed") return "green-status";
-        if (repairItem.Status === "in_progress") return "yellow-status";
+        if (repairItem.status === "تکمیل شده") return "green-status";
+        if (repairItem.status === "در حال انجام") return "yellow-status";
         return "red-status";
     };
 
@@ -58,7 +114,7 @@ const CustomerRepairCard = ({
                 <div className="flex flex-col justify-between w-full z-10">
                     <div className="space-y-3 w-full">
                         <h2 className="text-2xl font-bold text-gray-800">
-                            {repairItem.Subject}
+                            {repairItem.subject}
                         </h2>
                         <div className="space-y-2 w-full">
                             <div className="flex flex-col md:flex-row gap-4 md:gap-36">
@@ -74,7 +130,7 @@ const CustomerRepairCard = ({
                                     </div>
                                     <div className="truncate">
                                         <span className="mr-1">
-                                            {repairItem.Panel.panelName}
+                                            {repairItem.panel.name}
                                         </span>
                                     </div>
                                 </div>
@@ -90,7 +146,7 @@ const CustomerRepairCard = ({
                                     </div>
                                     <div className="truncate">
                                         <span className="mr-1">
-                                            {moment(repairItem.CreatedAt.slice(0, 10), "YYYY-MM-DD").locale('fa').format('YYYY/MM/DD')}
+                                            {moment(repairItem.createdAt.slice(0, 10), "YYYY-MM-DD").locale('fa').format('YYYY/MM/DD')}
                                         </span>
                                     </div>
                                 </div>
@@ -99,14 +155,14 @@ const CustomerRepairCard = ({
                     </div>
                     <div className="flex flex-col text-sm text-gray-700 mt-6">
                         <div className={`mt-2 transition-all duration-200 ${isExpanded ? 'opacity-100 max-h-48' : 'opacity-0 max-h-0 overflow-hidden'}`}>
-                            <span className="mr-1">{repairItem.Description}</span>
+                            <span className="mr-1">{repairItem.description}</span>
                         </div>
                         {!isExpanded && (
                             <div className="mt-2 text-gray-600">
-                                <span className="mr-1">{truncateText(repairItem.Description)}</span>
+                                <span className="mr-1">{truncateText(repairItem.description)}</span>
                             </div>
                         )}
-                        { repairItem.Description.length > MAXLENGTH && 
+                        { repairItem.description.length > MAXLENGTH && 
                         <div 
                             className="flex items-center text-gray-400 mt-4 cursor-pointer"
                             onClick={() => setIsExpanded(!isExpanded)}>
@@ -126,8 +182,7 @@ const CustomerRepairCard = ({
                                 className={`h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
                             ></div>
                             <span className="text-sm font-black text-gray-800">
-                                {repairItem.Status === "completed" ? "تکمیل شده" : 
-                                 repairItem.Status === "in_progress" ? "در حال انجام" : "در انتظار"}
+                                {repairItem.status}
                             </span>
                         </div>
                     </div>

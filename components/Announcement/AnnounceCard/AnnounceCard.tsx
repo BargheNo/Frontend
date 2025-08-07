@@ -1,87 +1,89 @@
 "use client";
 import {
-  ContextMenu,
-  ContextMenuItem,
-  ContextMenuTrigger,
-  ContextMenuContent,
+	ContextMenu,
+	ContextMenuItem,
+	ContextMenuTrigger,
+	ContextMenuContent,
 } from "@/components/ui/context-menu";
 import { cn } from "@/lib/utils";
 import { useState, useContext, useEffect } from "react";
 import { AnnounceContex } from "../AnnouncementBox/AnnouncementBox";
 import { useRouter } from "next/navigation";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
 } from "@/components/ui/dialog";
 import dynamic from "next/dynamic";
 const AnnounceEditor = dynamic(
-  () => import("@/components/Announcement/AnnounceEditor/AnnounceEditor"),
-  { ssr: false }
+	() => import("@/components/Announcement/AnnounceEditor/AnnounceEditor"),
+	{ ssr: false }
 );
 import { deleteData } from "@/src/services/apiHub";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useHasPermission from "@/src/functions/hasPermission";
 // export default function AnnounceCard({ title, }: { title: string, content: string, writer: string, date: number }) {
 export default function AnnounceCard({
-  onlyView = false,
-  title,
-  id,
-  status = 2,
+	onlyView = false,
+	title,
+	id,
+	status = 2,
 }: {
-  title: string;
-  id: string;
-  onlyView?: boolean;
-  status?: number;
+	title: string;
+	id: string;
+	onlyView?: boolean;
+	status?: number;
 }) {
-  const {
-    selectMode,
-    setSelectMode,
-    incrementCount,
-    decrementCount,
-    addId,
-    removeId,
-  } = useContext(AnnounceContex);
-  const [selected, setselected] = useState(false);
-  const router = useRouter();
-  useEffect(() => {
-    if (!selectMode) {
-      setselected(false);
-    }
-  }, [selectMode]);
+	const hasEditNewsPermission = useHasPermission("news.edit");
+	const hasDeleteNewsPermission = useHasPermission("news.delete");
+	const {
+		selectMode,
+		setSelectMode,
+		incrementCount,
+		decrementCount,
+		addId,
+		removeId,
+	} = useContext(AnnounceContex);
+	const [selected, setselected] = useState(false);
+	const router = useRouter();
+	useEffect(() => {
+		if (!selectMode) {
+			setselected(false);
+		}
+	}, [selectMode]);
 
-  const handleSelect = () => {
-    const newSelected = !selected;
-    setselected(newSelected);
-    if (newSelected) {
-      incrementCount();
-      addId(id);
-    } else {
-      decrementCount();
-      removeId(id);
-    }
-  };
-  const queryClient = useQueryClient();
-  const handleDelete = useMutation({
-    mutationFn: () =>
-      deleteData({
-        endPoint: "/v1/admin/news",
-        data: { newsIDs: [id] },
-      }),
-    onSuccess: (responce) => {
-      console.log("Mutation successful, response:", responce);
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["news"] });
-      toast.success("خبر با موفقیت حذف شد.");
-    },
-    onError: (error) => {
-      console.error("Mutation error:", error);
-      toast.error("خطایی رخ داده است");
-    },
-  });
+	const handleSelect = () => {
+		const newSelected = !selected;
+		setselected(newSelected);
+		if (newSelected) {
+			incrementCount();
+			addId(id);
+		} else {
+			decrementCount();
+			removeId(id);
+		}
+	};
+	const queryClient = useQueryClient();
+	const handleDelete = useMutation({
+		mutationFn: () =>
+			deleteData({
+				endPoint: "/v1/admin/news",
+				data: { newsIDs: [id] },
+			}),
+		onSuccess: (responce) => {
+			console.log("Mutation successful, response:", responce);
+			// Invalidate and refetch
+			queryClient.invalidateQueries({ queryKey: ["news"] });
+			toast.success("خبر با موفقیت حذف شد.");
+		},
+		onError: (error) => {
+			console.log("Mutation error:", error);
+		},
+	});
 
   return (
     <>
@@ -121,7 +123,7 @@ export default function AnnounceCard({
                   {/* <div className="short-par">
                 {content}
                 </div> */}
-                  {/* <div className="flex justify-between items-center">
+									{/* <div className="flex justify-between items-center">
                 <div>نویسنده: {writer}</div>
                 <div className="flex items-center gap-1">
                 {new Date(date).toLocaleDateString('fa-IR', { year: 'numeric', month: 'numeric', day: 'numeric' })}
@@ -192,16 +194,16 @@ export default function AnnounceCard({
             {/* <div className="short-par">
                 {content}
                 </div> */}
-            {/* <div className="flex justify-between items-center">
+						{/* <div className="flex justify-between items-center">
                 <div>نویسنده: {writer}</div>
                 <div className="flex items-center gap-1">
                 {new Date(date).toLocaleDateString('fa-IR', { year: 'numeric', month: 'numeric', day: 'numeric' })}
                 <Calendar size={24} color="#EA6639"/>
                 </div>
                 </div> */}
-          </div>
-        </div>
-      )}
-    </>
-  );
+					</div>
+				</div>
+			)}
+		</>
+	);
 }

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Vote, UserRoundCog, Check } from "lucide-react";
 import { useSelector } from "react-redux";
 import styles from "./RolesAndPermissions.module.css";
@@ -8,6 +8,7 @@ import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import * as Yup from "yup";
 import { Form, Formik, FieldArray } from "formik";
 import {
+	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
@@ -15,6 +16,9 @@ import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import { getData, putData } from "@/src/services/apiHub";
+import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
+import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
+import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
 
 type Permission = {
 	id: number;
@@ -46,51 +50,54 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 	onSaveSuccess,
 }) => {
 	// const { setFieldValue } = useFormikContext<MyFormValues>();
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
 	const [allPermissions, setAllPermissions] = useState<Permission[]>([]);
 	const [selectedPermissions, setSelectedPermissions] = useState<number[]>(
 		[]
 	);
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 	const [isSaving, setIsSaving] = useState(false);
 	const [roleName, setRoleName] = useState(role?.name || "");
 
-	const initialValuesForm = {
-		name: role?.name || "",
-		permissionIDs: [],
-	};
+	// const initialValuesForm = {
+	// 	name: role?.name || "",
+	// 	permissionIDs: [],
+	// };
+	const initialValuesForm = useMemo(
+		() => ({
+			name: role?.name || "",
+			permissionIDs: selectedPermissions, // <- use fetched permissions
+		}),
+		[role?.name, selectedPermissions]
+	);
 
 	const validationSchemaForm = Yup.object({
 		name: Yup.string().required("نام نقش الزامی است"),
 		permissionIDs: Yup.array().of(Yup.number()),
 	});
 
-	useEffect(() => {
-		if (role) {
-			setRoleName(role.name);
-			// Fetch permissions when role changes
-			getRolePermissions(role.id);
-		}
-	}, [role]);
-
 	// Fetch all available permissions
 	const getAllPermissions = async () => {
-		getData({ endPoint: `/v1/admin/permissions` }).then((data) => {
-			setAllPermissions(data.data);
-		});
+		getData({ endPoint: `/v1/admin/permissions` })
+			.then((data) => {
+				setAllPermissions(data.data);
+			})
+			.catch((err) => console.log(err));
 	};
 
 	// Fetch permissions for the current role
 	const getRolePermissions = async (roleId: string | undefined) => {
 		if (!roleId) return;
-		getData({ endPoint: `/v1/admin/roles/${roleId}` }).then((data) => {
-			const permissionIds = data.data.permissions.map(
-				(p: Permission) => p.id
-			);
-			setSelectedPermissions(permissionIds);
-		});
+		// setIsLoading(true);
+		getData({ endPoint: `/v1/admin/roles/${roleId}` })
+			.then((data) => {
+				const permissionIds = data.data.permissions.map(
+					(p: Permission) => p.id
+				);
+				setSelectedPermissions(permissionIds);
+				setIsLoading(false);
+			})
+			.catch((err) => console.log(err));
+		// .finally(() => setIsLoading(false));
 	};
 
 	// Save updated permissions
@@ -100,7 +107,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 		setIsSaving(true);
 		const formData = {
 			name: values.name,
-			permissionIDs: values.permissionIDs.concat(selectedPermissions),
+			permissionIDs: values.permissionIDs,
 		};
 		putData({
 			endPoint: `/v1/admin/roles/${role.id}`,
@@ -112,7 +119,8 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 				onSaveSuccess();
 				onClose();
 			})
-			.catch(() => {
+			.catch((err) => {
+				console.log(err);
 				setEditOpen(false);
 			})
 			.finally(() => setIsSaving(false));
@@ -127,12 +135,57 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 		return acc;
 	}, {} as Record<string, Permission[]>);
 	useEffect(() => {
-		setIsLoading(true);
-		Promise.all([
-			getAllPermissions(),
-			getRolePermissions(role?.id),
-		]).finally(() => setIsLoading(false));
-	}, []);
+		const fetchPermissions = async (role: any) => {
+			if (!role) return;
+
+			setIsLoading(true);
+			getAllPermissions();
+			getRolePermissions(role.id);
+			// await Promise.all([
+			// 	getAllPermissions(),
+			// 	getRolePermissions(role.id),
+			// ]);
+
+			// setIsLoading(false);
+		};
+
+		fetchPermissions(role);
+	}, [role]);
+	// useEffect(() => {
+	// 	const fetchPermissions = async (role: any) => {
+	// 		if (role) {
+	// 			setIsLoading(true);
+	// 			setRoleName(role.name);
+	// 			Promise.all([
+	// 				getAllPermissions(),
+	// 				getRolePermissions(role?.id),
+	// 				getRolePermissions(role.id),
+	// 			])
+	// 			.finally(() => setIsLoading(false));
+	// 			// await getAllPermissions();
+	// 			// await getRolePermissions(role?.id);
+	// 			// await getRolePermissions(role.id);
+	// 			// setIsLoading(false);
+	// 		}
+	// 	};
+	// 	fetchPermissions(role);
+	// }, [role]);
+	// useEffect(() => {
+	// 	const fetchAllPermissions = async () => {
+	// 		if (role) {
+	// 			setIsLoading(true);
+	// 			await getAllPermissions();
+	// 			await getRolePermissions(role?.id);
+	// 			setIsLoading(false);
+	// 		}
+	// 	};
+	// 	fetchAllPermissions();
+	// 	// setIsLoading(true);
+	// 	// Promise.all([
+	// 	// 	getAllPermissions(),
+	// 	// 	getRolePermissions(role?.id),
+	// 	// ]).finally(() => setIsLoading(false));
+	// }, []);
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement>,
 		permissionId: number,
@@ -156,6 +209,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 	return (
 		<Formik
 			initialValues={initialValuesForm}
+			enableReinitialize
 			validationSchema={validationSchemaForm}
 			onSubmit={(values) => savePermissions(values)}
 		>
@@ -167,7 +221,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 				</DialogHeader>
 
 				{isLoading ? (
-					<LoadingSpinner />
+					<LoadingSpinner className="h-full" />
 				) : (
 					// <div className="flex justify-center items-center h-40">
 					// 	<Loader2
@@ -175,7 +229,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 					// 		size={32}
 					// 	/>
 					// </div>
-					<div className="flex flex-col gap-6">
+					<div className="flex flex-col gap-6 relative flex-1 overflow-y-auto no-scrollbar">
 						<CustomInput
 							name="name"
 							placeholder="نام نقش"
@@ -245,22 +299,28 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 						</div>
 					</div>
 				)}
-				<div className="flex justify-end gap-96 mt-6">
-					<button
-						disabled={isSaving}
-						type="button"
-						onClick={() => setEditOpen(false)}
-						className="px-4 py-2 text-gray-600 border cta-neu-button border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 disabled:opacity-50"
-					>
-						انصراف
-					</button>
-					<button
-						disabled={isLoading || isSaving}
-						className="px-4 py-2 bg-orange-500 cta-neu-button place-content-center items-center text-white rounded-lg hover:bg-orange-600 cursor-pointer disabled:opacity-50 flex gap-2"
-					>
-						{isSaving ? <LoadingOnButton /> : <p>ذخیره</p>}
-					</button>
-				</div>
+				<StickyFooter>
+					<CancelButton />
+					<SubmitButton loading={isSaving}>ذخیره تغییرات</SubmitButton>
+				</StickyFooter>
+				{/* <div className="sticky bottom-0 bg-[#F1F4FC]">
+					<DialogFooter className="flex justify-end gap-96 mt-6 w-full py-4">
+						<button
+							disabled={isSaving}
+							type="button"
+							onClick={() => setEditOpen(false)}
+							className="px-4 py-2 text-gray-600 border cta-neu-button border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 disabled:opacity-50"
+						>
+							انصراف
+						</button>
+						<button
+							disabled={isLoading || isSaving}
+							className="px-4 py-2 bg-orange-500 cta-neu-button place-content-center items-center text-white rounded-lg hover:bg-orange-600 cursor-pointer disabled:opacity-50 flex gap-2"
+						>
+							{isSaving ? <LoadingOnButton /> : <p>ذخیره</p>}
+						</button>
+					</DialogFooter>
+				</div> */}
 			</Form>
 		</Formik>
 	);

@@ -42,6 +42,10 @@ import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { CustomDatePicker } from "@/components/Custom/CustomDatePicker/CustomDatePicker";
 import { GuaranteeProps } from "@/src/types/BidCardTypes";
+import useHasPermission from "@/src/functions/hasPermission";
+import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
+import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
+import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
 interface BidInfo {
 	id: number;
 	price: number;
@@ -209,10 +213,12 @@ export default function BidCard({
 	guaranteeID,
 	updateBids,
 }: BidInfo) {
+	const hasEditBidPermission = useHasPermission("bid.edit");
+	const hasCancelBidPermission = useHasPermission("bid.cancel");
 	const [guarantees, setGuarantees] = React.useState<GuaranteeProps[]>([]);
 	const [open, setOpen] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(false);
-	const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
+	const [cancelLoading, setCancelLoading] = useState<boolean>(false);
 	const corpId = useSelector((state: RootState) => state.user.corpId);
 
 	const initialValues = {
@@ -230,26 +236,27 @@ export default function BidCard({
 		// 	console.log(`data of bid ${id}`, data);
 		// });
 		// console.log("guaranti", guarantee);
-		getData({ endPoint: `/v1/corp/${corpId}/guarantee?status=1` }).then(
-			(data) => {
+		getData({ endPoint: `/v1/corp/${corpId}/guarantee?status=1` })
+			.then((data) => {
 				setGuarantees(
 					data?.data?.filter(
 						(guarantee: GuaranteeProps) =>
 							guarantee.status === "فعال"
 					)
 				);
-			}
-		);
+			})
+			.catch((err) => console.log(err));
 	}, []);
 
 	const cancelBid = () => {
-		setDeleteLoading(true);
+		setCancelLoading(true);
 		putData({ endPoint: `/v1/corp/${corpId}/bid/${id}/cancel` })
 			.then((data) => {
 				CustomToast(data?.message, "success");
 				setOpen(false);
 			})
-			.finally(() => setDeleteLoading(false));
+			.catch((err) => console.log(err))
+			.finally(() => setCancelLoading(false));
 	};
 
 	const updateBid = (values: BidSchema) => {
@@ -273,6 +280,7 @@ export default function BidCard({
 				setOpen(false);
 				updateBids();
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	};
 
@@ -336,12 +344,12 @@ export default function BidCard({
 									<div className="bg-gradient-to-b from-[#EE4334] to-[#D73628] rounded-full w-16 h-16 flex items-center place-content-center text-white cursor-pointer shadow-md hover:shadow-lg transition duration-300 hover:scale-105">
 										<ArrowLeft />
 									</div>
-									<span>مشاهده جزئیات</span>
+									<span>ویرایش پیشنهاد</span>
 								</div>
 							</DialogTrigger>
 							<DialogContent
 								style={{ backgroundColor: "#F1F4FC" }}
-								className="w-full sm:min-w-[750px] max-w-xl max-h-[90vh] no-scrollbar mx-auto p-4 overflow-auto py-4 rtl dialog-width"
+								className="w-full pb-0 max-h-[90vh] no-scrollbar mx-auto overflow-auto rtl dialog-width"
 							>
 								<DialogHeader>
 									<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
@@ -370,7 +378,12 @@ export default function BidCard({
 											});
 										}}
 									>
-										{({ setFieldValue, values }) => (
+										{({
+											setFieldValue,
+											values,
+											errors,
+											touched,
+										}) => (
 											<Form className="w-full flex flex-col gap-6">
 												<FormObserver
 													guaranteeID={Number(
@@ -438,14 +451,23 @@ export default function BidCard({
 														<CustomInput
 															placeholder="قیمت پیشنهادی"
 															name="cost"
+															disabled={
+																!hasEditBidPermission
+															}
 															icon={DollarSign}
 															type="number"
 															autoFocus={true}
 															containerClassName="w-1/2"
+															inputClassName={errors.cost && touched.cost ?
+																'!border-red-500 !ring-1 !ring-red-700' : ''
+															}
 														/>
 														<div className="w-full">
 															<CustomDatePicker
 																placeholder="زمان تخمینی نصب"
+																disabled={
+																	!hasEditBidPermission
+																}
 																date={
 																	values.installationTime
 																}
@@ -463,23 +485,38 @@ export default function BidCard({
 													<div className="flex flex-row justify-evenly gap-6">
 														<CustomInput
 															placeholder="ظرفیت"
+															disabled={
+																!hasEditBidPermission
+															}
 															name="power"
 															icon={Battery}
 															type="number"
 															autoFocus={true}
 															containerClassName="w-1/2"
+															inputClassName={errors.power && touched.power ?
+																'!border-red-500 !ring-1 !ring-red-700' : ''
+															}
 														/>
 														<CustomInput
 															placeholder="مساحت"
+															disabled={
+																!hasEditBidPermission
+															}
 															name="area"
 															icon={LandPlot}
 															type="number"
 															containerClassName="w-1/2"
+															inputClassName={errors.area && touched.area ?
+																'!border-red-500 !ring-1 !ring-red-700' : ''
+															}
 														/>
 													</div>
 													<div className="flex flex-row justify-evenly gap-6">
 														<Select
 															name="guaranteeID"
+															disabled={
+																!hasEditBidPermission
+															}
 															defaultValue={String(
 																values?.guaranteeID
 															)}
@@ -532,120 +569,63 @@ export default function BidCard({
 													</div>
 													<CustomTextArea
 														placeholder="جزئیات بیشتر"
+														disabled={
+															!hasEditBidPermission
+														}
 														name="description"
 														icon={MessageCircle}
 														containerClassName="w-full"
+														inputClassName={errors.description && touched.description ?
+															'!border-red-500 !ring-1 !ring-red-700' : ''
+														}
 													/>
 												</div>
-
-												<DialogFooter>
+												<StickyFooter>
+													<CancelButton />
+													<SubmitButton loading={loading}>
+														ذخیره تغییرات
+													</SubmitButton>
+												</StickyFooter>
+												{/* <DialogFooter>
 													<div className="flex w-full justify-between">
-														<button
-															onClick={() => {
-																cancelBid();
-															}}
-															className="self-end w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#EE4334] to-[#D73628] hover:from-[#D73628] hover:to-[#EE4334] active:from-[#EE4334] active:to-[#D73628] text-white py-2 px-4 rounded-md transition-all duration-300"
-														>
-															{deleteLoading ? (
-																<LoadingOnButton />
-															) : (
-																<p>
-																	لغو پیشنهاد
-																</p>
-															)}
-														</button>
-														<button
-															type="submit"
-															className="self-end w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white py-2 px-4 rounded-md transition-all duration-300"
-														>
-															{loading ? (
-																<LoadingOnButton />
-															) : (
-																<p>
-																	ذخیره
-																	تغییرات
-																</p>
-															)}
-														</button>
+														{hasCancelBidPermission && (
+															<button
+																onClick={() => {
+																	cancelBid();
+																}}
+																className="self-end w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#EE4334] to-[#D73628] hover:from-[#D73628] hover:to-[#EE4334] active:from-[#EE4334] active:to-[#D73628] text-white py-2 px-4 rounded-md transition-all duration-300"
+															>
+																{cancelLoading ? (
+																	<LoadingOnButton />
+																) : (
+																	<p>
+																		لغو
+																		پیشنهاد
+																	</p>
+																)}
+															</button>
+														)}
+														{hasEditBidPermission && (
+															<button
+																type="submit"
+																className="self-end w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white py-2 px-4 rounded-md transition-all duration-300"
+															>
+																{loading ? (
+																	<LoadingOnButton />
+																) : (
+																	<p>
+																		ذخیره
+																		تغییرات
+																	</p>
+																)}
+															</button>
+														)}
 													</div>
-												</DialogFooter>
+												</DialogFooter> */}
 											</Form>
 										)}
 									</Formik>
 								</DialogHeader>
-								{/* <Item
-									icon={Eclipse}
-									fieldName="نام پنل"
-									fieldValue={panelName}
-								/>
-								<Item
-									icon={Battery}
-									fieldName="ظرفیت"
-									fieldValue={power}
-									prefix="W"
-									english={true}
-								/>
-								<Item
-									icon={CalendarDays}
-									fieldName="زمان تخمینی نصب"
-									fieldValue={DateConverter(date)}
-									english={true}
-								/>
-								<Item
-									icon={DollarSign}
-									fieldName="قیمت پیشنهادی شما"
-									fieldValue={price}
-									prefix="تومان"
-								/>
-								<Item
-									icon={LandPlot}
-									fieldName="مساحت"
-									fieldValue={area}
-									prefix="متر مربع"
-								/>
-								<Item
-									icon={Building2}
-									fieldName="نوع ساختمان"
-									fieldValue={buildingType}
-								/>
-								<Item
-									icon={MapPin}
-									fieldName="آدرس"
-									fieldValue={`استان ${address.province}، شهر ${address.city}`}
-									smallValue={true}
-								/>
-								{description && (
-									<Item
-										icon={MessageCircle}
-										fieldName="توضیحات"
-										fieldValue={description}
-										smallValue={true}
-									/>
-								)}
-								<div className="flex w-full justify-between">
-									<button
-										onClick={() => {
-											cancelBid();
-										}}
-										className="self-end w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#EE4334] to-[#D73628] hover:from-[#D73628] hover:to-[#EE4334] active:from-[#EE4334] active:to-[#D73628] text-white py-2 px-4 rounded-md transition-all duration-300"
-									>
-										{deleteLoading ? (
-											<LoadingOnButton />
-										) : (
-											<p>لغو پیشنهاد</p>
-										)}
-									</button>
-									<button
-										type="submit"
-										className="self-end w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white py-2 px-4 rounded-md transition-all duration-300"
-									>
-										{loading ? (
-											<LoadingOnButton />
-										) : (
-											<p>ذخیره تغییرات</p>
-										)}
-									</button>
-								</div> */}
 							</DialogContent>
 						</Dialog>
 					</div>

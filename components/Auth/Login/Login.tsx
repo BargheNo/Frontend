@@ -9,7 +9,8 @@ import CustomInput from "../../Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import LoginButton from "./LoginButton";
 import { getData, postData } from "../../../src/services/apiHub";
-import { setUser } from "@/src/store/slices/userSlice";
+import { useWebSocket } from "@/src/hooks/useWebSocket";
+import { setCorps, setUser } from "@/src/store/slices/userSlice";
 import { useDispatch } from "react-redux";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
@@ -59,92 +60,87 @@ const Login = () => {
 				password: password,
 			},
 		})
-			.then((data) => {
+			.then(async (data) => {
+				// console.log("data", data);
 				CustomToast(data?.message, "success");
 				dispatch(
 					setUser({
-						firstName: data.data.firstName,
-						lastName: data.data.lastName,
-						permissions: data.data.permissions,
-						accessToken: data.data.accessToken,
-						refreshToken: data.data.accessToken,
+						firstName: data?.data?.firstName,
+						lastName: data?.data?.lastName,
+						permissions: data?.data?.permissions,
+						accessToken: data?.data?.accessToken,
+						refreshToken: data?.data?.accessToken,
 					})
 				);
-				router.replace("/dashboard");
-        setTimeout(async () => {
-          console.log("getting corp id ...");
-          const responceCorpID = await getData({ endPoint: "/v1/user/corps" });
-          if (responceCorpID?.statusCode === 200) {
-            console.log(responceCorpID);
-            dispatch(
-              setUser({
-                firstName: data.data.firstName,
-                lastName: data.data.lastName,
-                permissions: data.data.permissions,
-                accessToken: data.data.accessToken,
-                refreshToken: data.data.accessToken,
-                corpId: responceCorpID.data[0]?.id,
-              })
-            );
-          }
-        }, 1000);
+				await Promise.resolve();
+				getData({ endPoint: `/v1/user/corps` })
+					.then((data) => {
+						dispatch(setCorps(data?.data));
+						window.location.href = "/dashboard/my-panels";
+					})
+					.catch((err) => console.log(err));
+				const websocketUrl = data?.data?.accessToken
+					? `ws://localhost:8080/v1/user/notifications/token/${data?.data?.accessToken}`
+					: null;
+
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	};
 	return (
 		<div className={`${vazir.className} w-full`}>
 			<div dir="rtl" className={`${styles.mainbg} w-full`}>
 				<div className="w-full max-w-md p-6 space-y-4 shadow-2xl rounded-2xl bg-[#f1f4fc]">
-					<h2 className="text-3xl text-black text-center">
-						{"ورود"}
-					</h2>
+					<h2 className="text-3xl text-black text-center">ورود</h2>
 
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleFormSubmit}
-          >
-            <Form className="w-full flex flex-col items-center gap-3 text-black">
-              <div className="flex flex-row justify-center gap-2">
-                <div className="w-3/4">
-                  <CustomInput name="phoneNumber" type="tel">
-                    شماره تلفن همراه
-                  </CustomInput>
-                </div>
-                <div className="w-1/4">
-                  <CustomInput
-                    name="countryCode"
-                    readOnly={true}
-                    icon={Smartphone}
-                    type="text"
-                    // value="+98"
-                  >
-                    98+
-                  </CustomInput>
-                </div>
-              </div>
-              <div className="w-full">
-                <CustomInput
-                  name="password"
-                  icon={showPassword ? Unlock : Lock}
-                  type={showPassword ? "text" : "password"}
-                  onIconClick={() => togglePasswordVisibility()}
-                >
-                  رمز عبور
-                </CustomInput>
-              </div>
-              <LoginButton>
-                {loading ? (
-                  <LoadingOnButton size={28} />
-                ) : (
-                  <>
-                    ورود
-                    <MoveLeft />
-                  </>
-                )}
-              </LoginButton>
-            </Form>
-          </Formik>
+					<Formik
+						initialValues={initialValues}
+						validationSchema={validationSchema}
+						onSubmit={handleFormSubmit}
+					>
+						<Form className="w-full flex flex-col items-center gap-3 text-black">
+							<div className="flex flex-row justify-center gap-2">
+								<div className="w-3/4">
+									<CustomInput name="phoneNumber" type="tel">
+										شماره تلفن همراه
+									</CustomInput>
+								</div>
+								<div className="w-1/4">
+									<CustomInput
+										name="countryCode"
+										readOnly={true}
+										icon={Smartphone}
+										type="text"
+										// value="+98"
+									>
+										98+
+									</CustomInput>
+								</div>
+							</div>
+							<div className="w-full">
+								<CustomInput
+									name="password"
+									icon={showPassword ? Unlock : Lock}
+									type={showPassword ? "text" : "password"}
+									onIconClick={() =>
+										togglePasswordVisibility()
+									}
+								>
+									رمز عبور
+								</CustomInput>
+							</div>
+							<LoginButton>
+								{loading ? (
+									<LoadingOnButton size={28} />
+								) : (
+									<>
+										<p>ورود</p>
+										<MoveLeft />
+									</>
+								)}
+							</LoginButton>
+						</Form>
+					</Formik>
 
           <p className="flex gap-5 justify-center text-center text-sm text-blue-600">
             <a href="/forgot-password" data-test="forget-password">

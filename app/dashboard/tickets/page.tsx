@@ -5,7 +5,7 @@ import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 const page = () => {
 	return (
 		<PageContainer>
-				<CustomerTickets />
+			<CustomerTickets />
 		</PageContainer>
 	);
 };

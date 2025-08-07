@@ -6,6 +6,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { FormValues, WarrantyType } from './warrantyTypes';
 import { validationSchema, initialValues } from './constants';
 import WarrantyTermCard from './WarrantyTermCard';
+import StickyFooter from '@/components/Dialog/StickyFooter/StickyFooter';
+import CancelButton from '@/components/Dialog/CancelButton/CancelButton';
+import SubmitButton from '@/components/Dialog/SubmitButton/SubmitButton';
 
 interface WarrantyFormProps {
   warrantyTypes: WarrantyType[];
@@ -22,7 +25,7 @@ const WarrantyForm = ({ warrantyTypes, isLoading, onSubmit }: WarrantyFormProps)
       enableReinitialize
     >
       {({ values, errors, touched, isSubmitting, setFieldValue }) => (
-        <Form className="flex flex-col items-end w-full h-auto max-h-[85vh] gap-4 rtl overflow-y-auto">
+        <Form className="flex flex-col items-end w-full h-auto max-h-[85vh] gap-4 rtl no-scrollbar">
           {/* Warranty Name */}
           <div className="w-full">
             <CustomInput
@@ -134,15 +137,26 @@ const WarrantyForm = ({ warrantyTypes, isLoading, onSubmit }: WarrantyFormProps)
           </div>
 
           {/* Submit Button */}
-          <div className="w-full pt-4">
+          <StickyFooter>
+            <CancelButton />
+            <SubmitButton loading={isSubmitting}>
+              ثبت گارانتی
+            </SubmitButton>
+          </StickyFooter>
+          {/* <div className="w-full py-4">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex justify-center py-2 px-4
+                border border-transparent rounded-md shadow-sm text-sm
+                font-medium text-white bg-green-600 hover:bg-green-700
+                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500
+                disabled:opacity-50 disabled:cursor-not-allowed
+                cursor-pointer"
             >
               {isSubmitting ? 'در حال ثبت...' : 'ثبت گارانتی'}
             </button>
-          </div>
+          </div> */}
         </Form>
       )}
     </Formik>

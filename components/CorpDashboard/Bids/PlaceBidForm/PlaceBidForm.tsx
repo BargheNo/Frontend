@@ -1,7 +1,10 @@
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
-import { DialogFooter, DialogHeader } from "@/components/ui/dialog";
+import {
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import { vazir } from "@/lib/fonts";
-import { DialogTitle } from "@radix-ui/react-dialog";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
 import { baseURL, getData, postData } from "@/src/services/apiHub";
@@ -33,6 +36,9 @@ import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import { CustomDatePicker } from "@/components/Custom/CustomDatePicker/CustomDatePicker";
 import { GuaranteeProps } from "@/src/types/BidCardTypes";
+import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
+import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
+import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
 
 const Item = ({
 	icon: Icon,
@@ -127,22 +133,24 @@ export default function PlaceBidForm({
 		postData({
 			endPoint: `${baseURL}/v1/corp/${corpId}/installation/request/${requestId}/bid`,
 			data: formData,
-		}).then((data) => {
-			CustomToast(data?.message, "success");
-			setOpen(false);
-		});
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				setOpen(false);
+			})
+			.catch((err) => console.log(err));
 	};
 	useEffect(() => {
-		getData({ endPoint: `/v1/corp/${corpId}/guarantee?status=1` }).then(
-			(data) => {
+		getData({ endPoint: `/v1/corp/${corpId}/guarantee?status=1` })
+			.then((data) => {
 				setGuarantees(
 					data?.data?.filter(
 						(guarantee: GuaranteeProps) =>
 							guarantee.status === "فعال"
 					)
 				);
-			}
-		);
+			})
+			.catch((err) => console.log(err));
 	}, []);
 	return (
 		<Formik
@@ -169,7 +177,7 @@ export default function PlaceBidForm({
 				);
 			}}
 		>
-			{({ setFieldValue, values }) => (
+			{({ setFieldValue, values, errors, touched }) => (
 				<Form className="w-full flex flex-col gap-6">
 					<DialogHeader>
 						<DialogTitle
@@ -226,6 +234,11 @@ export default function PlaceBidForm({
 								type="number"
 								autoFocus={true}
 								containerClassName="w-1/2"
+								inputClassName={
+									errors.cost && touched.cost
+										? "!border-red-500 !ring-1 !ring-red-700"
+										: ""
+								}
 							/>
 							<div className="w-full">
 								<CustomDatePicker
@@ -245,6 +258,11 @@ export default function PlaceBidForm({
 								type="number"
 								autoFocus={true}
 								containerClassName="w-1/2"
+								inputClassName={
+									errors.power && touched.power
+										? "!border-red-500 !ring-1 !ring-red-700"
+										: ""
+								}
 							/>
 							<CustomInput
 								placeholder="مساحت"
@@ -252,6 +270,11 @@ export default function PlaceBidForm({
 								icon={LandPlot}
 								type="number"
 								containerClassName="w-1/2"
+								inputClassName={
+									errors.area && touched.area
+										? "!border-red-500 !ring-1 !ring-red-700"
+										: ""
+								}
 							/>
 						</div>
 						<div className="flex flex-row justify-evenly gap-6">
@@ -294,17 +317,25 @@ export default function PlaceBidForm({
 							name="description"
 							icon={MessageCircle}
 							containerClassName="w-full"
+							inputClassName={
+								errors.description && touched.description
+									? "!border-red-500 !ring-1 !ring-red-700"
+									: ""
+							}
 						/>
 					</div>
-
-					<DialogFooter>
+					<StickyFooter>
+						<CancelButton />
+						<SubmitButton>ارسال پیشنهاد</SubmitButton>
+					</StickyFooter>
+					{/* <DialogFooter>
 						<button
 							type="submit"
 							className={`${vazir.className} ml-3 bg-[#11B33A] hover:cursor-pointer shadow-md rounded-md px-2 py-1 text-white`}
 						>
 							ارسال پیشنهاد
 						</button>
-					</DialogFooter>
+					</DialogFooter> */}
 				</Form>
 			)}
 		</Formik>

@@ -5,9 +5,11 @@ import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { Edit, IdCard, Phone, Mail, UserRound, Save } from "lucide-react";
 import ProfilePicPicker from "@/components/Custom/ProfilePicPicker/ProfilePicPicker";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import { baseURL, getData, putDataFile } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import { Button } from "@/components/ui/button";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 
 export interface ProfileData {
 	firstName: string;
@@ -34,7 +36,7 @@ const UserProfile = () => {
 	const [previewImage, setPreviewImage] = useState<string | null>(null);
 	const [profileData, setProfileData] = useState<ProfileData | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
-	const [isEditable, setIsEditable] = useState(false);
+	const [isEditable, setIsEditable] = useState(true);
 
 	useEffect(() => {
 		fetchProfileData();
@@ -43,12 +45,11 @@ const UserProfile = () => {
 	const fetchProfileData = async () => {
 		try {
 			const response = await getData({
-				endPoint: `${baseURL}/v1/user/profile`,
+				endPoint: `/v1/user/profile`,
 			});
-			// console.log(response.data);
-			setProfileData(response.data);
+			setProfileData(response?.data);
 		} catch (error) {
-			console.error("Error fetching profile:", error);
+			console.log("Error fetching profile:", error);
 			CustomToast("خطا در دریافت اطلاعات پروفایل", "error");
 			// toast("خطا در دریافت اطلاعات پروفایل");
 		} finally {
@@ -59,15 +60,16 @@ const UserProfile = () => {
 	const getInitialValues = (): ProfileData => ({
 		firstName: profileData?.firstName || "",
 		lastName: profileData?.lastName || "",
-		phone: profileData?.phone ? "0" + profileData.phone.slice(3, 13) : "",
+		phone: profileData?.phone || "",
+		// phone: profileData?.phone ? "0" + profileData.phone.slice(3, 13) : "",
 		email: profileData?.email || "",
 		nationalCode: profileData?.nationalCode || "",
 		profilePic: profileData?.profilePic || null,
 		status: profileData?.status || "",
 	});
 
-	console.log(profileData);
-	console.log(getInitialValues());
+	// console.log(profileData);
+	// console.log(getInitialValues());
 
 	const handleImageChange = (
 		event: React.ChangeEvent<HTMLInputElement>,
@@ -89,7 +91,7 @@ const UserProfile = () => {
 			console.log(values);
 
 			const response = await putDataFile({
-				endPoint: `${baseURL}/v1/user/profile`,
+				endPoint: `/v1/user/profile`,
 				formData: values,
 			});
 
@@ -115,9 +117,9 @@ const UserProfile = () => {
 			setProfileData(values);
 			setIsEditable(false);
 		} catch (error) {
-			console.error("Error updating profile:", error);
+			console.log("Error updating profile:", error);
 			// toast.error("خطا در بروزرسانی اطلاعات");
-			CustomToast("خطا در بروزرسانی اطلاعات", "error");
+			// CustomToast("خطا در بروزرسانی اطلاعات", "error");
 		}
 	};
 
@@ -154,67 +156,79 @@ const UserProfile = () => {
 		},
 	];
 
-	return (
-		<div className="p-6 w-full md:w-1/2 neu-container">
-			<h2 className="text-navy-blue text-2xl font-bold mb-6">
+	return isLoading ? (
+		<LoadingSpinner />
+	) : (
+		<div
+			className={`vazir w-[40vw] mx-auto min-h-full flex flex-col gap-8 text-white py-4 md:py-8 px-4 md:px-14 bg-transparent relative`}
+		>
+			<div className="flex justify-center items-center">
+				<div className="p-6 w-full neu-container">
+					{/* <h2 className="text-navy-blue text-2xl font-bold mb-6">
 				پروفایل کاربری
-			</h2>
+			</h2> */}
 
-			{isLoading ? (
-				<div>Loading...</div>
-			) : (
-				<Formik
-					initialValues={getInitialValues()}
-					validationSchema={validationSchema}
-					onSubmit={handleSubmit}
-					enableReinitialize
-				>
-					{({ setFieldValue }) => (
-						<Form className="space-y-4">
-							<div className="flex justify-center mb-10">
-								<ProfilePicPicker
-									previewImage={previewImage}
-									existingImage={
-										typeof profileData?.profilePic ===
-										"string"
-											? profileData.profilePic
-											: null
-									}
-									isEditable={isEditable}
-									onImageChange={handleImageChange}
-									onRemoveImage={() => {
-										setPreviewImage(null);
-										setFieldValue("profilePic", null);
-										setIsEditable(true);
-									}}
-									setFieldValue={setFieldValue}
-									size="large"
-								/>
-							</div>
+					<Formik
+						initialValues={getInitialValues()}
+						validationSchema={validationSchema}
+						onSubmit={handleSubmit}
+						enableReinitialize
+					>
+						{({ setFieldValue }) => (
+							<Form className="space-y-4">
+								<div className="flex justify-center mb-10">
+									<ProfilePicPicker
+										previewImage={previewImage}
+										existingImage={
+											typeof profileData?.profilePic ===
+											"string"
+												? profileData.profilePic
+												: null
+										}
+										isEditable={isEditable}
+										onImageChange={handleImageChange}
+										onRemoveImage={() => {
+											setPreviewImage(null);
+											setFieldValue("profilePic", null);
+											setIsEditable(true);
+										}}
+										setFieldValue={setFieldValue}
+										size="large"
+									/>
+								</div>
 
-							{inputFields.map((field) => (
-								<CustomInput
-									key={field.name}
-									name={field.name}
-									type={field.type}
-									placeholder={field.placeholder}
-									icon={field.icon}
-									containerClassName="w-full"
-									disabled={
-										field.name === "email" ||
-										field.name === "phone"
-											? true
-											: !isEditable
-									}
-									// readOnly={field.name === "email" || field.name === "phone"}
-									inputClassName={
-										!isEditable ? "!bg-warm-white" : ""
-									}
-								/>
-							))}
+								{inputFields.map((field) => (
+									<CustomInput
+										key={field.name}
+										name={field.name}
+										type={field.type}
+										placeholder={field.placeholder}
+										icon={field.icon}
+										containerClassName="w-full"
+										disabled={
+											field.name === "email" ||
+											field.name === "phone"
+												? true
+												: !isEditable
+										}
+										// readOnly={field.name === "email" || field.name === "phone"}
+										inputClassName={
+											!isEditable ? "!bg-warm-white" : ""
+										}
+									/>
+								))}
 
-							<div className="flex justify-end">
-								<button
+								<div className="flex justify-end">
+									<Button
+										type="submit"
+										className="px-4 py-2 font-black active:brightness-90 flex justify-center w-fit gap-4 min-w-28  place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white rounded-md transition-all duration-300"
+									>
+										{isEditable
+											? "ذخیره تغییرات"
+											: "ویرایش اطلاعات"}
+										{isEditable ? <Save /> : <Edit />}
+									</Button>
+									{/* <button
 									type="submit"
 									className={`px-4 py-2 flex justify-center w-fit gap-4 !rounded-lg ${
 										isEditable
@@ -226,12 +240,13 @@ const UserProfile = () => {
 										? "ذخیره تغییرات"
 										: "ویرایش اطلاعات"}
 									{isEditable ? <Save /> : <Edit />}
-								</button>
-							</div>
-						</Form>
-					)}
-				</Formik>
-			)}
+								</button> */}
+								</div>
+							</Form>
+						)}
+					</Formik>
+				</div>
+			</div>
 		</div>
 	);
 };

@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { postData } from "@/src/services/apiHub";
 import { Form, Formik } from "formik";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
-import { ArrowLeft, Newspaper, Plus } from "lucide-react";
+import { ArrowLeft, Newspaper } from "lucide-react";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -21,7 +21,6 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import SignupButton from "@/components/SignupButton/SignupButton";
 import AddComponent from "@/components/AddComponent/AddComponent";
 
 export default function AnnounceAddCard() {
@@ -51,8 +50,7 @@ export default function AnnounceAddCard() {
 			toast.success("خبر با موفقیت ساخته شد");
 		},
 		onError: (error) => {
-			console.error("Mutation error:", error);
-			toast.error("خطایی رخ داده است");
+			console.log("Mutation error:", error);
 		},
 	});
 	switch (step) {
@@ -123,7 +121,7 @@ export default function AnnounceAddCard() {
 							{/* <button className="flex items-center justify-center w-16 h-16 bg-fire-orange rounded-full! neo-btn border-none!">
 							<Plus className="text-white" size={30} />
 						</button> */}
-              <AddComponent title="ثبت خبر جدید" />
+							<AddComponent title="ثبت خبر جدید" />
 						</DialogTrigger>
 
 						<DialogContent className="w-[40vw]! max-w-none! h-[40vh]! rtl p-8">

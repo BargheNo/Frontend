@@ -7,8 +7,6 @@ import { useMediaQuery } from "react-responsive";
 export default function Navbar() {
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
-  // if (!useClientCheck()) return <>Loading...</>;
-  // if (!useClientCheck()) return <></>;
   if (isMobile)
     return <MobileNavbar/>;
   else return <DesktopNavbar />;

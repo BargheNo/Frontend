@@ -15,7 +15,7 @@ export default function Page() {
 		<PageContainer>
 			{/* <div className="flex flex-col items-center gap-8 p-12 w-full bg-[#F0EDEF] min-h-[100vh]"> */}
 			<Header header="کلیه سفارشات" />
-			<FilterSection />
+			{/* <FilterSection /> */}
 			<Panels />
 			{/* </div> */}
 		</PageContainer>

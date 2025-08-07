@@ -2,11 +2,7 @@
 import { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import {
-	MessageCirclePlus,
-	MessageCircleMore,
-	ImagePlus,
-} from "lucide-react";
+import { MessageCirclePlus, MessageCircleMore, ImagePlus } from "lucide-react";
 import React from "react";
 import styles from "./CustomerTickets.module.css";
 import Header from "@/components/Header/Header";
@@ -132,6 +128,7 @@ const TicketSupportPage = () => {
 				CustomToast(data?.message, "success");
 				fetchTickets();
 			})
+			.catch((err) => console.log(err))
 			.finally(() => {
 				setLoading(false);
 				setImagePreview(null);
@@ -152,6 +149,7 @@ const TicketSupportPage = () => {
 				CustomToast(data?.message, "success");
 				getComments(activeCommentTicketId);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => {
 				setPutCommentLoading(false);
 				setActiveCommentTicketId(null);
@@ -167,15 +165,18 @@ const TicketSupportPage = () => {
 			.then((data) => {
 				setComments(data.data);
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setIsLoadingComments(false));
 	};
 
 	const fetchTickets = () => {
 		setLoadingTickets(true);
-		getData({ endPoint: `/v1/user/ticket/list` }).then((data) => {
-			setTickets(data.data);
-			setLoadingTickets(false);
-		});
+		getData({ endPoint: `/v1/user/ticket/list` })
+			.then((data) => {
+				setTickets(data.data);
+				setLoadingTickets(false);
+			})
+			.catch((err) => console.log(err));
 	};
 
 	useEffect(() => {
@@ -344,7 +345,7 @@ const TicketSupportPage = () => {
 	};
 
 	return (
-		<div className="flex flex-col p-6 space-y-6">
+		<div className="flex flex-col p-6 space-y-6 relative">
 			{/* <h2 className="text-right text-2xl font-bold text-blue-800">ثبت تیکت</h2> */}
 			<Header header="ثبت تیکت" />
 

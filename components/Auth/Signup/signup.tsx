@@ -65,11 +65,13 @@ function Signup() {
 			ConfirmPassword: confirmPassword,
 			acceptedTerms: isAcceptTerms,
 		};
+		console.log(formData);
 		postData({ endPoint: `/v1/auth/register/basic`, data: formData })
 			.then((data) => {
 				setOpen(true);
 				CustomToast(data?.message, "success");
 			})
+			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
 	};
 
@@ -77,11 +79,14 @@ function Signup() {
 		postData({
 			endPoint: `/v1/auth/verify/phone`,
 			data: { phone, otp },
-		}).then((data) => {
-			console.log(data);
-			route.push("/login");
-			CustomToast(data?.message, "success");
-		});
+		})
+			.then((data) => {
+				console.log(data);
+				route.push("/login");
+				CustomToast(data?.message, "success");
+			})
+			.catch((err) => console.log(err))
+			.finally(() => setOtpCode(""));
 	};
 
 	useEffect(() => {
@@ -231,11 +236,13 @@ function Signup() {
 									</div>
 
 									<PhoneVerification
-										onlinkClick={() => setOpen(false)}
+										onLinkClick={() => {
+											setOtpCode("");
+											setOpen(false);
+										}}
 										onOtpChange={handleOtpChange}
-										onclick={() => setOpen(false)}
 										open={open}
-									></PhoneVerification>
+									/>
 									<div className={styles.loginText}>
 										<a
 											data-cy="navigate-login"
