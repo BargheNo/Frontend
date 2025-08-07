@@ -1,9 +1,36 @@
 "use client";
-import AddBlog from "@/components/blog/AddBlog/AddBlog";
-import BlogCard from "@/components/blog/BlogCard/BlogCard";
-import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
-import Header from "@/components/Header/Header";
-import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+
+export const dynamic = "force-dynamic";
+
+import nextDynamic from "next/dynamic";
+
+const AddBlog = nextDynamic(() => import("@/components/blog/AddBlog/AddBlog"), {
+	ssr: false,
+});
+const BlogCard = nextDynamic(
+	() => import("@/components/blog/BlogCard/BlogCard"),
+	{
+		ssr: false,
+	}
+);
+
+const PageContainer = nextDynamic(
+	() => import("@/components/Dashboard/PageContainer/PageContainer"),
+	{
+		ssr: false,
+	}
+);
+
+const Header = nextDynamic(() => import("@/components/Header/Header"), {
+	ssr: false,
+});
+
+const LoadingSpinner = nextDynamic(
+	() => import("@/components/Loading/LoadingSpinner/LoadingSpinner"),
+	{
+		ssr: false,
+	}
+);
 import { getData } from "@/src/services/apiHub";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
@@ -106,51 +133,51 @@ import { useSelector } from "react-redux";
 // ];
 
 export default function Page() {
-  const corpID = useSelector((state: any) => state.user.corpId);
-  const { isLoading, data, error } = useQuery({
-    queryKey: ["blogs"],
-    queryFn: async () => {
-      const r1 = await getData({
-        endPoint: `/v1/corp/${corpID}/blog/list?statuses=1`,
-      });
-      console.log("r1: ", r1);
-      const r2 = await getData({
-        endPoint: `/v1/corp/${corpID}/blog/list?statuses=2`,
-      });
-      console.log("r2: ", r2);
-      r1.data?.push(...r2.data);
-      return r1;
-    },
-  });
-  return (
-    <PageContainer>
-      {isLoading && <LoadingSpinner />}
+	const corpID = useSelector((state: any) => state.user.corpId);
+	const { isLoading, data, error } = useQuery({
+		queryKey: ["blogs"],
+		queryFn: async () => {
+			const r1 = await getData({
+				endPoint: `/v1/corp/${corpID}/blog/list?statuses=1`,
+			});
+			console.log("r1: ", r1);
+			const r2 = await getData({
+				endPoint: `/v1/corp/${corpID}/blog/list?statuses=2`,
+			});
+			console.log("r2: ", r2);
+			r1.data?.push(...r2.data);
+			return r1;
+		},
+	});
+	return (
+		<PageContainer>
+			{isLoading && <LoadingSpinner />}
 
-      {!isLoading && (
-        <>
-          <Header header="مطالب" />
-          <AddBlog />
-          <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-[2vw] w-full mx-auto">
-            {data?.data?.map((blog: Blog) => {
-              return (
-                <BlogCard
-                  key={blog.id}
-                  blogID={String(blog.id)}
-                  imageUrl={blog.cover_image}
-                  title={blog.title}
-                  description={blog.description}
-                  writer={blog.author}
-                  date={blog.created_at}
-                  likeCount={blog.like_count}
-                  status={blog.status}
-                  viewOnly={false}
-                  className="w-[70vw] md:w-[40vw] mx-auto"
-                />
-              );
-            })}
-          </div>
-        </>
-      )}
-    </PageContainer>
-  );
+			{!isLoading && (
+				<>
+					<Header header="مطالب" />
+					<AddBlog />
+					<div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-[2vw] w-full mx-auto">
+						{data?.data?.map((blog: Blog) => {
+							return (
+								<BlogCard
+									key={blog.id}
+									blogID={String(blog.id)}
+									imageUrl={blog.cover_image}
+									title={blog.title}
+									description={blog.description}
+									writer={blog.author}
+									date={blog.created_at}
+									likeCount={blog.like_count}
+									status={blog.status}
+									viewOnly={false}
+									className="w-[70vw] md:w-[40vw] mx-auto"
+								/>
+							);
+						})}
+					</div>
+				</>
+			)}
+		</PageContainer>
+	);
 }

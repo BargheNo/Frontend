@@ -1,9 +1,32 @@
 "use client";
-import AddBlog from "@/components/blog/AddBlog/AddBlog";
-import BlogCard from "@/components/blog/BlogCard/BlogCard";
-import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
-import Header from "@/components/Header/Header";
-import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+export const dynamic = "force-dynamic";
+
+import nextDynamic from "next/dynamic";
+
+const BlogCard = nextDynamic(
+  () => import("@/components/blog/BlogCard/BlogCard"),
+  {
+    ssr: false,
+  }
+);
+
+const PageContainer = nextDynamic(
+  () => import("@/components/Dashboard/PageContainer/PageContainer"),
+  {
+    ssr: false,
+  }
+);
+
+const Header = nextDynamic(() => import("@/components/Header/Header"), {
+  ssr: false,
+});
+
+const LoadingSpinner = nextDynamic(
+  () => import("@/components/Loading/LoadingSpinner/LoadingSpinner"),
+  {
+    ssr: false,
+  }
+);
 import { getData } from "@/src/services/apiHub";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
