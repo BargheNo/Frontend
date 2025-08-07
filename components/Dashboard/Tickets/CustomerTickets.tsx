@@ -187,6 +187,7 @@ const TicketSupportPage = () => {
 				setTickets(data.data);
 				getData({ endPoint: `/v1/ticket/status` })
 					.then((data) => {
+						console.log(data.data);
 						setStatuses(data?.data);
 					})
 					.catch((err) => console.log(err))
@@ -362,35 +363,7 @@ const TicketSupportPage = () => {
 
 	return (
 		<div className="flex flex-col p-6 space-y-6 relative">
-			<div className="flex place-items-center">
-				<Header header="ثبت تیکت" />
-				{statuses && (
-					<Select
-						value={String(status)}
-						onValueChange={(value) => setStatus(value)}
-						data-test="warranty-filter"
-					>
-						<SelectTrigger
-							dir="rtl"
-							className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
-							data-test="warranty-filter-trigger"
-						>
-							<SelectValue placeholder="وضعیت پنل" />
-						</SelectTrigger>
-						<SelectContent dir="rtl">
-							{statuses?.map((status: status, index: number) => (
-								<SelectItem
-									key={index}
-									value={String(status.id)}
-									className="cursor-pointer"
-								>
-									{status.name}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-				)}
-			</div>
+			<Header header="ثبت تیکت" />
 			<Formik
 				initialValues={initialValuesForm}
 				validationSchema={validationSchemaForm}
@@ -563,7 +536,34 @@ const TicketSupportPage = () => {
 					</Form>
 				)}
 			</Formik>
-			<Header header="تیکت‌های قبلی" />
+			<div className="flex place-items-center">
+				<Header header="تیکت‌های قبلی" />
+				{statuses && (
+					<Select
+						value={String(status)}
+						onValueChange={(value) => setStatus(value)}
+					>
+						<SelectTrigger
+							dir="rtl"
+							className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+							data-test="warranty-filter-trigger"
+						>
+							<SelectValue placeholder="وضعیت پنل" />
+						</SelectTrigger>
+						<SelectContent dir="rtl">
+							{statuses?.map((status: status, index: number) => (
+								<SelectItem
+									key={index}
+									value={String(status.id)}
+									className="cursor-pointer"
+								>
+									{status.name}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				)}
+			</div>
 			{/* Ticket List */}
 			<div className="space-y-4">
 				{loadingTickets ? (
