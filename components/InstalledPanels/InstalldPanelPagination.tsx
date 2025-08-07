@@ -11,7 +11,7 @@ import {
 	PaginationPrevious,
 } from "@/components/ui/pagination";
 import InstalledpanelService from "@/src/services/getInstalledPanelsService";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { installedpanel } from "@/src/types/installedpanelType";
 import InstalledPanel from "@/components/InstalledPanels/InstalledPanels";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,60 +27,62 @@ import {
 	SelectValue,
 } from "../ui/select";
 import NoRecordFound from "../NoRecordFound/NoRecordFound";
-
-interface status {
-	id: number;
-	name: string;
-}
+import FilterSection from "../FilterSection/FilterSection";
 
 export default function InstalledPanelPagination() {
 	const dispatch = useDispatch();
 	const [history, sethistory] = useState<installedpanel[]>([]);
 	const [currpage, Setcurrpage] = useState<string>("1");
 	const [isLoading, setIsLoading] = useState(true);
-	const [statuses, setStatuses] = useState<status[] | null>(null);
+	// const [statuses, setStatuses] = useState<status[] | null>(null);
 	const [status, setStatus] = useState<string>("1");
+	const [resultPerPage, setResultPerPage] = useState<string>("");
 	const corpId = useSelector((state: RootState) => state.user.corpId);
-	const handelHistory = (status: string, offset: string, limit: string) => {
+	const handelHistory = useCallback(() => {
 		if (corpId) {
-			InstalledpanelService.GetInstalledPanels({
-				page: {
-					status: status ?? "1",
-					offset: offset ?? "1",
-					limit: limit ?? "10",
-				},
-				corpId: corpId,
+			getData({
+				endPoint: `/v1/corp/${corpId}/installation/panel`,
+				params: { status, pageSize: resultPerPage },
 			})
 				.then((res) => {
 					sethistory(res.data);
-					getData({ endPoint: `/v1/installation/panel/status` })
-						.then((data) => {
-							setStatuses(data?.data);
-						})
-						.catch((err) => console.log(err))
-						.finally(() => setIsLoading(false));
+					// getData({ endPoint: `/v1/installation/panel/status` })
+					// 	.then((data) => {
+					// 		setStatuses(data?.data);
+					// 	})
+					// 	.catch((err) => console.log(err))
 				})
-				.catch((err) => console.log(err));
+				.catch((err) => console.log(err))
+				.finally(() => setIsLoading(false));
 		} else {
 			setIsLoading(false);
 		}
-	};
+	}, [status, resultPerPage, corpId]);
 	useEffect(() => {
 		setIsLoading(true);
 		getData({ endPoint: `/v1/user/corps` })
 			.then((res) => {
 				const corpId = res?.data[0]?.id;
 				dispatch(setCorpId(corpId));
-				handelHistory(status, currpage, "10");
+				handelHistory();
 			})
 			.catch((err) => console.log(err));
-	}, [currpage, status]);
+	}, [dispatch, handelHistory]);
 
 	return (
 		<>
 			<div>
 				<>
-					<div className="flex place-items-center">
+					<FilterSection
+						header="پنل‌های نصب‌ شده"
+						fieldName="پنل"
+						statusesListApiRoute={`/v1/installation/panel/status`}
+						status={status}
+						setStatus={setStatus}
+						resultPerPage={resultPerPage}
+						setResultPerPage={setResultPerPage}
+					/>
+					{/* <div className="flex place-items-center">
 						<Header header="پنل‌های نصب‌ شده" />
 						{statuses && (
 							<Select
@@ -110,7 +112,7 @@ export default function InstalledPanelPagination() {
 								</SelectContent>
 							</Select>
 						)}
-					</div>
+					</div> */}
 
 					{isLoading ? (
 						<LoadingSpinner />

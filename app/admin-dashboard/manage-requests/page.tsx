@@ -1,6 +1,6 @@
 "use client";
 import Panels from "@/components/admin-dashboard/Panels/Panels";
-import FilterSection from "@/components/CorpDashboard/FilterSection";
+import FilterSection from "@/components/FilterSection/FilterSection";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 import Header from "@/components/Header/Header";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";

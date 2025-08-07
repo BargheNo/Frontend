@@ -7,6 +7,7 @@ import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import DateConverter from "@/src/functions/toJalali";
 import Header from "@/components/Header/Header";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
+import FilterSection from "@/components/FilterSection/FilterSection";
 
 interface address {
 	province: string;
@@ -32,13 +33,14 @@ interface Request {
 export default function Requests() {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [requestData, setRequestData] = useState<Request[] | null>(null);
+	const [resultPerPage, setResultPerPage] = useState<string>("");
 
 	const corpId = useSelector((state: RootState) => state.user.corpId);
 	useEffect(() => {
 		setLoading(true);
 		getData({
 			endPoint: `/v1/corp/${corpId}/installation/request`,
-			params: { page: "1", pageSize: "10" },
+			params: { pageSize: resultPerPage },
 		})
 			.then((data) => {
 				setRequestData(data?.data);
@@ -49,7 +51,8 @@ export default function Requests() {
 
 	return (
 		<>
-			<Header header="درخواست‌های موجود در سرتاسر سامانه" />
+			<FilterSection header="درخواست‌های موجود در سرتاسر سامانه" resultPerPage={resultPerPage} setResultPerPage={setResultPerPage} /> 
+			{/* <Header header="درخواست‌های موجود در سرتاسر سامانه" /> */}
 			<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F0EDEF] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
 				{loading ? (
 					<LoadingSpinner />

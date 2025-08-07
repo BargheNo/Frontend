@@ -19,8 +19,8 @@ import {
 	AlertCircle,
 	Users,
 	School,
-  ShieldCheck,
-  User,
+	ShieldCheck,
+	User,
 } from "lucide-react";
 import { NavItem } from "@/src/types/PanelAsideTypes";
 
@@ -144,12 +144,7 @@ export const AdminNavItems = [
 		RNPName: "ticket.viewAll",
 		icon: <Headset />,
 	},
-	{
-		name: "بلاگ‌ها",
-		path: "/admin-dashboard/blogs",
-		RNPName: "adminBlog.viewAll",
-		icon: <BookOpen />,
-	},
+
 	{
 		name: "گزارشات",
 		path: "/admin-dashboard/reports",
@@ -162,7 +157,12 @@ export const AdminNavItems = [
 		RNPName: "news.viewAll",
 		icon: <Megaphone />,
 	},
-	{ name: "بلاگ‌ها", path: "/admin-dashboard/blogs", icon: <BookOpen /> },
+	{
+		name: "بلاگ‌ها",
+		path: "/admin-dashboard/blogs",
+		RNPName: "adminBlog.viewAll",
+		icon: <BookOpen />,
+	},
 ];
 
 export const AdminNavItemsMonitoring: NavItem[] = [

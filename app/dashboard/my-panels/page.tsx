@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import FilterSection from "@/components/FilterSection/FilterSection";
 
 interface PanelProps {
 	id: number;
@@ -43,27 +44,32 @@ interface status {
 const Settings = () => {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [panels, setPanels] = useState<PanelProps[]>([]);
-	const [statuses, setStatuses] = useState<status[] | null>(null);
 	const [status, setStatus] = useState<string>("1");
+	const [resultPerPage, setResultPerPage] = useState<string>("");
 	useEffect(() => {
 		setLoading(true);
 		getData({
-			endPoint: `/v1/user/installation/panel?status=${status}&offset=10&limit=15`,
+			endPoint: `/v1/user/installation/panel`,
+			params: { status, pageSize: resultPerPage },
 		})
 			.then((data) => {
 				setPanels(data?.data);
-				getData({ endPoint: `/v1/installation/panel/status` })
-					.then((data) => {
-						setStatuses(data?.data);
-					})
-					.catch((err) => console.log(err))
-					.finally(() => setLoading(false));
 			})
-			.catch((err) => console.log(err));
-	}, [status]);
+			.catch((err) => console.log(err))
+			.finally(() => setLoading(false));
+	}, [status, resultPerPage]);
 	return (
 		<PageContainer>
-			<div className="flex place-items-center">
+			<FilterSection
+				header="پنل‌های من"
+				fieldName="پنل"
+				statusesListApiRoute={`/v1/installation/panel/status`}
+				status={status}
+				setStatus={setStatus}
+				resultPerPage={resultPerPage}
+				setResultPerPage={setResultPerPage}
+			/>
+			{/* <div className="flex place-items-center">
 				<Header header="پنل‌های من" />
 				{statuses && (
 					<Select
@@ -91,7 +97,7 @@ const Settings = () => {
 						</SelectContent>
 					</Select>
 				)}
-			</div>
+			</div> */}
 			{/* <FilterSection /> */}
 			<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden border-1 border-gray-200 shadow-[-6px_-6px_16px_rgba(255,255,255,1),6px_6px_16px_rgba(0,0,0,0.3)]">
 				{loading ? (

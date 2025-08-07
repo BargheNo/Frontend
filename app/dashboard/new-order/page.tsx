@@ -3,22 +3,22 @@ import Head from "next/head";
 import Neworder from "@/components/New-Order/new-order";
 import OrderHistoryPagination from "@/components/OrderHistory/OrderHistoryPagination";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import orderService from "@/src/services/orderService";
 import { Orderhistory } from "@/src/types/OrderhistoryType";
 
 export default function Page() {
 	const [currpage, setCurrpage] = useState<string>("1");
 	const [status, setStatus] = useState<string>("1");
+	const [resultPerPage, setResultPerPage] = useState<string>("10");
 	const [isLoading, setIsLoading] = useState(true);
 	const [history, sethistory] = useState<Orderhistory[]>([]);
-	const handelHistory = (status: string, offset: string, limit: string) => {
+	const handelHistory = useCallback(() => {
 		setIsLoading(true);
 		orderService
 			.orderHistory({
-				status: status ?? "1",
-				offset: offset ?? "1",
-				limit: limit ?? "10",
+				status: status,
+				pageSize: resultPerPage,
 			})
 			.then((res) => {
 				sethistory(res?.data);
@@ -26,7 +26,10 @@ export default function Page() {
 			})
 			.catch((err) => console.log(err))
 			.finally(() => setIsLoading(false));
-	};
+	}, [resultPerPage, status]);
+	useEffect(() => {
+		handelHistory();
+	}, [handelHistory])
 	return (
 		<>
 			<Head>
@@ -47,9 +50,9 @@ export default function Page() {
 					status={status}
 					setStatus={setStatus}
 					isLoading={isLoading}
-					setIsLoading={setIsLoading}
 					history={history}
-					handelHistory={handelHistory}
+					resultPerPage={resultPerPage}
+					setResultPerPage={setResultPerPage}
 				/>
 			</PageContainer>
 		</>
