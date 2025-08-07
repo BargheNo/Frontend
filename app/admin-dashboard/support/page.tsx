@@ -1,6 +1,6 @@
 "use client";
 import Tickets from "@/components/admin-dashboard/Tickets/Tickets";
-import FilterSection from "@/components/CorpDashboard/FilterSection";
+import FilterSection from "@/components/FilterSection/FilterSection";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 import Header from "@/components/Header/Header";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";

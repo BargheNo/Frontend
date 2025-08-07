@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 	icon?: LucideIcon;
-	onIconClick?: () => void;
+	onSubmit?: () => void;
 	autoFocus?: boolean;
 	iconClassName?: string;
 	inputClassName?: string;
@@ -24,7 +24,7 @@ const isRTL = (text: string | undefined): boolean => {
 
 export default function CustomInputNoValidation({
 	icon: Icon,
-	onIconClick,
+	onSubmit,
 	autoFocus = false,
 	iconClassName,
 	inputClassName,
@@ -43,7 +43,7 @@ export default function CustomInputNoValidation({
 			<div className="relative w-full">
 				{Icon && (
 					<Icon
-						onClick={onIconClick}
+						onClick={onSubmit}
 						className={cn(
 							"absolute left-[10px] top-1/2 -translate-y-1/2 text-[16px] text-[#fa682d] cursor-pointer",
 							"max-[600px]:w-[5.5vw]",
@@ -60,13 +60,16 @@ export default function CustomInputNoValidation({
 					}
 					className={cn(
 						"w-full p-[10px] rounded-[9px] bg-[#f1f4fc] shadow-[inset_1px_2px_5px_rgba(0,0,0,0.2)]",
-						// "appearance-none",
 						"text-[clamp(10px,3.5vw,15px)]",
-						"rtl:text-right rtl:rtl ltr:text-left ltr:ltr",
-						// "pl-[42px]",
+						isRTL(value) ? "text-right rtl" : "text-left ltr",
 						inputClassName
 					)}
 					style={{ paddingLeft: Icon ? "42px" : "12px" }}
+					onKeyDown={(e) => {
+						if (e.key === "Enter") {
+							onSubmit?.();
+						}
+					}}
 				/>
 			</div>
 		</div>

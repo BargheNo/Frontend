@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 import CustomPagination from "@/components/Custom/CustomPagination/CustomPagination";
-import FilterSection from "../FilterSection";
+import FilterSection from "../../FilterSection/FilterSection";
 
 interface address {
 	province: string;
@@ -60,7 +60,7 @@ export default function Bids() {
 	const [bidData, setBidData] = useState<Bid[] | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 	// const [statuses, setStatuses] = useState<status[] | null>(null);
-	const [status, setStatus] = useState<string>("");
+	const [status, setStatus] = useState<string>("1");
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [resultPerPage, setResultPerPage] = useState<string>("");
 	const [searchPhrase, setSearchPhrase] = useState<string>("");
@@ -110,33 +110,6 @@ export default function Bids() {
 	return (
 		<>
 			<div className="flex place-items-center">
-				{/* <Header header="پیشنهادهای ارسال شده" />
-				{statuses && (
-					<Select
-						value={String(status)}
-						onValueChange={(value) => setStatus(value)}
-						data-test="warranty-filter"
-					>
-						<SelectTrigger
-							dir="rtl"
-							className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
-							data-test="warranty-filter-trigger"
-						>
-							<SelectValue placeholder="وضعیت پیشنهاد" />
-						</SelectTrigger>
-						<SelectContent dir="rtl">
-							{statuses?.map((status: status, index: number) => (
-								<SelectItem
-									key={index}
-									value={String(status.id)}
-									className="cursor-pointer"
-								>
-									{status.name}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-				)} */}
 				<FilterSection
 					fieldName="پنل"
 					headerName="پیشنهادهای ارسال شده"
@@ -147,6 +120,7 @@ export default function Bids() {
 					setResultPerPage={setResultPerPage}
 					searchPhrase={searchPhrase}
 					setSearchPhrase={setSearchPhrase}
+					onSearchSubmit={() => updateBids()}
 				/>
 			</div>
 			<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F0EDEF] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
