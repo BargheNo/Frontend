@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { vazir } from "@/lib/fonts";
 import panel from "@/public/images/Landing/panel.png";
-import Link, { use } from "next/link";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import styles from "./BargheNoLanding.module.css";
 import { cn } from "@/lib/utils";

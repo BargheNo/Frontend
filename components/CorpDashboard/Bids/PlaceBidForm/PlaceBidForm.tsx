@@ -48,7 +48,7 @@ const Item = ({
 	prefix,
 	className,
 }: {
-	icon: React.ElementType;
+	icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 	fieldName: string;
 	fieldValue: string | number;
 	english?: boolean;
