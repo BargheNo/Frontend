@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useSelector } from "react-redux";
 import { MessageCirclePlus, MessageCircleMore, XIcon } from "lucide-react";
@@ -14,6 +14,8 @@ import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton
 import { getData, postData } from "@/src/services/apiHub";
 import useHasPermission from "@/src/functions/hasPermission";
 import Ticket from "./Ticket";
+import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
+import FilterSection from "@/components/FilterSection/FilterSection";
 
 interface Ticket {
 	id: string;
@@ -34,12 +36,12 @@ interface Ticket {
 }
 interface Comment {
 	id: number;
-	Author: {
+	author: {
 		id: number;
-		first_name: string;
-		last_name: string;
-		owner_type: string;
+		firstName: string;
+		lastName: string;
 	};
+	authorType: string;
 	body: string;
 }
 
@@ -64,13 +66,16 @@ const TicketSupportPage = () => {
 	const [showCommentBoxFor, setShowCommentBoxFor] = useState<string | null>(
 		null
 	);
+	const [loading, setLoading] = useState<boolean>(true);
+	const [status, setStatus] = useState<string>("1");
+	const [resultPerPage, setResultPerPage] = useState<string>("");
 
 	const createComment = async (
 		comment: string,
 		activeCommentTicketId: string
 	) => {
 		setPutCommentLoading(true);
-		const formData = { comment: comment };
+		const formData = { body: comment };
 		postData({
 			endPoint: `/v1/admin/ticket/${activeCommentTicketId}/comments`,
 			data: formData,
@@ -92,37 +97,42 @@ const TicketSupportPage = () => {
 			endPoint: `/v1/admin/ticket/${showCommentBoxFor}/comments`,
 		})
 			.then((data) => {
-				setComments(data.data);
+				setComments(data?.data);
 			})
 			.catch((err) => console.log(err))
 			.finally(() => setIsLoadingComments(false));
 	};
 
-	const fetchTickets = () => {
-		getData({ endPoint: `/v1/admin/ticket` })
+	const fetchTickets = useCallback(() => {
+		setLoading(true);
+		getData({
+			endPoint: `/v1/admin/ticket`,
+			params: { status, pageSize: resultPerPage },
+		})
 			.then((data) => {
-				setTickets(data.data);
+				setTickets(data?.data);
 			})
-			.catch((err) => console.log(err));
-	};
+			.catch((err) => console.log(err))
+			.finally(() => setLoading(false));
+	}, [status, resultPerPage]);
 
 	useEffect(() => {
 		fetchTickets();
-	}, []);
-
+	}, [fetchTickets]);
 
 	const Comment = ({
 		id,
-		Author,
+		auther,
+		authorType,
 		body,
 	}: {
 		id: string;
-		Author: {
+		auther: {
 			id?: number;
-			first_name: string;
-			last_name: string;
-			owner_type: string;
+			firstName: string;
+			lastName: string;
 		};
+		authorType: string;
 		body: string;
 	}) => {
 		return (
@@ -135,9 +145,8 @@ const TicketSupportPage = () => {
 							{body}
 						</p>
 						<p className="text-start content-start text-xs text-gray-600">
-							از طرف {Author.first_name} {Author.last_name} ({" "}
-							{Author.owner_type === "users" ? "کاربر" : "ادمین"}{" "}
-							)
+							از طرف {auther.firstName} {auther.lastName} ({" "}
+							{authorType === "users" ? "کاربر" : "ادمین"} )
 						</p>
 					</div>
 				</div>
@@ -149,17 +158,25 @@ const TicketSupportPage = () => {
 		<>
 			{/* <div className="flex flex-col py-6 w-full"> */}
 			{/* Ticket List */}
-			{tickets.length === 0 ? (
-				<div className="text-center py-8 text-gray-500">
-					هیچ تیکتی موجود نیست
-				</div>
+			<FilterSection
+				header="تیکت‌ها"
+				fieldName="تیکت"
+				statusesListApiRoute={`/v1/ticket/status`}
+				status={status}
+				setStatus={setStatus}
+				resultPerPage={resultPerPage}
+				setResultPerPage={setResultPerPage}
+			/>
+			{loading ? (
+				<LoadingSpinner />
+			) : tickets.length === 0 ? (
+				<NoRecordFound text="هیچ تیکتی یافت نشد." />
 			) : (
 				<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
 					{tickets.map((ticket, index) => (
-						<div key={index}>
+						<div key={`t-${index}`}>
 							<Ticket
 								id={ticket.id}
-								key={index}
 								subject={ticket.subject}
 								description={ticket.description}
 								status={
@@ -173,18 +190,23 @@ const TicketSupportPage = () => {
 								image={ticket.image}
 								Owner={ticket.Owner}
 								fetchTickets={fetchTickets}
-								hasRespondTicketPermission={hasRespondTicketPermission}
-								hasCloseTicketPermission={hasCloseTicketPermission}
-								setActiveCommentTicketId={setActiveCommentTicketId}
+								hasRespondTicketPermission={
+									hasRespondTicketPermission
+								}
+								hasCloseTicketPermission={
+									hasCloseTicketPermission
+								}
+								setActiveCommentTicketId={
+									setActiveCommentTicketId
+								}
 								getComments={getComments}
-								showCommentBoxFor={showCommentBoxFor} 
+								showCommentBoxFor={showCommentBoxFor}
 								setShowCommentBoxFor={setShowCommentBoxFor}
 							/>
 
 							{activeCommentTicketId === ticket.id && (
 								<Formik
 									initialValues={initialValuesForm}
-									key={index}
 									validationSchema={
 										commentValidationSchemaForm
 									}
@@ -197,52 +219,58 @@ const TicketSupportPage = () => {
 								>
 									{({ setFieldValue, values }) => (
 										<Form>
-											<div className="flex bg-[#F0EDEF] pb-4 items-center justify-center">
-												<div className="px-10 rounded-lg w-full text-right space-y-8">
-													{hasRespondTicketPermission && (
-														<h3 className="text-lg font-bold">
-															ثبت نظر
-														</h3>
-													)}
-													<CustomTextArea
-														textareaClassName="bg-white"
-														name="comment"
-														rows={3}
-														placeholder="متن نظر..."
-													/>
+											{hasCommentTicketPermission && (
+												<div className="flex bg-[#F0EDEF] relative pb-4 items-center justify-center">
+													<div className="px-10 rounded-lg w-full text-right space-y-8">
+														{hasRespondTicketPermission && (
+															<h3 className="text-lg font-bold">
+																ثبت نظر
+															</h3>
+														)}
+														<CustomTextArea
+															textareaClassName="bg-white"
+															name="comment"
+															rows={3}
+															placeholder="متن نظر..."
+														/>
 
-													<div className="flex justify-between">
-														<button
-															onClick={() =>
-																setActiveCommentTicketId(
-																	null
-																)
-															}
-															className={`text-gray-500 cta-neu-button cursor-pointer w-1/9 ${styles.button}`}
-														>
-															لغو
-														</button>
-														<button
-															className={`text-left cta-neu-button flex ${styles.button} items-center content-center justify-center w-1/9`}
-														>
-															{putCommentLoading ? (
-																<LoadingOnButton
-																	size={28}
-																/>
-															) : (
-																<p>ثبت نظر</p>
-															)}
-														</button>
+														<div className="flex justify-between">
+															<button
+																onClick={() =>
+																	setActiveCommentTicketId(
+																		null
+																	)
+																}
+																className={`text-gray-500 cta-neu-button cursor-pointer w-1/9 ${styles.button}`}
+															>
+																لغو
+															</button>
+															<button
+																className={`text-left cta-neu-button flex ${styles.button} items-center content-center justify-center w-1/9`}
+															>
+																{putCommentLoading ? (
+																	<LoadingOnButton
+																		size={
+																			28
+																		}
+																	/>
+																) : (
+																	<p>
+																		ثبت نظر
+																	</p>
+																)}
+															</button>
+														</div>
 													</div>
 												</div>
-											</div>
+											)}
 										</Form>
 									)}
 								</Formik>
 							)}
 							{/* Comments */}
 							{showCommentBoxFor === ticket.id && (
-								<div className="bg-[#F0EDEF] p-8 rounded text-sm flex flex-col gap-4">
+								<div className="bg-[#F0EDEF] relative p-8 rounded text-sm flex flex-col gap-4">
 									<h2 className="text-right text-2xl font-bold text-blue-800 pr-7">
 										نظرات
 									</h2>
@@ -253,10 +281,13 @@ const TicketSupportPage = () => {
 											{/* <div className="pb-1 border-t border-gray-400"> */}
 											{comments.map((comment, index) => (
 												<Comment
-													key={index}
-													id={ticket.id}
-													Author={comment.Author}
-													body={comment.body}
+													key={`c-${index}`}
+													id={ticket?.id}
+													auther={comment?.author}
+													authorType={
+														comment?.authorType
+													}
+													body={comment?.body}
 												/>
 											))}
 										</div>

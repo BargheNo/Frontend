@@ -19,6 +19,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
+import FilterSection from "@/components/FilterSection/FilterSection";
 
 interface RepairHistoryItem {
 	id: number;
@@ -83,11 +84,6 @@ interface ContactInfo {
 	value: string;
 }
 
-interface status {
-	id: number;
-	name: string;
-}
-
 interface Address {
 	id: number;
 	province: string;
@@ -108,8 +104,9 @@ const Page = () => {
 	const [repairItems, setRepairItems] = useState<RepairHistoryItem[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [refreshTrigger, setRefreshTrigger] = useState(0);
-	const [statuses, setStatuses] = useState<status[] | null>(null);
+	// const [statuses, setStatuses] = useState<status[] | null>(null);
 	const [status, setStatus] = useState<string>("1");
+	const [resultPerPage, setResultPerPage] = useState<string>("");
 
 	// Function to filter repairs since the last month
 	const getRecentRepairs = (items: RepairHistoryItem[]) => {
@@ -124,23 +121,25 @@ const Page = () => {
 
 	useEffect(() => {
 		setIsLoading(true);
-		getData({ endPoint: `/v1/maintenance/status` })
+		getData({
+			endPoint: `/v1/user/maintenance/request`,
+			params: { status, pageSize: resultPerPage },
+		})
 			.then((data) => {
-				console.log(data?.data);
-				setStatuses(data?.data);
-				getData({
-					endPoint: `${baseURL}/v1/user/maintenance/request?status=${status}`,
-				})
-					.then((data) => {
-						setRepairItems(data?.data);
-					})
-					.catch((err) => console.log(err))
-					.finally(() => setIsLoading(false));
+				setRepairItems(data?.data);
 			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}, [refreshTrigger, status]);
+			.catch((err) => console.log(err))
+			.finally(() => setIsLoading(false));
+		// getData({ endPoint: `/v1/maintenance/status` })
+		// 	.then((data) => {
+		// 		console.log(data?.data);
+		// 		setStatuses(data?.data);
+
+		// 	})
+		// 	.catch((err) => {
+		// 		console.log(err);
+		// 	});
+	}, [refreshTrigger, status, resultPerPage]);
 
 	const handleOpenDialog = (item: RepairHistoryItem) => {
 		setSelectedItem(item);
@@ -189,7 +188,16 @@ const Page = () => {
 				)}
 			</div>
 			<div className="flex flex-col gap-4">
-				<div className="flex place-items-center">
+				<FilterSection
+					header="سوابق تعمیرات"
+					fieldName="تعمیر"
+					statusesListApiRoute={`/v1/maintenance/status`}
+					status={status}
+					setStatus={setStatus}
+					resultPerPage={resultPerPage}
+					setResultPerPage={setResultPerPage}
+				/>
+				{/* <div className="flex place-items-center">
 					<Header header="سوابق تعمیرات" />
 					{statuses && (
 						<Select
@@ -219,7 +227,7 @@ const Page = () => {
 							</SelectContent>
 						</Select>
 					)}
-				</div>
+				</div> */}
 				{isLoading ? (
 					<div className="relative">
 						<LoadingSpinner />

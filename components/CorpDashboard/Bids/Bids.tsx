@@ -51,11 +51,6 @@ interface Bid {
 	guarantee: GuaranteeProps;
 }
 
-interface status {
-	id: number;
-	name: string;
-}
-
 export default function Bids() {
 	const [bidData, setBidData] = useState<Bid[] | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
@@ -112,12 +107,12 @@ export default function Bids() {
 			<div className="flex place-items-center">
 				<FilterSection
 					fieldName="پنل"
-					headerName="پیشنهادهای ارسال شده"
+					header="پیشنهادهای ارسال شده"
 					statusesListApiRoute={`/v1/corp/${corpId}/bid/status`}
 					status={status}
 					setStatus={setStatus}
-					// resultPerPage={resultPerPage}
-					// setResultPerPage={setResultPerPage}
+					resultPerPage={resultPerPage}
+					setResultPerPage={setResultPerPage}
 					// searchPhrase={searchPhrase}
 					// setSearchPhrase={setSearchPhrase}
 					// onSearchSubmit={() => updateBids()}

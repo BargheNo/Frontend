@@ -15,6 +15,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound.tsx";
+import FilterSection from "@/components/FilterSection/FilterSection.tsx";
 
 interface status {
 	id: number;
@@ -27,8 +28,9 @@ const Warranties = () => {
 	// const [status, setStatus] = useState(1); // Default to active warranties
 	const [loadingGuarantees, setLoadingGuarantees] = useState(true);
 
-	const [statuses, setStatuses] = useState<status[] | null>(null);
+	// const [statuses, setStatuses] = useState<status[] | null>(null);
 	const [status, setStatus] = useState<string>("1");
+	const [resultPerPage, setResultPerPage] = useState<string>("");
 	const corpId = useSelector((state: RootState) => state.user.corpId);
 	useEffect(() => {
 		setLoadingGuarantees(true);
@@ -36,22 +38,22 @@ const Warranties = () => {
 
 		getData({
 			endPoint: `/v1/corp/${corpId}/guarantee`,
-			params: { status: status },
+			params: { status, pageSize: resultPerPage },
 		})
 			.then((data) => {
 				setWarrantyData(data?.data);
-				getData({ endPoint: `/v1/guarantee/status` })
-					.then((data) => {
-						setStatuses(data?.data);
-					})
-					.catch((err) => console.log(err))
-					.finally(() => setLoadingGuarantees(false));
+				// getData({ endPoint: `/v1/guarantee/status` })
+				// 	.then((data) => {
+				// 		setStatuses(data?.data);
+				// 	})
+				// 	.catch((err) => console.log(err))
+				// 	.finally(() => setLoadingGuarantees(false));
 			})
 			.catch((err) => {
 				console.log(err);
 			})
 			.finally(() => setLoadingGuarantees(false));
-	}, [dispatch, status, corpId]);
+	}, [dispatch, status, corpId, resultPerPage]);
 
 	// if (loadingGuarantees) {
 	// 	return <LoadingSpinner />;
@@ -62,7 +64,7 @@ const Warranties = () => {
 	// }
 	return (
 		<div className="space-y-6 relative">
-			<div className="flex place-items-center">
+			{/* <div className="flex place-items-center">
 				<Header header="گارانتی‌ها" />
 				{statuses && (
 					<Select
@@ -90,18 +92,31 @@ const Warranties = () => {
 						</SelectContent>
 					</Select>
 				)}
-			</div>
-            {loadingGuarantees ? <LoadingSpinner /> : warrantyData && warrantyData?.length > 0 ? 
-			<div className="grid md:grid-cols-2 md:gap-x-7 gap-y-5">
-				{warrantyData.map((warrantyItem) => (
-                    <WarrantyCard
-                    key={warrantyItem.id}
-                    {...warrantyItem}
-                    isArchived={warrantyItem.status !== "فعال"}
-					/>
-				))}
-			</div>
-            : <NoRecordFound text="هیچ گارانتی یافت نشد." />}
+			</div> */}
+			<FilterSection
+				header="گارانتی‌ها"
+				fieldName="گارانتی"
+				statusesListApiRoute={`/v1/guarantee/status`}
+				status={status}
+				setStatus={setStatus}
+				resultPerPage={resultPerPage}
+				setResultPerPage={setResultPerPage}
+			/>
+			{loadingGuarantees ? (
+				<LoadingSpinner />
+			) : warrantyData && warrantyData?.length > 0 ? (
+				<div className="grid md:grid-cols-2 md:gap-x-7 gap-y-5">
+					{warrantyData.map((warrantyItem) => (
+						<WarrantyCard
+							key={warrantyItem.id}
+							{...warrantyItem}
+							isArchived={warrantyItem.status !== "فعال"}
+						/>
+					))}
+				</div>
+			) : (
+				<NoRecordFound text="هیچ گارانتی یافت نشد." />
+			)}
 		</div>
 	);
 };

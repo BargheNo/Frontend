@@ -8,14 +8,11 @@ import useClientCheck from "@/src/hooks/useClientCheck";
 import React from "react";
 
 export default function Page() {
-	if (!useClientCheck()) {
-		return <LoadingSpinner />;
-	}
 	return (
 		<PageContainer>
-			<Header header="تیکت‌ها" />
-			<FilterSection />
-			<Header header="تیکت‌های قبلی" className="mt-4" />
+			{/* <Header header="تیکت‌ها" /> */}
+			{/* <FilterSection /> */}
+			{/* <Header header="تیکت‌های قبلی" /> */}
 			<Tickets />
 		</PageContainer>
 	);

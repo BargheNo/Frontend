@@ -36,6 +36,7 @@ import { Button } from "@/components/ui/button";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import useHasPermission from "@/src/functions/hasPermission";
 import Header from "@/components/Header/Header";
+import FilterSection from "@/components/FilterSection/FilterSection";
 
 interface CorporationType {
 	id: number;
@@ -554,26 +555,27 @@ const CorporationItem = ({
 const CorpManagement = () => {
 	const [corporations, setCorporations] = useState<CorporationType[]>([]);
 	const [loading, setLoading] = useState(true);
-	const [filterStatus, setFilterStatus] = useState("5");
+	const [status, setStatus] = useState("1");
 	const [selectedCorpId, setSelectedCorpId] = useState<number | null>(null);
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-	const fetchAllCorporations = () => {
+	const fetchAllCorporations = useCallback(() => {
 		// setLoading(true);
-		console.log(`/v1/admin/corporation?status=${filterStatus}`);
+		// console.log(`/v1/admin/corporation`);
 		getData({
-			endPoint: `/v1/admin/corporation?status=${filterStatus}`,
+			endPoint: `/v1/admin/corporation`,
+			params: { status },
 		})
 			.then((data) => {
 				setCorporations(data?.data);
 			})
 			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
-	};
+	}, [status]);
 
 	useEffect(() => {
 		fetchAllCorporations();
-	}, [filterStatus]);
+	}, [status, fetchAllCorporations]);
 
 	const handleManageCorporation = (id: number) => {
 		setSelectedCorpId(id);
@@ -634,25 +636,23 @@ const CorpManagement = () => {
 		// }
 	};
 
-	if (loading) {
-		return (
-			<div className="flex justify-center items-center">
-				<LoadingSpinner className="h-full" />
-				{/* <Loader2 className="animate-spin text-orange-500" size={32} /> */}
-			</div>
-		);
-	}
-
 	return (
 		<div className="flex flex-col">
-			<div className="flex place-items-center">
+			<FilterSection
+				header="شرکت های فعلی"
+				fieldName="شرکت"
+				statusesListApiRoute={`/v1/admin/corporation/status`}
+				status={status}
+				setStatus={setStatus}
+			/>
+			{/* <div className="flex place-items-center">
 				<Header header="شرکت های فعلی" />
 				<FilterCorps
 					value={filterStatus}
 					onChange={setFilterStatus}
 					setLoading={setLoading}
 				/>
-			</div>
+			</div> */}
 			{/* <div className="pb-6">
 				<FilterCorps
 					value={filterStatus}
@@ -660,16 +660,21 @@ const CorpManagement = () => {
 					setLoading={setLoading}
 				/>
 			</div> */}
-
-			<div className="flex flex-col w-full neu-container">
-				{corporations.map((corporation) => (
-					<CorporationItem
-						key={corporation.id}
-						{...corporation}
-						onManage={handleManageCorporation}
-					/>
-				))}
-			</div>
+			{loading ? (
+				<div className="flex justify-center items-center">
+					<LoadingSpinner className="h-full" />
+				</div>
+			) : (
+				<div className="flex flex-col w-full neu-container">
+					{corporations.map((corporation) => (
+						<CorporationItem
+							key={corporation.id}
+							{...corporation}
+							onManage={handleManageCorporation}
+						/>
+					))}
+				</div>
+			)}
 
 			{/* {selectedCorpId && (
 				<CorpProfile

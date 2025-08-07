@@ -16,22 +16,21 @@ interface Orderinfo {
 }
 interface Filters {
 	status: string;
-	offset: string;
-	limit: string;
+	pageSize: string;
 }
 
 class order {
 	orderRequest(Orderinfo: Orderinfo) {
 		// console.log("token", token);
 		return postData({
-			endPoint: `${baseURL}/v1/user/installation/request`,
+			endPoint: `/v1/user/installation/request`,
 			data: Orderinfo,
 		});
 	}
 
 	orderHistory(filters: Filters) {
 		return getData({
-			endPoint: `${baseURL}/v1/user/installation/request`,
+			endPoint: `/v1/user/installation/request`,
 			params: filters,
 		});
 	}

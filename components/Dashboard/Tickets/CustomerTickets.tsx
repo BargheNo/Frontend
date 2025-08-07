@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { MessageCirclePlus, MessageCircleMore, ImagePlus } from "lucide-react";
@@ -20,6 +20,8 @@ import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 import { getData, postData } from "@/src/services/apiHub";
+import FilterSection from "@/components/FilterSection/FilterSection";
+import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 interface Ticket {
 	id: string;
 	subject: string;
@@ -92,8 +94,8 @@ const TicketSupportPage = () => {
 		null
 	);
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
-	const [statuses, setStatuses] = useState<status[] | null>(null);
 	const [status, setStatus] = useState<string>("1");
+	const [resultPerPage, setResultPerPage] = useState<string>("");
 	const subjectOptions = [
 		{ id: 1, label: "عمومی" },
 		{ id: 2, label: "پنل" },
@@ -177,28 +179,28 @@ const TicketSupportPage = () => {
 			.finally(() => setIsLoadingComments(false));
 	};
 
-	const fetchTickets = () => {
+	const fetchTickets = useCallback(() => {
 		setLoadingTickets(true);
 		getData({
 			endPoint: `/v1/user/ticket/list`,
-			params: { status: status },
+			params: { status: status, pageSize: resultPerPage },
 		})
 			.then((data) => {
 				setTickets(data.data);
-				getData({ endPoint: `/v1/ticket/status` })
-					.then((data) => {
-						console.log(data.data);
-						setStatuses(data?.data);
-					})
-					.catch((err) => console.log(err))
-					.finally(() => setLoadingTickets(false));
+				// getData({ endPoint: `/v1/ticket/status` })
+				// 	.then((data) => {
+				// 		console.log(data.data);
+				// 		setStatuses(data?.data);
+				// 	})
+				// 	.catch((err) => console.log(err));
 			})
-			.catch((err) => console.log(err));
-	};
+			.catch((err) => console.log(err))
+			.finally(() => setLoadingTickets(false));
+	}, [status, resultPerPage]);
 
 	useEffect(() => {
 		fetchTickets();
-	}, []);
+	}, [fetchTickets]);
 
 	const Ticket = ({
 		id,
@@ -536,7 +538,16 @@ const TicketSupportPage = () => {
 					</Form>
 				)}
 			</Formik>
-			<div className="flex place-items-center">
+			<FilterSection
+				header="تیکت‌های قبلی"
+				fieldName="تیکت"
+				statusesListApiRoute={`/v1/ticket/status`}
+				status={status}
+				setStatus={setStatus}
+				resultPerPage={resultPerPage}
+				setResultPerPage={setResultPerPage}
+			/>
+			{/* <div className="flex place-items-center">
 				<Header header="تیکت‌های قبلی" />
 				{statuses && (
 					<Select
@@ -563,15 +574,13 @@ const TicketSupportPage = () => {
 						</SelectContent>
 					</Select>
 				)}
-			</div>
+			</div> */}
 			{/* Ticket List */}
 			<div className="space-y-4">
 				{loadingTickets ? (
 					<LoadingSpinner />
 				) : tickets.length === 0 ? (
-					<div className="text-center py-8 text-gray-500">
-						هیچ تیکتی موجود نیست
-					</div>
+					<NoRecordFound text="هیچ تیکتی موجود نیست." />
 				) : (
 					<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
 						{tickets.map((ticket, index) => (

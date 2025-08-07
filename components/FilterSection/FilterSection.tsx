@@ -15,12 +15,12 @@ import { getData } from "@/src/services/apiHub";
 import CustomInputNoValidation from "../Custom/CustomInput/CustomInputNoValidation";
 import FilterSelect from "./FilterSelect";
 
-interface status {
+interface Item {
 	id: number;
 	name: string;
 }
 
-const resultPerPages: status[] = [
+const resultPerPages: Item[] = [
 	{ id: 5, name: "5" },
 	{ id: 10, name: "10" },
 	{ id: 20, name: "20" },
@@ -30,7 +30,7 @@ const resultPerPages: status[] = [
 
 export default function FilterSection({
 	fieldName,
-	headerName,
+	header,
 	statusesListApiRoute,
 	columnsListApiRoute,
 	status,
@@ -44,7 +44,7 @@ export default function FilterSection({
 	onSearchSubmit,
 }: {
 	fieldName?: string;
-	headerName?: string;
+	header?: string;
 	statusesListApiRoute?: string;
 	columnsListApiRoute?: string;
 	status?: string;
@@ -58,8 +58,8 @@ export default function FilterSection({
 	onSearchSubmit?: any;
 }) {
 	const [initialLoading, setInitialLoading] = useState<boolean>(true);
-	const [statuses, setStatuses] = useState<status[] | null>(null);
-	const [columns, setColumns] = useState<status[] | null>(null);
+	const [statuses, setStatuses] = useState<Item[] | undefined>(undefined);
+	const [columns, setColumns] = useState<Item[] | undefined>(undefined);
 
 	// fetch all statuses and columns for sorting
 	useEffect(() => {
@@ -67,6 +67,7 @@ export default function FilterSection({
 			getData({ endPoint: statusesListApiRoute })
 				.then((res) => {
 					setStatuses(res?.data);
+					console.log(res?.data);
 					if (columnsListApiRoute) {
 						getData({ endPoint: columnsListApiRoute })
 							.then((res2) => {
@@ -98,15 +99,16 @@ export default function FilterSection({
 					setSearchPhrase && "place-self-end"
 				}`}
 			>
-				{headerName && <Header header={headerName} />}
+				{header && <Header header={header} />}
 			</div>
 			<div className="flex gap-4 w-full place-items-center ltr">
-				{statuses && setStatus && !initialLoading && (
+				{setStatus && (
 					<FilterSelect
-						placeholder={`وضعیت ${fieldName ? fieldName : ""}`}
+						placeholder={`وضعیت ${fieldName ?? fieldName}`}
 						field={status}
 						setField={setStatus}
 						possibleValues={statuses}
+						loading={initialLoading}
 					/>
 					// <Select
 					// 	value={String(status)}
@@ -135,12 +137,13 @@ export default function FilterSection({
 					// 	</SelectContent>
 					// </Select>
 				)}
-				{columns && setColumn && !initialLoading && (
+				{setColumn && (
 					<FilterSelect
 						placeholder="مرتب سازی بر اساس"
 						field={column}
 						setField={setColumn}
 						possibleValues={columns}
+						loading={initialLoading}
 					/>
 					// <Select
 					// 	value={String(column)}
@@ -165,12 +168,13 @@ export default function FilterSection({
 					// 	</SelectContent>
 					// </Select>
 				)}
-				{resultPerPages && setResultPerPage && !initialLoading && (
+				{setResultPerPage && (
 					<FilterSelect
 						placeholder="نتایج هر صفحه"
 						field={resultPerPage}
 						setField={setResultPerPage}
 						possibleValues={resultPerPages}
+						loading={initialLoading}
 					/>
 					// <Select
 					// 	value={resultPerPage}
