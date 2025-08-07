@@ -14,6 +14,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
+import CustomPagination from "@/components/Custom/CustomPagination/CustomPagination";
 
 interface address {
 	province: string;
@@ -59,6 +60,7 @@ export default function Bids() {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [statuses, setStatuses] = useState<status[] | null>(null);
 	const [status, setStatus] = useState<string>("1");
+	const [currentPage, setCurrentPage] = useState<number>(1);
 
 	const corpId = useSelector((state: RootState) => state.user.corpId);
 	const updateBids = () => {
@@ -67,7 +69,7 @@ export default function Bids() {
 			.then((data) => {
 				setStatuses(data?.data);
 				getData({
-					endPoint: `/v1/corp/${corpId}/bid?status=${status}&offset=100&limit=1`,
+					endPoint: `/v1/corp/${corpId}/bid?status=${status}&pageSize=20`,
 				})
 					.then((data) => {
 						console.log("data", data);
@@ -145,6 +147,11 @@ export default function Bids() {
 					</div>
 				)}
 			</div>
+			<CustomPagination
+				currentPage={currentPage}
+				setCurrentPage={setCurrentPage}
+				totalPages={1}
+			/>
 		</>
 	);
 }

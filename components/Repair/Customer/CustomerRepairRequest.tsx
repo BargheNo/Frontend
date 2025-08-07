@@ -496,7 +496,7 @@ const CustomerRepairRequest = ({ onRefresh }: CustomerRepairRequestProps) => {
 											{buttonLoading ? (
 												<LoadingOnButton />
 											) : (
-												<p>ثبت سفارش</p>
+												<p>ثبت درخواست</p>
 											)}
 										</Button>
 									</StickyFooter>
