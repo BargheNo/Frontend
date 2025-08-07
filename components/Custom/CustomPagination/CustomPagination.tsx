@@ -21,7 +21,7 @@ export default function CustomPagination({
 		{ length: 5 },
 		(_, i) => i + currentPage - 2
 	).filter((page) => page > 1 && page < totalPages);
-	return (
+	return totalPages !== 1 ? (
 		<div className="p-5 rtl">
 			<Pagination className="lg:mb-0 mb-20 relative">
 				<PaginationContent>
@@ -93,5 +93,7 @@ export default function CustomPagination({
 				</PaginationContent>
 			</Pagination>
 		</div>
+	) : (
+		<></>
 	);
 }
