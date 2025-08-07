@@ -138,11 +138,11 @@ export default function Page() {
 		queryKey: ["blogs"],
 		queryFn: async () => {
 			const r1 = await getData({
-				endPoint: `/v1/corp/${corpID}/blog/list?statuses=1`,
+				endPoint: `/v1/corp/${corpID}/blog/list?status=1`,
 			});
 			console.log("r1: ", r1);
 			const r2 = await getData({
-				endPoint: `/v1/corp/${corpID}/blog/list?statuses=2`,
+				endPoint: `/v1/corp/${corpID}/blog/list?status=2`,
 			});
 			console.log("r2: ", r2);
 			r1.data?.push(...r2.data);
@@ -158,23 +158,21 @@ export default function Page() {
 					<Header header="مطالب" />
 					<AddBlog />
 					<div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-[2vw] w-full mx-auto">
-						{data?.data?.map((blog: Blog) => {
-							return (
-								<BlogCard
-									key={blog.id}
-									blogID={String(blog.id)}
-									imageUrl={blog.cover_image}
-									title={blog.title}
-									description={blog.description}
-									writer={blog.author}
-									date={blog.created_at}
-									likeCount={blog.like_count}
-									status={blog.status}
-									viewOnly={false}
-									className="w-[70vw] md:w-[40vw] mx-auto"
-								/>
-							);
-						})}
+						{data?.data?.map((blog: Blog) => (
+							<BlogCard
+								key={blog?.id}
+								blogID={String(blog?.id)}
+								imageUrl={blog?.cover_image}
+								title={blog?.title}
+								description={blog?.description}
+								writer={blog?.author}
+								date={blog?.created_at}
+								likeCount={blog?.like_count}
+								status={blog?.status}
+								viewOnly={false}
+								className="w-[70vw] md:w-[40vw] mx-auto"
+							/>
+						))}
 					</div>
 				</>
 			)}
