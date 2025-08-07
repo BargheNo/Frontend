@@ -25,6 +25,7 @@ import CleanEnergy from "@/public/images/panels/clean-energy.jpeg";
 import TypewriterComponent from "typewriter-effect";
 import { delay, is } from "cypress/types/bluebird";
 import { useMediaQuery } from "react-responsive";
+import { useRouter } from 'next/navigation'
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
 
@@ -32,6 +33,7 @@ export default function BargheNoLanding() {
   const [position, setPosition] = useState([0, -0.7, 0]);
   const [rotation, setRotation] = useState([0.1, 1, 0]);
   const [scale, setScale] = useState(1.4);
+  const router = useRouter()
   const [D3PanelRef, setD3PanelRef] = useState<any>(null);
   const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
   const slide1Trigger = {
@@ -239,14 +241,21 @@ export default function BargheNoLanding() {
                 </span>
               </div>
               <button
+                className={`cta-neu-button flex justify-center w-2/5 bg-fire-orange text-white hover:scale-105`}
+                onClick={() => {router.push('/login')}}
+              >
+                <span className={`${vazir.className} text-2xl`}>ورود</span>
+                <ArrowLeft />
+              </button>
+              {/* <button
                 className={cn(
-                  "bg-fire-orange w-3/5 rounded-full flex items-center justify-center text-white py-3 gap-2 font-bold hover:bg-black",
+                  "w-3/5 rounded-full flex items-center justify-center py-3 gap-2 font-bold cursor-pointer cta-neu-button",
                   "btn-animation"
                 )}
               >
                 <span className={`${vazir.className} text-2xl`}>ورود</span>
                 <ArrowLeft />
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
