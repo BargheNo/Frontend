@@ -63,6 +63,7 @@ export default function Bids() {
 	const [status, setStatus] = useState<string>("");
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [resultPerPage, setResultPerPage] = useState<string>("");
+	const [searchPhrase, setSearchPhrase] = useState<string>("");
 
 	const corpId = useSelector((state: RootState) => state.user.corpId);
 	// const updateBids = useCallback(() => {
@@ -144,8 +145,8 @@ export default function Bids() {
 					setStatus={setStatus}
 					resultPerPage={resultPerPage}
 					setResultPerPage={setResultPerPage}
-					// initialLoading={initialLoading}
-					// setInitialLoading={setInitialLoading}
+					searchPhrase={searchPhrase}
+					setSearchPhrase={setSearchPhrase}
 				/>
 			</div>
 			<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F0EDEF] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">

@@ -12,12 +12,13 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Formik } from "formik";
+import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { Search } from "lucide-react";
 import CustomInput from "../Custom/CustomInput/CustomInput";
 import Header from "../Header/Header";
 import { getData } from "@/src/services/apiHub";
+import CustomInputNoValidation from "../Custom/CustomInput/CustomInputNoValidation";
 
 interface status {
 	id: number;
@@ -48,8 +49,8 @@ export default function FilterSection({
 	setColumn,
 	resultPerPage,
 	setResultPerPage,
-	// initialLoading,
-	// setInitialLoading,
+	searchPhrase,
+	setSearchPhrase,
 }: {
 	fieldName?: string;
 	headerName?: string;
@@ -63,10 +64,7 @@ export default function FilterSection({
 	setResultPerPage?: React.Dispatch<React.SetStateAction<string>>;
 	searchPhrase?: string;
 	setSearchPhrase?: React.Dispatch<React.SetStateAction<string>>;
-	// initialLoading?: boolean;
-	// setInitialLoading?: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-	
 	const [initialLoading, setInitialLoading] = useState<boolean>(true);
 	const [statuses, setStatuses] = useState<status[] | null>(null);
 	const [columns, setColumns] = useState<status[] | null>(null);
@@ -103,11 +101,23 @@ export default function FilterSection({
 		}
 	}, [statusesListApiRoute, columnsListApiRoute, setInitialLoading]);
 	return (
-		<div className="flex place-items-center justify-between w-full">
-			<div className="flex place-self-start">
+		<div className="flex place-items-center justify-between w-full gap-4">
+			<div
+				className={`flex min-w-fit ${
+					setSearchPhrase && "place-self-end"
+				}`}
+			>
 				{headerName && <Header header={headerName} />}
 			</div>
-			<div className="flex gap-4">
+			<div className="flex gap-4 w-full place-items-center">
+				{setSearchPhrase && !initialLoading && (
+					<CustomInputNoValidation
+						icon={Search}
+						placeholder="جستجو..."
+						value={searchPhrase}
+						onValueChange={setSearchPhrase}
+					/>
+				)}
 				{statuses && setStatus && !initialLoading && (
 					<Select
 						value={String(status)}
@@ -117,7 +127,11 @@ export default function FilterSection({
 							dir="rtl"
 							className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
 						>
-							<SelectValue placeholder={`وضعیت ${fieldName ? fieldName : ""}`} />
+							<SelectValue
+								placeholder={`وضعیت ${
+									fieldName ? fieldName : ""
+								}`}
+							/>
 						</SelectTrigger>
 						<SelectContent dir="rtl">
 							{statuses?.map((status: status, index: number) => (
@@ -163,7 +177,7 @@ export default function FilterSection({
 					>
 						<SelectTrigger
 							dir="rtl"
-							className="flex min-w-4 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+							className="flex min-w-36 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
 						>
 							<SelectValue placeholder="نتایج هر صفحه" />
 						</SelectTrigger>
