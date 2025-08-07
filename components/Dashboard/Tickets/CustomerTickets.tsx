@@ -39,7 +39,7 @@ interface Ticket {
 }
 interface Comment {
 	id: number;
-	Author: {
+	author: {
 		id: number;
 		firstName: string;
 		lastName: string;
@@ -650,56 +650,6 @@ const TicketSupportPage = () => {
 											</Form>
 										)}
 									</Formik>
-									// <div className="flex bg-[#F0EDEF] pb-4 items-center justify-center">
-									// 	<div className="px-10 rounded-lg w-full text-right space-y-4">
-									// 		<h3 className="text-lg font-bold">
-									// 			ثبت نظر
-									// 		</h3>
-									// 		<div
-									// 			className={`bg-white p-6 rounded-xl shadow-xl ${styles.shadow}`}
-									// 		>
-									// 			<textarea
-									// 				value={commentInput}
-									// 				onChange={(e) =>
-									// 					setCommentInput(
-									// 						e.target.value
-									// 					)
-									// 				}
-									// 				rows={3}
-									// 				className={`w-full p-2 resize-none outline-none focus:ring-0 focus:outline-none bg-white`}
-									// 				placeholder="متن نظر..."
-									// 			/>
-									// 		</div>
-
-									// 		<div className="flex justify-between">
-									// 			<button
-									// 				onClick={() =>
-									// 					setActiveCommentTicketId(
-									// 						null
-									// 					)
-									// 				}
-									// 				className={`text-gray-500 cta-neu-button cursor-pointer w-1/9 ${styles.button}`}
-									// 			>
-									// 				لغو
-									// 			</button>
-									// 			<button
-									// 				onClick={() => {
-									// 					createComment(
-									// 						commentInput,
-									// 						activeCommentTicketId
-									// 					);
-									// 					setActiveCommentTicketId(
-									// 						null
-									// 					);
-									// 					setCommentInput("");
-									// 				}}
-									// 				className={`text-left cta-neu-button flex ${styles.button} items-center content-center justify-center w-1/9`}
-									// 			>
-									// 				ثبت نظر
-									// 			</button>
-									// 		</div>
-									// 	</div>
-									// </div>
 								)}
 								{/* Comments */}
 								{isLoadingComments ? (

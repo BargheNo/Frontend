@@ -213,7 +213,7 @@ export default function BlogCard({
 											{DateConverter(date)}
 										</span>
 									</div>
-									<div>{writer}</div>
+									<div>{writer.firstName} {writer.lastName}</div>
 								</div>
 							</div>
 						</div>
