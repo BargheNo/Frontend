@@ -7,7 +7,7 @@ import {
 import { vazir } from "@/lib/fonts";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
-import { baseURL, getData, postData } from "@/src/services/apiHub";
+import { getData, postData } from "@/src/services/apiHub";
 import {
 	Battery,
 	Building2,
@@ -79,8 +79,8 @@ const initialValues = {
 	power: "",
 	description: "",
 	installationTime: "",
-	guaranteeID: 1,
-	paymentTerms: { method: 1 },
+	guaranteeID: "",
+	paymentTerms: { method: 0 },
 };
 
 const validateSchema = Yup.object({
@@ -131,7 +131,7 @@ export default function PlaceBidForm({
 		};
 		console.log("formData", formData);
 		postData({
-			endPoint: `${baseURL}/v1/corp/${corpId}/installation/request/${requestId}/bid`,
+			endPoint: `/v1/corp/${corpId}/installation/request/${requestId}/bid`,
 			data: formData,
 		})
 			.then((data) => {
@@ -164,7 +164,7 @@ export default function PlaceBidForm({
 					Number(values.power),
 					values.description,
 					values.installationTime,
-					1,
+					Number(values.guaranteeID),
 					{
 						method: 1,
 						installmentPlan: {
@@ -281,7 +281,7 @@ export default function PlaceBidForm({
 							<Select
 								name="guaranteeID"
 								onValueChange={(value) => {
-									setFieldValue("guaranteeID", value);
+									setFieldValue("guaranteeID", Number(value));
 								}}
 							>
 								<SelectTrigger

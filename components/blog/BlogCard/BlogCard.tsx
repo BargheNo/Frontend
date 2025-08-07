@@ -37,7 +37,7 @@ export default function BlogCard({
 	imageUrl: string;
 	title: string;
 	description: string;
-	writer: string;
+	writer: { firstName: string; lastName: string };
 	date: string;
 	status?: number;
 	viewOnly?: boolean;
@@ -81,15 +81,17 @@ export default function BlogCard({
 												className
 											)}
 										>
-											<div className="relative z-10 self-center rounded-xl h-[300px] w-full ">
-												<div className="absolute top-0 bottom-0 right-0 left-0 bg-gradient-to-b opacity-40 from-black to-transparent z-20"></div>
-												<Image
-													className="object-cover"
-													src={imageUrl ?? ""}
-													alt="Profile picture"
-													fill={true}
-												/>
-											</div>
+											{imageUrl && (
+												<div className="relative z-10 self-center rounded-xl h-[300px] w-full ">
+													<div className="absolute top-0 bottom-0 right-0 left-0 bg-gradient-to-b opacity-40 from-black to-transparent z-20"></div>
+													<Image
+														className="object-cover"
+														src={imageUrl ?? ""}
+														alt="Profile picture"
+														fill={true}
+													/>
+												</div>
+											)}
 											<div className="flex flex-col justify-between">
 												<div className="flex flex-col gap-4 justify-start items-start p-5">
 													<div className="flex justify-between w-full">
@@ -136,7 +138,7 @@ export default function BlogCard({
 															)}
 														</span>
 													</div>
-													<div>{writer}</div>
+													<div>{writer?.firstName} {writer.lastName}</div>
 												</div>
 											</div>
 										</div>
@@ -211,7 +213,7 @@ export default function BlogCard({
 											{DateConverter(date)}
 										</span>
 									</div>
-									<div>{writer}</div>
+									<div>{writer.firstName} {writer.lastName}</div>
 								</div>
 							</div>
 						</div>

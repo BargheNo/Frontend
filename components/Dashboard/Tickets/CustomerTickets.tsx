@@ -39,13 +39,18 @@ interface Ticket {
 }
 interface Comment {
 	id: number;
-	Author: {
+	author: {
 		id: number;
-		first_name: string;
-		last_name: string;
-		owner_type: string;
+		firstName: string;
+		lastName: string;
+		authorType: string;
 	};
 	body: string;
+}
+
+interface status {
+	id: number;
+	name: string;
 }
 
 const validationSchemaForm = Yup.object({
@@ -87,6 +92,8 @@ const TicketSupportPage = () => {
 		null
 	);
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
+	const [statuses, setStatuses] = useState<status[] | null>(null);
+	const [status, setStatus] = useState<string>("1");
 	const subjectOptions = [
 		{ id: 1, label: "عمومی" },
 		{ id: 2, label: "پنل" },
@@ -140,7 +147,7 @@ const TicketSupportPage = () => {
 		activeCommentTicketId: string | null
 	) => {
 		setPutCommentLoading(true);
-		const formData = { comment: comment };
+		const formData = { body: comment };
 		postData({
 			endPoint: `/v1/user/ticket/${activeCommentTicketId}/comments`,
 			data: formData,
@@ -163,7 +170,8 @@ const TicketSupportPage = () => {
 			endPoint: `/v1/user/ticket/${showCommentBoxFor}/comments`,
 		})
 			.then((data) => {
-				setComments(data.data);
+				console.log("comments", data?.data);
+				setComments(data?.data);
 			})
 			.catch((err) => console.log(err))
 			.finally(() => setIsLoadingComments(false));
@@ -171,10 +179,19 @@ const TicketSupportPage = () => {
 
 	const fetchTickets = () => {
 		setLoadingTickets(true);
-		getData({ endPoint: `/v1/user/ticket/list` })
+		getData({
+			endPoint: `/v1/user/ticket/list`,
+			params: { status: status },
+		})
 			.then((data) => {
 				setTickets(data.data);
-				setLoadingTickets(false);
+				getData({ endPoint: `/v1/ticket/status` })
+					.then((data) => {
+						console.log(data.data);
+						setStatuses(data?.data);
+					})
+					.catch((err) => console.log(err))
+					.finally(() => setLoadingTickets(false));
 			})
 			.catch((err) => console.log(err));
 	};
@@ -319,9 +336,9 @@ const TicketSupportPage = () => {
 		id: string;
 		Author: {
 			id?: number;
-			first_name: string;
-			last_name: string;
-			owner_type: string;
+			firstName: string;
+			lastName: string;
+			authorType: string;
 		};
 		body: string;
 	}) => {
@@ -334,8 +351,8 @@ const TicketSupportPage = () => {
 							{body}
 						</p>
 						<p className="text-start content-start text-xs text-gray-600">
-							از طرف {Author.first_name} {Author.last_name} ({" "}
-							{Author.owner_type === "users" ? "کاربر" : "ادمین"}{" "}
+							از طرف {Author?.firstName} {Author?.lastName} ({" "}
+							{Author?.authorType === "users" ? "کاربر" : "ادمین"}{" "}
 							)
 						</p>
 					</div>
@@ -346,10 +363,7 @@ const TicketSupportPage = () => {
 
 	return (
 		<div className="flex flex-col p-6 space-y-6 relative">
-			{/* <h2 className="text-right text-2xl font-bold text-blue-800">ثبت تیکت</h2> */}
 			<Header header="ثبت تیکت" />
-
-			{/* Ticket Creation Form */}
 			<Formik
 				initialValues={initialValuesForm}
 				validationSchema={validationSchemaForm}
@@ -522,7 +536,34 @@ const TicketSupportPage = () => {
 					</Form>
 				)}
 			</Formik>
-			<Header header="تیکت‌های قبلی" />
+			<div className="flex place-items-center">
+				<Header header="تیکت‌های قبلی" />
+				{statuses && (
+					<Select
+						value={String(status)}
+						onValueChange={(value) => setStatus(value)}
+					>
+						<SelectTrigger
+							dir="rtl"
+							className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+							data-test="warranty-filter-trigger"
+						>
+							<SelectValue placeholder="وضعیت پنل" />
+						</SelectTrigger>
+						<SelectContent dir="rtl">
+							{statuses?.map((status: status, index: number) => (
+								<SelectItem
+									key={index}
+									value={String(status.id)}
+									className="cursor-pointer"
+								>
+									{status.name}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				)}
+			</div>
 			{/* Ticket List */}
 			<div className="space-y-4">
 				{loadingTickets ? (
@@ -534,7 +575,7 @@ const TicketSupportPage = () => {
 				) : (
 					<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
 						{tickets.map((ticket, index) => (
-							<>
+							<div key={index}>
 								<Ticket
 									id={ticket.id}
 									key={index}
@@ -609,56 +650,6 @@ const TicketSupportPage = () => {
 											</Form>
 										)}
 									</Formik>
-									// <div className="flex bg-[#F0EDEF] pb-4 items-center justify-center">
-									// 	<div className="px-10 rounded-lg w-full text-right space-y-4">
-									// 		<h3 className="text-lg font-bold">
-									// 			ثبت نظر
-									// 		</h3>
-									// 		<div
-									// 			className={`bg-white p-6 rounded-xl shadow-xl ${styles.shadow}`}
-									// 		>
-									// 			<textarea
-									// 				value={commentInput}
-									// 				onChange={(e) =>
-									// 					setCommentInput(
-									// 						e.target.value
-									// 					)
-									// 				}
-									// 				rows={3}
-									// 				className={`w-full p-2 resize-none outline-none focus:ring-0 focus:outline-none bg-white`}
-									// 				placeholder="متن نظر..."
-									// 			/>
-									// 		</div>
-
-									// 		<div className="flex justify-between">
-									// 			<button
-									// 				onClick={() =>
-									// 					setActiveCommentTicketId(
-									// 						null
-									// 					)
-									// 				}
-									// 				className={`text-gray-500 cta-neu-button cursor-pointer w-1/9 ${styles.button}`}
-									// 			>
-									// 				لغو
-									// 			</button>
-									// 			<button
-									// 				onClick={() => {
-									// 					createComment(
-									// 						commentInput,
-									// 						activeCommentTicketId
-									// 					);
-									// 					setActiveCommentTicketId(
-									// 						null
-									// 					);
-									// 					setCommentInput("");
-									// 				}}
-									// 				className={`text-left cta-neu-button flex ${styles.button} items-center content-center justify-center w-1/9`}
-									// 			>
-									// 				ثبت نظر
-									// 			</button>
-									// 		</div>
-									// 	</div>
-									// </div>
 								)}
 								{/* Comments */}
 								{isLoadingComments ? (
@@ -678,7 +669,7 @@ const TicketSupportPage = () => {
 																key={index}
 																id={ticket.id}
 																Author={
-																	comment.Author
+																	comment.author
 																}
 																body={
 																	comment.body
@@ -704,7 +695,7 @@ const TicketSupportPage = () => {
 										</div>
 									)
 								)}
-							</>
+							</div>
 						))}
 					</div>
 				)}
