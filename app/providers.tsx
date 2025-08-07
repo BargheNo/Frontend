@@ -6,7 +6,8 @@ import { store } from "../src/store/store"; // Corrected path based on your `src
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { WebSocketProvider } from "@/components/WebSocketProvider/WebSocketProvider"; // <--- IMPORT THIS
+import { usePathname } from "next/navigation";
+import { WebSocketProvider } from "@/components/WebSocketProvider/WebSocketProvider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
 	const [queryClient] = useState(
@@ -20,15 +21,22 @@ export function Providers({ children }: { children: React.ReactNode }) {
 				},
 			})
 	);
+	const pathname = usePathname();
+	if (pathname?.startsWith("/announcements")) {
+		return (
+			<QueryClientProvider client={queryClient}>
+				<Provider store={store}>
+					<WebSocketProvider>{children}</WebSocketProvider>
+				</Provider>
+			</QueryClientProvider>
+		);
+	}
 	return (
 		<QueryClientProvider client={queryClient}>
 			<Provider store={store}>
-				{/* Wrap your existing providers with WebSocketProvider */}
 				<WebSocketProvider>
-					{/* <--- ADD THIS */}
 					<SidebarProvider>{children}</SidebarProvider>
-				</WebSocketProvider>{" "}
-				{/* <--- AND THIS */}
+				</WebSocketProvider>
 			</Provider>
 		</QueryClientProvider>
 	);

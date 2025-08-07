@@ -28,7 +28,7 @@ const PanelCard = ({
 		icon: Icon,
 		color,
 	}: {
-		icon: React.ElementType;
+		icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 		color: string;
 	}) => (
 		<div

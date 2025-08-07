@@ -1,7 +1,10 @@
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
-import { DialogFooter, DialogHeader } from "@/components/ui/dialog";
+import {
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import { vazir } from "@/lib/fonts";
-import { DialogTitle } from "@radix-ui/react-dialog";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
 import { getData, postData } from "@/src/services/apiHub";
@@ -45,7 +48,7 @@ const Item = ({
 	prefix,
 	className,
 }: {
-	icon: React.ElementType;
+	icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 	fieldName: string;
 	fieldValue: string | number;
 	english?: boolean;

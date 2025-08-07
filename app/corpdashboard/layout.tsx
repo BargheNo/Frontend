@@ -1,97 +1,26 @@
 "use client";
-
 import PanelAside from "@/components/Panel/PanelAside/PanelAside";
-import { getData } from "@/src/services/apiHub";
-import { setCorp } from "@/src/store/slices/corpSlice";
-import { setCorpId, setUser } from "@/src/store/slices/userSlice";
-import { NavItem } from "@/src/types/PanelAsideTypes";
-// import '../styles/globals.css';
 import "@/styles/global.css";
-import {
-	Server,
-	Send,
-	ClipboardList,
-	SquarePen,
-	MessageSquare,
-	Wrench,
-	BarChart,
-	Users,
-	Megaphone,
-	ShieldCheck,
-} from "lucide-react";
-import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-
-// const myFont = localFont({ src: '../..' })
+import { useEffect } from "react";
+import { CorpNavItems } from "@/src/constants/navItems";
+import { getData } from "@/src/services/apiHub";
+import { setCorpId } from "@/src/store/slices/userSlice";
 
 export default function Layout({
 	children,
 }: Readonly<{ children: React.ReactNode }>) {
 	const dispatch = useDispatch();
-	const navItems = [
-		{
-			name: "تکمیل و ویرایش اطلاعات",
-			path: "/corpdashboard/editprofile",
-			icon: <SquarePen />,
-		},
-		{
-			name: "پنل‌های نصب شده",
-			path: "/corpdashboard/installed-panels",
-			icon: <Server />,
-		},
-		{
-			name: "پیشنهادهای ارسال شده",
-			path: "/corpdashboard/bids",
-			RNPName: "bid.viewAll",
-			icon: <Send />,
-		},
-		{
-			name: "درخواست‌ها",
-			path: "/corpdashboard/requests",
-			RNPName: "bid.viewInstallationRequests",
-			icon: <ClipboardList />,
-		},
-		{ name: "گزارشات", path: "/corpdashboard/reports", icon: <BarChart /> },
-		{
-			name: "پیام‌های من",
-			path: "/corpdashboard/messages",
-			icon: <MessageSquare />,
-		},
-		{
-			name: "تعمیرات پیش رو",
-			path: "/corpdashboard/maintenances",
-			RNPName: "maintenance.viewAll",
-			icon: <Wrench />,
-		},
-		{
-			name: "اخبار و اطلاعیه‌ها",
-			path: "/corpdashboard/announcements",
-			icon: <Megaphone />,
-		},
-		{
-			name: "تکنسین‌ها",
-			path: "/corpdashboard/technicians",
-			icon: <Users />,
-		},
-		{
-			name: "گارانتی",
-			path: "/corpdashboard/warranties",
-			RNPName: "guarantee.viewAll",
-			icon: <ShieldCheck />,
-		},
-	];
-
 	useEffect(() => {
-		getData({ endPoint: `/v1/user/corps` })
-			.then((res) => {
-				const corpId = res?.data[0]?.id;
-				console.log("corpId", corpId, res);
-				dispatch(setCorpId(corpId));
-			})
-			.catch((err) => console.log(err));
+		getData({ endPoint: `/v1/user/corps` }).then((res) => {
+			const corpId = res?.data[0]?.id;
+			console.log("corpId", corpId, res);
+			dispatch(setCorpId(corpId));
+		});
 	}, []);
+
 	return (
-		<PanelAside navItems={navItems as NavItem[]} mode="corp">
+		<PanelAside navItems={CorpNavItems} mode="corp">
 			{children}
 		</PanelAside>
 	);

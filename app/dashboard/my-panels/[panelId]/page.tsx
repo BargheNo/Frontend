@@ -15,7 +15,7 @@ const Item = ({
 	fieldName,
 	fieldValue,
 }: {
-	icon: React.ElementType;
+	icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 	fieldName: string;
 	fieldValue: string | number;
 }) => {

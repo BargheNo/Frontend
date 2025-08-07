@@ -54,9 +54,9 @@ const PanelAside = ({
 		return () => window.removeEventListener("resize", checkMobile);
 	}, []);
 
-	if (isMobile) {
-		return <>{children}</>;
-	}
+  if (isMobile) {
+    return <main className="rtl w-screen pb-18">{children}</main>;
+  }
 
 	return (
 		<div
