@@ -24,7 +24,7 @@ const ItemWithBackground = ({
 	prefix,
 	english = false,
 }: {
-	icon: React.ElementType;
+	icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 	fieldName: string;
 	fieldValue: string | number;
 	smallValue?: boolean;

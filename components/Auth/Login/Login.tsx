@@ -14,28 +14,30 @@ import { setCorps, setUser } from "@/src/store/slices/userSlice";
 import { useDispatch } from "react-redux";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
+import { useRouter } from "next/navigation";
 
 const validationSchema = Yup.object({
-	phoneNumber: Yup.string()
-		.matches(/^[0-9]{10}$/, "شماره تلفن باید ۱۰ رقم باشد")
-		.required("شماره تلفن الزامی است"),
-	password: Yup.string()
-		// .min(8, "رمز عبور باید حداقل 8 کاراکتر باشد.")
-		// .matches(/[a-z]/, ".رمز عبور باید شامل حداقل یک حرف کوچک باشد")
-		// .matches(/[A-Z]/, ".رمز عبور باید شامل حداقل یک حرف بزرگ باشد")
-		// .matches(/\d/, ".رمز عبور باید شامل حداقل یک عدد باشد")
-		// .matches(/[\W_]/, ".رمز عبور باید شامل حداقل یک نماد باشد")
-		.required("رمز عبور الزامی است"),
+  phoneNumber: Yup.string()
+    .matches(/^[0-9]{10}$/, "شماره تلفن باید ۱۰ رقم باشد")
+    .required("شماره تلفن الزامی است"),
+  password: Yup.string()
+    // .min(8, "رمز عبور باید حداقل 8 کاراکتر باشد.")
+    // .matches(/[a-z]/, ".رمز عبور باید شامل حداقل یک حرف کوچک باشد")
+    // .matches(/[A-Z]/, ".رمز عبور باید شامل حداقل یک حرف بزرگ باشد")
+    // .matches(/\d/, ".رمز عبور باید شامل حداقل یک عدد باشد")
+    // .matches(/[\W_]/, ".رمز عبور باید شامل حداقل یک نماد باشد")
+    .required("رمز عبور الزامی است"),
 });
 
 const initialValues = {
-	phoneNumber: "",
-	password: "",
+  phoneNumber: "",
+  password: "",
 };
 
 const Login = () => {
-	const [showPassword, setShowPassword] = useState(false);
-	const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
 	const togglePasswordVisibility = () => {
 		setShowPassword(!showPassword);
@@ -140,16 +142,16 @@ const Login = () => {
 						</Form>
 					</Formik>
 
-					<p className="flex gap-5 justify-center text-center text-sm text-blue-600">
-						<a href="/forgot-password" data-test="forget-password">
-							فراموشی رمز عبور
-						</a>
-						<Link href="/signup">ثبت نام نکرده ام</Link>
-					</p>
-				</div>
-			</div>
-		</div>
-	);
+          <p className="flex gap-5 justify-center text-center text-sm text-blue-600">
+            <a href="/forgot-password" data-test="forget-password">
+              فراموشی رمز عبور
+            </a>
+            <Link href="/signup">ثبت نام نکرده ام</Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Login;

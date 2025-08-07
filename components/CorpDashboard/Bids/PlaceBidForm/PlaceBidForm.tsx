@@ -1,7 +1,10 @@
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
-import { DialogFooter, DialogHeader } from "@/components/ui/dialog";
+import {
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import { vazir } from "@/lib/fonts";
-import { DialogTitle } from "@radix-ui/react-dialog";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
 import { baseURL, getData, postData } from "@/src/services/apiHub";
@@ -45,7 +48,7 @@ const Item = ({
 	prefix,
 	className,
 }: {
-	icon: React.ElementType;
+	icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 	fieldName: string;
 	fieldValue: string | number;
 	english?: boolean;
@@ -231,8 +234,10 @@ export default function PlaceBidForm({
 								type="number"
 								autoFocus={true}
 								containerClassName="w-1/2"
-								inputClassName={errors.cost && touched.cost ?
-									'!border-red-500 !ring-1 !ring-red-700' : ''
+								inputClassName={
+									errors.cost && touched.cost
+										? "!border-red-500 !ring-1 !ring-red-700"
+										: ""
 								}
 							/>
 							<div className="w-full">
@@ -253,8 +258,10 @@ export default function PlaceBidForm({
 								type="number"
 								autoFocus={true}
 								containerClassName="w-1/2"
-								inputClassName={errors.power && touched.power ?
-									'!border-red-500 !ring-1 !ring-red-700' : ''
+								inputClassName={
+									errors.power && touched.power
+										? "!border-red-500 !ring-1 !ring-red-700"
+										: ""
 								}
 							/>
 							<CustomInput
@@ -263,8 +270,10 @@ export default function PlaceBidForm({
 								icon={LandPlot}
 								type="number"
 								containerClassName="w-1/2"
-								inputClassName={errors.area && touched.area ? 
-									'!border-red-500 !ring-1 !ring-red-700' : ''
+								inputClassName={
+									errors.area && touched.area
+										? "!border-red-500 !ring-1 !ring-red-700"
+										: ""
 								}
 							/>
 						</div>
@@ -308,16 +317,16 @@ export default function PlaceBidForm({
 							name="description"
 							icon={MessageCircle}
 							containerClassName="w-full"
-							inputClassName={errors.description && touched.description ?
-								'!border-red-500 !ring-1 !ring-red-700' : ''
+							inputClassName={
+								errors.description && touched.description
+									? "!border-red-500 !ring-1 !ring-red-700"
+									: ""
 							}
 						/>
 					</div>
 					<StickyFooter>
 						<CancelButton />
-						<SubmitButton>
-							ارسال پیشنهاد
-						</SubmitButton>
+						<SubmitButton>ارسال پیشنهاد</SubmitButton>
 					</StickyFooter>
 					{/* <DialogFooter>
 						<button

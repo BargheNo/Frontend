@@ -132,7 +132,7 @@ const Item = ({
 	prefix,
 	english = false,
 }: {
-	icon: React.ElementType;
+	icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 	fieldName: string;
 	fieldValue: string | number;
 	smallValue?: boolean;
@@ -174,7 +174,7 @@ const DialogItem = ({
 	prefix,
 	className,
 }: {
-	icon: React.ElementType;
+	icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 	fieldName: string;
 	fieldValue: string | number;
 	english?: boolean;
@@ -458,8 +458,11 @@ export default function BidCard({
 															type="number"
 															autoFocus={true}
 															containerClassName="w-1/2"
-															inputClassName={errors.cost && touched.cost ?
-																'!border-red-500 !ring-1 !ring-red-700' : ''
+															inputClassName={
+																errors.cost &&
+																touched.cost
+																	? "!border-red-500 !ring-1 !ring-red-700"
+																	: ""
 															}
 														/>
 														<div className="w-full">
@@ -493,8 +496,11 @@ export default function BidCard({
 															type="number"
 															autoFocus={true}
 															containerClassName="w-1/2"
-															inputClassName={errors.power && touched.power ?
-																'!border-red-500 !ring-1 !ring-red-700' : ''
+															inputClassName={
+																errors.power &&
+																touched.power
+																	? "!border-red-500 !ring-1 !ring-red-700"
+																	: ""
 															}
 														/>
 														<CustomInput
@@ -506,8 +512,11 @@ export default function BidCard({
 															icon={LandPlot}
 															type="number"
 															containerClassName="w-1/2"
-															inputClassName={errors.area && touched.area ?
-																'!border-red-500 !ring-1 !ring-red-700' : ''
+															inputClassName={
+																errors.area &&
+																touched.area
+																	? "!border-red-500 !ring-1 !ring-red-700"
+																	: ""
 															}
 														/>
 													</div>
@@ -575,14 +584,19 @@ export default function BidCard({
 														name="description"
 														icon={MessageCircle}
 														containerClassName="w-full"
-														inputClassName={errors.description && touched.description ?
-															'!border-red-500 !ring-1 !ring-red-700' : ''
+														inputClassName={
+															errors.description &&
+															touched.description
+																? "!border-red-500 !ring-1 !ring-red-700"
+																: ""
 														}
 													/>
 												</div>
 												<StickyFooter>
 													<CancelButton />
-													<SubmitButton loading={loading}>
+													<SubmitButton
+														loading={loading}
+													>
 														ذخیره تغییرات
 													</SubmitButton>
 												</StickyFooter>

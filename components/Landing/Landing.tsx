@@ -1,15 +1,19 @@
 import { vazir } from "@/lib/fonts";
 import AboutUsLanding from "./AboutUsLanding/AboutUsLanding";
 import BargheNoLanding from "./BargheNoLanding/BargheNoLanding";
-import AnnouncementsLanding from "./AnnouncementsLanding/AnnouncementsLanding";
+import AnnounceView from "../Announcement/AnnounceView/AnnounceView";
+import Footer from "../Footer/Footer";
+import NeuFrame from "../Custom/NeuFrame/NeuFrame";
+import NewsLanding from "./NewsLanding/NewsLanding";
 export default function Landing() {
-	return (
-		<div
+  return (
+    <div
 			className={`items-center rtl no-scrollbar bg-[#F4F7F9] ${vazir.className} w-full`}
 		>
-			<BargheNoLanding />
-			<AnnouncementsLanding />
-			<AboutUsLanding />
-		</div>
-	);
+      <BargheNoLanding />
+      <NewsLanding />
+      <AboutUsLanding />
+      <Footer />
+    </div>
+  );
 }

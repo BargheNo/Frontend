@@ -23,7 +23,7 @@ export default function AnnounceEditor({
 	onlyView = false,
 }: {
 	newsID: string;
-	onlyView: boolean;
+	onlyView?: boolean;
 }) {
 	const editorRef = useRef<EditorJS | null>(null);
 	const holderRef = useRef<HTMLDivElement>(null);
@@ -328,6 +328,70 @@ export default function AnnounceEditor({
 					)}
 				</div>
 			)}
+			<div className="flex flex-col items-center gap-3 w-[70vw] mx-auto">
+				{!onlyView && (
+					<div className="text-bold text-2xl self-start">
+						ویرایشگر:{" "}
+					</div>
+				)}
+				{onlyView ? (
+					<div className="flex flex-col justify-center items-center p-5 h-[80vh] w-[85vw]">
+						<div className="w-full h-full bg-warm-white neo-card rounded-md p-2 ">
+							<div className="overflow-y-auto overflow-x-hidden no-scrollbar neo-card-rev w-full h-full rounded-md p-3">
+								<div
+									ref={holderRef}
+									id="editorjs"
+									className={cn("rtl h-full w-full")}
+								></div>
+							</div>
+						</div>
+					</div>
+				) : (
+					<div className="flex flex-col items-center gap-3">
+						<div className=" w-[70vw]! h-[60vh]! bg-warm-white neo-card rounded-md p-2 ">
+							<div className="overflow-y-auto overflow-x-hidden no-scrollbar neo-card-rev w-full h-full rounded-md p-3">
+								<div
+									ref={holderRef}
+									id="editorjs"
+									className={cn("rtl h-full w-full")}
+								></div>
+							</div>
+						</div>
+						<div className="flex items-center gap-10 mt-2">
+							<button
+								className="flex gap-3 items-center bg-fire-orange px-8 py-2 rounded-full! neo-btn text-white font-bold text-lg"
+								onClick={() => {
+									handelSave.mutate();
+								}}
+							>
+								<span>ذخیره</span>
+								<Save />
+							</button>
+							{status == 2 ? (
+								<button
+									className="flex gap-3 items-center bg-fire-orange px-8 py-2 rounded-full! neo-btn text-white font-bold text-lg"
+									onClick={() => {
+										handelPublish.mutate();
+									}}
+								>
+									<span>انتشار</span>
+									<FileUp />
+								</button>
+							) : (
+								<button
+									className="flex gap-3 items-center bg-fire-orange px-8 py-2 rounded-full! neo-btn text-white font-bold text-lg"
+									onClick={() => {
+										handelUnpublish.mutate();
+									}}
+								>
+									<span>پیش نویس</span>
+									<FileUp />
+								</button>
+							)}
+						</div>
+					</div>
+				)}
+			</div>
 		</>
 	);
 }
