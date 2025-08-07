@@ -38,35 +38,39 @@ const validationSchema = Yup.object({
 });
 
 export default function FilterSection({
+	fieldName,
+	headerName,
 	statusesListApiRoute,
 	columnsListApiRoute,
-	onStatusChange,
-	onColumnChange,
-	onResultPerPageChange,
-	setLoading,
+	status,
+	setStatus,
+	column,
+	setColumn,
+	resultPerPage,
+	setResultPerPage,
+	// initialLoading,
+	// setInitialLoading,
 }: {
+	fieldName?: string;
+	headerName?: string;
 	statusesListApiRoute?: string;
 	columnsListApiRoute?: string;
-	onStatusChange?: (status: string) => void;
-	onColumnChange?: (status: string) => void;
-	onResultPerPageChange?: (status: string) => void;
-	setLoading?: React.Dispatch<React.SetStateAction<boolean>>;
+	status?: string;
+	setStatus?: React.Dispatch<React.SetStateAction<string>>;
+	column?: string;
+	setColumn?: React.Dispatch<React.SetStateAction<string>>;
+	resultPerPage?: string;
+	setResultPerPage?: React.Dispatch<React.SetStateAction<string>>;
+	searchPhrase?: string;
+	setSearchPhrase?: React.Dispatch<React.SetStateAction<string>>;
+	// initialLoading?: boolean;
+	// setInitialLoading?: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+	
+	const [initialLoading, setInitialLoading] = useState<boolean>(true);
 	const [statuses, setStatuses] = useState<status[] | null>(null);
-	const [status, setStatus] = useState<string>("1");
-
 	const [columns, setColumns] = useState<status[] | null>(null);
-	const [column, setColumn] = useState<string>("1");
 	const resultPerPages = ["5", "10", "20", "50", "100"];
-	const [resultPerPage, setResultPerPage] = useState<string>("10");
-
-	useEffect(() => {
-		onStatusChange?.(status);
-	}, [status, onStatusChange]);
-
-	useEffect(() => {
-		onColumnChange?.(column);
-	}, [column, onColumnChange]);
 
 	// fetch all statuses and columns for sorting
 	useEffect(() => {
@@ -80,93 +84,105 @@ export default function FilterSection({
 								setColumns(res2?.data);
 							})
 							.catch((err2) => console.log(err2))
-							.finally(() => setLoading && setLoading(false));
+							.finally(
+								() =>
+									setInitialLoading &&
+									setInitialLoading(false)
+							);
 					}
 				})
 				.catch((err) => console.log(err))
 				.finally(
 					() =>
-						!columnsListApiRoute && setLoading && setLoading(false)
+						!columnsListApiRoute &&
+						setInitialLoading &&
+						setInitialLoading(false)
 				);
-		} else if (setLoading) {
-			setLoading(false);
+		} else if (setInitialLoading) {
+			setInitialLoading(false);
 		}
-	}, [statusesListApiRoute, columnsListApiRoute, setLoading]);
+	}, [statusesListApiRoute, columnsListApiRoute, setInitialLoading]);
 	return (
-		<div className="flex place-items-center">
-			<Header header="پنل‌های من" />
-			{statuses && (
-				<Select
-					value={String(status)}
-					onValueChange={(value) => setStatus(value)}
-				>
-					<SelectTrigger
-						dir="rtl"
-						className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+		<div className="flex place-items-center justify-between w-full">
+			<div className="flex place-self-start">
+				{headerName && <Header header={headerName} />}
+			</div>
+			<div className="flex gap-4">
+				{statuses && setStatus && !initialLoading && (
+					<Select
+						value={String(status)}
+						onValueChange={(value) => setStatus(value)}
 					>
-						<SelectValue placeholder="وضعیت پنل" />
-					</SelectTrigger>
-					<SelectContent dir="rtl">
-						{statuses?.map((status: status, index: number) => (
-							<SelectItem
-								key={index}
-								value={String(status.id)}
-								className="cursor-pointer"
-							>
-								{status.name}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			)}
-			{columns && (
-				<Select
-					value={String(column)}
-					onValueChange={(value) => setColumn(value)}
-				>
-					<SelectTrigger
-						dir="rtl"
-						className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+						<SelectTrigger
+							dir="rtl"
+							className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+						>
+							<SelectValue placeholder={`وضعیت ${fieldName ? fieldName : ""}`} />
+						</SelectTrigger>
+						<SelectContent dir="rtl">
+							{statuses?.map((status: status, index: number) => (
+								<SelectItem
+									key={index}
+									value={String(status.id)}
+									className="cursor-pointer"
+								>
+									{status.name}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				)}
+				{columns && setColumn && !initialLoading && (
+					<Select
+						value={String(column)}
+						onValueChange={(value) => setColumn(value)}
 					>
-						<SelectValue placeholder="مرتب کردن بر اساس" />
-					</SelectTrigger>
-					<SelectContent dir="rtl">
-						{columns?.map((column: status, index: number) => (
-							<SelectItem
-								key={index}
-								value={String(column.id)}
-								className="cursor-pointer"
-							>
-								{column.name}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			)}
-			{resultPerPages && (
-				<Select
-					value={resultPerPage}
-					onValueChange={(value) => setResultPerPage(value)}
-				>
-					<SelectTrigger
-						dir="rtl"
-						className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+						<SelectTrigger
+							dir="rtl"
+							className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+						>
+							<SelectValue placeholder="مرتب سازی بر اساس" />
+						</SelectTrigger>
+						<SelectContent dir="rtl">
+							{columns?.map((column: status, index: number) => (
+								<SelectItem
+									key={index}
+									value={String(column.id)}
+									className="cursor-pointer"
+								>
+									{column.name}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				)}
+				{resultPerPages && setResultPerPage && !initialLoading && (
+					<Select
+						value={resultPerPage}
+						onValueChange={(value) => setResultPerPage(value)}
 					>
-						<SelectValue placeholder="تعداد نتایج در صفحه" />
-					</SelectTrigger>
-					<SelectContent dir="rtl">
-						{resultPerPages?.map((resultPerPage: string, index: number) => (
-							<SelectItem
-								key={index}
-								value={resultPerPage}
-								className="cursor-pointer"
-							>
-								{resultPerPage}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			)}
+						<SelectTrigger
+							dir="rtl"
+							className="flex min-w-4 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+						>
+							<SelectValue placeholder="نتایج هر صفحه" />
+						</SelectTrigger>
+						<SelectContent dir="rtl">
+							{resultPerPages?.map(
+								(resultPerPage: string, index: number) => (
+									<SelectItem
+										key={index}
+										value={resultPerPage}
+										className="cursor-pointer"
+									>
+										{resultPerPage}
+									</SelectItem>
+								)
+							)}
+						</SelectContent>
+					</Select>
+				)}
+			</div>
 		</div>
 	);
 }
