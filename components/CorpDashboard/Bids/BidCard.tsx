@@ -593,32 +593,41 @@ export default function BidCard({
 													/>
 												</div>
 												<StickyFooter>
-													<CancelButton />
-													<SubmitButton
-														loading={loading}
-													>
-														ذخیره تغییرات
-													</SubmitButton>
+													<div className="flex gap-1 justify-between w-full">
+														<div>
+															{hasCancelBidPermission && (
+																<button
+																	onClick={() => {
+																		cancelBid();
+																	}}
+																	className="self-start w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#EE4334] to-[#D73628] hover:from-[#D73628] hover:to-[#EE4334] active:from-[#EE4334] active:to-[#D73628] text-white py-2 px-4 rounded-md transition-all duration-300"
+																>
+																	{cancelLoading ? (
+																		<LoadingOnButton />
+																	) : (
+																		<p>
+																			لغو
+																			پیشنهاد
+																		</p>
+																	)}
+																</button>
+															)}
+														</div>
+														<div className="flex gap-1">
+															<CancelButton />
+															<SubmitButton
+																loading={
+																	loading
+																}
+															>
+																ذخیره تغییرات
+															</SubmitButton>
+														</div>
+													</div>
 												</StickyFooter>
 												{/* <DialogFooter>
 													<div className="flex w-full justify-between">
-														{hasCancelBidPermission && (
-															<button
-																onClick={() => {
-																	cancelBid();
-																}}
-																className="self-end w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#EE4334] to-[#D73628] hover:from-[#D73628] hover:to-[#EE4334] active:from-[#EE4334] active:to-[#D73628] text-white py-2 px-4 rounded-md transition-all duration-300"
-															>
-																{cancelLoading ? (
-																	<LoadingOnButton />
-																) : (
-																	<p>
-																		لغو
-																		پیشنهاد
-																	</p>
-																)}
-															</button>
-														)}
+														
 														{hasEditBidPermission && (
 															<button
 																type="submit"

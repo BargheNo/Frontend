@@ -69,7 +69,7 @@ export default function Bids() {
 			.then((data) => {
 				setStatuses(data?.data);
 				getData({
-					endPoint: `/v1/corp/${corpId}/bid?status=${status}&pageSize=1`,
+					endPoint: `/v1/corp/${corpId}/bid?status=${status}&pageSize=20`,
 				})
 					.then((data) => {
 						console.log("data", data);

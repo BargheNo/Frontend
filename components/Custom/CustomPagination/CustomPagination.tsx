@@ -26,17 +26,19 @@ export default function CustomPagination({
 			<Pagination className="lg:mb-0 mb-20 relative">
 				<PaginationContent>
 					{/* previous */}
-					<PaginationItem>
-						{Number(currentPage) > 1 && (
-							<PaginationPrevious
-								onClick={() =>
-									setCurrentPage((prev: number) =>
-										Math.max(Number(prev) - 1, 1)
-									)
-								}
-							/>
-						)}
-					</PaginationItem>
+					{currentPage !== 1 && (
+						<PaginationItem>
+							{Number(currentPage) > 1 && (
+								<PaginationPrevious
+									onClick={() =>
+										setCurrentPage((prev: number) =>
+											Math.max(Number(prev) - 1, 1)
+										)
+									}
+								/>
+							)}
+						</PaginationItem>
+					)}
 					<PaginationItem>
 						<PaginationLink
 							onClick={() => setCurrentPage(1)}
@@ -77,15 +79,17 @@ export default function CustomPagination({
 						</PaginationLink>
 					</PaginationItem>
 					{/* next */}
-					<PaginationItem>
-						<PaginationNext
-							onClick={() =>
-								setCurrentPage(
-									(prev: number) => Number(prev) + 1
-								)
-							}
-						/>
-					</PaginationItem>
+					{currentPage !== totalPages && (
+						<PaginationItem>
+							<PaginationNext
+								onClick={() =>
+									setCurrentPage(
+										(prev: number) => Number(prev) + 1
+									)
+								}
+							/>
+						</PaginationItem>
+					)}
 				</PaginationContent>
 			</Pagination>
 		</div>
