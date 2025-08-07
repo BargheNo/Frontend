@@ -20,31 +20,37 @@ import {
 	Users,
 	School,
   ShieldCheck,
+  User,
 } from "lucide-react";
 import { NavItem } from "@/src/types/PanelAsideTypes";
 
 export const UserNavItems: NavItem[] = [
+	{
+		name: "پروفایل کاربری",
+		path: "/dashboard/profile",
+		icon: <User />,
+	},
 	{ name: "پنل‌های من", path: "/dashboard/my-panels", icon: <Layers /> },
 	{ name: "ثبت سفارش", path: "/dashboard/new-order", icon: <FilePlus /> },
-	{
-		name: "سوابق تعمیرات",
-		path: "/dashboard/repair-history",
-		icon: <History />,
-	},
+	{ name: "محاسبه‌گر", path: "/dashboard/calculator", icon: <Calculator /> },
 	{ name: "گزارشات", path: "/dashboard/reports", icon: <BarChart /> },
 	{
 		name: "پیام‌های من",
 		path: "/dashboard/messages",
 		icon: <MessageSquare />,
 	},
-	{ name: "محاسبه‌گر", path: "/dashboard/calculator", icon: <Calculator /> },
-	{ name: "پشتیبانی", path: "/dashboard/tickets", icon: <Headset /> },
-	{ name: "بلاگ‌ها", path: "/dashboard/blogs", icon: <BookOpen /> },
+	{
+		name: "سوابق تعمیرات",
+		path: "/dashboard/repair-history",
+		icon: <Wrench />,
+	},
 	{
 		name: "اخبار و اطلاعیه‌ها",
 		path: "/dashboard/announcements",
 		icon: <Megaphone />,
 	},
+	{ name: "بلاگ‌ها", path: "/dashboard/blogs", icon: <BookOpen /> },
+	{ name: "پشتیبانی", path: "/dashboard/tickets", icon: <Headset /> },
 ];
 
 export const CorpNavItems = [
@@ -87,6 +93,7 @@ export const CorpNavItems = [
 		path: "/corpdashboard/announcements",
 		icon: <Megaphone />,
 	},
+	{ name: "بلاگ‌ها", path: "/corpdashboard/blogs", icon: <BookOpen /> },
 	{
 		name: "تکنسین‌ها",
 		path: "/corpdashboard/technicians",
@@ -155,6 +162,7 @@ export const AdminNavItems = [
 		RNPName: "news.viewAll",
 		icon: <Megaphone />,
 	},
+	{ name: "بلاگ‌ها", path: "/admin-dashboard/blogs", icon: <BookOpen /> },
 ];
 
 export const AdminNavItemsMonitoring: NavItem[] = [
