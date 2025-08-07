@@ -24,8 +24,8 @@ export default function AddBlog() {
         <DialogContent
           className={cn(
             step === 0
-              ? "w-[90vw]! h-fit! p-10"
-              : "w-[90vw]! max-w-none! h-[90vh]! p-10"
+              ? "w-[90vw]! h-fit! p-10 overflow-scroll"
+              : "w-[90vw]! max-w-none! p-10 overflow-scroll"
           )}
         >
           {step === 0 ? (
