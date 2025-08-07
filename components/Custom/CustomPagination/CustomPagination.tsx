@@ -11,18 +11,24 @@ import {
 export default function CustomPagination({
 	currentPage,
 	setCurrentPage,
+	totalPages,
 }: {
 	currentPage: number;
 	setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+	totalPages: number;
 }) {
+	const range = Array.from(
+		{ length: 5 },
+		(_, i) => i + currentPage - 2
+	).filter((page) => page > 1 && page < totalPages);
 	return (
 		<div className="p-5 rtl">
 			<Pagination className="lg:mb-0 mb-20 relative">
 				<PaginationContent>
+					{/* previous */}
 					<PaginationItem>
 						{Number(currentPage) > 1 && (
 							<PaginationPrevious
-								href="#"
 								onClick={() =>
 									setCurrentPage((prev: number) =>
 										Math.max(Number(prev) - 1, 1)
@@ -31,10 +37,24 @@ export default function CustomPagination({
 							/>
 						)}
 					</PaginationItem>
-					{[1, 2, 3].map((page) => (
+					<PaginationItem>
+						<PaginationLink
+							onClick={() => setCurrentPage(1)}
+							isActive={1 === currentPage}
+						>
+							{1}
+						</PaginationLink>
+					</PaginationItem>
+					{/* 3 dots */}
+					{currentPage > 4 && (
+						<PaginationItem>
+							<PaginationEllipsis />
+						</PaginationItem>
+					)}
+					{/* center pages */}
+					{range.map((page) => (
 						<PaginationItem key={page}>
 							<PaginationLink
-								href="#"
 								onClick={() => setCurrentPage(page)}
 								isActive={page === currentPage}
 							>
@@ -42,12 +62,23 @@ export default function CustomPagination({
 							</PaginationLink>
 						</PaginationItem>
 					))}
+					{/* 3 dots */}
+					{currentPage < totalPages - 3 && (
+						<PaginationItem>
+							<PaginationEllipsis />
+						</PaginationItem>
+					)}
 					<PaginationItem>
-						<PaginationEllipsis />
+						<PaginationLink
+							onClick={() => setCurrentPage(totalPages)}
+							isActive={totalPages === currentPage}
+						>
+							{totalPages}
+						</PaginationLink>
 					</PaginationItem>
+					{/* next */}
 					<PaginationItem>
 						<PaginationNext
-							href="#"
 							onClick={() =>
 								setCurrentPage(
 									(prev: number) => Number(prev) + 1

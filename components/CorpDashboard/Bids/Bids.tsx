@@ -60,7 +60,7 @@ export default function Bids() {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [statuses, setStatuses] = useState<status[] | null>(null);
 	const [status, setStatus] = useState<string>("1");
-	const [currentPage, setCurrentPage] = useState<number>(1);
+	const [currentPage, setCurrentPage] = useState<number>(2);
 
 	const corpId = useSelector((state: RootState) => state.user.corpId);
 	const updateBids = () => {
@@ -150,6 +150,7 @@ export default function Bids() {
 			<CustomPagination
 				currentPage={currentPage}
 				setCurrentPage={setCurrentPage}
+				totalPages={12}
 			/>
 		</>
 	);
