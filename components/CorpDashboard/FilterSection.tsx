@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 const initialValues = {
 	search: "",
 	resultPerPage: "10",
@@ -16,6 +16,13 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { Search } from "lucide-react";
 import CustomInput from "../Custom/CustomInput/CustomInput";
+import Header from "../Header/Header";
+import { getData } from "@/src/services/apiHub";
+
+interface status {
+	id: number;
+	name: string;
+}
 
 const validationSchema = Yup.object({
 	search: Yup.string(),
@@ -29,113 +36,137 @@ const validationSchema = Yup.object({
 			"مقدار تعداد نتایج در هر صفحه درست نیست"
 		),
 });
-export default function FilterSection() {
-	// const [sorting, setSorting] = useState("most-recent");
-	// const [resultPerPage, setResultPerPage] = useState("10");
-	// const handleFormSubmit = async ({
-	// 	search,
-	// 	sorting,
-	// 	resultPerPage,
-	// }: {
-	// 	search?: string;
-	// 	sorting?: string;
-	// 	resultPerPage?: string;
-	// }) => {
-	// 	setSorting(sorting);
-	// 	setResultPerPage(resultPerPage);
-	// };
-	return (
-		<div></div>
-		// <div className="flex flex-col relative w-full text-gray-800 rounded-2xl overflow-hidden bg-[#F0EDEF] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
-		// 	<Formik
-		// 		initialValues={initialValues}
-		// 		validationSchema={validationSchema}
-		// 		onSubmit={handleFormSubmit}
-		// 	>
-		// 		<div className="p-5 items-center flex gap-6">
-		// 			{/* <div className="w-4/5">
-		// 				<CustomInput
-		// 					placeholder="جستجو"
-		// 					name="search"
-		// 					icon={Search}
-		// 					type="text"
-		// 					containerClassName="-translate-y-[11px]"
-		// 					inputClassName="bg-white"
-		// 				/>
-		// 			</div> */}
-		// 			<div className="flex gap-4 items-center">
-		// 				<Select
-		// 					defaultValue="most-recent"
-		// 					value={sorting}
-		// 					onValueChange={(value) => {
-		// 						setSorting(value);
-		// 					}}
-		// 				>
-		// 					<SelectTrigger
-		// 						dir="rtl"
-		// 						className="w-40 cursor-pointer bg-white"
-		// 					>
-		// 						<SelectValue placeholder="جدیدترین" />
-		// 					</SelectTrigger>
-		// 					<SelectContent dir="rtl">
-		// 						<SelectItem
-		// 							value="most-recent"
-		// 							className="cursor-pointer"
-		// 						>
-		// 							جدیدترین
-		// 						</SelectItem>
-		// 						<SelectItem
-		// 							value="top-visited"
-		// 							className="cursor-pointer"
-		// 						>
-		// 							بر اساس وضعیت
-		// 						</SelectItem>
-		// 					</SelectContent>
-		// 				</Select>
 
-		// 				<Select
-		// 					defaultValue={"20"}
-		// 					value={String(resultPerPage)}
-		// 					onValueChange={(value) => {
-		// 						setResultPerPage(value);
-		// 					}}
-		// 				>
-		// 					<SelectTrigger
-		// 						dir="rtl"
-		// 						className="w-18 cursor-pointer bg-white"
-		// 					>
-		// 						<SelectValue placeholder="20" />
-		// 					</SelectTrigger>
-		// 					<SelectContent dir="rtl">
-		// 						<SelectItem
-		// 							value="10"
-		// 							className="hover:cursor-pointer"
-		// 						>
-		// 							10
-		// 						</SelectItem>
-		// 						<SelectItem
-		// 							value="20"
-		// 							className="hover:cursor-pointer"
-		// 						>
-		// 							20
-		// 						</SelectItem>
-		// 						<SelectItem
-		// 							value="50"
-		// 							className="hover:cursor-pointer"
-		// 						>
-		// 							50
-		// 						</SelectItem>
-		// 						<SelectItem
-		// 							value="100"
-		// 							className="hover:cursor-pointer"
-		// 						>
-		// 							100
-		// 						</SelectItem>
-		// 					</SelectContent>
-		// 				</Select>
-		// 			</div>
-		// 		</div>
-		// 	</Formik>
-		// </div>
+export default function FilterSection({
+	statusesListApiRoute,
+	columnsListApiRoute,
+	onStatusChange,
+	onColumnChange,
+	onResultPerPageChange,
+	setLoading,
+}: {
+	statusesListApiRoute?: string;
+	columnsListApiRoute?: string;
+	onStatusChange?: (status: string) => void;
+	onColumnChange?: (status: string) => void;
+	onResultPerPageChange?: (status: string) => void;
+	setLoading?: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+	const [statuses, setStatuses] = useState<status[] | null>(null);
+	const [status, setStatus] = useState<string>("1");
+
+	const [columns, setColumns] = useState<status[] | null>(null);
+	const [column, setColumn] = useState<string>("1");
+	const resultPerPages = ["5", "10", "20", "50", "100"];
+	const [resultPerPage, setResultPerPage] = useState<string>("10");
+
+	useEffect(() => {
+		onStatusChange?.(status);
+	}, [status, onStatusChange]);
+
+	useEffect(() => {
+		onColumnChange?.(column);
+	}, [column, onColumnChange]);
+
+	// fetch all statuses and columns for sorting
+	useEffect(() => {
+		if (statusesListApiRoute) {
+			getData({ endPoint: statusesListApiRoute })
+				.then((res) => {
+					setStatuses(res?.data);
+					if (columnsListApiRoute) {
+						getData({ endPoint: columnsListApiRoute })
+							.then((res2) => {
+								setColumns(res2?.data);
+							})
+							.catch((err2) => console.log(err2))
+							.finally(() => setLoading && setLoading(false));
+					}
+				})
+				.catch((err) => console.log(err))
+				.finally(
+					() =>
+						!columnsListApiRoute && setLoading && setLoading(false)
+				);
+		} else if (setLoading) {
+			setLoading(false);
+		}
+	}, [statusesListApiRoute, columnsListApiRoute, setLoading]);
+	return (
+		<div className="flex place-items-center">
+			<Header header="پنل‌های من" />
+			{statuses && (
+				<Select
+					value={String(status)}
+					onValueChange={(value) => setStatus(value)}
+				>
+					<SelectTrigger
+						dir="rtl"
+						className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+					>
+						<SelectValue placeholder="وضعیت پنل" />
+					</SelectTrigger>
+					<SelectContent dir="rtl">
+						{statuses?.map((status: status, index: number) => (
+							<SelectItem
+								key={index}
+								value={String(status.id)}
+								className="cursor-pointer"
+							>
+								{status.name}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+			)}
+			{columns && (
+				<Select
+					value={String(column)}
+					onValueChange={(value) => setColumn(value)}
+				>
+					<SelectTrigger
+						dir="rtl"
+						className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+					>
+						<SelectValue placeholder="مرتب کردن بر اساس" />
+					</SelectTrigger>
+					<SelectContent dir="rtl">
+						{columns?.map((column: status, index: number) => (
+							<SelectItem
+								key={index}
+								value={String(column.id)}
+								className="cursor-pointer"
+							>
+								{column.name}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+			)}
+			{resultPerPages && (
+				<Select
+					value={resultPerPage}
+					onValueChange={(value) => setResultPerPage(value)}
+				>
+					<SelectTrigger
+						dir="rtl"
+						className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+					>
+						<SelectValue placeholder="تعداد نتایج در صفحه" />
+					</SelectTrigger>
+					<SelectContent dir="rtl">
+						{resultPerPages?.map((resultPerPage: string, index: number) => (
+							<SelectItem
+								key={index}
+								value={resultPerPage}
+								className="cursor-pointer"
+							>
+								{resultPerPage}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+			)}
+		</div>
 	);
 }
