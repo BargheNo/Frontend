@@ -105,7 +105,7 @@ const Page = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [refreshTrigger, setRefreshTrigger] = useState(0);
 	// const [statuses, setStatuses] = useState<status[] | null>(null);
-	const [status, setStatus] = useState<string>("1");
+	const [status, setStatus] = useState<string>("7");
 	const [resultPerPage, setResultPerPage] = useState<string>("");
 
 	// Function to filter repairs since the last month
@@ -126,7 +126,7 @@ const Page = () => {
 			params: { status, pageSize: resultPerPage },
 		})
 			.then((data) => {
-				setRepairItems(data?.data);
+				setRepairItems(data?.data?.data);
 			})
 			.catch((err) => console.log(err))
 			.finally(() => setIsLoading(false));

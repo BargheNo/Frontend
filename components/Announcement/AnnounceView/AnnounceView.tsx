@@ -96,7 +96,7 @@ export default function AnnounceView({
 						</div>
 					</div>
 				)}
-				{data?.data?.map((item: News) => (
+				{data?.data?.data?.map((item: News) => (
 					<AnnounceCard
 						onlyView={onlyView}
 						key={item.id}

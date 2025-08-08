@@ -5,7 +5,6 @@ import { getData } from "@/src/services/apiHub";
 import { useSelector } from "react-redux";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import DateConverter from "@/src/functions/toJalali";
-import Header from "@/components/Header/Header";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 import FilterSection from "@/components/FilterSection/FilterSection";
 
@@ -43,7 +42,8 @@ export default function Requests() {
 			params: { pageSize: resultPerPage },
 		})
 			.then((data) => {
-				setRequestData(data?.data);
+				console.log(data?.data?.data);
+				setRequestData(data?.data?.data);
 			})
 			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));

@@ -55,7 +55,7 @@ export default function Bids() {
 	const [bidData, setBidData] = useState<Bid[] | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 	// const [statuses, setStatuses] = useState<status[] | null>(null);
-	const [status, setStatus] = useState<string>("");
+	const [status, setStatus] = useState<string>("6");
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [resultPerPage, setResultPerPage] = useState<string>("");
 	const [searchPhrase, setSearchPhrase] = useState<string>("");
@@ -86,8 +86,8 @@ export default function Bids() {
 			params: { status, pageSize: resultPerPage },
 		})
 			.then((data) => {
-				console.log("data", data);
-				setBidData(data?.data);
+				// console.log("data", data);
+				setBidData(data?.data?.data);
 			})
 			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));

@@ -1,6 +1,4 @@
 "use client";
-import panelNotFound from "../../public/images/panelNotFound/panelNotFound.png";
-import Image from "next/image";
 import {
 	Pagination,
 	PaginationContent,
@@ -10,7 +8,6 @@ import {
 	PaginationNext,
 	PaginationPrevious,
 } from "@/components/ui/pagination";
-import InstalledpanelService from "@/src/services/getInstalledPanelsService";
 import { useCallback, useEffect, useState } from "react";
 import { installedpanel } from "@/src/types/installedpanelType";
 import InstalledPanel from "@/components/InstalledPanels/InstalledPanels";
@@ -18,14 +15,6 @@ import { useDispatch, useSelector } from "react-redux";
 import LoadingSpinner from "../Loading/LoadingSpinner/LoadingSpinner";
 import { getData } from "@/src/services/apiHub";
 import { setCorpId } from "@/src/store/slices/userSlice";
-import Header from "../Header/Header";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "../ui/select";
 import NoRecordFound from "../NoRecordFound/NoRecordFound";
 import FilterSection from "../FilterSection/FilterSection";
 
@@ -35,7 +24,7 @@ export default function InstalledPanelPagination() {
 	const [currpage, Setcurrpage] = useState<string>("1");
 	const [isLoading, setIsLoading] = useState(true);
 	// const [statuses, setStatuses] = useState<status[] | null>(null);
-	const [status, setStatus] = useState<string>("1");
+	const [status, setStatus] = useState<string>("4");
 	const [resultPerPage, setResultPerPage] = useState<string>("");
 	const corpId = useSelector((state: RootState) => state.user.corpId);
 	const handelHistory = useCallback(() => {
@@ -45,7 +34,7 @@ export default function InstalledPanelPagination() {
 				params: { status, pageSize: resultPerPage },
 			})
 				.then((res) => {
-					sethistory(res.data);
+					sethistory(res?.data?.data);
 					// getData({ endPoint: `/v1/installation/panel/status` })
 					// 	.then((data) => {
 					// 		setStatuses(data?.data);
