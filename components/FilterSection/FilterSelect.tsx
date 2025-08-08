@@ -30,7 +30,7 @@ export default function FilterSelect({
     setField?: React.Dispatch<React.SetStateAction<string>>;
     possibleValues?: Item[];
     loading?: boolean;
-    onValueChange: any;
+    onValueChange?: any;
 }) {
     return loading === true ? (
         <Skeleton className={`h-[40px] min-w-${width}`} />
@@ -41,7 +41,9 @@ export default function FilterSelect({
                 if (setField) {
                     setField(value);
                 }
-                onValueChange();
+                if (onValueChange) {
+                    onValueChange();
+                }
             }}
         >
             <SelectTrigger

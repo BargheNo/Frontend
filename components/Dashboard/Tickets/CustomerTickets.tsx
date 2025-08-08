@@ -29,7 +29,7 @@ interface Ticket {
     description: string;
     status: string;
     image: string;
-    created_at: string;
+    createdAt: string;
     Owner: {
         email: string;
         firstName: string;
@@ -213,14 +213,14 @@ const TicketSupportPage = () => {
         subject,
         description,
         status,
-        created_at,
+        createdAt,
         image,
     }: {
         id: string;
         subject: string;
         description: string;
         status: string;
-        created_at: string;
+        createdAt: string;
         image: string;
     }) => {
         return (
@@ -255,7 +255,7 @@ const TicketSupportPage = () => {
                                     className={`flex flex-col items-center w-full align-middle h-full ${styles.status} py-8 justify-center gap-2`}
                                 >
                                     <span className="text-[#636363] font-bold">
-                                        {created_at}{" "}
+                                        {createdAt}{" "}
                                     </span>
                                     <div className="flex items-center gap-2">
                                         <span className="font-bold">
@@ -582,8 +582,8 @@ const TicketSupportPage = () => {
                                                 ? "پاسخ داده شده"
                                                 : "بررسی نشده"
                                         }
-                                        created_at={new Date(
-                                            ticket.created_at
+                                        createdAt={new Date(
+                                            ticket.createdAt
                                         ).toLocaleDateString("fa-IR")}
                                         image={ticket.image}
                                     />

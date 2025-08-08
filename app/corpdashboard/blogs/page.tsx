@@ -66,12 +66,12 @@ export default function Page() {
                         <BlogCard
                             key={blog?.id}
                             blogID={String(blog?.id)}
-                            imageUrl={blog?.cover_image}
+                            imageUrl={blog?.coverImage}
                             title={blog?.title}
                             description={blog?.description}
                             writer={blog?.author}
-                            date={blog?.created_at}
-                            likeCount={blog?.like_count}
+                            date={blog?.createdAt}
+                            likeCount={blog?.likeCount}
                             status={blog?.status}
                             viewOnly={false}
                             className="w-[70vw] md:w-[40vw] mx-auto"
