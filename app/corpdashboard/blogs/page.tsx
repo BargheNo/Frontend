@@ -37,7 +37,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 export default function Page() {
-	const corpID = useSelector((state: any) => state.user.corpId);
+	const corpID = useSelector((state: RootState) => state.user.corpId);
 	const { isLoading, data, error } = useQuery({
 		queryKey: ["blogs"],
 		queryFn: async () => {

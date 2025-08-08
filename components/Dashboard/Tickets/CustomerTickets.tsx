@@ -94,7 +94,7 @@ const TicketSupportPage = () => {
 		null
 	);
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
-	const [status, setStatus] = useState<string>("1");
+	const [status, setStatus] = useState<string>("4");
 	const [resultPerPage, setResultPerPage] = useState<string>("");
 	const subjectOptions = [
 		{ id: 1, label: "عمومی" },
@@ -183,10 +183,10 @@ const TicketSupportPage = () => {
 		setLoadingTickets(true);
 		getData({
 			endPoint: `/v1/user/ticket/list`,
-			params: { status: status, pageSize: resultPerPage },
+			params: { status, pageSize: resultPerPage },
 		})
 			.then((data) => {
-				setTickets(data.data);
+				setTickets(data?.data?.data);
 				// getData({ endPoint: `/v1/ticket/status` })
 				// 	.then((data) => {
 				// 		console.log(data.data);
