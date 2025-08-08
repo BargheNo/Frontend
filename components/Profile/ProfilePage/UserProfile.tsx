@@ -6,7 +6,7 @@ import { Edit, IdCard, Phone, Mail, UserRound, Save } from "lucide-react";
 import ProfilePicPicker from "@/components/Custom/ProfilePicPicker/ProfilePicPicker";
 import { useEffect, useState } from "react";
 // import { toast } from "sonner";
-import { baseURL, getData, putDataFile } from "@/src/services/apiHub";
+import { getData, putDataFile } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import { Button } from "@/components/ui/button";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
@@ -16,7 +16,7 @@ export interface ProfileData {
 	lastName: string;
 	phone: string;
 	email: string;
-	nationalCode: string;
+	nationalID: string;
 	profilePic: File | string | null;
 	status: string;
 }
@@ -42,19 +42,14 @@ const UserProfile = () => {
 		fetchProfileData();
 	}, []);
 
-	const fetchProfileData = async () => {
-		try {
-			const response = await getData({
-				endPoint: `/v1/user/profile`,
-			});
-			setProfileData(response?.data);
-		} catch (error) {
-			console.log("Error fetching profile:", error);
-			CustomToast("خطا در دریافت اطلاعات پروفایل", "error");
-			// toast("خطا در دریافت اطلاعات پروفایل");
-		} finally {
-			setIsLoading(false);
-		}
+	const fetchProfileData = () => {
+		getData({ endPoint: `/v1/user/profile` })
+			.then((res) => {
+				console.log(res);
+				setProfileData(res?.data);
+			})
+			.catch((err) => console.log(err))
+			.finally(() => setIsLoading(false));
 	};
 
 	const getInitialValues = (): ProfileData => ({
@@ -63,7 +58,7 @@ const UserProfile = () => {
 		phone: profileData?.phone || "",
 		// phone: profileData?.phone ? "0" + profileData.phone.slice(3, 13) : "",
 		email: profileData?.email || "",
-		nationalCode: profileData?.nationalCode || "",
+		nationalID: profileData?.nationalID || "",
 		profilePic: profileData?.profilePic || null,
 		status: profileData?.status || "",
 	});
@@ -87,21 +82,14 @@ const UserProfile = () => {
 	};
 
 	const updateProfile = async (values: object) => {
-		try {
-			console.log(values);
-
-			const response = await putDataFile({
-				endPoint: `/v1/user/profile`,
-				formData: values,
-			});
-
-			if (response) {
-				// toast.success("اطلاعات با موفقیت ذخیره شد");
+		putDataFile({
+			endPoint: `/v1/user/profile`,
+			formData: values,
+		})
+			.then(() => {
 				CustomToast("اطلاعات با موفقیت ذخیره شد", "success");
-			}
-		} catch (err) {
-			console.log(err);
-		}
+			})
+			.catch((err) => console.log(err));
 	};
 
 	const handleSubmit = async (values: ProfileData) => {
@@ -149,7 +137,7 @@ const UserProfile = () => {
 			icon: Mail,
 		},
 		{
-			name: "nationalCode",
+			name: "nationalID",
 			type: "text",
 			placeholder: "کد ملی",
 			icon: IdCard,
@@ -160,14 +148,11 @@ const UserProfile = () => {
 		<LoadingSpinner />
 	) : (
 		<div
+			// className={`vazir w-full mx-auto min-h-full flex flex-col gap-8 text-white bg-transparent relative`}
 			className={`vazir w-[40vw] mx-auto min-h-full flex flex-col gap-8 text-white py-4 md:py-8 px-4 md:px-14 bg-transparent relative`}
 		>
 			<div className="flex justify-center items-center">
 				<div className="p-6 w-full neu-container">
-					{/* <h2 className="text-navy-blue text-2xl font-bold mb-6">
-				پروفایل کاربری
-			</h2> */}
-
 					<Formik
 						initialValues={getInitialValues()}
 						validationSchema={validationSchema}
@@ -206,7 +191,7 @@ const UserProfile = () => {
 										icon={field.icon}
 										containerClassName="w-full"
 										disabled={
-											field.name === "email" ||
+											// field.name === "email" ||
 											field.name === "phone"
 												? true
 												: !isEditable
