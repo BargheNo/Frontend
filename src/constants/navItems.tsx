@@ -95,8 +95,8 @@ export const CorpNavItems = [
 	},
 	{ name: "بلاگ‌ها", path: "/corpdashboard/blogs", icon: <BookOpen /> },
 	{
-		name: "تکنسین‌ها",
-		path: "/corpdashboard/technicians",
+		name: "اعضای شرکت",
+		path: "/corpdashboard/staff",
 		icon: <Users />,
 	},
 	{

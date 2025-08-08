@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/select";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 import FilterSection from "@/components/FilterSection/FilterSection";
+import { getData } from "@/src/services/apiHub";
+import { useSelector } from "react-redux";
 
 export default function Page() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -30,22 +32,37 @@ export default function Page() {
     // const [allRepairsFilter, setAllRepairsFilter] = useState<
     // 	"در انتظار تایید" | "رد شده" | "همه"
     // >("همه");
-    const [status, setStatus] = useState<string>("1");
+    const [status, setStatus] = useState<string>("7");
+    const corpId = useSelector((state: RootState) => state.corp.id);
 
     useEffect(() => {
         setIsLoading(true);
-        getCorpRepairRecords
-            .GetRepairRequest()
+        getData({
+            endPoint: `/v1/corp/${2}/maintenance/request`,
+            params: { status: status, corporationID: 2 },
+        })
             .then((res) => {
-                console.log(res.data);
-                setRepairItems(res.data);
-                setIsLoading(false);
+                console.log(res?.data?.data);
+                setRepairItems(res?.data?.data);
             })
-            .catch((err) => {
-                console.log("err fetching repair records", err);
-                setIsLoading(false);
-            });
-    }, []);
+            .catch((err) => console.log(err))
+            .finally(() => setIsLoading(false));
+    }, [corpId, status]);
+
+    // useEffect(() => {
+    //     setIsLoading(true);
+    //     console.log("corpId", corpId);
+    //     getData({
+    //         endPoint: `/v1/corp/${2}/maintenance/request`,
+    //         params: { status: status1, corporationID: 2 },
+    //     })
+    //         .then((res) => {
+    //             // console.log(res?.data?data);
+    //             setRepairItems(res?.data?.data);
+    //         })
+    //         .catch((err) => console.log(err))
+    //         .finally(() => setIsLoading(false));
+    // }, [corpId, status1]);
 
     const handleOpenDialog = (item: CorpRepairItem) => {
         setSelectedItem(item);
@@ -57,56 +74,12 @@ export default function Page() {
         setSelectedItem(null);
     };
 
-    // const filteredMyRepairs = repairItems.filter((item) => {
-    //     if (myRepairsFilter === "همه") {
-    //         return item.status === "تایید شده" || item.status === "تمام شده";
-    //     }
-    //     return item.status === myRepairsFilter;
-    // });
-
-    // const filteredAllRepairs = repairItems.filter((item) => {
-    //     if (allRepairsFilter === "همه") {
-    //         return (
-    //             item.status === "در انتظار تایید" || item.status === "رد شده"
-    //         );
-    //     }
-    //     return item.status === allRepairsFilter;
-    // });
-
-    const filteredMyRepairs = repairItems;
-
-    const filteredAllRepairs = repairItems;
-
     return (
         <PageContainer>
             <div className="space-y-8 relative">
-                {/* تعمیرات من Section */}
                 <div>
-                    {/* <div className="flex justify-between items-center mb-4">
-						<Header header="تعمیرات من" />
-						<Select
-							dir="rtl"
-							value={myRepairsFilter}
-							onValueChange={(
-								value: "تایید شده" | "تمام شده" | "همه"
-							) => setMyRepairsFilter(value)}
-						>
-							<SelectTrigger className="w-[180px] bg-[#F0EDEF]">
-								<SelectValue placeholder="فیلتر وضعیت" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="همه">همه</SelectItem>
-								<SelectItem value="تایید شده">
-									تایید شده
-								</SelectItem>
-								<SelectItem value="تمام شده">
-									تمام شده
-								</SelectItem>
-							</SelectContent>
-						</Select>
-					</div> */}
                     <FilterSection
-                        header="تعمیرات من"
+                        header="درخواست‌های تعمیر"
                         fieldName="تعمیر"
                         statusesListApiRoute={`/v1/maintenance/status`}
                         status={status}
@@ -115,73 +88,10 @@ export default function Page() {
                     <div className="flex flex-col neu-container">
                         {isLoading ? (
                             <LoadingSpinner />
-                        ) : filteredMyRepairs.length === 0 ? (
+                        ) : repairItems?.length === 0 ? (
                             <NoRecordFound text="هیچ درخواست تعمیراتی موجود نیست." />
                         ) : (
-                            // <div className="text-center py-8 text-gray-500">
-                            // 	هیچ درخواست تعمیراتی موجود نیست
-                            // </div>
-                            filteredMyRepairs.map((item) => (
-                                <div key={item.id} className="">
-                                    <CorpRepairCard
-                                        panelName={item.panel.name}
-                                        panelPower={item.panel.power}
-                                        owner={`${item.panel.customer.firstName} ${item.panel.customer.lastName}`}
-                                        date={item.createdAt}
-                                        status={item.status}
-                                        UrgencyLevel={
-                                            item.urgencyLevel.toLowerCase() as
-                                                | "low"
-                                                | "medium"
-                                                | "high"
-                                        }
-                                        address={
-                                            item.panel.address.streetAddress
-                                        }
-                                        className="w-full"
-                                        onDetailsClick={() =>
-                                            handleOpenDialog(item)
-                                        }
-                                    />
-                                </div>
-                            ))
-                        )}
-                    </div>
-                </div>
-
-                {/* کلیۀ درخواستهای تعمیرات Section */}
-                <div>
-                    <div className="flex justify-between items-center mb-4">
-                        <Header header="کلیۀ درخواستهای تعمیرات" />
-                        <Select
-                            dir="rtl"
-                            value={allRepairsFilter}
-                            onValueChange={(
-                                value: "در انتظار تایید" | "رد شده" | "همه"
-                            ) => setAllRepairsFilter(value)}
-                        >
-                            <SelectTrigger className="w-[180px] bg-[#F0EDEF]">
-                                <SelectValue placeholder="فیلتر وضعیت" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="همه">همه</SelectItem>
-                                <SelectItem value="در انتظار تایید">
-                                    در انتظار تایید
-                                </SelectItem>
-                                <SelectItem value="رد شده">رد شده</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <div className="flex flex-col neu-container">
-                        {isLoading ? (
-                            <LoadingSpinner />
-                        ) : filteredAllRepairs.length === 0 ? (
-                            <NoRecordFound text="هیچ درخواست تعمیراتی موجود نیست." />
-                        ) : (
-                            // <div className="text-center py-8 text-gray-500">
-                            // 	هیچ درخواست تعمیراتی موجود نیست
-                            // </div>
-                            filteredAllRepairs.map((item) => (
+                            repairItems?.map((item) => (
                                 <div key={item.id} className="">
                                     <CorpRepairCard
                                         panelName={item.panel.name}
