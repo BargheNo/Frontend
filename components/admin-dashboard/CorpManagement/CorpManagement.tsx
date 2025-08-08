@@ -40,6 +40,7 @@ import FilterSection from "@/components/FilterSection/FilterSection";
 import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
 import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
 import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
+import CustomPagination from "@/components/Custom/CustomPagination/CustomPagination";
 
 interface CorporationType {
     id: number;
@@ -580,71 +581,65 @@ const CorpManagement = () => {
     const [corporations, setCorporations] = useState<CorporationType[]>([]);
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState("5");
+    const [resultPerPage, setResultPerPage] = useState<string>("");
 
+    const [paginationInfo, setPaginationInfo] = useState<
+        paginationInfoType | undefined
+    >(undefined);
+    const [page, setPage] = useState<number>(1);
     const fetchAllCorporations = useCallback(() => {
         setLoading(true);
         getData({
             endPoint: `/v1/admin/corporation`,
-            params: { status },
+            params: { status, page, pageSize: resultPerPage },
         })
             .then((data) => {
                 setCorporations(data?.data?.data);
+                setPaginationInfo(data?.data?.pagination);
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [status]);
+    }, [status, page, resultPerPage]);
 
     useEffect(() => {
         fetchAllCorporations();
     }, [fetchAllCorporations]);
 
-
-    // const handleStatusChange = async (
-    //     id: number,
-    //     status: "accept" | "reject" | "suspend"
-    // ) => {
-    //     // setLoading(true);
-    //     putData({
-    //         endPoint: `/v1/admin/corporation/${id}/status`,
-    //         data: {
-    //             status: status === "accept" ? 1 : 4, // 1 for accepted, 4 for rejected
-    //         },
-    //     })
-    //         .then((data) => {
-    //             CustomToast(data?.message, "success");
-    //         })
-    //         .catch((err) => console.log(err))
-    //         .finally(() => {
-    //             fetchAllCorporations();
-    //             // setLoading(false);
-    //         });
-    // };
-
     return (
-        <div className="flex flex-col">
-            <FilterSection
-                header="شرکت های فعلی"
-                fieldName="شرکت"
-                statusesListApiRoute={`/v1/admin/corporation/status`}
-                status={status}
-                setStatus={setStatus}
+        <>
+            <div className="flex flex-col">
+                <FilterSection
+                    header="شرکت های فعلی"
+                    fieldName="شرکت"
+                    statusesListApiRoute={`/v1/admin/corporation/status`}
+                    status={status}
+                    setStatus={setStatus}
+                    resultPerPage={resultPerPage}
+                    setResultPerPage={setResultPerPage}
+                    setPage={setPage}
+                />
+                {loading ? (
+                    <div className="flex justify-center items-center">
+                        <LoadingSpinner className="h-full" />
+                    </div>
+                ) : (
+                    <div className="flex flex-col w-full neu-container">
+                        {corporations &&
+                            corporations?.map((corporation) => (
+                                <CorporationItem
+                                    key={corporation.id}
+                                    {...corporation}
+                                />
+                            ))}
+                    </div>
+                )}
+            </div>
+            <CustomPagination
+                currentPage={page}
+                setCurrentPage={setPage}
+                paginationInfo={paginationInfo}
             />
-            {loading ? (
-                <div className="flex justify-center items-center">
-                    <LoadingSpinner className="h-full" />
-                </div>
-            ) : (
-                <div className="flex flex-col w-full neu-container">
-                    {corporations &&
-                        corporations?.map((corporation) => (
-                            <CorporationItem
-                                key={corporation.id}
-                                {...corporation}
-                            />
-                        ))}
-                </div>
-            )}
-        </div>
+        </>
     );
 };
 
