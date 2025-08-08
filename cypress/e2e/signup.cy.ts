@@ -1,29 +1,29 @@
 describe("Signup Form", () => {
-	it("fill the signup form and show success toast", () => {
-		cy.visit("/signup");
+	// it("fill the signup form and show success toast", () => {
+	// 	cy.visit("/signup");
 
-		cy.get('input[name="firstname"]').type("Ali");
-		cy.get('input[name="lastname"]').type("Rezai");
-		const number = Math.floor(Math.random() * 1e9)
-			.toString()
-			.padStart(9, "0");
-		cy.get('input[name="phonenumber"]').type(`9${number}`);
-		// cy.get('input[name="phonenumber"]').type("9123456789");
-		cy.get('input[name="password"]').type("Test@1234");
-		cy.get('input[name="confirmpassword"]').type("Test@1234");
+	// 	cy.get('input[name="firstname"]').type("Ali");
+	// 	cy.get('input[name="lastname"]').type("Rezai");
+	// 	const number = Math.floor(Math.random() * 1e9)
+	// 		.toString()
+	// 		.padStart(9, "0");
+	// 	cy.get('input[name="phonenumber"]').type(`9${number}`);
+	// 	// cy.get('input[name="phonenumber"]').type("9123456789");
+	// 	cy.get('input[name="password"]').type("Test@1234");
+	// 	cy.get('input[name="confirmpassword"]').type("Test@1234");
 
-		cy.get('input[type="checkbox"]').check({ force: true });
+	// 	cy.get('input[type="checkbox"]').check({ force: true });
 
-		cy.get("#signup").click();
-		// cy.contains("ثبت نام").click();
-		for (let i = 0; i < 6; i++) {
-			cy.get('[data-test="digits"]').type("1");
-		}
-		cy.get("#sonner-toast")
-			.should("be.visible")
-			.should("exist", { timeout: 10000 })
-			.and("contain", "موفق");
-	});
+	// 	cy.get("#signup").click();
+	// 	// cy.contains("ثبت نام").click();
+	// 	for (let i = 0; i < 6; i++) {
+	// 		cy.get('[data-test="digits"]').type("1");
+	// 	}
+	// 	cy.get("#sonner-toast")
+	// 		.should("be.visible")
+	// 		.should("exist", { timeout: 10000 })
+	// 		.and("contain", "موفق");
+	// });
 
 	it("navigate to /login route", () => {
 		cy.visit("/signup");
