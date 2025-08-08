@@ -115,7 +115,7 @@ export default function Neworder({
 			.then((res) => {
 				console.log(res);
 				CustomToast(res?.message, "success");
-				handelHistory(status, currpage, "10");
+				handelHistory();
 				setOpen(false);
 			})
 			.catch((err) => console.log(err))

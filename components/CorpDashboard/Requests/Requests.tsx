@@ -47,7 +47,7 @@ export default function Requests() {
 			})
 			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
-	}, [corpId]);
+	}, [corpId, resultPerPage]);
 
 	return (
 		<>

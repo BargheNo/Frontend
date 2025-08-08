@@ -2,7 +2,15 @@
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
-import { Edit, IdCard, Phone, Mail, UserRound, Save, KeyRound } from "lucide-react";
+import {
+	Edit,
+	IdCard,
+	Phone,
+	Mail,
+	UserRound,
+	Save,
+	KeyRound,
+} from "lucide-react";
 import ProfilePicPicker from "@/components/Custom/ProfilePicPicker/ProfilePicPicker";
 import { useEffect, useState } from "react";
 // import { toast } from "sonner";
@@ -37,7 +45,7 @@ const UserProfile = () => {
 	const router = useRouter();
 	const [previewImage, setPreviewImage] = useState<string | null>(null);
 	const [profileData, setProfileData] = useState<ProfileData | null>(null);
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 	const [isEditable, setIsEditable] = useState(true);
 
 	useEffect(() => {
@@ -208,9 +216,7 @@ const UserProfile = () => {
 								<div className="flex justify-between">
 									<Button
 										type="button"
-										className="px-4 py-2 font-black active:brightness-90 flex justify-center w-fit gap-4 min-w-28  place-content-center cursor-pointer bg-gradient-to-r from-blue-600 to-blue-700
-  hover:from-blue-500 hover:to-blue-600
-  active:from-blue-700 active:to-blue-500 text-white rounded-md transition-all duration-300"
+										className="px-4 py-2 font-black active:brightness-90 flex justify-center w-fit gap-4 min-w-28  place-content-center cursor-pointer bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 active:from-blue-700 active:to-blue-500 text-white rounded-md transition-all duration-300"
 										onClick={() =>
 											router.push("/reset-password")
 										}

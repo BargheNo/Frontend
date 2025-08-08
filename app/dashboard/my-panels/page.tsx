@@ -36,21 +36,16 @@ interface PanelProps {
 	};
 }
 
-interface status {
-	id: number;
-	name: string;
-}
-
 const Settings = () => {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [panels, setPanels] = useState<PanelProps[]>([]);
-	const [status, setStatus] = useState<string>("1");
+	const [status, setStatus] = useState<string>("");
 	const [resultPerPage, setResultPerPage] = useState<string>("");
 	useEffect(() => {
 		setLoading(true);
 		getData({
 			endPoint: `/v1/user/installation/panel`,
-			params: { status, pageSize: resultPerPage },
+			params: { status: status, pageSize: resultPerPage },
 		})
 			.then((data) => {
 				setPanels(data?.data);

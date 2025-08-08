@@ -94,7 +94,7 @@ const TicketSupportPage = () => {
 		null
 	);
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
-	const [status, setStatus] = useState<string>("1");
+	const [status, setStatus] = useState<string>("");
 	const [resultPerPage, setResultPerPage] = useState<string>("");
 	const subjectOptions = [
 		{ id: 1, label: "عمومی" },

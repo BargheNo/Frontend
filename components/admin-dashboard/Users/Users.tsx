@@ -62,7 +62,6 @@ export default function Users() {
 	const [filterValue, setFilterValue] = useState<string>("all");
 	const [loadingRoles, setLoadingRoles] = useState(false);
 	const [users, setUsers] = useState<UserType[]>([]);
-	const [statuses, setStatuses] = useState<status[] | null>(null);
 	const [roles, setRoles] = useState<Role[]>([]);
 	const [status, setStatus] = useState<string>("1");
 	const [loading, setLoading] = useState(true);
@@ -79,7 +78,7 @@ export default function Users() {
 
 	const fetchAllUsers = useCallback(async () => {
 		setLoading(true);
-		getData({ endPoint: `/v1/admin/users`, params: {statuses: "1"} })
+		getData({ endPoint: `/v1/admin/users` })
 			.then((data) => {
 				setUsers(data?.data);
 			})
@@ -89,7 +88,7 @@ export default function Users() {
 
 	useEffect(() => {
 		fetchAllUsers();
-	}, []);
+	}, [fetchAllUsers]);
 
 	useEffect(() => {
 		if (filterType === "role") {
@@ -213,6 +212,7 @@ export default function Users() {
 					<div className="neu-container">
 						<NoRecordFound text="کاربری پیدا نشد" />
 					</div>
+				) : (
 					// <div className="flex bg-[#F4F1F3] flex-row text-center items-center justify-center">
 					// 	<h2 className="text-gray-500 py-5 px-2 text-center">
 					// 		کاربری پیدا نشد
@@ -221,7 +221,6 @@ export default function Users() {
 					// 		<CircleX />
 					// 	</div>
 					// </div>
-				) : (
 					users.map((user) => (
 						<UserItem
 							key={`user-${user.id}-${user.phone}`}

@@ -589,7 +589,7 @@ const CorporationItem = ({
 const CorpManagement = () => {
 	const [corporations, setCorporations] = useState<CorporationType[]>([]);
 	const [loading, setLoading] = useState(true);
-	const [status, setStatus] = useState("1");
+	const [status, setStatus] = useState("");
 	const [selectedCorpId, setSelectedCorpId] = useState<number | null>(null);
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 
