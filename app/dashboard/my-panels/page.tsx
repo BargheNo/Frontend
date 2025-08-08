@@ -33,7 +33,7 @@ const Settings = () => {
     const [paginationInfo, setPaginationInfo] = useState<
         paginationInfoType | undefined
     >(undefined);
-    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [page, setPage] = useState<number>(1);
     const [panels, setPanels] = useState<PanelProps[]>([]);
     const [status, setStatus] = useState<string>("4");
     const [resultPerPage, setResultPerPage] = useState<string>("");
@@ -41,16 +41,16 @@ const Settings = () => {
         setLoading(true);
         getData({
             endPoint: `/v1/user/installation/panel`,
-            params: { status, page: currentPage, pageSize: resultPerPage },
+            params: { status, page, pageSize: resultPerPage },
         })
             .then((data) => {
-                console.log(data?.data?.pagination);
+                // console.log(data?.data?.pagination);
                 setPanels(data?.data?.data);
                 setPaginationInfo(data?.data?.pagination);
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [status, resultPerPage, currentPage]);
+    }, [status, resultPerPage, page]);
     return (
         <PageContainer>
             <FilterSection
@@ -89,8 +89,8 @@ const Settings = () => {
                 )}
             </div>
             <CustomPagination
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
+                currentPage={page}
+                setCurrentPage={setPage}
                 paginationInfo={paginationInfo}
             />
         </PageContainer>

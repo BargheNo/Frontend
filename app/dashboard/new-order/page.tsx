@@ -28,7 +28,7 @@ export default function Page() {
         })
             .then((res) => {
                 // console.log(res);
-                // setPaginationInfo(res?.data?.paginationInfo);
+                // setPaginationInfo(res?.data?.pagination);
                 sethistory(res?.data?.data);
             })
             .catch((err) => console.log(err))
