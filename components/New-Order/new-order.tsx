@@ -53,12 +53,8 @@ interface BuildingTypeProps {
 
 export default function Neworder({
 	handelHistory,
-	currpage,
-	status,
 }: {
 	handelHistory: any;
-	currpage: string;
-	status: string;
 }) {
 	const [loading, setLoading] = useState(false);
 	const [open, setOpen] = useState(false);
@@ -115,7 +111,7 @@ export default function Neworder({
 			.then((res) => {
 				console.log(res);
 				CustomToast(res?.message, "success");
-				handelHistory(status, currpage, "10");
+				handelHistory();
 				setOpen(false);
 			})
 			.catch((err) => console.log(err))

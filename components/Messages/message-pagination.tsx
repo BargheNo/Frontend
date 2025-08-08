@@ -77,7 +77,7 @@ export default function CorpMessagesPagination() {
 		notificationService
 			.getNotificationSetting()
 			.then((data) => {
-				// console.log(data);
+				console.log(data?.data);
 				setNotifSetting(data?.data);
 			})
 			.catch((err) => console.log(err));
@@ -90,8 +90,8 @@ export default function CorpMessagesPagination() {
 			params: { notificationTypes: status },
 		})
 			.then((data) => {
-				console.log(data?.data);
-				setNotifications(data?.data);
+				// console.log(data?.data);
+				setNotifications(data?.data?.data);
 			})
 			.catch((err) => console.log(err))
 			.finally(() => setLoading2(false));
@@ -132,10 +132,10 @@ export default function CorpMessagesPagination() {
 						</p>
 					</div>
 					<div className="flex flex-col text-gray-800 rounded-2xl no-scrollbar w-90/100 overflow-auto shadow-[inset_-6px_-6px_16px_rgba(255,255,255,0.8),inset_6px_6px_16px_rgba(0,0,0,0.2)] mt-6 m-auto md:h-65 h-60">
-						{notifSetting.length <= 0 && loading ? (
+						{notifSetting?.length <= 0 && loading ? (
 							<LoadingSpinner />
 						) : (
-							notifSetting.map((item, index) => (
+							notifSetting?.map((item, index) => (
 								<div
 									key={index}
 									className="flex flex-row justify-between border-t-2 border-gray-300 h-1/4 items-center "

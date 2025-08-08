@@ -49,14 +49,14 @@ export default function AnnounceView({
 				return await getData({ endPoint: "/v1/news" });
 			} else {
 				const r1 = await getData({
-					endPoint: "/v1/admin/news?statuses=2",
+					endPoint: "/v1/admin/news?status=2",
 				});
 				console.log("r1: ", r1);
 				const r2 = await getData({
 					endPoint: "/v1/news",
 				});
 				console.log("r2: ", r2);
-				r1.data?.push(...r2.data);
+				r1.data?.data?.push(...r2?.data?.data);
 				return r1;
 			}
 		},
@@ -96,7 +96,7 @@ export default function AnnounceView({
 						</div>
 					</div>
 				)}
-				{data?.data?.map((item: News) => (
+				{data?.data?.data?.map((item: News) => (
 					<AnnounceCard
 						onlyView={onlyView}
 						key={item.id}

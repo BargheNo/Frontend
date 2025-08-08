@@ -4,6 +4,6 @@ import React from "react";
 
 export default function page() {
 	return <PageContainer>
-		<Header header="تکنسین‌ها" />
+		<Header header="مدیریت اعضای شرکت" />
 	</PageContainer>
 }

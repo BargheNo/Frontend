@@ -164,8 +164,8 @@ export default function BlogEditor({
         }
         return responce;
       } catch (error) {
-        console.error(error);
-        router.push("/not-found");
+        console.log(error);
+        // router.push("/not-found");
       }
     },
   });

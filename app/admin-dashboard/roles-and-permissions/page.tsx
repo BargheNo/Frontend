@@ -6,7 +6,6 @@ import Header from "@/components/Header/Header";
 const page = () => {
 	return (
 		<PageContainer>
-			<Header header="نقش‌ها و دسترسی‌ها" />
 			<RolesAndPermissions />
 		</PageContainer>
 	);

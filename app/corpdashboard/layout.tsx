@@ -8,20 +8,22 @@ import { getData } from "@/src/services/apiHub";
 import { setCorpId } from "@/src/store/slices/userSlice";
 
 export default function Layout({
-	children,
+    children,
 }: Readonly<{ children: React.ReactNode }>) {
-	const dispatch = useDispatch();
-	useEffect(() => {
-		getData({ endPoint: `/v1/user/corps` }).then((res) => {
-			const corpId = res?.data[0]?.id;
-			console.log("corpId", corpId, res);
-			dispatch(setCorpId(corpId));
-		});
-	}, []);
+    const dispatch = useDispatch();
+    useEffect(() => {
+        getData({ endPoint: `/v1/user/corps` })
+            .then((res) => {
+                console.log("rescorp", res?.data[0]?.id);
+                // const corpId = res?.data[0]?.id;
+                dispatch(setCorpId(res?.data[0]?.id));
+            })
+            .catch((err) => console.log(err));
+    }, [dispatch]);
 
-	return (
-		<PanelAside navItems={CorpNavItems} mode="corp">
-			{children}
-		</PanelAside>
-	);
+    return (
+        <PanelAside navItems={CorpNavItems} mode="corp">
+            {children}
+        </PanelAside>
+    );
 }
