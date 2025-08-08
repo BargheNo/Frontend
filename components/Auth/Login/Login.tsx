@@ -14,7 +14,6 @@ import { setCorps, setUser } from "@/src/store/slices/userSlice";
 import { useDispatch } from "react-redux";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
-import { useRouter } from "next/navigation";
 
 const validationSchema = Yup.object({
   phoneNumber: Yup.string()
@@ -37,7 +36,6 @@ const initialValues = {
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
 	const togglePasswordVisibility = () => {
 		setShowPassword(!showPassword);
@@ -79,9 +77,6 @@ const Login = () => {
 						window.location.href = "/dashboard/my-panels";
 					})
 					.catch((err) => console.log(err));
-				const websocketUrl = data?.data?.accessToken
-					? `ws://localhost:8080/v1/user/notifications/token/${data?.data?.accessToken}`
-					: null;
 
 			})
 			.catch((err) => console.log(err))
