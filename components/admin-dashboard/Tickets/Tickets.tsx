@@ -174,7 +174,7 @@ const TicketSupportPage = () => {
 			) : (
 				<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
 					{tickets.map((ticket, index) => (
-						<div key={`t-${index}`}>
+						<div key={`t-${index}`} className="border-t-1 border-gray-300 first:border-t-0">
 							<Ticket
 								id={ticket.id}
 								subject={ticket.subject}
