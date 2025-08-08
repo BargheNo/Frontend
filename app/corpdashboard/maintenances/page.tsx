@@ -3,21 +3,13 @@ import React, { useEffect, useState } from "react";
 import CorpRepairCard from "@/components/Repair/Corp/CorpRepairCard";
 import CorpRepairDialog from "@/components/Repair/Corp/CorpRepairDialog";
 import { CorpRepairItem } from "@/types/CorpTypes";
-import getCorpRepairRecords from "@/src/services/getCorpRepairRecords";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
-import Header from "@/components/Header/Header";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 import FilterSection from "@/components/FilterSection/FilterSection";
 import { getData } from "@/src/services/apiHub";
 import { useSelector } from "react-redux";
+import CustomPagination from "@/components/Custom/CustomPagination/CustomPagination";
 
 export default function Page() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -26,43 +18,29 @@ export default function Page() {
     );
     const [repairItems, setRepairItems] = useState<CorpRepairItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    // const [myRepairsFilter, setMyRepairsFilter] = useState<
-    // 	"تایید شده" | "تمام شده" | "همه"
-    // >("همه");
-    // const [allRepairsFilter, setAllRepairsFilter] = useState<
-    // 	"در انتظار تایید" | "رد شده" | "همه"
-    // >("همه");
     const [status, setStatus] = useState<string>("7");
+
+    const [resultPerPage, setResultPerPage] = useState<string>("");
+    const [paginationInfo, setPaginationInfo] = useState<
+        paginationInfoType | undefined
+    >(undefined);
+    const [page, setPage] = useState<number>(1);
     const corpId = useSelector((state: RootState) => state.corp.id);
 
     useEffect(() => {
         setIsLoading(true);
         getData({
             endPoint: `/v1/corp/${2}/maintenance/request`,
-            params: { status: status, corporationID: 2 },
+            params: { status, page, pageSize: resultPerPage, corporationID: 2 },
         })
             .then((res) => {
-                console.log(res?.data?.data);
+                console.log(res?.data);
+                setPaginationInfo(res?.data?.pagination);
                 setRepairItems(res?.data?.data);
             })
             .catch((err) => console.log(err))
             .finally(() => setIsLoading(false));
-    }, [corpId, status]);
-
-    // useEffect(() => {
-    //     setIsLoading(true);
-    //     console.log("corpId", corpId);
-    //     getData({
-    //         endPoint: `/v1/corp/${2}/maintenance/request`,
-    //         params: { status: status1, corporationID: 2 },
-    //     })
-    //         .then((res) => {
-    //             // console.log(res?.data?data);
-    //             setRepairItems(res?.data?.data);
-    //         })
-    //         .catch((err) => console.log(err))
-    //         .finally(() => setIsLoading(false));
-    // }, [corpId, status1]);
+    }, [corpId, status, page, resultPerPage]);
 
     const handleOpenDialog = (item: CorpRepairItem) => {
         setSelectedItem(item);
@@ -84,6 +62,9 @@ export default function Page() {
                         statusesListApiRoute={`/v1/maintenance/status`}
                         status={status}
                         setStatus={setStatus}
+                        resultPerPage={resultPerPage}
+                        setResultPerPage={setResultPerPage}
+                        setPage={setPage}
                     />
                     <div className="flex flex-col neu-container">
                         {isLoading ? (
@@ -119,7 +100,11 @@ export default function Page() {
                     </div>
                 </div>
             </div>
-
+            <CustomPagination
+                currentPage={page}
+                setCurrentPage={setPage}
+                paginationInfo={paginationInfo}
+            />
             {isDialogOpen && (
                 <CorpRepairDialog
                     isOpen={isDialogOpen}
