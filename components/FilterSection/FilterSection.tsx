@@ -35,6 +35,7 @@ export default function FilterSection({
     setSearchPhrase,
     onSearchSubmit,
     resultPerPages,
+    setPage
 }: {
     fieldName?: string;
     header?: string;
@@ -50,6 +51,7 @@ export default function FilterSection({
     setSearchPhrase?: React.Dispatch<React.SetStateAction<string>>;
     onSearchSubmit?: any;
     resultPerPages?: Item[];
+    setPage?: React.Dispatch<React.SetStateAction<number>>;
 }) {
     const [initialLoading, setInitialLoading] = useState<boolean>(true);
     const [statuses, setStatuses] = useState<Item[] | undefined>(undefined);
@@ -176,6 +178,7 @@ export default function FilterSection({
                         setField={setResultPerPage}
                         possibleValues={initalResultPerPages}
                         loading={initialLoading}
+                        onValueChange={() => setPage && setPage(1)}
                     />
                     // <Select
                     // 	value={resultPerPage}

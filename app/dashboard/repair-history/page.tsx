@@ -193,6 +193,7 @@ const Page = () => {
                     setStatus={setStatus}
                     resultPerPage={resultPerPage}
                     setResultPerPage={setResultPerPage}
+                    setPage={setPage}
                 />
                 {isLoading ? (
                     <div className="relative">

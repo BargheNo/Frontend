@@ -561,6 +561,7 @@ const TicketSupportPage = () => {
                     setStatus={setStatus}
                     resultPerPage={resultPerPage}
                     setResultPerPage={setResultPerPage}
+                    setPage={setPage}
                 />
                 <div className="space-y-4">
                     {loadingTickets ? (
