@@ -37,11 +37,14 @@ const Settings = () => {
     const [panels, setPanels] = useState<PanelProps[]>([]);
     const [status, setStatus] = useState<string>("4");
     const [resultPerPage, setResultPerPage] = useState<string>("");
+    const [sortBy, setSortBy] = useState<string>("");
+    const [asc, setAsc] = useState<boolean>(false);
+
     useEffect(() => {
         setLoading(true);
         getData({
             endPoint: `/v1/user/installation/panel`,
-            params: { status, page, pageSize: resultPerPage },
+            params: { status, page, sortBy, asc, pageSize: resultPerPage },
         })
             .then((data) => {
                 // console.log(data?.data?.pagination);
@@ -50,7 +53,7 @@ const Settings = () => {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [status, resultPerPage, page]);
+    }, [status, resultPerPage, page, sortBy, asc]);
     return (
         <PageContainer>
             <FilterSection
@@ -62,6 +65,11 @@ const Settings = () => {
                 resultPerPage={resultPerPage}
                 setResultPerPage={setResultPerPage}
                 setPage={setPage}
+                columnsListApiRoute={`/v1/installation/panel/sortable`}
+                asc={asc}
+                setAsc={setAsc}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
             />
             <div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden border-1 border-gray-200 shadow-[-6px_-6px_16px_rgba(255,255,255,1),6px_6px_16px_rgba(0,0,0,0.3)]">
                 {loading ? (
