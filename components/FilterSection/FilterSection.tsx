@@ -97,6 +97,13 @@ export default function FilterSection({
                         setInitialLoading &&
                         setInitialLoading(false)
                 );
+        } else if (columnsListApiRoute) {
+            getData({ endPoint: columnsListApiRoute })
+                .then((res2) => {
+                    setColumns(res2?.data);
+                })
+                .catch((err2) => console.log(err2))
+                .finally(() => setInitialLoading && setInitialLoading(false));
         } else if (setInitialLoading) {
             setInitialLoading(false);
         }

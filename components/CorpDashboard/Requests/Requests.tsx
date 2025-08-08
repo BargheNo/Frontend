@@ -25,11 +25,6 @@ interface Request {
     maxCost: number;
 }
 
-// interface status {
-// 	id: number;
-// 	name: string;
-// }
-
 export default function Requests() {
     const [loading, setLoading] = useState<boolean>(true);
     const [requestData, setRequestData] = useState<Request[] | null>(null);
@@ -38,12 +33,16 @@ export default function Requests() {
         paginationInfoType | undefined
     >(undefined);
     const [page, setPage] = useState<number>(1);
+    const [sortBy, setSortBy] = useState<string>("");
+    const [asc, setAsc] = useState<boolean>(false);
+
     const corpId = useSelector((state: RootState) => state.user.corpId);
+
     useEffect(() => {
         setLoading(true);
         getData({
             endPoint: `/v1/corp/${corpId}/installation/request`,
-            params: { page, pageSize: resultPerPage },
+            params: { page, sortBy, asc, pageSize: resultPerPage },
         })
             .then((data) => {
                 // console.log(data?.data?.data);
@@ -52,7 +51,7 @@ export default function Requests() {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [corpId, resultPerPage, page]);
+    }, [corpId, resultPerPage, page, sortBy, asc]);
 
     return (
         <>
@@ -61,6 +60,11 @@ export default function Requests() {
                 resultPerPage={resultPerPage}
                 setResultPerPage={setResultPerPage}
                 setPage={setPage}
+                columnsListApiRoute={`/v1/installation/request/sortable`}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
+                asc={asc}
+                setAsc={setAsc}
             />
             {/* <Header header="درخواست‌های موجود در سرتاسر سامانه" /> */}
             <div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F0EDEF] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
