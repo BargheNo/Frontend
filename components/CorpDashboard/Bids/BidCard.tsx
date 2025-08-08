@@ -246,7 +246,7 @@ export default function BidCard({
 				);
 			})
 			.catch((err) => console.log(err));
-	}, []);
+	}, [corpId]);
 
 	const cancelBid = () => {
 		setCancelLoading(true);

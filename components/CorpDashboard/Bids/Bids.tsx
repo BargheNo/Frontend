@@ -56,6 +56,8 @@ export default function Bids() {
     const [loading, setLoading] = useState<boolean>(true);
     // const [statuses, setStatuses] = useState<status[] | null>(null);
     const [status, setStatus] = useState<string>("6");
+    const [sortBy, setSortBy] = useState<string>("");
+    const [asc, setAsc] = useState<boolean>(false);
     const [resultPerPage, setResultPerPage] = useState<string>("");
     const [searchPhrase, setSearchPhrase] = useState<string>("");
     const [paginationInfo, setPaginationInfo] = useState<
@@ -68,7 +70,7 @@ export default function Bids() {
         setLoading(true);
         getData({
             endPoint: `/v1/corp/${corpId}/bid`,
-            params: { status, page, pageSize: resultPerPage },
+            params: { status, page, sortBy, asc, pageSize: resultPerPage },
         })
             .then((data) => {
                 // console.log("data", data);
@@ -77,7 +79,7 @@ export default function Bids() {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [status, resultPerPage, corpId, page]);
+    }, [status, resultPerPage, corpId, page, sortBy, asc]);
 
     useEffect(() => {
         updateBids();
@@ -94,10 +96,15 @@ export default function Bids() {
                     setStatus={setStatus}
                     resultPerPage={resultPerPage}
                     setResultPerPage={setResultPerPage}
-					setPage={setPage}
-                    // searchPhrase={searchPhrase}
-                    // setSearchPhrase={setSearchPhrase}
-                    // onSearchSubmit={() => updateBids()}
+                    setPage={setPage}
+                    columnsListApiRoute={`/v1/bid/sortable`}
+                    column={sortBy}
+                    setColumn={setSortBy}
+                    asc={asc}
+                    setAsc={setAsc}
+                    searchPhrase={searchPhrase}
+                    setSearchPhrase={setSearchPhrase}
+                    onSearchSubmit={() => updateBids()}
                 />
             </div>
             <div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F0EDEF] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
