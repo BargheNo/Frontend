@@ -67,7 +67,7 @@ const TicketSupportPage = () => {
 		null
 	);
 	const [loading, setLoading] = useState<boolean>(true);
-	const [status, setStatus] = useState<string>("1");
+	const [status, setStatus] = useState<string>("4");
 	const [resultPerPage, setResultPerPage] = useState<string>("");
 
 	const createComment = async (
@@ -110,7 +110,7 @@ const TicketSupportPage = () => {
 			params: { status, pageSize: resultPerPage },
 		})
 			.then((data) => {
-				setTickets(data?.data);
+				setTickets(data?.data?.data);
 			})
 			.catch((err) => console.log(err))
 			.finally(() => setLoading(false));
@@ -169,26 +169,26 @@ const TicketSupportPage = () => {
 			/>
 			{loading ? (
 				<LoadingSpinner />
-			) : tickets.length === 0 ? (
+			) : tickets && tickets?.length === 0 ? (
 				<NoRecordFound text="هیچ تیکتی یافت نشد." />
 			) : (
 				<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
-					{tickets.map((ticket, index) => (
+					{tickets && tickets?.map((ticket, index) => (
 						<div key={`t-${index}`} className="border-t-1 border-gray-300 first:border-t-0">
 							<Ticket
-								id={ticket.id}
-								subject={ticket.subject}
-								description={ticket.description}
+								id={ticket?.id}
+								subject={ticket?.subject}
+								description={ticket?.description}
 								status={
-									ticket.status === "resolved"
+									ticket?.status === "resolved"
 										? "پاسخ دادید"
 										: "بررسی نشده"
 								}
 								created_at={new Date(
-									ticket.created_at
+									ticket?.created_at
 								).toLocaleDateString("fa-IR")}
-								image={ticket.image}
-								Owner={ticket.Owner}
+								image={ticket?.image}
+								Owner={ticket?.Owner}
 								fetchTickets={fetchTickets}
 								hasRespondTicketPermission={
 									hasRespondTicketPermission
@@ -204,7 +204,7 @@ const TicketSupportPage = () => {
 								setShowCommentBoxFor={setShowCommentBoxFor}
 							/>
 
-							{activeCommentTicketId === ticket.id && (
+							{activeCommentTicketId === ticket?.id && (
 								<Formik
 									initialValues={initialValuesForm}
 									validationSchema={
@@ -212,7 +212,7 @@ const TicketSupportPage = () => {
 									}
 									onSubmit={(values) => {
 										createComment(
-											values.comment,
+											values?.comment,
 											activeCommentTicketId
 										);
 									}}

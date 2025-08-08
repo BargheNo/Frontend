@@ -1,18 +1,11 @@
 "use client";
 import Tickets from "@/components/admin-dashboard/Tickets/Tickets";
-import FilterSection from "@/components/FilterSection/FilterSection";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
-import Header from "@/components/Header/Header";
-import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
-import useClientCheck from "@/src/hooks/useClientCheck";
 import React from "react";
 
 export default function Page() {
 	return (
 		<PageContainer>
-			{/* <Header header="تیکت‌ها" /> */}
-			{/* <FilterSection /> */}
-			{/* <Header header="تیکت‌های قبلی" /> */}
 			<Tickets />
 		</PageContainer>
 	);
