@@ -113,6 +113,8 @@ const Page = () => {
         paginationInfoType | undefined
     >(undefined);
     const [page, setPage] = useState<number>(1);
+    const [sortBy, setSortBy] = useState<string>("");
+    const [asc, setAsc] = useState<boolean>(false);
     // Function to filter repairs since the last month
     const getRecentRepairs = (items: RepairHistoryItem[]) => {
         const oneMonthAgo = new Date();
@@ -128,7 +130,7 @@ const Page = () => {
         setIsLoading(true);
         getData({
             endPoint: `/v1/user/maintenance/request`,
-            params: { status, page, pageSize: resultPerPage },
+            params: { status, page, sortBy, asc, pageSize: resultPerPage },
         })
             .then((data) => {
                 setRepairItems(data?.data?.data);
@@ -136,7 +138,7 @@ const Page = () => {
             })
             .catch((err) => console.log(err))
             .finally(() => setIsLoading(false));
-    }, [refreshTrigger, status, resultPerPage, page]);
+    }, [refreshTrigger, status, resultPerPage, page, sortBy, asc]);
 
     const handleOpenDialog = (item: RepairHistoryItem) => {
         setSelectedItem(item);
@@ -194,6 +196,11 @@ const Page = () => {
                     resultPerPage={resultPerPage}
                     setResultPerPage={setResultPerPage}
                     setPage={setPage}
+                    columnsListApiRoute={`/v1/maintenance/sortable`}
+                    asc={asc}
+                    setAsc={setAsc}
+                    sortBy={sortBy}
+                    setSortBy={setSortBy}
                 />
                 {isLoading ? (
                     <div className="relative">

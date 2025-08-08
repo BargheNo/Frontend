@@ -29,12 +29,16 @@ export default function InstalledPanelPagination() {
         paginationInfoType | undefined
     >(undefined);
     const [page, setPage] = useState<number>(1);
+    const [sortBy, setSortBy] = useState<string>("");
+    const [asc, setAsc] = useState<boolean>(false);
+
     const corpId = useSelector((state: RootState) => state.user.corpId);
+
     const handelHistory = useCallback(() => {
         if (corpId) {
             getData({
                 endPoint: `/v1/corp/${corpId}/installation/panel`,
-                params: { status, page, pageSize: resultPerPage },
+                params: { status, page, sortBy, asc, pageSize: resultPerPage },
             })
                 .then((res) => {
                     sethistory(res?.data?.data);
@@ -45,7 +49,7 @@ export default function InstalledPanelPagination() {
         } else {
             setIsLoading(false);
         }
-    }, [status, resultPerPage, corpId, page]);
+    }, [status, resultPerPage, corpId, page, sortBy, asc]);
     useEffect(() => {
         setIsLoading(true);
         getData({ endPoint: `/v1/user/corps` })
@@ -67,7 +71,12 @@ export default function InstalledPanelPagination() {
                 setStatus={setStatus}
                 resultPerPage={resultPerPage}
                 setResultPerPage={setResultPerPage}
-				setPage={setPage}
+                setPage={setPage}
+                columnsListApiRoute={`/v1/installation/panel/sortable`}
+                asc={asc}
+                setAsc={setAsc}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
             />
             {isLoading ? (
                 <LoadingSpinner />
@@ -77,10 +86,10 @@ export default function InstalledPanelPagination() {
                         {history.map((order: installedpanel, index) => (
                             <InstalledPanel
                                 key={index}
-                                customer={order.customer}
-                                name={order.name}
-                                power={order.power}
-                                address={order.address}
+                                customer={order?.customer}
+                                name={order?.name}
+                                power={order?.power}
+                                address={order?.address}
                             />
                         ))}
                     </div>
