@@ -9,8 +9,8 @@ import { Orderhistory } from "@/src/types/OrderhistoryType";
 
 export default function Page() {
 	const [currpage, setCurrpage] = useState<string>("1");
-	const [status, setStatus] = useState<string>("1");
-	const [resultPerPage, setResultPerPage] = useState<string>("10");
+	const [status, setStatus] = useState<string>("4");
+	const [resultPerPage, setResultPerPage] = useState<string>("");
 	const [isLoading, setIsLoading] = useState(true);
 	const [history, sethistory] = useState<Orderhistory[]>([]);
 	const handelHistory = useCallback(() => {
@@ -21,7 +21,7 @@ export default function Page() {
 				pageSize: resultPerPage,
 			})
 			.then((res) => {
-				sethistory(res?.data);
+				sethistory(res?.data?.data);
 				// setIsLoading(false);
 			})
 			.catch((err) => console.log(err))
