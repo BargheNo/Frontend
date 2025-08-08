@@ -2,21 +2,22 @@
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
-import { Edit, IdCard, Phone, Mail, UserRound, Save } from "lucide-react";
+import { Edit, IdCard, Phone, Mail, UserRound, Save, KeyRound } from "lucide-react";
 import ProfilePicPicker from "@/components/Custom/ProfilePicPicker/ProfilePicPicker";
 import { useEffect, useState } from "react";
 // import { toast } from "sonner";
-import { baseURL, getData, putDataFile } from "@/src/services/apiHub";
+import { getData, putDataFile } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import { Button } from "@/components/ui/button";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import { useRouter } from "next/navigation";
 
 export interface ProfileData {
 	firstName: string;
 	lastName: string;
 	phone: string;
 	email: string;
-	nationalCode: string;
+	nationalID: string;
 	profilePic: File | string | null;
 	status: string;
 }
@@ -33,28 +34,24 @@ const validationSchema = Yup.object({
 });
 
 const UserProfile = () => {
+	const router = useRouter();
 	const [previewImage, setPreviewImage] = useState<string | null>(null);
 	const [profileData, setProfileData] = useState<ProfileData | null>(null);
-	const [isLoading, setIsLoading] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 	const [isEditable, setIsEditable] = useState(true);
 
 	useEffect(() => {
 		fetchProfileData();
 	}, []);
 
-	const fetchProfileData = async () => {
-		try {
-			const response = await getData({
-				endPoint: `/v1/user/profile`,
-			});
-			setProfileData(response?.data);
-		} catch (error) {
-			console.log("Error fetching profile:", error);
-			CustomToast("خطا در دریافت اطلاعات پروفایل", "error");
-			// toast("خطا در دریافت اطلاعات پروفایل");
-		} finally {
-			setIsLoading(false);
-		}
+	const fetchProfileData = () => {
+		getData({ endPoint: `/v1/user/profile` })
+			.then((res) => {
+				console.log(res);
+				setProfileData(res?.data);
+			})
+			.catch((err) => console.log(err))
+			.finally(() => setIsLoading(false));
 	};
 
 	const getInitialValues = (): ProfileData => ({
@@ -63,7 +60,7 @@ const UserProfile = () => {
 		phone: profileData?.phone || "",
 		// phone: profileData?.phone ? "0" + profileData.phone.slice(3, 13) : "",
 		email: profileData?.email || "",
-		nationalCode: profileData?.nationalCode || "",
+		nationalID: profileData?.nationalID || "",
 		profilePic: profileData?.profilePic || null,
 		status: profileData?.status || "",
 	});
@@ -87,21 +84,14 @@ const UserProfile = () => {
 	};
 
 	const updateProfile = async (values: object) => {
-		try {
-			console.log(values);
-
-			const response = await putDataFile({
-				endPoint: `/v1/user/profile`,
-				formData: values,
-			});
-
-			if (response) {
-				// toast.success("اطلاعات با موفقیت ذخیره شد");
+		putDataFile({
+			endPoint: `/v1/user/profile`,
+			formData: values,
+		})
+			.then(() => {
 				CustomToast("اطلاعات با موفقیت ذخیره شد", "success");
-			}
-		} catch (err) {
-			console.log(err);
-		}
+			})
+			.catch((err) => console.log(err));
 	};
 
 	const handleSubmit = async (values: ProfileData) => {
@@ -149,7 +139,7 @@ const UserProfile = () => {
 			icon: Mail,
 		},
 		{
-			name: "nationalCode",
+			name: "nationalID",
 			type: "text",
 			placeholder: "کد ملی",
 			icon: IdCard,
@@ -160,14 +150,11 @@ const UserProfile = () => {
 		<LoadingSpinner />
 	) : (
 		<div
+			// className={`vazir w-full mx-auto min-h-full flex flex-col gap-8 text-white bg-transparent relative`}
 			className={`vazir w-[40vw] mx-auto min-h-full flex flex-col gap-8 text-white py-4 md:py-8 px-4 md:px-14 bg-transparent relative`}
 		>
 			<div className="flex justify-center items-center">
 				<div className="p-6 w-full neu-container">
-					{/* <h2 className="text-navy-blue text-2xl font-bold mb-6">
-				پروفایل کاربری
-			</h2> */}
-
 					<Formik
 						initialValues={getInitialValues()}
 						validationSchema={validationSchema}
@@ -206,7 +193,7 @@ const UserProfile = () => {
 										icon={field.icon}
 										containerClassName="w-full"
 										disabled={
-											field.name === "email" ||
+											// field.name === "email" ||
 											field.name === "phone"
 												? true
 												: !isEditable
@@ -218,10 +205,22 @@ const UserProfile = () => {
 									/>
 								))}
 
-								<div className="flex justify-end">
+								<div className="flex justify-between">
+									<Button
+										type="button"
+										className="px-4 py-2 font-black active:brightness-90 flex justify-center w-fit gap-4 min-w-28  place-content-center cursor-pointer bg-gradient-to-r from-blue-600 to-blue-700
+  hover:from-blue-500 hover:to-blue-600
+  active:from-blue-700 active:to-blue-500 text-white rounded-md transition-all duration-300"
+										onClick={() =>
+											router.push("/reset-password")
+										}
+									>
+										<p>تغییر رمز عبور</p>
+										<KeyRound />
+									</Button>
 									<Button
 										type="submit"
-										className="px-4 py-2 font-black active:brightness-90 flex justify-center w-fit gap-4 min-w-28  place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white rounded-md transition-all duration-300"
+										className="px-4 py-2 font-black active:brightness-90 flex justify-center w-fit gap-4 min-w-28  place-content-center cursor-pointer bg-gradient-to-br from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white rounded-md transition-all duration-300"
 									>
 										{isEditable
 											? "ذخیره تغییرات"

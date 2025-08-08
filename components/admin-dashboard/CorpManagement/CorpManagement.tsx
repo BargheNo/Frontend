@@ -37,6 +37,9 @@ import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import useHasPermission from "@/src/functions/hasPermission";
 import Header from "@/components/Header/Header";
 import FilterSection from "@/components/FilterSection/FilterSection";
+import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
+import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
+import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
 
 interface CorporationType {
 	id: number;
@@ -198,14 +201,20 @@ const CorporationItem = ({
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogTrigger>
 					<div
+						className={`bg-white ${styles.detailsButton} text-[#FA682D] flex gap-2 items-center p-2 hover:cursor-pointer`}
+					>
+						<p className="font-bold">مشاهده پروفایل و مدیریت</p>
+						<Settings />
+					</div>
+					{/* <div
 						className={`text-orange-400 flex gap-2 items-center p-2 hover:cursor-pointer border border-orange-400 rounded-md`}
 						// onClick={() => onManage(id)}
 					>
 						<p className="font-bold">مشاهده پروفایل و مدیریت</p>
 						<Settings size={16} />
-					</div>
+					</div> */}
 				</DialogTrigger>
-				<DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto dialog-width">
+				<DialogContent className="max-h-[90vh] overflow-y-auto dialog-width pb-0">
 					{loading ? (
 						<div className="flex justify-center items-center">
 							<LoadingSpinner className="h-full" />
@@ -524,26 +533,51 @@ const CorporationItem = ({
 								</div>
 							</div>
 							{hasApproveDeclinePermission && (
-								<DialogFooter className="sm:justify-start gap-2">
-									<Button
-										className="bg-green-600 hover:bg-green-700 min-w-30 cursor-pointer"
-										onClick={handleAccept}
-									>
-										تایید
-									</Button>
-									<Button
-										className="min-w-30 bg-red-600 hover:bg-red-700 cursor-pointer"
-										onClick={handleReject}
-									>
-										رد
-									</Button>
-									<Button
-										className="min-w-30 bg-yellow-600 hover:bg-yellow-700 cursor-pointer"
-										onClick={handleSuspend}
-									>
-										معلق
-									</Button>
-								</DialogFooter>
+								<StickyFooter className="rtl">
+									<CancelButton />
+									<div className="flex gap-2">
+										<SubmitButton
+											loading={loading}
+											onClick={handleSuspend}
+											className="from-yellow-600 to-yellow-700 hover:from-yellow-500 hover:to-yellow-600 active:from-yellow-700 active:to-yellow-500"
+										>
+											معلق کردن
+										</SubmitButton>
+										<SubmitButton
+											loading={loading}
+											onClick={handleReject}
+											className="from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 active:from-red-700 active:to-red-500"
+										>
+											رد کردن
+										</SubmitButton>
+										<SubmitButton
+											loading={loading}
+											onClick={handleAccept}
+										>
+											تایید کردن
+										</SubmitButton>
+									</div>
+								</StickyFooter>
+								// <DialogFooter className="sm:justify-start gap-2">
+								// 	{/* <Button
+								// 		className="bg-green-600 hover:bg-green-700 min-w-30 cursor-pointer"
+								// 		onClick={handleAccept}
+								// 	>
+								// 		تایید
+								// 	</Button> */}
+								// 	<Button
+								// 		className="min-w-30 bg-red-600 hover:bg-red-700 cursor-pointer"
+								// 		onClick={handleReject}
+								// 	>
+								// 		رد
+								// 	</Button>
+								// 	<Button
+								// 		className="min-w-30 bg-yellow-600 hover:bg-yellow-700 cursor-pointer"
+								// 		onClick={handleSuspend}
+								// 	>
+								// 		معلق
+								// 	</Button>
+								// </DialogFooter>
 							)}
 						</>
 					)}

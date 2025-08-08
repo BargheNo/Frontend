@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { MoveLeft, Smartphone } from "lucide-react";
 import Link from "next/link";
 import styles from "./ForgotPassword.module.css";
@@ -8,12 +8,14 @@ import * as Yup from "yup";
 import CustomInput from "../../Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import LoginButton from "../Login/LoginButton";
-import { postData } from "@/src/services/apiHub";
+import { getData, postData } from "@/src/services/apiHub";
 import PhoneVerification from "@/components/phoneVerification/phoneVerification";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { setUser } from "@/src/store/slices/userSlice";
+
+import { setCorps, setUser } from "@/src/store/slices/userSlice";
+import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 
 const validationSchema = Yup.object({
 	phoneNumber: Yup.string()
@@ -30,6 +32,7 @@ const ForgotPassword = () => {
 	const [open, setOpen] = useState(false);
 	const [otpCode, setOtpCode] = useState<string>("");
 	const [phone, setPhone] = useState<string>("");
+
 	const route = useRouter();
 	const [loading, setLoading] = useState(false);
 
@@ -54,36 +57,45 @@ const ForgotPassword = () => {
 			.finally(() => setLoading(false));
 	};
 
-	const handleVerification = async (phone: string, otp: string) => {
-		const fullPhone = "+98" + phone;
-		postData({
-			endPoint: "/v1/auth/confirm-otp",
-			data: {
-				phone: fullPhone,
-				otp: otp,
-			},
-		})
-			.then((data) => {
-				dispatch(
-					setUser({
-						firstName: data?.data?.firstName,
-						lastName: data?.data?.lastName,
-						accessToken: data?.data?.accessToken,
-						permissions: data?.data?.permissions,
-						refreshToken: data?.data?.accessToken,
-					})
-				);
-				CustomToast(data?.message, "success");
-				route.push("/reset-password");
+	const handleVerification = useCallback(
+		(phone: string, otp: string) => {
+			const fullPhone = "+98" + phone;
+			postData({
+				endPoint: "/v1/auth/confirm-otp",
+				data: {
+					phone: fullPhone,
+					otp: otp,
+				},
 			})
-			.catch((err) => console.log(err));
-	};
+				.then((data) => {
+					dispatch(
+						setUser({
+							firstName: data?.data?.firstName,
+							lastName: data?.data?.lastName,
+							accessToken: data?.data?.accessToken,
+							permissions: data?.data?.permissions,
+							refreshToken: data?.data?.accessToken,
+						})
+					);
+
+					getData({ endPoint: `/v1/user/corps` })
+						.then((data) => {
+							dispatch(setCorps(data?.data));
+							route.push("/reset-password");
+						})
+						.catch((err) => console.log(err));
+					CustomToast(data?.message, "success");
+				})
+				.catch((err) => console.log(err));
+		},
+		[dispatch, route]
+	);
 
 	useEffect(() => {
 		if (otpCode.length === 6) {
 			handleVerification(phone, otpCode);
 		}
-	}, [otpCode]);
+	}, [otpCode, phone, handleVerification]);
 
 	return (
 		<div className={`${vazir.className} min-h-screen w-full`}>
@@ -118,8 +130,14 @@ const ForgotPassword = () => {
 							</div>
 
 							<LoginButton>
-								<p>بازیابی رمز عبور</p>
-								<MoveLeft />
+								{loading ? (
+									<LoadingOnButton size={28} />
+								) : (
+									<>
+										<p>بازیابی رمز عبور</p>
+										<MoveLeft />
+									</>
+								)}
 							</LoginButton>
 
 							<PhoneVerification
