@@ -50,7 +50,7 @@ const ResetPassword = () => {
 		})
 			.then((data) => {
 				CustomToast(data?.message, "success");
-				window.location.href = "/dashboard";
+				window.location.href = "/dashboard/profile";
 			})
 			.catch((err) => console.log(err));
 	};

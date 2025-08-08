@@ -20,7 +20,7 @@ import {
 
 const MobileNavItems = [
   { name: "خانه", path: "/", icon: <House /> },
-  { name: "داشبورد", path: "/dashboard/my-panels", icon: <LayoutDashboard /> },
+  { name: "داشبورد", path: "/dashboard/profile", icon: <LayoutDashboard /> },
   { name: "پروفایل", path: "/profile", icon: <User /> },
   { name: "بیشتر", path: "", icon: <EllipsisVertical size={24} /> },
 ];
@@ -81,7 +81,7 @@ export default function MobileNavbar() {
                   </SelectTrigger>
                   <SelectContent className="w-full h-full bg-warm-white neo-card p-1 ">
                     <div className="w-full h-full flex flex-col items-center justify-center gap-2">
-                      <Link className="w-full" href={"/dashboard/my-panels"}>
+                      <Link className="w-full" href={"/dashboard/profile"}>
                         <SelectItem
                           className="cursor-pointer neo-btn rounded-lg! bg-transparent"
                           value="customer"
