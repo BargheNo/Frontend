@@ -15,6 +15,7 @@ import { getData } from "@/src/services/apiHub";
 import CustomInputNoValidation from "../Custom/CustomInput/CustomInputNoValidation";
 import FilterSelect from "./FilterSelect";
 import { Skeleton } from "../ui/skeleton";
+import { sortBy } from "cypress/types/lodash";
 
 interface Item {
     id: number;
@@ -28,8 +29,8 @@ export default function FilterSection({
     columnsListApiRoute,
     status,
     setStatus,
-    column,
-    setColumn,
+    sortBy,
+    setSortBy,
     resultPerPage,
     setResultPerPage,
     searchPhrase,
@@ -46,8 +47,8 @@ export default function FilterSection({
     columnsListApiRoute?: string;
     status?: string;
     setStatus?: React.Dispatch<React.SetStateAction<string>>;
-    column?: string;
-    setColumn?: React.Dispatch<React.SetStateAction<string>>;
+    sortBy?: string;
+    setSortBy?: React.Dispatch<React.SetStateAction<string>>;
     resultPerPage?: string;
     setResultPerPage?: React.Dispatch<React.SetStateAction<string>>;
     searchPhrase?: string;
@@ -126,11 +127,11 @@ export default function FilterSection({
                         </div>
                     )
                 )}
-                {setColumn && (
+                {setSortBy && (
                     <FilterSelect
                         placeholder="مرتب سازی بر اساس"
-                        field={column}
-                        setField={setColumn}
+                        field={sortBy}
+                        setField={setSortBy}
                         possibleValues={columns}
                         loading={initialLoading}
                     />

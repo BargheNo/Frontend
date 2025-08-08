@@ -588,6 +588,7 @@ const CorpManagement = () => {
     const [page, setPage] = useState<number>(1);
     const [sortBy, setSortBy] = useState<string>("");
     const [asc, setAsc] = useState<boolean>(false);
+
     const fetchAllCorporations = useCallback(() => {
         setLoading(true);
         getData({
@@ -619,8 +620,8 @@ const CorpManagement = () => {
                     setResultPerPage={setResultPerPage}
                     setPage={setPage}
                     columnsListApiRoute={`/v1/corporation/sortable`}
-                    column={sortBy}
-                    setColumn={setSortBy}
+                    sortBy={sortBy}
+                    setSortBy={setSortBy}
                     asc={asc}
                     setAsc={setAsc}
                 />

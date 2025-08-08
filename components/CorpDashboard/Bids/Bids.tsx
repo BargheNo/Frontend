@@ -54,16 +54,16 @@ interface Bid {
 export default function Bids() {
     const [bidData, setBidData] = useState<Bid[] | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    // const [statuses, setStatuses] = useState<status[] | null>(null);
     const [status, setStatus] = useState<string>("6");
-    const [sortBy, setSortBy] = useState<string>("");
-    const [asc, setAsc] = useState<boolean>(false);
     const [resultPerPage, setResultPerPage] = useState<string>("");
     const [searchPhrase, setSearchPhrase] = useState<string>("");
     const [paginationInfo, setPaginationInfo] = useState<
         paginationInfoType | undefined
     >(undefined);
     const [page, setPage] = useState<number>(1);
+    const [sortBy, setSortBy] = useState<string>("");
+    const [asc, setAsc] = useState<boolean>(false);
+
     const corpId = useSelector((state: RootState) => state.user.corpId);
 
     const updateBids = useCallback(() => {
@@ -98,8 +98,8 @@ export default function Bids() {
                     setResultPerPage={setResultPerPage}
                     setPage={setPage}
                     columnsListApiRoute={`/v1/bid/sortable`}
-                    column={sortBy}
-                    setColumn={setSortBy}
+                    sortBy={sortBy}
+                    setSortBy={setSortBy}
                     asc={asc}
                     setAsc={setAsc}
                     // searchPhrase={searchPhrase}

@@ -7,20 +7,28 @@ import FilterSection from "../FilterSection/FilterSection";
 import CustomPagination from "../Custom/CustomPagination/CustomPagination";
 
 export default function OrderHistoryPagination({
-	status,
+    status,
     setStatus,
     isLoading,
     history,
-    // resultPerPage,
-    // setResultPerPage,
-    // currentPage,
-    // setCurrentPage,
-    // paginationInfo,
-}: {
-	status: string;
+    asc,
+    setAsc,
+    sortBy,
+    setSortBy,
+}: // resultPerPage,
+// setResultPerPage,
+// currentPage,
+// setCurrentPage,
+// paginationInfo,
+{
+    status: string;
     setStatus: any;
     isLoading: boolean;
     history: Orderhistory[];
+    asc: boolean;
+    setAsc: React.Dispatch<React.SetStateAction<boolean>>;
+    sortBy: string;
+    setSortBy: React.Dispatch<React.SetStateAction<string>>;
     // resultPerPage: string;
     // setResultPerPage: React.Dispatch<React.SetStateAction<string>>;
     // currentPage: number;
@@ -35,6 +43,11 @@ export default function OrderHistoryPagination({
                 fieldName="درخواست"
                 status={status}
                 setStatus={setStatus}
+                columnsListApiRoute={`/v1/installation/request/sortable`}
+                asc={asc}
+                setAsc={setAsc}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
                 // resultPerPage={resultPerPage}
                 // setResultPerPage={setResultPerPage}
             />
