@@ -244,20 +244,12 @@ export default function Users() {
                         <LoadingSpinner />
                         {/* <Loader2 className="animate-spin text-orange-500" size={32} /> */}
                     </div>
-                ) : users?.length === 0 ? (
+                ) : users && users?.length === 0 ? (
                     <div className="neu-container">
-                        <NoRecordFound text="کاربری پیدا نشد" />
+                        <NoRecordFound text="کاربری پیدا نشد." />
                     </div>
                 ) : (
-                    // <div className="flex bg-[#F4F1F3] flex-row text-center items-center justify-center">
-                    // 	<h2 className="text-gray-500 py-5 px-2 text-center">
-                    // 		کاربری پیدا نشد
-                    // 	</h2>
-                    // 	<div className="text-orange-400">
-                    // 		<CircleX />
-                    // 	</div>
-                    // </div>
-                    users?.map((user) => (
+                    users && users?.map((user) => (
                         <UserItem
                             key={`user-${user.id}-${user.phone}`}
                             id={user.id}

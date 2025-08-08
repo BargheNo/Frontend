@@ -141,18 +141,14 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
 					>
 						<Form>
 							<DialogHeader>
-								<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
+								<DialogTitle className="flex justify-center items-end font-bold my-3">
 									افزودن نقش جدید
 								</DialogTitle>
 							</DialogHeader>
 
 							{isLoading ? (
 								<div className="flex justify-center items-center">
-									<LoadingSpinner className="h-full" />
-									{/* <Loader2
-										className="animate-spin text-orange-500"
-										size={32}
-									/> */}
+									<LoadingSpinner />
 								</div>
 							) : (
 								<div className="flex flex-col gap-6 relative flex-1 overflow-y-auto no-scrollbar">
