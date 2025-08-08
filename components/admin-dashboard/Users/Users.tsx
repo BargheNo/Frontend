@@ -64,7 +64,7 @@ export default function Users() {
         setLoadingRoles(true);
         getData({ endPoint: `/v1/admin/roles` })
             .then((data) => {
-                setRoles(data?.data?.data);
+                setRoles(data?.data);
             })
             .catch((err) => console.log(err))
             .finally(() => setLoadingRoles(false));
@@ -75,6 +75,20 @@ export default function Users() {
 
         getData({
             endPoint: `/v1/admin/users`,
+            params: { statuses: filterValue },
+        })
+            .then((data) => {
+                console.log(data?.data);
+                setUsers(data?.data);
+            })
+            .catch((err) => console.log(err))
+            .finally(() => setLoading(false));
+    }, [filterValue]);
+
+    const fetchUsersByRole = useCallback(() => {
+        setLoading(true);
+        getData({
+            endPoint: `/v1/admin/roles/${filterValue}/owners`,
             params: { statuses: filterValue },
         })
             .then((data) => {
@@ -102,16 +116,21 @@ export default function Users() {
     }, [fetchAllUsers, fetchRoles]);
 
     useEffect(() => {
-        if (filterType === "role") {
-            // filter by role
-        } else if (filterType === "status") {
-            if (filterValue === "all") {
-                fetchAllUsers();
-            } else {
-                fetchUsersByStatus();
-            }
+        if (filterValue === "all") {
+            fetchAllUsers();
         }
-    }, [filterType, filterValue, fetchAllUsers, fetchUsersByStatus]);
+        else if (filterType === "role") {
+            fetchUsersByRole();
+        } else if (filterType === "status") {
+            fetchUsersByStatus();
+        }
+    }, [
+        filterType,
+        filterValue,
+        fetchAllUsers,
+        fetchUsersByStatus,
+        fetchUsersByRole,
+    ]);
 
     return (
         <>
