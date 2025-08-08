@@ -102,9 +102,9 @@ export default function Bids() {
                     setColumn={setSortBy}
                     asc={asc}
                     setAsc={setAsc}
-                    searchPhrase={searchPhrase}
-                    setSearchPhrase={setSearchPhrase}
-                    onSearchSubmit={() => updateBids()}
+                    // searchPhrase={searchPhrase}
+                    // setSearchPhrase={setSearchPhrase}
+                    // onSearchSubmit={() => updateBids()}
                 />
             </div>
             <div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F0EDEF] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
