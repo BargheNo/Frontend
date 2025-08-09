@@ -101,6 +101,9 @@ const TicketSupportPage = () => {
         paginationInfoType | undefined
     >(undefined);
     const [page, setPage] = useState<number>(1);
+    const [sortBy, setSortBy] = useState<string>("");
+    const [asc, setAsc] = useState<boolean>(false);
+
     const subjectOptions = [
         { id: 1, label: "عمومی" },
         { id: 2, label: "پنل" },
@@ -188,7 +191,7 @@ const TicketSupportPage = () => {
         setLoadingTickets(true);
         getData({
             endPoint: `/v1/user/ticket/list`,
-            params: { status, page, pageSize: resultPerPage },
+            params: { status, page, sortBy, asc, pageSize: resultPerPage },
         })
             .then((data) => {
                 setPaginationInfo(data?.data?.pagination);
@@ -202,7 +205,7 @@ const TicketSupportPage = () => {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoadingTickets(false));
-    }, [status, resultPerPage, page]);
+    }, [status, resultPerPage, page, sortBy, asc]);
 
     useEffect(() => {
         fetchTickets();
@@ -562,6 +565,11 @@ const TicketSupportPage = () => {
                     resultPerPage={resultPerPage}
                     setResultPerPage={setResultPerPage}
                     setPage={setPage}
+                    columnsListApiRoute={`/v1/ticket/sortable`}
+                    asc={asc}
+                    setAsc={setAsc}
+                    sortBy={sortBy}
+                    setSortBy={setSortBy}
                 />
                 <div className="space-y-4">
                     {loadingTickets ? (
