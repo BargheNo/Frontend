@@ -36,7 +36,10 @@ export default function InstalledPanelPagination() {
 
     const handelHistory = useCallback(() => {
         if (corpId) {
+            setIsLoading(true);
+            console.log("corpId", corpId);
             getData({
+                // endPoint: `/v1/corp/7/installation/panel`,
                 endPoint: `/v1/corp/${corpId}/installation/panel`,
                 params: { status, page, sortBy, asc, pageSize: resultPerPage },
             })
@@ -46,20 +49,11 @@ export default function InstalledPanelPagination() {
                 })
                 .catch((err) => console.log(err))
                 .finally(() => setIsLoading(false));
-        } else {
-            setIsLoading(false);
         }
     }, [status, resultPerPage, corpId, page, sortBy, asc]);
     useEffect(() => {
-        setIsLoading(true);
-        getData({ endPoint: `/v1/user/corps` })
-            .then((res) => {
-                const corpId = res?.data[0]?.id;
-                dispatch(setCorpId(corpId));
-                handelHistory();
-            })
-            .catch((err) => console.log(err));
-    }, [dispatch, handelHistory]);
+        handelHistory();
+    }, [handelHistory]);
 
     return (
         <>

@@ -4,7 +4,7 @@ interface NavItem {
   path: string;
   name: string;
   RNPName?: string;
-  icon: JSX.Element;
+  icon?: JSX.Element;
 }
 
 interface PanelAsideProps {
