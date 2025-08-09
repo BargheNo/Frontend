@@ -25,11 +25,11 @@ export function PanelAsideIcon({
 									: mode === "corp"
 									? "from-[#2979FF] to-[#1b6cf5]"
 									: "from-[#FF5B18] to-[#FF6809]"
-						  } text-white`
+						  }`
 						: "hover:shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)] duration-200"
 				}`}
 			>
-				{item.icon}
+				{item?.icon}
 			</span>
 		</Link>
 	) : (

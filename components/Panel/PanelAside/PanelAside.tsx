@@ -123,14 +123,17 @@ const PanelAside = ({
                                 >
                                     <AccordionItem value="item-1">
                                         <AccordionTrigger
-                                            className={`flex gap-2 text-md text-[#003a8b] p-2 mt-0.5 rounded-lg no-underline cursor-pointer ${
-                                                pathname ===
-                                                "/admin-dashboard/monitoring"
-                                                    ? `shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.3),inset_1px_1px_3px_rgba(0,0,0,0.3)] bg-gradient-to-r ${"from-[#FF5B18] to-[#FF6809]"} text-white`
-                                                    : "hover:shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)] duration-200"
-                                            }`}
+                                            // className={`flex gap-2 text-[#003a8b] p-2 mt-0.5 rounded-lg cursor-pointer
+                                            // 		hover:shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)] duration-200
+                                            //     }`}
+                                            className="hover:shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)] duration-200 my-0 py-2"
                                         >
-                                            پایش اطلاعات
+                                            <span
+                                                className={`flex gap-2 w-full text-[#003a8b] mt-0.5 rounded-lg cursor-pointer`}
+                                            >
+                                                پایش اطلاعات
+                                            </span>
+                                            {/* <span>پایش اطلاعات</span> */}
                                         </AccordionTrigger>
                                         <AccordionContent className="flex flex-col text-base mr-4">
                                             {navItemsMonitoring?.map(
