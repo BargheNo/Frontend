@@ -55,8 +55,8 @@ export default function Bids() {
     const [bidData, setBidData] = useState<Bid[] | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [status, setStatus] = useState<string>("6");
-    const [resultPerPage, setResultPerPage] = useState<string>("");
     const [searchPhrase, setSearchPhrase] = useState<string>("");
+    const [resultPerPage, setResultPerPage] = useState<string>("");
     const [paginationInfo, setPaginationInfo] = useState<
         paginationInfoType | undefined
     >(undefined);

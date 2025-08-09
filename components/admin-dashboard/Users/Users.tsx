@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/select";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 import FilterSection from "@/components/FilterSection/FilterSection";
+import CustomPagination from "@/components/Custom/CustomPagination/CustomPagination";
 
 type UserType = {
     id: number;
@@ -62,6 +63,11 @@ export default function Users() {
     const [loading, setLoading] = useState(true);
     const [sortBy, setSortBy] = useState<string>("");
     const [asc, setAsc] = useState<boolean>(false);
+    const [resultPerPage, setResultPerPage] = useState<string>("");
+    const [paginationInfo, setPaginationInfo] = useState<
+        paginationInfoType | undefined
+    >(undefined);
+    const [page, setPage] = useState<number>(1);
 
     const fetchRoles = useCallback(async () => {
         setLoadingRoles(true);
@@ -79,7 +85,13 @@ export default function Users() {
 
         getData({
             endPoint: `/v1/admin/users`,
-            params: { statuses: filterValue, sortBy, asc },
+            params: {
+                statuses: filterValue,
+                sortBy,
+                asc,
+                page,
+                pageSize: resultPerPage,
+            },
         })
             .then((data) => {
                 console.log(data?.data);
@@ -87,7 +99,7 @@ export default function Users() {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [filterValue, sortBy, asc]);
+    }, [filterValue, sortBy, asc, page, resultPerPage]);
 
     const fetchUsersByRole = useCallback(() => {
         console.log("role");
@@ -152,6 +164,9 @@ export default function Users() {
                     setAsc={setAsc}
                     sortBy={sortBy}
                     setSortBy={setSortBy}
+                    resultPerPage={resultPerPage}
+                    setPage={setPage}
+                    setResultPerPage={setResultPerPage}
                 >
                     <div className="flex gap-4 ltr">
                         <Select
@@ -290,6 +305,11 @@ export default function Users() {
                     ))
                 )}
             </div>
+            <CustomPagination
+                currentPage={page}
+                setCurrentPage={setPage}
+                paginationInfo={paginationInfo}
+            />
         </>
     );
 }
