@@ -40,6 +40,7 @@ export default function FilterSection({
     setPage,
     asc,
     setAsc,
+    children,
 }: {
     fieldName?: string;
     header?: string;
@@ -58,6 +59,7 @@ export default function FilterSection({
     setPage?: React.Dispatch<React.SetStateAction<number>>;
     asc?: boolean;
     setAsc?: React.Dispatch<React.SetStateAction<boolean>>;
+    children?: any;
 }) {
     const [initialLoading, setInitialLoading] = useState<boolean>(true);
     const [statuses, setStatuses] = useState<Item[] | undefined>(undefined);
@@ -185,6 +187,11 @@ export default function FilterSection({
                     // 		)}
                     // 	</SelectContent>
                     // </Select>
+                )}
+                {initialLoading ? (
+                    <Skeleton className={`h-[40px] w-40`} />
+                ) : (
+                    children
                 )}
                 {setSearchPhrase && !initialLoading && (
                     <CustomInputNoValidation

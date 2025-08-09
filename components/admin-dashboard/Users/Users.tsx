@@ -31,6 +31,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
+import FilterSection from "@/components/FilterSection/FilterSection";
 
 type UserType = {
     id: number;
@@ -59,6 +60,8 @@ export default function Users() {
     const [users, setUsers] = useState<UserType[]>([]);
     const [roles, setRoles] = useState<Role[]>([]);
     const [loading, setLoading] = useState(true);
+    const [sortBy, setSortBy] = useState<string>("");
+    const [asc, setAsc] = useState<boolean>(false);
 
     const fetchRoles = useCallback(async () => {
         setLoadingRoles(true);
@@ -71,11 +74,12 @@ export default function Users() {
     }, []);
 
     const fetchUsersByStatus = useCallback(() => {
+        console.log("status");
         setLoading(true);
 
         getData({
             endPoint: `/v1/admin/users`,
-            params: { statuses: filterValue },
+            params: { statuses: filterValue, sortBy, asc },
         })
             .then((data) => {
                 console.log(data?.data);
@@ -83,13 +87,14 @@ export default function Users() {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [filterValue]);
+    }, [filterValue, sortBy, asc]);
 
     const fetchUsersByRole = useCallback(() => {
+        console.log("role");
         setLoading(true);
         getData({
             endPoint: `/v1/admin/roles/${filterValue}/owners`,
-            params: { statuses: filterValue },
+            params: { statuses: filterValue, sortBy, asc },
         })
             .then((data) => {
                 console.log(data?.data);
@@ -97,18 +102,22 @@ export default function Users() {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [filterValue]);
+    }, [filterValue, sortBy, asc]);
 
     const fetchAllUsers = useCallback(() => {
         setLoading(true);
-
-        getData({ endPoint: `/v1/admin/users?statuses=1&statuses=2` })
+        console.log("all users");
+        getData({
+            endPoint: `/v1/admin/users?statuses=1&statuses=2`,
+            params: { sortBy, asc },
+        })
             .then((data) => {
+                console.log(data);
                 setUsers(data?.data);
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, []);
+    }, [sortBy, asc]);
 
     useEffect(() => {
         fetchAllUsers();
@@ -118,8 +127,7 @@ export default function Users() {
     useEffect(() => {
         if (filterValue === "all") {
             fetchAllUsers();
-        }
-        else if (filterType === "role") {
+        } else if (filterType === "role") {
             fetchUsersByRole();
         } else if (filterType === "status") {
             fetchUsersByStatus();
@@ -135,104 +143,122 @@ export default function Users() {
     return (
         <>
             <div className="flex place-items-center">
-                <Header header="مدیریت کاربران" />
-                <div className="flex gap-4 ltr">
-                    <Select
-                        defaultValue="all"
-                        onValueChange={(value) => {
-                            setFilterType(value);
-                            setFilterValue("all");
-                        }}
-                    >
-                        <SelectTrigger
-                            dir="rtl"
-                            className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
-                        >
-                            <SelectValue placeholder="فیلتر بر اساس" />
-                        </SelectTrigger>
-                        <SelectContent dir="rtl">
-                            <SelectItem value="all" className="cursor-pointer">
-                                همه کاربران
-                            </SelectItem>
-                            <SelectItem value="role" className="cursor-pointer">
-                                بر اساس نقش‌ها
-                            </SelectItem>
-                            <SelectItem
-                                value="status"
-                                className="cursor-pointer"
-                            >
-                                بر اساس وضعیت
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
-                    {filterType === "role" ? (
+                {/* <Header header="مدیریت کاربران" /> */}
+
+                <FilterSection
+                    header="مدیریت کاربران"
+                    columnsListApiRoute={`/v1/user/sortable`}
+                    asc={asc}
+                    setAsc={setAsc}
+                    sortBy={sortBy}
+                    setSortBy={setSortBy}
+                >
+                    <div className="flex gap-4 ltr">
                         <Select
-                            onValueChange={(value) => setFilterValue(value)}
                             defaultValue="all"
-                            disabled={loadingRoles}
+                            onValueChange={(value) => {
+                                setFilterType(value);
+                                setFilterValue("all");
+                            }}
                         >
                             <SelectTrigger
                                 dir="rtl"
                                 className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
                             >
-                                <SelectValue
-                                    placeholder={
-                                        loadingRoles
-                                            ? "در حال بارگذاری..."
-                                            : "انتخاب نقش"
-                                    }
-                                />
-                            </SelectTrigger>
-                            <SelectContent dir="rtl">
-                                <SelectItem value="all">همه نقش‌ها</SelectItem>
-                                {roles.map((role) => (
-                                    <SelectItem
-                                        key={role.id}
-                                        value={String(role.id)}
-                                        className="cursor-pointer"
-                                    >
-                                        {role.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    ) : filterType === "status" ? (
-                        <Select
-                            value={filterValue}
-                            onValueChange={(value) => setFilterValue(value)}
-                            defaultValue="all"
-                        >
-                            <SelectTrigger
-                                dir="rtl"
-                                className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
-                            >
-                                <SelectValue placeholder="وضعیت" />
+                                <SelectValue placeholder="فیلتر بر اساس" />
                             </SelectTrigger>
                             <SelectContent dir="rtl">
                                 <SelectItem
                                     value="all"
                                     className="cursor-pointer"
                                 >
-                                    همه وضعیت‌ها
+                                    همه کاربران
                                 </SelectItem>
                                 <SelectItem
-                                    value="1"
+                                    value="role"
                                     className="cursor-pointer"
                                 >
-                                    فعال
+                                    بر اساس نقش‌ها
                                 </SelectItem>
                                 <SelectItem
-                                    value="2"
+                                    value="status"
                                     className="cursor-pointer"
                                 >
-                                    مسدود
+                                    بر اساس وضعیت
                                 </SelectItem>
                             </SelectContent>
                         </Select>
-                    ) : (
-                        <></>
-                    )}
-                </div>
+                        {filterType === "role" ? (
+                            <Select
+                                onValueChange={(value) => setFilterValue(value)}
+                                defaultValue="all"
+                                disabled={loadingRoles}
+                            >
+                                <SelectTrigger
+                                    dir="rtl"
+                                    className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+                                >
+                                    <SelectValue
+                                        placeholder={
+                                            loadingRoles
+                                                ? "در حال بارگذاری..."
+                                                : "انتخاب نقش"
+                                        }
+                                    />
+                                </SelectTrigger>
+                                <SelectContent dir="rtl">
+                                    <SelectItem value="all">
+                                        همه نقش‌ها
+                                    </SelectItem>
+                                    {roles.map((role) => (
+                                        <SelectItem
+                                            key={role.id}
+                                            value={String(role.id)}
+                                            className="cursor-pointer"
+                                        >
+                                            {role.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        ) : filterType === "status" ? (
+                            <Select
+                                value={filterValue}
+                                onValueChange={(value) => setFilterValue(value)}
+                                defaultValue="all"
+                            >
+                                <SelectTrigger
+                                    dir="rtl"
+                                    className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+                                >
+                                    <SelectValue placeholder="وضعیت" />
+                                </SelectTrigger>
+                                <SelectContent dir="rtl">
+                                    <SelectItem
+                                        value="all"
+                                        className="cursor-pointer"
+                                    >
+                                        همه وضعیت‌ها
+                                    </SelectItem>
+                                    <SelectItem
+                                        value="1"
+                                        className="cursor-pointer"
+                                    >
+                                        فعال
+                                    </SelectItem>
+                                    <SelectItem
+                                        value="2"
+                                        className="cursor-pointer"
+                                    >
+                                        مسدود
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        ) : (
+                            <></>
+                        )}
+                    </div>
+                </FilterSection>
             </div>
             <div className="flex flex-col w-full text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
                 {/* <FilterUsers
@@ -249,7 +275,8 @@ export default function Users() {
                         <NoRecordFound text="کاربری پیدا نشد." />
                     </div>
                 ) : (
-                    users && users?.map((user) => (
+                    users &&
+                    users?.map((user) => (
                         <UserItem
                             key={`user-${user.id}-${user.phone}`}
                             id={user.id}
