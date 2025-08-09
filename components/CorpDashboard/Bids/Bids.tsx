@@ -73,7 +73,7 @@ export default function Bids() {
             params: { status, page, sortBy, asc, pageSize: resultPerPage },
         })
             .then((data) => {
-                // console.log("data", data);
+                console.log("data", data);
                 setBidData(data?.data?.data);
                 setPaginationInfo(data?.data?.pagination);
             })
