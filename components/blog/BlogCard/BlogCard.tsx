@@ -77,7 +77,7 @@ export default function BlogCard({
                                     <ContextMenuTrigger asChild>
                                         <div
                                             className={cn(
-                                                "flex flex-col m-5 neo-card rounded-2xl bg-warm-white overflow-hidden",
+                                                "flex flex-col m-5 neo-card rounded-2xl bg-warm-white relative overflow-hidden",
                                                 className
                                             )}
                                         >

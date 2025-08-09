@@ -44,16 +44,17 @@ export default function Page() {
             const r1 = await getData({
                 endPoint: `/v1/corp/${corpID}/blog/list?status=1`,
             });
-            console.log("r1: ", r1);
+            // console.log("r1: ", r1.data?.data);
             const r2 = await getData({
                 endPoint: `/v1/corp/${corpID}/blog/list?status=2`,
             });
-            console.log("r2: ", r2);
-            r1.data?.push(...r2.data);
+            // console.log("r2: ", r2?.data?.data);
+            r1.data?.data?.push(...r2?.data?.data);
             return r1;
         },
     });
-    const blogs = data?.data;
+    console.log(data?.data?.data)
+    const blogs = data?.data?.data;
     return (
         <PageContainer>
             <AddBlog />
@@ -74,7 +75,7 @@ export default function Page() {
                             likeCount={blog?.likeCount}
                             status={blog?.status}
                             viewOnly={false}
-                            className="w-[70vw] md:w-[40vw] mx-auto"
+                            className="mx-auto"
                         />
                     ))}
                 </div>
