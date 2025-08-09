@@ -25,13 +25,23 @@ export default function Page() {
         paginationInfoType | undefined
     >(undefined);
     const [page, setPage] = useState<number>(1);
+    const [sortBy, setSortBy] = useState<string>("");
+    const [asc, setAsc] = useState<boolean>(false);
+
     const corpId = useSelector((state: RootState) => state.corp.id);
 
     useEffect(() => {
         setIsLoading(true);
         getData({
             endPoint: `/v1/corp/${2}/maintenance/request`,
-            params: { status, page, pageSize: resultPerPage, corporationID: 2 },
+            params: {
+                status,
+                page,
+                sortBy,
+                asc,
+                pageSize: resultPerPage,
+                corporationID: 2,
+            },
         })
             .then((res) => {
                 console.log(res?.data);
@@ -40,7 +50,7 @@ export default function Page() {
             })
             .catch((err) => console.log(err))
             .finally(() => setIsLoading(false));
-    }, [corpId, status, page, resultPerPage]);
+    }, [corpId, status, page, sortBy, asc, resultPerPage]);
 
     const handleOpenDialog = (item: CorpRepairItem) => {
         setSelectedItem(item);
@@ -65,6 +75,11 @@ export default function Page() {
                         resultPerPage={resultPerPage}
                         setResultPerPage={setResultPerPage}
                         setPage={setPage}
+                        columnsListApiRoute={`/v1/maintenance/sortable`}
+                        asc={asc}
+                        setAsc={setAsc}
+                        sortBy={sortBy}
+                        setSortBy={setSortBy}
                     />
                     <div className="flex flex-col neu-container">
                         {isLoading ? (

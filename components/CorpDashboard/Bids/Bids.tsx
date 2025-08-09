@@ -54,7 +54,6 @@ interface Bid {
 export default function Bids() {
     const [bidData, setBidData] = useState<Bid[] | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    // const [statuses, setStatuses] = useState<status[] | null>(null);
     const [status, setStatus] = useState<string>("6");
     const [resultPerPage, setResultPerPage] = useState<string>("");
     const [searchPhrase, setSearchPhrase] = useState<string>("");
@@ -62,13 +61,16 @@ export default function Bids() {
         paginationInfoType | undefined
     >(undefined);
     const [page, setPage] = useState<number>(1);
+    const [sortBy, setSortBy] = useState<string>("");
+    const [asc, setAsc] = useState<boolean>(false);
+
     const corpId = useSelector((state: RootState) => state.user.corpId);
 
     const updateBids = useCallback(() => {
         setLoading(true);
         getData({
             endPoint: `/v1/corp/${corpId}/bid`,
-            params: { status, page, pageSize: resultPerPage },
+            params: { status, page, sortBy, asc, pageSize: resultPerPage },
         })
             .then((data) => {
                 // console.log("data", data);
@@ -77,7 +79,7 @@ export default function Bids() {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [status, resultPerPage, corpId, page]);
+    }, [status, resultPerPage, corpId, page, sortBy, asc]);
 
     useEffect(() => {
         updateBids();
@@ -94,7 +96,12 @@ export default function Bids() {
                     setStatus={setStatus}
                     resultPerPage={resultPerPage}
                     setResultPerPage={setResultPerPage}
-					setPage={setPage}
+                    setPage={setPage}
+                    columnsListApiRoute={`/v1/bid/sortable`}
+                    sortBy={sortBy}
+                    setSortBy={setSortBy}
+                    asc={asc}
+                    setAsc={setAsc}
                     // searchPhrase={searchPhrase}
                     // setSearchPhrase={setSearchPhrase}
                     // onSearchSubmit={() => updateBids()}

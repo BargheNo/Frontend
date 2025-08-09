@@ -8,12 +8,14 @@ const initialValues = {
 
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { Search } from "lucide-react";
+import { ArrowDownWideNarrow, ArrowUpWideNarrow, Search } from "lucide-react";
 import CustomInput from "../Custom/CustomInput/CustomInput";
 import Header from "../Header/Header";
 import { getData } from "@/src/services/apiHub";
 import CustomInputNoValidation from "../Custom/CustomInput/CustomInputNoValidation";
 import FilterSelect from "./FilterSelect";
+import { Skeleton } from "../ui/skeleton";
+import { sortBy } from "cypress/types/lodash";
 
 interface Item {
     id: number;
@@ -27,15 +29,18 @@ export default function FilterSection({
     columnsListApiRoute,
     status,
     setStatus,
-    column,
-    setColumn,
+    sortBy,
+    setSortBy,
     resultPerPage,
     setResultPerPage,
     searchPhrase,
     setSearchPhrase,
     onSearchSubmit,
     resultPerPages,
-    setPage
+    setPage,
+    asc,
+    setAsc,
+    children,
 }: {
     fieldName?: string;
     header?: string;
@@ -43,8 +48,8 @@ export default function FilterSection({
     columnsListApiRoute?: string;
     status?: string;
     setStatus?: React.Dispatch<React.SetStateAction<string>>;
-    column?: string;
-    setColumn?: React.Dispatch<React.SetStateAction<string>>;
+    sortBy?: string;
+    setSortBy?: React.Dispatch<React.SetStateAction<string>>;
     resultPerPage?: string;
     setResultPerPage?: React.Dispatch<React.SetStateAction<string>>;
     searchPhrase?: string;
@@ -52,6 +57,9 @@ export default function FilterSection({
     onSearchSubmit?: any;
     resultPerPages?: Item[];
     setPage?: React.Dispatch<React.SetStateAction<number>>;
+    asc?: boolean;
+    setAsc?: React.Dispatch<React.SetStateAction<boolean>>;
+    children?: any;
 }) {
     const [initialLoading, setInitialLoading] = useState<boolean>(true);
     const [statuses, setStatuses] = useState<Item[] | undefined>(undefined);
@@ -91,6 +99,13 @@ export default function FilterSection({
                         setInitialLoading &&
                         setInitialLoading(false)
                 );
+        } else if (columnsListApiRoute) {
+            getData({ endPoint: columnsListApiRoute })
+                .then((res2) => {
+                    setColumns(res2?.data);
+                })
+                .catch((err2) => console.log(err2))
+                .finally(() => setInitialLoading && setInitialLoading(false));
         } else if (setInitialLoading) {
             setInitialLoading(false);
         }
@@ -105,6 +120,31 @@ export default function FilterSection({
                 {header && <Header header={header} />}
             </div>
             <div className="flex gap-4 w-full place-items-center ltr">
+                {initialLoading ? (
+                    <Skeleton className={`h-[40px] w-[50px]`} />
+                ) : (
+                    setAsc && (
+                        <div
+                            className="border-input py-[5.5px] relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground cursor-pointer aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex w-fit items-center justify-between gap-2 rounded-md border bg-transparent px-3 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 rtl:flex-row-reverse"
+                            onClick={() => setAsc && setAsc(!asc)}
+                        >
+                            {asc ? (
+                                <ArrowUpWideNarrow className="text-[#FA682D]" />
+                            ) : (
+                                <ArrowDownWideNarrow className="text-[#FA682D]" />
+                            )}
+                        </div>
+                    )
+                )}
+                {setSortBy && (
+                    <FilterSelect
+                        placeholder="مرتب سازی بر اساس"
+                        field={sortBy}
+                        setField={setSortBy}
+                        possibleValues={columns}
+                        loading={initialLoading}
+                    />
+                )}
                 {setStatus && (
                     <FilterSelect
                         placeholder={`وضعیت ${fieldName ?? fieldName}`}
@@ -113,63 +153,6 @@ export default function FilterSection({
                         possibleValues={statuses}
                         loading={initialLoading}
                     />
-                    // <Select
-                    // 	value={String(status)}
-                    // 	onValueChange={(value) => setStatus(value)}
-                    // >
-                    // 	<SelectTrigger
-                    // 		dir="rtl"
-                    // 		className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
-                    // 	>
-                    // 		<SelectValue
-                    // 			placeholder={`وضعیت ${
-                    // 				fieldName ? fieldName : ""
-                    // 			}`}
-                    // 		/>
-                    // 	</SelectTrigger>
-                    // 	<SelectContent dir="rtl">
-                    // 		{statuses?.map((status: status, index: number) => (
-                    // 			<SelectItem
-                    // 				key={index}
-                    // 				value={String(status.id)}
-                    // 				className="cursor-pointer"
-                    // 			>
-                    // 				{status.name}
-                    // 			</SelectItem>
-                    // 		))}
-                    // 	</SelectContent>
-                    // </Select>
-                )}
-                {setColumn && (
-                    <FilterSelect
-                        placeholder="مرتب سازی بر اساس"
-                        field={column}
-                        setField={setColumn}
-                        possibleValues={columns}
-                        loading={initialLoading}
-                    />
-                    // <Select
-                    // 	value={String(column)}
-                    // 	onValueChange={(value) => setColumn(value)}
-                    // >
-                    // 	<SelectTrigger
-                    // 		dir="rtl"
-                    // 		className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
-                    // 	>
-                    // 		<SelectValue placeholder="مرتب سازی بر اساس" />
-                    // 	</SelectTrigger>
-                    // 	<SelectContent dir="rtl">
-                    // 		{columns?.map((column: status, index: number) => (
-                    // 			<SelectItem
-                    // 				key={index}
-                    // 				value={String(column.id)}
-                    // 				className="cursor-pointer"
-                    // 			>
-                    // 				{column.name}
-                    // 			</SelectItem>
-                    // 		))}
-                    // 	</SelectContent>
-                    // </Select>
                 )}
                 {setResultPerPage && (
                     <FilterSelect
@@ -204,6 +187,11 @@ export default function FilterSection({
                     // 		)}
                     // 	</SelectContent>
                     // </Select>
+                )}
+                {initialLoading ? (
+                    <Skeleton className={`h-[40px] w-40`} />
+                ) : (
+                    children
                 )}
                 {setSearchPhrase && !initialLoading && (
                     <CustomInputNoValidation

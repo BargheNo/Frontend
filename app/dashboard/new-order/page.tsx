@@ -16,12 +16,17 @@ export default function Page() {
     const [resultPerPage, setResultPerPage] = useState<string>("");
     const [isLoading, setIsLoading] = useState(true);
     const [history, sethistory] = useState<Orderhistory[]>([]);
+    const [sortBy, setSortBy] = useState<string>("");
+    const [asc, setAsc] = useState<boolean>(false);
+
     const handelHistory = useCallback(() => {
         setIsLoading(true);
         getData({
             endPoint: `/v1/user/installation/request`,
             params: {
-                status: status,
+                status,
+                sortBy,
+                asc,
                 // page: currentPage,
                 // pageSize: resultPerPage,
             },
@@ -33,7 +38,7 @@ export default function Page() {
             })
             .catch((err) => console.log(err))
             .finally(() => setIsLoading(false));
-    }, [status]);
+    }, [status, sortBy, asc]);
     // }, [resultPerPage, status, currentPage]);
     useEffect(() => {
         handelHistory();
@@ -53,6 +58,10 @@ export default function Page() {
                     setStatus={setStatus}
                     isLoading={isLoading}
                     history={history}
+                    asc={asc}
+                    setAsc={setAsc}
+                    sortBy={sortBy}
+                    setSortBy={setSortBy}
                     // resultPerPage={resultPerPage}
                     // setResultPerPage={setResultPerPage}
                     // currentPage={currentPage}

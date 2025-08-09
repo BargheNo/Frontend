@@ -74,6 +74,9 @@ const TicketSupportPage = () => {
         paginationInfoType | undefined
     >(undefined);
     const [page, setPage] = useState<number>(1);
+    const [sortBy, setSortBy] = useState<string>("");
+    const [asc, setAsc] = useState<boolean>(false);
+
     const createComment = async (
         comment: string,
         activeCommentTicketId: string
@@ -111,7 +114,7 @@ const TicketSupportPage = () => {
         setLoading(true);
         getData({
             endPoint: `/v1/admin/ticket`,
-            params: { status, page, pageSize: resultPerPage },
+            params: { status, page, sortBy, asc, pageSize: resultPerPage },
         })
             .then((data) => {
                 setTickets(data?.data?.data);
@@ -119,7 +122,7 @@ const TicketSupportPage = () => {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [status, resultPerPage, page]);
+    }, [status, resultPerPage, page, sortBy, asc]);
 
     useEffect(() => {
         fetchTickets();
@@ -171,6 +174,11 @@ const TicketSupportPage = () => {
                 resultPerPage={resultPerPage}
                 setResultPerPage={setResultPerPage}
                 setPage={setPage}
+                columnsListApiRoute={`/v1/ticket/sortable`}
+                asc={asc}
+                setAsc={setAsc}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
             />
             {loading ? (
                 <LoadingSpinner />
