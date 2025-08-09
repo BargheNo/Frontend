@@ -126,6 +126,7 @@ export default function Users() {
             .then((data) => {
                 console.log(data);
                 setUsers(data?.data);
+                // setPaginationInfo(data?.data?.pagination)
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
