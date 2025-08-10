@@ -600,7 +600,7 @@ export default function BidCard({
 																	onClick={() => {
 																		cancelBid();
 																	}}
-																	className="self-start w-32 flex place-content-center bg-gradient-to-br cursor-pointer from-[#EE4334] to-[#D73628] hover:from-[#D73628] hover:to-[#EE4334] active:from-[#EE4334] active:to-[#D73628] text-white py-2 px-4 rounded-md transition-all duration-300"
+																	className="self-start w-32 flex place-content-center cursor-pointer bg-gradient-to-br from-[#EE4334] to-[#D73628] hover:from-[#D73628] hover:to-[#EE4334] active:from-[#EE4334] active:to-[#D73628] text-white py-2 px-4 rounded-md transition-all duration-300"
 																>
 																	{cancelLoading ? (
 																		<LoadingOnButton />

@@ -13,6 +13,18 @@ import {
     VisibilityState,
 } from "@tanstack/react-table";
 import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+import {
     ArrowDown,
     ArrowUp,
     ArrowUpDown,
@@ -47,6 +59,18 @@ import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import { deleteData } from "@/src/services/apiHub";
 import CustomToast from "../CustomToast/CustomToast";
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
+import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
 
 type CustomTableProps = {
     meta: Record<string, any>; // columnName: DisplayName
@@ -56,6 +80,7 @@ type CustomTableProps = {
     setPage: React.Dispatch<React.SetStateAction<number>>;
     resultPerPage: string;
     deleteApiUrl: string; // API URL pattern like '/v1/admin/installation/request/:id'
+    updateApiUrl: string; // API URL pattern like '/v1/admin/installation/request/:id'
     onDeleteSuccess?: (deletedId: string | number) => void; // Callback after successful deletion
     onDeleteError?: (error: any) => void; // Callback on deletion error
     fetchData: () => void;
@@ -192,24 +217,48 @@ function getColumns(
         enableSorting: false,
         cell: ({ row }) => (
             <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+                <DropdownMenuTrigger>
                     <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Open menu</span>
                         <MoreHorizontal className="h-4 w-4" />
                     </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
-                        <PenBox className="text-blue-600 mr-2 h-4 w-4" />
-                        <p>ویرایش</p>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                        onClick={() => onDelete(row?.original?.id)}
-                    >
-                        <Trash className="text-red-600 mr-2 h-4 w-4" />
-                        <p>حذف</p>
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
+                <AlertDialog>
+                    <DropdownMenuContent align="left">
+                        <DropdownMenuItem>
+                            <PenBox className="text-blue-600 mr-2 h-4 w-4" />
+                            <p>ویرایش</p>
+                        </DropdownMenuItem>
+                        <AlertDialogTrigger asChild>
+                            <DropdownMenuItem
+                                variant="destructive"
+                                // onClick={() => onDelete(row?.original?.id)}
+                            >
+                                <Trash className="mr-2 h-4 w-4" />
+                                <p>حذف</p>
+                            </DropdownMenuItem>
+                        </AlertDialogTrigger>
+                    </DropdownMenuContent>
+                    <AlertDialogContent className="rtl">
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>
+                                آیا از حذف این مورد اطمینان کامل دارید؟
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                                این عمل غیرقابل بازگشت است. این اطلاعات نیز برای
+                                همیشه حذف خواهند شد.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel className="cursor-pointer ">بازگشت</AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={() => onDelete(row?.original?.id)}
+                                className="cursor-pointer bg-gradient-to-br from-[#EE4334] to-[#D73628] hover:from-[#D73628] hover:to-[#EE4334] active:from-[#EE4334] active:to-[#D73628]"
+                            >
+                                بله، اطمینان کامل دارم
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </DropdownMenu>
         ),
     };
@@ -225,6 +274,7 @@ export function CustomTable({
     setPage,
     resultPerPage,
     deleteApiUrl,
+    updateApiUrl,
     fetchData,
 }: CustomTableProps) {
     const [sorting, setSorting] = useState<SortingState>([]);

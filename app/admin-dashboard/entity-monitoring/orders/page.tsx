@@ -102,6 +102,7 @@ export default function Orders() {
                 resultPerPage={resultPerPage !== "" ? resultPerPage : "10"}
                 deleteApiUrl={`/v1/admin/installation/request/:id`}
                 fetchData={fetchOrders}
+				updateApiUrl={`/v1/admin/installation/request/:id`}
             />
             <CustomPagination
                 currentPage={page}
