@@ -126,7 +126,7 @@ const PanelAside = ({
                                             // className={`flex gap-2 text-[#003a8b] p-2 mt-0.5 rounded-lg cursor-pointer
                                             // 		hover:shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)] duration-200
                                             //     }`}
-                                            className="hover:shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)] duration-200 my-0 py-2"
+                                            className="px-2 hover:shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)] duration-200 my-0 py-2"
                                         >
                                             <span
                                                 className={`flex gap-2 w-full text-[#003a8b] mt-0.5 rounded-lg cursor-pointer`}

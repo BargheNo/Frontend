@@ -52,7 +52,7 @@ const RolesAndPermissions = () => {
         setLoading(true);
         getData({ endPoint: `/v1/admin/roles` })
             .then((data) => {
-                setRoles(data?.data);
+                setRoles(data?.data?.data);
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
