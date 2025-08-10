@@ -88,36 +88,57 @@ export type Payment = {
 };
 
 type CustomTableProps = {
-    meta: Record<string, string>; // columnName: DisplayName
+    meta: Record<string, any>; // columnName: DisplayName
     data: any[];
     loading?: boolean;
 };
 
-function generateColumns(meta: Record<string, string>): ColumnDef<any>[] {
+function generateColumns(meta: Record<string, any>): ColumnDef<any>[] {
     return Object.keys(meta).map((key) => ({
+        id: key,
         accessorKey: key,
+        accessorFn: (row) => {
+            const value = row[key];
+            if (meta[key].fields && typeof value === "object") {
+                return meta[key].fields.map((f: string) => value[f]).join(" ");
+            }
+            return value ?? "";
+        },
         header: ({ column }) => {
             return (
                 <Button
                     variant="ghost"
-                    // className="cursor-pointer"
                     onClick={() =>
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    {meta[key]}
-                    {column.getIsSorted() === "asc" ? (
+                    {meta[key].label}
+                    {column.getIsSorted() === false ? (
+                        <ArrowUpDown />
+                    ) : column.getIsSorted() === "asc" ? (
                         <ArrowDown />
                     ) : (
-                        // ) : column.getIsSorted() === "des" ? (
-                        //     <ArrowUp />
-                        <ArrowUpDown />
+                        <ArrowUp />
                     )}
                 </Button>
             );
         },
-        // header: meta[key],
-        cell: ({ row }) => <div>{row.getValue(key)}</div>,
+        cell: ({ row }) => {
+            const value = row.original[key];
+
+            if (meta[key].fields && typeof value === "object") {
+                return (
+                    <div>
+                        {meta[key].fields
+                            .map((f: string) => value[f])
+                            .join(" ")}
+                    </div>
+                );
+            }
+
+            return <div>{String(value ?? "")}</div>;
+        },
+        // cell: ({ row }) => <div>{row.getValue(key)}</div>,
     }));
 }
 
@@ -185,7 +206,11 @@ function generateColumns(meta: Record<string, string>): ColumnDef<any>[] {
 //     ];
 // }
 
-function getColumns(meta: Record<string, string>): ColumnDef<any>[] {
+function getColumns(meta: Record<string, any>): ColumnDef<any>[] {
+    const checkClaaName =
+        "absolute top-1/2 left-1/2 transform -translate-x-1/2 text-white -translate-y-2/3 opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5";
+    const inputClassName =
+        "peer h-5 w-5 cursor-pointer transition-all bg-white appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500";
     const checkBoxColumn = {
         id: "select",
         header: ({ table }) => (
@@ -199,10 +224,10 @@ function getColumns(meta: Record<string, string>): ColumnDef<any>[] {
                     onChange={(e) =>
                         table.toggleAllPageRowsSelected(!!e.target.checked)
                     }
-                    className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500"
+                    className={inputClassName}
                     aria-label="Select all"
                 />
-                <Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 text-white -translate-y-2/3 opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5" />
+                <Check className={checkClaaName} />
             </div>
         ),
         cell: ({ row }) => (
@@ -211,9 +236,11 @@ function getColumns(meta: Record<string, string>): ColumnDef<any>[] {
                     type="checkbox"
                     checked={row.getIsSelected()}
                     onChange={(e) => row.toggleSelected(!!e.target.checked)}
-                    className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500"
+                    className={inputClassName}
+                    aria-label="Select all"
                 />
-                <Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 text-white -translate-y-2/3 opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5 " />
+                <Check className={checkClaaName} />
+                {/* <Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 text-white -translate-y-2/3 opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5 " /> */}
             </div>
         ),
         enableSorting: false,

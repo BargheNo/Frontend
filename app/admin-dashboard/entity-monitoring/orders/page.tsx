@@ -38,7 +38,7 @@ export default function Orders() {
     useEffect(() => {
         getData({
             endPoint: `/v1/admin/installation/request`,
-            params: { status, pageSize: 100 },
+            params: { status, pageSize: 1000 },
         })
             .then((res) => {
                 console.log(res?.data);
@@ -48,11 +48,12 @@ export default function Orders() {
             .finally(() => setLoading(false));
     }, [status]);
     const meta = {
-        name: "نام",
-        status: "وضعیت",
-        buildingType: "نوع ساختمان",
-        powerRequest: "برق مورد نیاز",
-        maxCost: "سقف هزینه",
+        name: { label: "نام" },
+        status: { label: "وضعیت" },
+        buildingType: { label: "نوع ساختمان" },
+        powerRequest: { label: "برق مورد نیاز" },
+        maxCost: { label: "سقف هزینه" },
+        customer: { label: "متقاضی", fields: ["firstName", "lastName"] },
     };
     return (
         <PageContainer>
