@@ -90,10 +90,10 @@ export const columns: ColumnDef<Payment>[] = [
                     onChange={(e) =>
                         table.toggleAllPageRowsSelected(e.target.checked)
                     }
-                    className="peer mr-2 h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500"
+                    className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500"
                     aria-label="Select all"
                 />
-                <Check className="absolute top-1/2 transform -translate-x-1/2 -translate-y-2/3 text-black opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5" />
+                <Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-2/3 opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5" />
             </div>
             // <Checkbox
             //     checked={
@@ -110,10 +110,11 @@ export const columns: ColumnDef<Payment>[] = [
             <div className="relative">
                 <input
                     type="checkbox"
+                    checked={row.getIsSelected()}
                     onChange={(e) => row.toggleSelected(!!e.target.checked)}
-                    className="peer mr-2 h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500"
+                    className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500"
                 />
-                <Check className="absolute top-1/2 transform -translate-x-1/2 -translate-y-2/3 text-black opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5 " />
+                <Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-2/3 opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5 " />
             </div>
             // <Checkbox
             //     checked={row.getIsSelected()}
@@ -153,7 +154,18 @@ export const columns: ColumnDef<Payment>[] = [
     },
     {
         accessorKey: "amount",
-        header: () => <div className="text-right">Amount</div>,
+        header: ({ column }) => (
+            <Button
+                variant="ghost"
+                // className="cursor-pointer"
+                onClick={() =>
+                    column.toggleSorting(column.getIsSorted() === "asc")
+                }
+            >
+                Amount
+                <ArrowUpDown />
+            </Button>
+        ),
         cell: ({ row }) => {
             const amount = parseFloat(row.getValue("amount"));
 
@@ -163,7 +175,7 @@ export const columns: ColumnDef<Payment>[] = [
                 currency: "USD",
             }).format(amount);
 
-            return <div className="text-right font-medium">{formatted}</div>;
+            return <div className="text-center font-medium">{formatted}</div>;
         },
     },
     {
@@ -222,7 +234,7 @@ export function CustomTable() {
     return (
         // <div className="w-full relative bg-[#F0EDEF]">
         <div className="w-full relative rtl">
-            <div className="flex items-center py-4">
+            {/* <div className="flex items-center py-4">
                 <Input
                     placeholder="Filter emails..."
                     value={
@@ -263,10 +275,10 @@ export function CustomTable() {
                             })}
                     </DropdownMenuContent>
                 </DropdownMenu>
-            </div>
+            </div> */}
             <div className="neu-container">
                 <Table>
-                    <TableHeader>
+                    <TableHeader className="">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => {
