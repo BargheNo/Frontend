@@ -1,6 +1,6 @@
 "use client";
 import styles from "./Reports.module.css";
-import React from "react";
+import React, { useCallback } from "react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
@@ -36,17 +36,23 @@ const Reports = () => {
     const [loadingPanel, setLoadingPanel] = useState<boolean>(true);
     const [panelReports, setPanelReports] = useState<any[]>([]);
     const [maintenanceReports, setMaintenanceReports] = useState<any[]>([]);
-    const fetchPanelReports = () => {
-        getData({ endPoint: `/v1/admin/report/panel`, params: { status: "" } })
+    const [panelStatus, setPanelStatus] = useState<string>("");
+    const fetchPanelReports = useCallback(() => {
+        setLoadingPanel(true);
+        getData({
+            endPoint: `/v1/admin/report/panel`,
+            params: { status: panelStatus },
+        })
             .then((data) => {
-                console.log(data?.data?.data);
+                // console.log(data?.data?.data);
                 setPanelReports(data?.data?.data);
             })
             .catch((err) => console.log(err))
             .finally(() => setLoadingPanel(false));
-    };
+    }, [panelStatus]);
 
-    const fetchMaintenanceReports = () => {
+    const fetchMaintenanceReports = useCallback(() => {
+        setLoadingRepair(true);
         getData({
             endPoint: `/v1/admin/report/maintenance`,
             params: { status: "1" },
@@ -56,7 +62,7 @@ const Reports = () => {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoadingRepair(false));
-    };
+    }, []);
 
     const resolveReport = async (reportId: string) => {
         postData({ endPoint: `/v1/admin/report/resolve/${reportId}` })
@@ -71,7 +77,7 @@ const Reports = () => {
     useEffect(() => {
         fetchPanelReports();
         fetchMaintenanceReports();
-    }, []);
+    }, [fetchPanelReports, fetchMaintenanceReports]);
 
     const MaintenanceReport = ({
         id,
@@ -239,7 +245,7 @@ const Reports = () => {
                             />
                         </div>
                     </div>
-                    {hasRespondReportPermission && Status === "بررسی نشده" && (
+                    {hasRespondReportPermission && Status !== "بررسی شده" && (
                         <Dialog>
                             <DialogTrigger>
                                 <div
@@ -312,7 +318,14 @@ const Reports = () => {
             )}
 
             {/* Panel Reports Section */}
-            <Header header="گزارش‌های پنل" className="mt-8" />
+            {/* <Header header="گزارش‌های پنل" className="mt-8" /> */}
+            <FilterSection
+                header="گزارش‌های پنل"
+                fieldName="گزارش"
+                status={panelStatus}
+                setStatus={setPanelStatus}
+                statusesListApiRoute={`/v1/report/status`}
+            />
             {loadingPanel ? (
                 <LoadingSpinner />
             ) : (
@@ -325,9 +338,10 @@ const Reports = () => {
                                     id={report.id}
                                     description={report.description}
                                     Status={
-                                        report.status === "درحال بررسی"
-                                            ? "بررسی نشده"
-                                            : "بررسی شده"
+                                        report.status
+                                        // report.status === "درحال بررسی"
+                                        //     ? "بررسی نشده"
+                                        //     : "بررسی شده"
                                     }
                                     Panel={report.panel}
                                 />
