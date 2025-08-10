@@ -79,7 +79,9 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 	const getAllPermissions = async () => {
 		getData({ endPoint: `/v1/admin/permissions` })
 			.then((data) => {
-				setAllPermissions(data.data);
+
+				// console.log(data?.data);
+				setAllPermissions(data?.data?.data);
 			})
 			.catch((err) => console.log(err));
 	};
@@ -127,7 +129,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 	};
 
 	// Group permissions by category
-	const permissionsByCategory = allPermissions.reduce((acc, permission) => {
+	const permissionsByCategory = allPermissions?.reduce((acc, permission) => {
 		if (!acc[permission.category]) {
 			acc[permission.category] = [];
 		}
