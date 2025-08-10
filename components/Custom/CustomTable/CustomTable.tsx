@@ -13,7 +13,7 @@ import {
     useReactTable,
     VisibilityState,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, Check, ChevronDown, MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -80,23 +80,46 @@ export const columns: ColumnDef<Payment>[] = [
     {
         id: "select",
         header: ({ table }) => (
-            <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && "indeterminate")
-                }
-                onCheckedChange={(value) =>
-                    table.toggleAllPageRowsSelected(!!value)
-                }
-                aria-label="Select all"
-            />
+            <div className="relative mt-1">
+                <input
+                    type="checkbox"
+                    checked={
+                        table.getIsAllPageRowsSelected()
+                        // table.getIsSomePageRowsSelected()
+                    }
+                    onChange={(e) =>
+                        table.toggleAllPageRowsSelected(e.target.checked)
+                    }
+                    className="peer mr-2 h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500"
+                    aria-label="Select all"
+                />
+                <Check className="absolute top-1/2 transform -translate-x-1/2 -translate-y-2/3 text-black opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5" />
+            </div>
+            // <Checkbox
+            //     checked={
+            //         table.getIsAllPageRowsSelected() ||
+            //         (table.getIsSomePageRowsSelected() && "indeterminate")
+            //     }
+            //     onCheckedChange={(value) =>
+            //         table.toggleAllPageRowsSelected(!!value)
+            //     }
+            //     aria-label="Select all"
+            // />
         ),
         cell: ({ row }) => (
-            <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"
-            />
+            <div className="relative">
+                <input
+                    type="checkbox"
+                    onChange={(e) => row.toggleSelected(!!e.target.checked)}
+                    className="peer mr-2 h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500"
+                />
+                <Check className="absolute top-1/2 transform -translate-x-1/2 -translate-y-2/3 text-black opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5 " />
+            </div>
+            // <Checkbox
+            //     checked={row.getIsSelected()}
+            //     onCheckedChange={(value) => row.toggleSelected(!!value)}
+            //     aria-label="Select row"
+            // />
         ),
         enableSorting: false,
         enableHiding: false,
@@ -158,19 +181,10 @@ export const columns: ColumnDef<Payment>[] = [
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem
-                            onClick={() =>
-                                navigator.clipboard.writeText(payment.id)
-                            }
-                        >
-                            Copy payment ID
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>View customer</DropdownMenuItem>
-                        <DropdownMenuItem>
-                            View payment details
-                        </DropdownMenuItem>
+                        {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
+                        <DropdownMenuItem>ویرایش</DropdownMenuItem>
+                        {/* <DropdownMenuSeparator /> */}
+                        <DropdownMenuItem>حذف</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             );
@@ -206,7 +220,6 @@ export function CustomTable() {
     });
 
     return (
-
         // <div className="w-full relative bg-[#F0EDEF]">
         <div className="w-full relative rtl">
             <div className="flex items-center py-4">
@@ -304,10 +317,10 @@ export function CustomTable() {
                     </TableBody>
                 </Table>
             </div>
-            <div className="flex items-center justify-end space-x-2 py-4">
+            <div className="flex items-center justify-end space-x-2 py-4 ">
                 <div className="text-muted-foreground flex-1 text-sm">
-                    {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                    {table.getFilteredRowModel().rows.length} row(s) selected.
+                    {table.getFilteredSelectedRowModel().rows.length} مورد از{" "}
+                    {table.getFilteredRowModel().rows.length} مورد انتخاب شده.
                 </div>
             </div>
         </div>
