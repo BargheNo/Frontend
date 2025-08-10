@@ -24,7 +24,9 @@ import FilterSection from "@/components/FilterSection/FilterSection";
 
 export default function Orders() {
     const [orderlist, setOrderList] = useState<getOrder[]>([]);
-    const [status, setStatus] = useState<number>(5);
+    // const [status, setStatus] = useState<number>(5);
+
+    const [status, setStatus] = useState<string>("");
     const [loading, setLoading] = useState(true);
     const orderStatusTypeMap = {
         active: "1",
@@ -39,7 +41,7 @@ export default function Orders() {
             params: { status, pageSize: 100 },
         })
             .then((res) => {
-				console.log(res?.data)
+                console.log(res?.data);
                 setOrderList(res?.data?.data);
             })
             .catch((err) => console.log(err))
@@ -54,8 +56,16 @@ export default function Orders() {
     };
     return (
         <PageContainer>
-            <FilterSection header="مدیریت سفارشات" />
-            <CustomTable data={orderlist} meta={meta} />
+            <FilterSection
+                header="سابقه سفارشات"
+                statusesListApiRoute={`/v1/installation/request/status`}
+                fieldName="درخواست"
+                status={status}
+                setStatus={setStatus}
+                // resultPerPage={resultPerPage}
+                // setResultPerPage={setResultPerPage}
+            />
+            <CustomTable data={orderlist} meta={meta} loading={loading} />
             {/* <>
                 <div className="flex flex-col mt-10">
                     <Header className="px-20" header="سفارش‌ها" />
