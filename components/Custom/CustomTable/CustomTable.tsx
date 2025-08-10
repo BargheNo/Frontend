@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -13,7 +12,14 @@ import {
     useReactTable,
     VisibilityState,
 } from "@tanstack/react-table";
-import { ArrowUpDown, Check, ChevronDown, MoreHorizontal } from "lucide-react";
+import {
+    ArrowUpDown,
+    Check,
+    ChevronDown,
+    MoreHorizontal,
+    PenBox,
+    Trash,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -35,6 +41,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { useEffect, useMemo, useState } from "react";
 
 const data: Payment[] = [
     {
@@ -76,35 +83,102 @@ export type Payment = {
     email: string;
 };
 
-export const columns: ColumnDef<Payment>[] = [
-    {
+type CustomTableProps = {
+    meta: Record<string, string>; // columnName: DisplayName
+    data: any[];
+};
+
+function generateColumns(meta: Record<string, string>): ColumnDef<any>[] {
+    return Object.keys(meta).map((key) => ({
+        accessorKey: key,
+        header: meta[key],
+        cell: ({ row }) => <div>{row.getValue(key)}</div>,
+    }));
+}
+
+// function getBaseColumns(): ColumnDef<any>[] {
+//     return [
+//         {
+//             id: "select",
+//             header: ({ table }) => (
+//                 <div className="relative mt-[5px]">
+//                     <input
+//                         type="checkbox"
+//                         checked={
+//                             table.getIsAllPageRowsSelected() ||
+//                             table.getIsSomePageRowsSelected()
+//                         }
+//                         onChange={(e) =>
+//                             table.toggleAllPageRowsSelected(!!e.target.checked)
+//                         }
+//                         className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500"
+//                         aria-label="Select all"
+//                     />
+//                     <Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 text-white -translate-y-2/3 opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5" />
+//                 </div>
+//             ),
+//             cell: ({ row }) => (
+//                 <div className="relative">
+//                     <input
+//                         type="checkbox"
+//                         checked={row.getIsSelected()}
+//                         onChange={(e) => row.toggleSelected(!!e.target.checked)}
+//                         className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500"
+//                     />
+//                     <Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 text-white -translate-y-2/3 opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5 " />
+//                 </div>
+//             ),
+//             enableSorting: false,
+//             enableHiding: false,
+//         },
+//         {
+//             id: "actions",
+//             enableHiding: false,
+//             cell: ({ row }) => (
+//                 <DropdownMenu>
+//                     <DropdownMenuTrigger asChild>
+//                         <Button variant="ghost" className="h-8 w-8 p-0">
+//                             <span className="sr-only">Open menu</span>
+//                             <MoreHorizontal />
+//                         </Button>
+//                     </DropdownMenuTrigger>
+//                     <DropdownMenuContent align="end">
+//                         {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
+//                         <DropdownMenuItem>
+//                             <PenBox className="text-blue-600" />
+//                             <p>ویرایش</p>
+//                         </DropdownMenuItem>
+//                         {/* <DropdownMenuSeparator /> */}
+//                         <DropdownMenuItem>
+//                             <Trash className="text-red-600" />
+//                             <p>حذف</p>
+//                         </DropdownMenuItem>
+//                     </DropdownMenuContent>
+//                 </DropdownMenu>
+//             ),
+//         },
+//     ];
+// }
+
+function getColumns(meta: Record<string, string>): ColumnDef<any>[] {
+    const checkBoxColumn = {
         id: "select",
         header: ({ table }) => (
-            <div className="relative mt-1">
+            <div className="relative mt-[5px]">
                 <input
                     type="checkbox"
                     checked={
-                        table.getIsAllPageRowsSelected()
-                        // table.getIsSomePageRowsSelected()
+                        table.getIsAllPageRowsSelected() ||
+                        table.getIsSomePageRowsSelected()
                     }
                     onChange={(e) =>
-                        table.toggleAllPageRowsSelected(e.target.checked)
+                        table.toggleAllPageRowsSelected(!!e.target.checked)
                     }
                     className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500"
                     aria-label="Select all"
                 />
-                <Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-2/3 opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5" />
+                <Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 text-white -translate-y-2/3 opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5" />
             </div>
-            // <Checkbox
-            //     checked={
-            //         table.getIsAllPageRowsSelected() ||
-            //         (table.getIsSomePageRowsSelected() && "indeterminate")
-            //     }
-            //     onCheckedChange={(value) =>
-            //         table.toggleAllPageRowsSelected(!!value)
-            //     }
-            //     aria-label="Select all"
-            // />
         ),
         cell: ({ row }) => (
             <div className="relative">
@@ -114,103 +188,179 @@ export const columns: ColumnDef<Payment>[] = [
                     onChange={(e) => row.toggleSelected(!!e.target.checked)}
                     className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500"
                 />
-                <Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-2/3 opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5 " />
+                <Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 text-white -translate-y-2/3 opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5 " />
             </div>
-            // <Checkbox
-            //     checked={row.getIsSelected()}
-            //     onCheckedChange={(value) => row.toggleSelected(!!value)}
-            //     aria-label="Select row"
-            // />
         ),
         enableSorting: false,
         enableHiding: false,
-    },
-    {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("status")}</div>
-        ),
-    },
-    {
-        accessorKey: "email",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    // className="cursor-pointer"
-                    onClick={() =>
-                        column.toggleSorting(column.getIsSorted() === "asc")
-                    }
-                >
-                    Email
-                    <ArrowUpDown />
-                </Button>
-            );
-        },
-        cell: ({ row }) => (
-            <div className="lowercase">{row.getValue("email")}</div>
-        ),
-    },
-    {
-        accessorKey: "amount",
-        header: ({ column }) => (
-            <Button
-                variant="ghost"
-                // className="cursor-pointer"
-                onClick={() =>
-                    column.toggleSorting(column.getIsSorted() === "asc")
-                }
-            >
-                Amount
-                <ArrowUpDown />
-            </Button>
-        ),
-        cell: ({ row }) => {
-            const amount = parseFloat(row.getValue("amount"));
-
-            // Format the amount as a dollar amount
-            const formatted = new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-            }).format(amount);
-
-            return <div className="text-center font-medium">{formatted}</div>;
-        },
-    },
-    {
+    };
+    const actionColumn = {
         id: "actions",
         enableHiding: false,
-        cell: ({ row }) => {
-            const payment = row.original;
+        cell: ({ row }) => (
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0">
+                        <span className="sr-only">Open menu</span>
+                        <MoreHorizontal />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
+                    <DropdownMenuItem>
+                        <PenBox className="text-blue-600" />
+                        <p>ویرایش</p>
+                    </DropdownMenuItem>
+                    {/* <DropdownMenuSeparator /> */}
+                    <DropdownMenuItem>
+                        <Trash className="text-red-600" />
+                        <p>حذف</p>
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        ),
+    };
 
-            return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
-                        <DropdownMenuItem>ویرایش</DropdownMenuItem>
-                        {/* <DropdownMenuSeparator /> */}
-                        <DropdownMenuItem>حذف</DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            );
-        },
-    },
-];
+    return [checkBoxColumn, ...generateColumns(meta), actionColumn];
+}
 
-export function CustomTable() {
-    const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] =
-        React.useState<ColumnFiltersState>([]);
-    const [columnVisibility, setColumnVisibility] =
-        React.useState<VisibilityState>({});
-    const [rowSelection, setRowSelection] = React.useState({});
+// const x = Object.keys(meta).map((col) => ({
+//     accessorKey: col,
+//     header: col,
+//     cel: ({ row }: { row: any }) => <div>{row.getValue(col)}</div>,
+// }));
+
+// export const columns: ColumnDef<>[] = [
+//     {
+//         id: "select",
+//         header: ({ table }) => (
+//             <div className="relative mt-[5px]">
+//                 <input
+//                     type="checkbox"
+//                     checked={
+//                         table.getIsAllPageRowsSelected() ||
+//                         table.getIsSomePageRowsSelected()
+//                     }
+//                     onChange={(e) =>
+//                         table.toggleAllPageRowsSelected(!!e.target.checked)
+//                     }
+//                     className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500"
+//                     aria-label="Select all"
+//                 />
+//                 <Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 text-white -translate-y-2/3 opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5" />
+//             </div>
+//         ),
+//         cell: ({ row }) => (
+//             <div className="relative">
+//                 <input
+//                     type="checkbox"
+//                     checked={row.getIsSelected()}
+//                     onChange={(e) => row.toggleSelected(!!e.target.checked)}
+//                     className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500"
+//                 />
+//                 <Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 text-white -translate-y-2/3 opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5 " />
+//             </div>
+//         ),
+//         enableSorting: false,
+//         enableHiding: false,
+//     },
+//     {
+//         accessorKey: "status",
+//         header: "Status",
+//         cell: ({ row }) => (
+//             <div className="capitalize">{row.getValue("status")}</div>
+//         ),
+//     },
+//     // {
+//     //     accessorKey: "email",
+//     //     header: ({ column }) => {
+//     //         return (
+//     //             <Button
+//     //                 variant="ghost"
+//     //                 // className="cursor-pointer"
+//     //                 onClick={() =>
+//     //                     column.toggleSorting(column.getIsSorted() === "asc")
+//     //                 }
+//     //             >
+//     //                 Email
+//     //                 <ArrowUpDown />
+//     //             </Button>
+//     //         );
+//     //     },
+//     //     cell: ({ row }) => (
+//     //         <div className="lowercase">{row.getValue("email")}</div>
+//     //     ),
+//     // },
+//     // {
+//     //     accessorKey: "amount",
+//     //     header: ({ column }) => (
+//     //         <Button
+//     //             variant="ghost"
+//     //             // className="cursor-pointer"
+//     //             onClick={() =>
+//     //                 column.toggleSorting(column.getIsSorted() === "asc")
+//     //             }
+//     //         >
+//     //             Amount
+//     //             <ArrowUpDown />
+//     //         </Button>
+//     //     ),
+//     //     cell: ({ row }) => {
+//     //         const amount = parseInt(row.getValue("amount"));
+
+//     //         // Format the amount as a dollar amount
+//     //         const formatted = new Intl.NumberFormat("fa-IR", {
+//     //             style: "currency",
+//     //             currency: "IRR",
+//     //         }).format(amount);
+
+//     //         return <div className="text-center font-medium">{formatted}</div>;
+//     //     },
+//     // },
+//     {
+//         id: "actions",
+//         enableHiding: false,
+//         cell: ({ row }) => {
+//             const payment = row.original;
+
+//             return (
+//                 <DropdownMenu>
+//                     <DropdownMenuTrigger asChild>
+//                         <Button variant="ghost" className="h-8 w-8 p-0">
+//                             <span className="sr-only">Open menu</span>
+//                             <MoreHorizontal />
+//                         </Button>
+//                     </DropdownMenuTrigger>
+//                     <DropdownMenuContent align="end">
+//                         {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
+//                         <DropdownMenuItem>
+//                             <PenBox className="text-blue-600" />
+//                             <p>ویرایش</p>
+//                         </DropdownMenuItem>
+//                         {/* <DropdownMenuSeparator /> */}
+//                         <DropdownMenuItem>
+//                             <Trash className="text-red-600" />
+//                             <p>حذف</p>
+//                         </DropdownMenuItem>
+//                     </DropdownMenuContent>
+//                 </DropdownMenu>
+//             );
+//         },
+//     },
+// ];
+
+export function CustomTable({ meta, data }: CustomTableProps) {
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+        {}
+    );
+    const [rowSelection, setRowSelection] = useState({});
+
+    const columns = getColumns(meta);
+    // const columns = useMemo(() => {
+    //     return [...getBaseColumns(), ...generateColumns(meta)];
+    // }, [meta]);
 
     const table = useReactTable({
         data,
@@ -232,68 +382,23 @@ export function CustomTable() {
     });
 
     return (
-        // <div className="w-full relative bg-[#F0EDEF]">
         <div className="w-full relative rtl">
-            {/* <div className="flex items-center py-4">
-                <Input
-                    placeholder="Filter emails..."
-                    value={
-                        (table
-                            .getColumn("email")
-                            ?.getFilterValue() as string) ?? ""
-                    }
-                    onChange={(event) =>
-                        table
-                            .getColumn("email")
-                            ?.setFilterValue(event.target.value)
-                    }
-                    className="max-w-sm"
-                />
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="ml-auto">
-                            Columns <ChevronDown />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        {table
-                            .getAllColumns()
-                            .filter((column) => column.getCanHide())
-                            .map((column) => {
-                                return (
-                                    <DropdownMenuCheckboxItem
-                                        key={column.id}
-                                        className="capitalize"
-                                        checked={column.getIsVisible()}
-                                        onCheckedChange={(value) =>
-                                            column.toggleVisibility(!!value)
-                                        }
-                                    >
-                                        {column.id}
-                                    </DropdownMenuCheckboxItem>
-                                );
-                            })}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            </div> */}
             <div className="neu-container">
                 <Table>
-                    <TableHeader className="">
+                    <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead key={header.id}>
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                      header.column.columnDef
-                                                          .header,
-                                                      header.getContext()
-                                                  )}
-                                        </TableHead>
-                                    );
-                                })}
+                                {headerGroup.headers.map((header) => (
+                                    <TableHead key={header.id}>
+                                        {header.isPlaceholder
+                                            ? null
+                                            : flexRender(
+                                                  header.column.columnDef
+                                                      .header,
+                                                  header.getContext()
+                                              )}
+                                    </TableHead>
+                                ))}
                             </TableRow>
                         ))}
                     </TableHeader>
@@ -329,12 +434,102 @@ export function CustomTable() {
                     </TableBody>
                 </Table>
             </div>
-            <div className="flex items-center justify-end space-x-2 py-4 ">
-                <div className="text-muted-foreground flex-1 text-sm">
-                    {table.getFilteredSelectedRowModel().rows.length} مورد از{" "}
-                    {table.getFilteredRowModel().rows.length} مورد انتخاب شده.
-                </div>
-            </div>
         </div>
     );
 }
+
+// export function CustomTable({ meta, data }: CustomTableProps) {
+//     const [sorting, setSorting] = useState<SortingState>([]);
+//     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+//     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+//         {}
+//     );
+//     const [rowSelection, setRowSelection] = useState({});
+
+//     const table = useReactTable({
+//         data,
+//         columns,
+//         onSortingChange: setSorting,
+//         onColumnFiltersChange: setColumnFilters,
+//         getCoreRowModel: getCoreRowModel(),
+//         getPaginationRowModel: getPaginationRowModel(),
+//         getSortedRowModel: getSortedRowModel(),
+//         getFilteredRowModel: getFilteredRowModel(),
+//         onColumnVisibilityChange: setColumnVisibility,
+//         onRowSelectionChange: setRowSelection,
+//         state: {
+//             sorting,
+//             columnFilters,
+//             columnVisibility,
+//             rowSelection,
+//         },
+//     });
+//     useEffect(() => {
+//         console.log("list", list);
+//     }, [list]);
+
+//     return (
+//         // <div className="w-full relative bg-[#F0EDEF]">
+//         <div className="w-full relative rtl">
+//             <div className="neu-container">
+//                 <Table>
+//                     <TableHeader className="">
+//                         {table.getHeaderGroups().map((headerGroup) => (
+//                             <TableRow key={headerGroup.id}>
+//                                 {headerGroup.headers.map((header) => {
+//                                     return (
+//                                         <TableHead key={header.id}>
+//                                             {header.isPlaceholder
+//                                                 ? null
+//                                                 : flexRender(
+//                                                       header.column.columnDef
+//                                                           .header,
+//                                                       header.getContext()
+//                                                   )}
+//                                         </TableHead>
+//                                     );
+//                                 })}
+//                             </TableRow>
+//                         ))}
+//                     </TableHeader>
+//                     <TableBody>
+//                         {table.getRowModel().rows?.length ? (
+//                             table.getRowModel().rows.map((row) => (
+//                                 <TableRow
+//                                     key={row.id}
+//                                     data-state={
+//                                         row.getIsSelected() && "selected"
+//                                     }
+//                                 >
+//                                     {row.getVisibleCells().map((cell) => (
+//                                         <TableCell key={cell.id}>
+//                                             {flexRender(
+//                                                 cell.column.columnDef.cell,
+//                                                 cell.getContext()
+//                                             )}
+//                                         </TableCell>
+//                                     ))}
+//                                 </TableRow>
+//                             ))
+//                         ) : (
+//                             <TableRow>
+//                                 <TableCell
+//                                     colSpan={columns.length}
+//                                     className="h-24 text-center"
+//                                 >
+//                                     No results.
+//                                 </TableCell>
+//                             </TableRow>
+//                         )}
+//                     </TableBody>
+//                 </Table>
+//             </div>
+//             <div className="flex items-center justify-end space-x-2 py-4 ">
+//                 <div className="text-muted-foreground flex-1 text-sm">
+//                     {table.getFilteredSelectedRowModel().rows.length} مورد از{" "}
+//                     {table.getFilteredRowModel().rows.length} مورد انتخاب شده.
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// }
