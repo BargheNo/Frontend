@@ -74,7 +74,7 @@ export default function AddBlogForm({
                 formData.append("description", values.description);
             formData.append("content", "empty blog");
             if (file) {
-                formData.append("coverImage", file);
+                formData.append("cover_image", file);
             }
 
             const responce = await putData({
