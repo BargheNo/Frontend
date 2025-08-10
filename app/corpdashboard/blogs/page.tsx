@@ -65,11 +65,11 @@ export default function Page() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-[2vw] w-full mx-auto">
                     {blogs?.map((blog: Blog) => (
                         <BlogCard
-                            key={blog?.id}
-                            blogID={String(blog?.id)}
-                            imageUrl={blog?.coverImage}
-                            title={blog?.title}
-                            description={blog?.description}
+                            key={blog.id}
+                            blogID={String(blog.id)}
+                            imageUrl={blog.coverImage}
+                            title={blog.title}
+                            description={blog.description}
                             writer={
                                 typeof blog?.author === "string"
                                     ? blog?.author
@@ -77,9 +77,9 @@ export default function Page() {
                                     ? `${blog.author.firstName} ${blog.author.lastName}`
                                     : "ناشناس"
                             }
-                            date={blog?.createdAt}
-                            likeCount={blog?.likeCount}
-                            status={blog?.status}
+                            date={blog.createdAt}
+                            likeCount={blog.likeCount}
+                            status={blog.status}
                             viewOnly={false}
                             className="mx-auto"
                         />

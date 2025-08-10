@@ -1,6 +1,6 @@
 "use client";
 import AddComponent from "@/components/AddComponent/AddComponent";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import AddBlogForm from "./AddBlogForm";
@@ -28,7 +28,8 @@ export default function AddBlog() {
             : "w-[90vw]! max-w-none! p-10 overflow-scroll"
           )}
           >
-          <DialogTitle>test</DialogTitle>
+          <DialogTitle></DialogTitle>
+          <DialogDescription></DialogDescription>
           {step === 0 ? (
             <AddBlogForm  setBlogID={setBlogID} setStep={setStep} />
           ) : (

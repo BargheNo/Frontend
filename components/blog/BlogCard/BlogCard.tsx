@@ -19,6 +19,8 @@ import { toast } from "sonner";
 import { useSelector } from "react-redux";
 import Link from "next/link";
 import useClientCheck from "@/src/hooks/useClientCheck";
+import blogFallback from "@/public/images/blog/blog.png";
+import { useRouter } from "next/navigation";
 
 export default function BlogCard({
     className,
@@ -37,12 +39,13 @@ export default function BlogCard({
     imageUrl: string;
     title: string;
     description: string;
-    writer: { firstName: string; lastName: string };
+    writer: string;
     date: string;
     status?: number;
     viewOnly?: boolean;
     likeCount: number;
 }) {
+    const router = useRouter();
     const isClient = useClientCheck();
     const corpId = useSelector((state: RootState) => state.user.corpId);
     const queryClient = useQueryClient();
@@ -68,7 +71,7 @@ export default function BlogCard({
             <>
                 {!viewOnly ? (
                     <>
-                        <Link href={`./blogs/${blogID}`}>
+                        <div>
                             <Dialog>
                                 <DialogContent className="h-[90vh]! p-10">
                                     <BlogEditor blogID={blogID} />
@@ -81,22 +84,37 @@ export default function BlogCard({
                                                 className
                                             )}
                                         >
-                                            {imageUrl && (
-                                                <div className="relative z-10 self-center rounded-xl h-[300px] w-full ">
-                                                    <div className="absolute top-0 bottom-0 right-0 left-0 bg-gradient-to-b opacity-40 from-black to-transparent z-20"></div>
-                                                    <Image
-                                                        className="object-cover"
-                                                        src={imageUrl ?? ""}
-                                                        alt="Profile picture"
-                                                        fill={true}
-                                                    />
-                                                </div>
-                                            )}
+                                            <div
+                                                className="relative z-10 self-center rounded-xl h-[300px] w-full hover:cursor-pointer"
+                                                onClick={() => {
+                                                    router.push(
+                                                        `./blogs/${blogID}`
+                                                    );
+                                                }}
+                                            >
+                                                <div className="absolute top-0 bottom-0 right-0 left-0 bg-gradient-to-b opacity-40 from-black to-transparent z-20"></div>
+                                                <Image
+                                                    className="object-cover "
+                                                    src={
+                                                        imageUrl || blogFallback
+                                                    }
+                                                    alt="Profile picture"
+                                                    fill={true}
+                                                />
+                                            </div>
+
                                             <div className="flex flex-col justify-between">
                                                 <div className="flex flex-col gap-4 justify-start items-start p-5">
                                                     <div className="flex justify-between w-full">
                                                         <div className="flex flex-col">
-                                                            <div className="font-bold text-xl short-par">
+                                                            <div
+                                                                className="font-bold text-xl short-par hover:cursor-pointer"
+                                                                onClick={() => {
+                                                                    router.push(
+                                                                        `./blogs/${blogID}`
+                                                                    );
+                                                                }}
+                                                            >
                                                                 {title}
                                                             </div>
                                                             <div
@@ -140,10 +158,7 @@ export default function BlogCard({
                                                             )}
                                                         </span>
                                                     </div>
-                                                    <div>
-                                                        {writer?.firstName}{" "}
-                                                        {writer.lastName}
-                                                    </div>
+                                                    <div>{writer}</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -169,62 +184,68 @@ export default function BlogCard({
                                     </ContextMenuContent>
                                 </ContextMenu>
                             </Dialog>
-                        </Link>
+                        </div>
                     </>
                 ) : (
-                    <Link href={`./blogs/${blogID}`}>
+                    <div
+                        className={cn(
+                            "flex flex-col m-5 neo-card rounded-2xl bg-warm-white relative overflow-hidden",
+                            className
+                        )}
+                    >
                         <div
-                            className={cn(
-                                "flex flex-col m-5 neo-card rounded-2xl bg-warm-white relative overflow-hidden",
-                                className
-                            )}
+                            className="relative z-10 self-center rounded-xl h-[300px] w-full  hover:cursor-pointer"
+                            onClick={() => {
+                                router.push(`./blogs/${blogID}`);
+                            }}
                         >
-                            <div className="relative z-10 self-center rounded-xl h-[300px] w-full ">
-                                <div className="absolute top-0 bottom-0 right-0 left-0 bg-gradient-to-b opacity-40 from-black to-transparent z-20"></div>
-                                <Image
-                                    className="object-cover"
-                                    src={imageUrl ?? ""}
-                                    alt="Profile picture"
-                                    fill={true}
-                                />
-                            </div>
-                            <div className="flex flex-col justify-between">
-                                <div className="flex flex-col gap-4 justify-start items-start p-5">
-                                    <div className="flex justify-between w-full">
-                                        <div className="font-bold text-xl short-par">
-                                            {title}
-                                        </div>
-                                        <div className="flex gap-1">
-                                            <Heart
-                                                fill="#fb8500"
-                                                className="cursor-pointer"
-                                                color="#fb8500"
-                                            />
-                                            <span>{likeCount}</span>
-                                        </div>
+                            <div className="absolute top-0 bottom-0 right-0 left-0 bg-gradient-to-b opacity-40 from-black to-transparent z-20"></div>
+                            <Image
+                                className="object-cover"
+                                src={imageUrl || blogFallback}
+                                alt="Profile picture"
+                                fill={true}
+                            />
+                        </div>
+                        <div className="flex flex-col justify-between">
+                            <div className="flex flex-col gap-4 justify-start items-start p-5">
+                                <div className="flex justify-between w-full">
+                                    <div
+                                        className="font-bold text-xl short-par hover:cursor-pointer"
+                                        onClick={() => {
+                                            router.push(`./blogs/${blogID}`);
+                                        }}
+                                    >
+                                        {title}
                                     </div>
-
-                                    <div className="text-lg text-gray-700 short-par">
-                                        {description ?? ""}
-                                    </div>
-                                </div>
-                                <div className="flex justify-between w-full px-5 pb-2">
-                                    <div className="flex gap-2 justify-between items-center">
-                                        <Calendar
-                                            size={25}
-                                            className="text-sunset-orange"
+                                    <div className="flex gap-1">
+                                        <Heart
+                                            fill="#fb8500"
+                                            className="cursor-pointer"
+                                            color="#fb8500"
                                         />
-                                        <span className="block text-center h-5">
-                                            {DateConverter(date)}
-                                        </span>
-                                    </div>
-                                    <div>
-                                        {writer.firstName} {writer.lastName}
+                                        <span>{likeCount}</span>
                                     </div>
                                 </div>
+
+                                <div className="text-lg text-gray-700 short-par">
+                                    {description ?? ""}
+                                </div>
+                            </div>
+                            <div className="flex justify-between w-full px-5 pb-2">
+                                <div className="flex gap-2 justify-between items-center">
+                                    <Calendar
+                                        size={25}
+                                        className="text-sunset-orange"
+                                    />
+                                    <span className="block text-center h-5">
+                                        {DateConverter(date)}
+                                    </span>
+                                </div>
+                                <div>{writer}</div>
                             </div>
                         </div>
-                    </Link>
+                    </div>
                 )}
             </>
         );
