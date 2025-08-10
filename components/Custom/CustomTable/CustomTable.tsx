@@ -13,6 +13,8 @@ import {
     VisibilityState,
 } from "@tanstack/react-table";
 import {
+    ArrowDown,
+    ArrowUp,
     ArrowUpDown,
     Check,
     ChevronDown,
@@ -94,7 +96,27 @@ type CustomTableProps = {
 function generateColumns(meta: Record<string, string>): ColumnDef<any>[] {
     return Object.keys(meta).map((key) => ({
         accessorKey: key,
-        header: meta[key],
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    // className="cursor-pointer"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    {meta[key]}
+                    {column.getIsSorted() === "asc" ? (
+                        <ArrowDown />
+                    ) : (
+                        // ) : column.getIsSorted() === "des" ? (
+                        //     <ArrowUp />
+                        <ArrowUpDown />
+                    )}
+                </Button>
+            );
+        },
+        // header: meta[key],
         cell: ({ row }) => <div>{row.getValue(key)}</div>,
     }));
 }
