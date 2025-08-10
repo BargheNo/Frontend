@@ -17,6 +17,17 @@ import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import { getData, postData } from "@/src/services/apiHub";
 import useHasPermission from "@/src/functions/hasPermission";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
+import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
 
 const Reports = () => {
     const hasRespondReportPermission = useHasPermission("report.respond");
@@ -202,17 +213,17 @@ const Reports = () => {
                                 شرکت: {Panel?.corporation?.name}
                             </p>
                         </div>
-                        <div className="flex flex-row gap-2">
+                        {/* <div className="flex flex-row gap-2">
                             <CircleAlert className="text-orange-500"></CircleAlert>
                             <p className="max-w-[600px] break-words">
                                 شرح گزارش: {description}
                             </p>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 
                 {/* Left section */}
-                <div className="w-1/5 pr-5 flex flex-col justify-around relative">
+                <div className="w-1/5 pr-5 flex flex-col justify-around relative gap-2">
                     <div
                         className={`flex flex-col items-center ${styles.status} py-4 gap-2 relative`}
                     >
@@ -226,18 +237,38 @@ const Reports = () => {
                         </div>
                     </div>
                     {hasRespondReportPermission && Status === "بررسی نشده" && (
-                        <div
-                            className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
-                        >
-                            <button
-                                className="cursor-pointer"
-                                onClick={() => resolveReport(id)}
-                            >
-                                بررسی
-                            </button>
+                        <Dialog>
+                            <DialogTrigger>
+                                <div
+                                    className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
+                                >
+                                    <button
+                                        className="cursor-pointer"
+                                        // onClick={() => resolveReport(id)}
+                                    >
+                                        مشاهده جزئیات
+                                    </button>
 
-                            <ArrowLeft />
-                        </div>
+                                    <ArrowLeft />
+                                </div>
+                            </DialogTrigger>
+                            <DialogContent className="rtl">
+                                <DialogHeader>
+                                    <DialogTitle>جزئیات گزارش</DialogTitle>
+                                </DialogHeader>
+                                <DialogDescription>
+                                    {description}
+                                </DialogDescription>
+                                <DialogFooter>
+                                    <CancelButton>بازگشت</CancelButton>
+                                    <SubmitButton
+                                        onClick={() => resolveReport(id)}
+                                    >
+                                        بررسی شد
+                                    </SubmitButton>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
                     )}
                 </div>
             </div>
