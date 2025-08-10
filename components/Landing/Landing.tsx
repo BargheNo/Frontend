@@ -10,7 +10,7 @@ export default function Landing() {
     <div
 			className={`items-center rtl no-scrollbar bg-[#F4F7F9] ${vazir.className} w-full`}
 		>
-      <BargheNoLanding />
+      {/* <BargheNoLanding /> */}
       <NewsLanding />
       <AboutUsLanding />
       <Footer />

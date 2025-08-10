@@ -161,7 +161,7 @@ const UserProfile = () => {
             <Header header="پروفایل کاربری" />
             <div
                 // className={`vazir w-full mx-auto min-h-full flex flex-col gap-8 text-white bg-transparent relative`}
-                className={`vazir w-[40vw] mx-auto min-h-full flex flex-col gap-8 text-white py-4 md:py-8 px-4 md:px-14 bg-transparent relative`}
+                className={`vazir md:w-[40vw] w-full mx-auto min-h-full flex flex-col gap-8 text-white py-4 md:py-8 px-3 md:px-14 bg-transparent relative`}
             >
                 {isLoading ? (
                     <LoadingSpinner />
@@ -225,7 +225,7 @@ const UserProfile = () => {
                                             />
                                         ))}
 
-                                        <div className="flex justify-between">
+                                        <div className="flex justify-between md:gap-0 gap-2">
                                             <Button
                                                 type="button"
                                                 className="px-4 py-2 font-black active:brightness-90 flex justify-center w-fit gap-4 min-w-28  place-content-center cursor-pointer bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 active:from-blue-700 active:to-blue-500 text-white rounded-md transition-all duration-300"
