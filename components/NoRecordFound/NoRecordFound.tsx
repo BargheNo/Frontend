@@ -13,9 +13,9 @@ export default function NoRecordFound({
 }) {
     return (
         <div
-            className={`relative text-center place-items-center py-18 ${
+            className={`relative text-center place-items-center py-18 bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]  ${
                 haveBackground ??
-                "bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] neu-container"
+                "neu-container"
             } ${className}`}
         >
             <Image className="w-1/3" src={panelNotFound} alt="orderNotFound" />

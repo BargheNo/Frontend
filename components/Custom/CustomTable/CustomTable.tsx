@@ -71,6 +71,11 @@ import {
 } from "@/components/ui/dialog";
 import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
 import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
+import CustomEditDialog from "./CustomEditDialog/CustomEditDialog";
+import CustomInput from "../CustomInput/CustomInput";
+
+import { Form, Formik } from "formik";
+import * as Yup from "yup";
 
 type CustomTableProps = {
     meta: Record<string, any>; // columnName: DisplayName
@@ -169,6 +174,7 @@ function generateColumns(meta: Record<string, any>): ColumnDef<any>[] {
 
 function getColumns(
     meta: Record<string, any>,
+    data: any,
     onDelete: (id: number, deleteApiUrl?: string) => void
 ): ColumnDef<any>[] {
     const checkClaaName =
@@ -217,48 +223,91 @@ function getColumns(
         enableSorting: false,
         cell: ({ row }) => (
             <DropdownMenu>
-                <DropdownMenuTrigger>
+                <DropdownMenuTrigger variant="ghost" className="h-8 w-8 p-0">
                     <Button variant="ghost" className="h-8 w-8 p-0">
                         <MoreHorizontal className="h-4 w-4" />
                     </Button>
                 </DropdownMenuTrigger>
-                <AlertDialog>
-                    <DropdownMenuContent align="left">
-                        <DropdownMenuItem>
-                            <PenBox className="text-blue-600 mr-2 h-4 w-4" />
-                            <p>ویرایش</p>
-                        </DropdownMenuItem>
-                        <AlertDialogTrigger asChild>
-                            <DropdownMenuItem
-                                variant="destructive"
-                                // onClick={() => onDelete(row?.original?.id)}
+                <Dialog>
+                    <AlertDialog>
+                        <DropdownMenuContent align="left">
+                            {/* <DialogTrigger className="w-full">
+                                <DropdownMenuItem className="w-full">
+                                    <PenBox className="text-blue-600 mr-2 h-4 w-4" />
+                                    <p>ویرایش</p>
+                                </DropdownMenuItem>
+                            </DialogTrigger> */}
+                            <AlertDialogTrigger asChild>
+                                <DropdownMenuItem
+                                    variant="destructive"
+                                    // onClick={() => onDelete(row?.original?.id)}
+                                >
+                                    <Trash className="mr-2 h-4 w-4" />
+                                    <p>حذف</p>
+                                </DropdownMenuItem>
+                            </AlertDialogTrigger>
+                        </DropdownMenuContent>
+                        <AlertDialogContent className="rtl">
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                    آیا از حذف این مورد اطمینان کامل دارید؟
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    این عمل غیرقابل بازگشت است. این اطلاعات نیز
+                                    برای همیشه حذف خواهند شد.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel className="cursor-pointer">
+                                    بازگشت
+                                </AlertDialogCancel>
+                                <AlertDialogAction
+                                    onClick={() => onDelete(row?.original?.id)}
+                                    className="cursor-pointer bg-gradient-to-br from-[#EE4334] to-[#D73628] hover:from-[#D73628] hover:to-[#EE4334] active:from-[#EE4334] active:to-[#D73628]"
+                                >
+                                    بله، اطمینان کامل دارم
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                    <DialogContent className="rtl overflow-y-scroll">
+                        <DialogHeader className="rtl text-right content-start">
+                            <DialogTitle className="flex place-self-start rtl">
+                                ویرایش
+                            </DialogTitle>
+                            <Formik
+                                initialValues={{}}
+                                validationSchema={Yup.object()}
+                                onSubmit={(values) => {}}
                             >
-                                <Trash className="mr-2 h-4 w-4" />
-                                <p>حذف</p>
-                            </DropdownMenuItem>
-                        </AlertDialogTrigger>
-                    </DropdownMenuContent>
-                    <AlertDialogContent className="rtl">
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>
-                                آیا از حذف این مورد اطمینان کامل دارید؟
-                            </AlertDialogTitle>
-                            <AlertDialogDescription>
-                                این عمل غیرقابل بازگشت است. این اطلاعات نیز برای
-                                همیشه حذف خواهند شد.
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel className="cursor-pointer ">بازگشت</AlertDialogCancel>
-                            <AlertDialogAction
-                                onClick={() => onDelete(row?.original?.id)}
-                                className="cursor-pointer bg-gradient-to-br from-[#EE4334] to-[#D73628] hover:from-[#D73628] hover:to-[#EE4334] active:from-[#EE4334] active:to-[#D73628]"
-                            >
-                                بله، اطمینان کامل دارم
-                            </AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
+                                {({ setFieldValue, values }) => (
+                                    <Form className="w-full gap-4 grid grid-cols-2">
+                                        {Object.keys(data).map(
+                                            (fieldName, index) => (
+                                                <div
+                                                    key={index}
+                                                    className={`${
+                                                        index ===
+                                                            Object.keys(data)
+                                                                .length -
+                                                                1 &&
+                                                        index % 2 === 1
+                                                            ? "col-span-2"
+                                                            : ""
+                                                    }`}
+                                                >
+                                                    <CustomInput
+                                                        name={fieldName}
+                                                    />
+                                                </div>
+                                            )
+                                        )}
+                                    </Form>
+                                )}
+                            </Formik>
+                        </DialogHeader>
+                    </DialogContent>
+                </Dialog>
             </DropdownMenu>
         ),
     };
@@ -297,8 +346,8 @@ export function CustomTable({
         [fetchData]
     );
     const columns = useMemo(
-        () => getColumns(meta, (id) => deleteRecord(id, deleteApiUrl)),
-        [meta, deleteApiUrl, deleteRecord]
+        () => getColumns(meta, data, (id) => deleteRecord(id, deleteApiUrl)),
+        [meta, deleteApiUrl, deleteRecord, data]
     );
 
     const table = useReactTable({
