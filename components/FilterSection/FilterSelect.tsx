@@ -17,7 +17,7 @@ interface Item {
 
 export default function FilterSelect({
     placeholder,
-    width = 40,
+    width = 20,
     field,
     setField,
     possibleValues,
@@ -48,7 +48,7 @@ export default function FilterSelect({
         >
             <SelectTrigger
                 dir="rtl"
-                className={`flex min-w-${width} cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]`}
+                className={`flex min-w-${width} md:mb-0 -mb-15 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]`}
             >
                 <SelectValue placeholder={placeholder} />
             </SelectTrigger>

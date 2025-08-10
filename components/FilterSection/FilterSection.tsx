@@ -111,15 +111,16 @@ export default function FilterSection({
         }
     }, [statusesListApiRoute, columnsListApiRoute, setInitialLoading]);
     return (
-        <div className="flex place-items-center justify-between w-full gap-4">
+        <div className="flex place-items-center justify-between md:w-full gap-4">
             <div
-                className={`flex min-w-fit ${
+                className={`flex min-w-fit md:-mt-0 -mt-15 md:py-0 py-15 ${
                     setSearchPhrase && "place-self-end"
                 }`}
             >
                 {header && <Header header={header} />}
             </div>
-            <div className="flex gap-4 w-full place-items-center ltr">
+            <div className="flex md:mr-0 -mr-20 md:gap-4 gap-1 w-full place-items-center ltr">
+
                 {setAsc &&
                     (initialLoading ? (
                         <Skeleton className={`h-[40px] w-[50px]`} />
