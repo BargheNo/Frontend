@@ -68,7 +68,7 @@ const TicketSupportPage = () => {
         null
     );
     const [loading, setLoading] = useState<boolean>(true);
-    const [status, setStatus] = useState<string>("4");
+    const [status, setStatus] = useState<string>("");
     const [resultPerPage, setResultPerPage] = useState<string>("");
     const [paginationInfo, setPaginationInfo] = useState<
         paginationInfoType | undefined

@@ -39,6 +39,7 @@ export default function Orders() {
             params: { status, pageSize: 100 },
         })
             .then((res) => {
+				console.log(res?.data)
                 setOrderList(res?.data?.data);
             })
             .catch((err) => console.log(err))
@@ -55,7 +56,7 @@ export default function Orders() {
         <PageContainer>
             <FilterSection header="مدیریت سفارشات" />
             <CustomTable data={orderlist} meta={meta} />
-            <>
+            {/* <>
                 <div className="flex flex-col mt-10">
                     <Header className="px-20" header="سفارش‌ها" />
                 </div>
@@ -112,10 +113,6 @@ export default function Orders() {
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
-
-                        {/* <div className='lg:w-[15%] w-[20%] justify-center mr-auto ml-20'>
-			            <SignupButton className='bg-warm-white whitespace-nowrap'>افزودن سفارش<Plus className='text-sunset-orange '/></SignupButton>
-			        </div> */}
                     </div>
                 </div>
 
@@ -171,7 +168,7 @@ export default function Orders() {
                         </p>
                     </div>
                 )}
-            </>
+            </> */}
         </PageContainer>
     );
 }

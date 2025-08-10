@@ -7,7 +7,7 @@ export default function page() {
     return (
         <PageContainer>
             <Header header="مدیریت درخواست‌ها"/>
-            <CustomTable />
+            {/* <CustomTable /> */}
         </PageContainer>
     );
 }
