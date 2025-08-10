@@ -71,7 +71,6 @@ import {
 } from "@/components/ui/dialog";
 import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
 import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
-import CustomEditDialog from "./CustomEditDialog/CustomEditDialog";
 import CustomInput from "../CustomInput/CustomInput";
 
 import { Form, Formik } from "formik";
@@ -223,14 +222,14 @@ function getColumns(
         enableSorting: false,
         cell: ({ row }) => (
             <DropdownMenu>
-                <DropdownMenuTrigger variant="ghost" className="h-8 w-8 p-0">
+                <DropdownMenuTrigger>
                     <Button variant="ghost" className="h-8 w-8 p-0">
                         <MoreHorizontal className="h-4 w-4" />
                     </Button>
                 </DropdownMenuTrigger>
                 <Dialog>
                     <AlertDialog>
-                        <DropdownMenuContent align="left">
+                        <DropdownMenuContent align="end">
                             {/* <DialogTrigger className="w-full">
                                 <DropdownMenuItem className="w-full">
                                     <PenBox className="text-blue-600 mr-2 h-4 w-4" />
