@@ -11,7 +11,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import SignupButton from "@/components/SignupButton/SignupButton";
 import style from "./style.module.css";
 import { getOrder } from "@/src/types/Entity-Monitoring/orderType";
@@ -33,8 +33,8 @@ export default function Orders() {
     >(undefined);
     const [page, setPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(0);
-
-    useEffect(() => {
+    const fetchOrders = useCallback(() => {
+        setLoading(true);
         getData({
             endPoint: `/v1/admin/installation/request`,
             params: { status, pageSize: 10000000 },
@@ -47,6 +47,20 @@ export default function Orders() {
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
     }, [status]);
+    useEffect(() => {
+        fetchOrders();
+        // getData({
+        //     endPoint: `/v1/admin/installation/request`,
+        //     params: { status, pageSize: 10000000 },
+        // })
+        //     .then((res) => {
+        //         console.log(res?.data);
+        //         setOrderList(res?.data?.data);
+        //         setPaginationInfo(res?.data?.pagination);
+        //     })
+        //     .catch((err) => console.log(err))
+        //     .finally(() => setLoading(false));
+    }, [fetchOrders]);
 
     useEffect(() => {
         if (paginationInfo?.totalItems) {
@@ -84,8 +98,10 @@ export default function Orders() {
                 meta={meta}
                 loading={loading}
                 page={page}
-				setPage={setPage}
+                setPage={setPage}
                 resultPerPage={resultPerPage !== "" ? resultPerPage : "10"}
+                deleteApiUrl={`/v1/admin/installation/request/:id`}
+                fetchData={fetchOrders}
             />
             <CustomPagination
                 currentPage={page}

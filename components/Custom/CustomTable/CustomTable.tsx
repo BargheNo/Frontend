@@ -42,9 +42,11 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import { deleteData } from "@/src/services/apiHub";
+import CustomToast from "../CustomToast/CustomToast";
 
 type CustomTableProps = {
     meta: Record<string, any>; // columnName: DisplayName
@@ -53,6 +55,10 @@ type CustomTableProps = {
     page: number;
     setPage: React.Dispatch<React.SetStateAction<number>>;
     resultPerPage: string;
+    deleteApiUrl: string; // API URL pattern like '/v1/admin/installation/request/:id'
+    onDeleteSuccess?: (deletedId: string | number) => void; // Callback after successful deletion
+    onDeleteError?: (error: any) => void; // Callback on deletion error
+    fetchData: () => void;
 };
 
 function generateColumns(meta: Record<string, any>): ColumnDef<any>[] {
@@ -136,7 +142,10 @@ function generateColumns(meta: Record<string, any>): ColumnDef<any>[] {
     }));
 }
 
-function getColumns(meta: Record<string, any>): ColumnDef<any>[] {
+function getColumns(
+    meta: Record<string, any>,
+    onDelete: (id: number, deleteApiUrl?: string) => void
+): ColumnDef<any>[] {
     const checkClaaName =
         "absolute top-1/2 left-1/2 transform -translate-x-1/2 text-white -translate-y-2/3 opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5";
     const inputClassName =
@@ -150,7 +159,7 @@ function getColumns(meta: Record<string, any>): ColumnDef<any>[] {
                     type="checkbox"
                     checked={
                         table.getIsAllPageRowsSelected() ||
-                        (table.getIsSomePageRowsSelected() && "indeterminate")
+                        table.getIsSomePageRowsSelected()
                     }
                     onChange={(e) =>
                         table.toggleAllPageRowsSelected(!!e.target.checked)
@@ -194,7 +203,9 @@ function getColumns(meta: Record<string, any>): ColumnDef<any>[] {
                         <PenBox className="text-blue-600 mr-2 h-4 w-4" />
                         <p>ویرایش</p>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => onDelete(row?.original?.id)}
+                    >
                         <Trash className="text-red-600 mr-2 h-4 w-4" />
                         <p>حذف</p>
                     </DropdownMenuItem>
@@ -213,6 +224,8 @@ export function CustomTable({
     page,
     setPage,
     resultPerPage,
+    deleteApiUrl,
+    fetchData,
 }: CustomTableProps) {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -220,8 +233,23 @@ export function CustomTable({
         {}
     );
     const [rowSelection, setRowSelection] = useState({});
-
-    const columns = useMemo(() => getColumns(meta), [meta]);
+    const deleteRecord = useCallback(
+        (id: number, deleteApiUrl: string) => {
+            const endPoint = deleteApiUrl.replace(":id", String(id));
+            console.log("endPoint", endPoint, String(id), id);
+            deleteData({ endPoint: endPoint })
+                .then((data) => {
+                    CustomToast(data?.message, "success");
+                    fetchData();
+                })
+                .catch((err) => console.log(err));
+        },
+        [fetchData]
+    );
+    const columns = useMemo(
+        () => getColumns(meta, (id) => deleteRecord(id, deleteApiUrl)),
+        [meta, deleteApiUrl, deleteRecord]
+    );
 
     const table = useReactTable({
         data,
