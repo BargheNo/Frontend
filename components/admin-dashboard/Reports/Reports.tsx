@@ -37,6 +37,7 @@ const Reports = () => {
     const [panelReports, setPanelReports] = useState<any[]>([]);
     const [maintenanceReports, setMaintenanceReports] = useState<any[]>([]);
     const [panelStatus, setPanelStatus] = useState<string>("");
+    const [maintenanceStatus, setMaintenanceStatus] = useState<string>("");
     const fetchPanelReports = useCallback(() => {
         setLoadingPanel(true);
         getData({
@@ -55,14 +56,14 @@ const Reports = () => {
         setLoadingRepair(true);
         getData({
             endPoint: `/v1/admin/report/maintenance`,
-            params: { status: "1" },
+            params: { status: maintenanceStatus },
         })
             .then((data) => {
                 setMaintenanceReports(data?.data?.data);
             })
             .catch((err) => console.log(err))
             .finally(() => setLoadingRepair(false));
-    }, []);
+    }, [maintenanceStatus]);
 
     const resolveReport = async (reportId: string) => {
         postData({ endPoint: `/v1/admin/report/resolve/${reportId}` })
@@ -288,7 +289,13 @@ const Reports = () => {
         <div className="">
             {/* Maintenance Reports Section */}
             {/* <Header header="گزارش‌های تعمیر و نگهداری" /> */}
-            <FilterSection header="گزارش‌های تعمیر و نگهداری" />
+            <FilterSection
+                header="گزارش‌های تعمیر و نگهداری"
+                fieldName="گزارش"
+                status={maintenanceStatus}
+                setStatus={setMaintenanceStatus}
+                statusesListApiRoute={`/v1/report/status`}
+            />
             {loadingRepair ? (
                 <LoadingSpinner />
             ) : (
