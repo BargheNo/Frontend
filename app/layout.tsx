@@ -43,8 +43,8 @@ export default async function RootLayout({
 								// boxShadow: `-${shadow}px -${shadow}px ${spread}px rgba(255,255,255,0.8), ${shadow}px ${shadow}px ${spread}px rgba(0,0,0,0.2)`,
 								// boxShadow: `inset -4px -4px 10px rgba(255,255,255,0.8), inset 4px 4px 10px rgba(0,0,0,0.1)`,
 								// boxShadow: `inset 2px 2px 5px rgba(0,0,0,0.2), inset -2px -2px 5px rgba(0,0,0,0.2)`,
-								// boxShadow: `inset 2px 2px 5px rgba(0,0,0,0.2), inset -2px -2px 5px rgba(255,255,255,0.8)`,
-								boxShadow: `${shadow}px ${shadow}px ${spread}px rgba(0,0,0,0.2), -${shadow}px -${shadow}px ${spread}px rgba(255,255,255,0.8), inset 2px 2px 5px rgba(0,0,0,0.2), inset -2px -2px 5px rgba(255,255,255,0.8)`,
+								boxShadow: `${shadow}px ${shadow}px ${spread}px rgba(0,0,0,0.2), -${shadow}px -${shadow}px ${spread}px rgba(0,0,0,0.2), inset 2px 2px 5px rgba(0,0,0,0.2), inset -2px -2px 5px rgba(255,255,255,0.8)`,
+								// boxShadow: `${shadow}px ${shadow}px ${spread}px rgba(0,0,0,0.2), -${shadow}px -${shadow}px ${spread}px rgba(255,255,255,0.8), inset 2px 2px 5px rgba(0,0,0,0.2), inset -2px -2px 5px rgba(255,255,255,0.8)`,
 								// boxShadow: `${shadow}px ${shadow}px ${spread}px ${darkOrange}, -${shadow}px -${shadow}px ${spread}px ${lightOrange}, inset 2px 2px 5px ${darkOrange}, inset -2px -2px 5px ${lightOrange}`,
 
 							},

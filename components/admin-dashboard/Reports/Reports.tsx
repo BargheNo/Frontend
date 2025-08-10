@@ -1,6 +1,6 @@
 "use client";
 import styles from "./Reports.module.css";
-import React from "react";
+import React, { useCallback } from "react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
@@ -17,6 +17,18 @@ import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import { getData, postData } from "@/src/services/apiHub";
 import useHasPermission from "@/src/functions/hasPermission";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
+import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
+import FilterSection from "@/components/FilterSection/FilterSection";
 
 const Reports = () => {
     const hasRespondReportPermission = useHasPermission("report.respond");
@@ -24,26 +36,34 @@ const Reports = () => {
     const [loadingPanel, setLoadingPanel] = useState<boolean>(true);
     const [panelReports, setPanelReports] = useState<any[]>([]);
     const [maintenanceReports, setMaintenanceReports] = useState<any[]>([]);
-    const fetchPanelReports = () => {
-        getData({ endPoint: `/v1/admin/report/panel`, params: { status: "1" } })
+    const [panelStatus, setPanelStatus] = useState<string>("");
+    const [maintenanceStatus, setMaintenanceStatus] = useState<string>("");
+    const fetchPanelReports = useCallback(() => {
+        setLoadingPanel(true);
+        getData({
+            endPoint: `/v1/admin/report/panel`,
+            params: { status: panelStatus },
+        })
             .then((data) => {
+                // console.log(data?.data?.data);
                 setPanelReports(data?.data?.data);
             })
             .catch((err) => console.log(err))
             .finally(() => setLoadingPanel(false));
-    };
+    }, [panelStatus]);
 
-    const fetchMaintenanceReports = () => {
+    const fetchMaintenanceReports = useCallback(() => {
+        setLoadingRepair(true);
         getData({
             endPoint: `/v1/admin/report/maintenance`,
-            params: { status: "1" },
+            params: { status: maintenanceStatus },
         })
             .then((data) => {
                 setMaintenanceReports(data?.data?.data);
             })
             .catch((err) => console.log(err))
             .finally(() => setLoadingRepair(false));
-    };
+    }, [maintenanceStatus]);
 
     const resolveReport = async (reportId: string) => {
         postData({ endPoint: `/v1/admin/report/resolve/${reportId}` })
@@ -58,7 +78,7 @@ const Reports = () => {
     useEffect(() => {
         fetchPanelReports();
         fetchMaintenanceReports();
-    }, []);
+    }, [fetchPanelReports, fetchMaintenanceReports]);
 
     const MaintenanceReport = ({
         id,
@@ -85,7 +105,8 @@ const Reports = () => {
     }) => {
         return (
             <>
-                <Header header="گزارشات" />
+                {/* <Header header="گزارشات" /> */}
+                {/* <FilterSection header="گزارشات" /> */}
                 <div className="flex flex-row justify-between w-full h-full gap-10 py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 bg-[#F0EDEF] first:border-t-0 min-h-[250px]">
                     {/* Right section */}
                     <div className="w-5/6 flex flex-col justify-around relative">
@@ -202,21 +223,21 @@ const Reports = () => {
                                 شرکت: {Panel?.corporation?.name}
                             </p>
                         </div>
-                        <div className="flex flex-row gap-2">
+                        {/* <div className="flex flex-row gap-2">
                             <CircleAlert className="text-orange-500"></CircleAlert>
                             <p className="max-w-[600px] break-words">
                                 شرح گزارش: {description}
                             </p>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 
                 {/* Left section */}
-                <div className="w-1/5 pr-5 flex flex-col justify-around relative">
+                <div className="w-1/5 pr-5 flex flex-col justify-around relative gap-2">
                     <div
-                        className={`flex flex-col items-center ${styles.status} py-4 gap-2 relative`}
+                        className={`flex flex-col items-center ${styles.status} py-4 gap-2 relative h-full`}
                     >
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 h-full">
                             <span className="font-bold">{Status}</span>
                             <div
                                 className={`h-4 w-4 rounded-full ${
@@ -225,19 +246,39 @@ const Reports = () => {
                             />
                         </div>
                     </div>
-                    {hasRespondReportPermission && Status === "بررسی نشده" && (
-                        <div
-                            className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
-                        >
-                            <button
-                                className="cursor-pointer"
-                                onClick={() => resolveReport(id)}
-                            >
-                                بررسی
-                            </button>
+                    {hasRespondReportPermission && Status !== "بررسی شده" && (
+                        <Dialog>
+                            <DialogTrigger>
+                                <div
+                                    className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
+                                >
+                                    <button
+                                        className="cursor-pointer"
+                                        // onClick={() => resolveReport(id)}
+                                    >
+                                        مشاهده جزئیات
+                                    </button>
 
-                            <ArrowLeft />
-                        </div>
+                                    <ArrowLeft />
+                                </div>
+                            </DialogTrigger>
+                            <DialogContent className="rtl">
+                                <DialogHeader>
+                                    <DialogTitle>جزئیات گزارش</DialogTitle>
+                                </DialogHeader>
+                                <DialogDescription>
+                                    {description}
+                                </DialogDescription>
+                                <DialogFooter>
+                                    <CancelButton>بازگشت</CancelButton>
+                                    <SubmitButton
+                                        onClick={() => resolveReport(id)}
+                                    >
+                                        بررسی شد
+                                    </SubmitButton>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
                     )}
                 </div>
             </div>
@@ -245,9 +286,16 @@ const Reports = () => {
     };
 
     return (
-        <div className="space-y-12 ">
+        <div className="">
             {/* Maintenance Reports Section */}
-            <Header header="گزارش‌های تعمیر و نگهداری" />
+            {/* <Header header="گزارش‌های تعمیر و نگهداری" /> */}
+            <FilterSection
+                header="گزارش‌های تعمیر و نگهداری"
+                fieldName="گزارش"
+                status={maintenanceStatus}
+                setStatus={setMaintenanceStatus}
+                statusesListApiRoute={`/v1/report/status`}
+            />
             {loadingRepair ? (
                 <LoadingSpinner />
             ) : (
@@ -277,7 +325,14 @@ const Reports = () => {
             )}
 
             {/* Panel Reports Section */}
-            <Header header="گزارش‌های پنل" className="mt-8" />
+            {/* <Header header="گزارش‌های پنل" className="mt-8" /> */}
+            <FilterSection
+                header="گزارش‌های پنل"
+                fieldName="گزارش"
+                status={panelStatus}
+                setStatus={setPanelStatus}
+                statusesListApiRoute={`/v1/report/status`}
+            />
             {loadingPanel ? (
                 <LoadingSpinner />
             ) : (
@@ -290,9 +345,10 @@ const Reports = () => {
                                     id={report.id}
                                     description={report.description}
                                     Status={
-                                        report.status === "resolved"
-                                            ? "بررسی شده"
-                                            : "بررسی نشده"
+                                        report.status
+                                        // report.status === "درحال بررسی"
+                                        //     ? "بررسی نشده"
+                                        //     : "بررسی شده"
                                     }
                                     Panel={report.panel}
                                 />

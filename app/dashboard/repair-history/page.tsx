@@ -157,6 +157,7 @@ const Page = () => {
     };
 
     const recentRepairs = getRecentRepairs(repairItems);
+    console.log("recentRepairs", recentRepairs);
     const sliderItems = recentRepairs.map((item: RepairHistoryItem) => ({
         text: item.subject,
         date: item.createdAt,

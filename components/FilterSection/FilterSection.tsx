@@ -78,7 +78,7 @@ export default function FilterSection({
             getData({ endPoint: statusesListApiRoute })
                 .then((res) => {
                     setStatuses(res?.data);
-                    console.log(res?.data);
+                    // console.log(res?.data);
                     if (columnsListApiRoute) {
                         getData({ endPoint: columnsListApiRoute })
                             .then((res2) => {
