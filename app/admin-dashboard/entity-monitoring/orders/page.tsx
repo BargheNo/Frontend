@@ -21,32 +21,44 @@ import { getData } from "@/src/services/apiHub";
 import { CustomTable } from "@/components/Custom/CustomTable/CustomTable";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 import FilterSection from "@/components/FilterSection/FilterSection";
+import CustomPagination from "@/components/Custom/CustomPagination/CustomPagination";
 
 export default function Orders() {
     const [orderlist, setOrderList] = useState<getOrder[]>([]);
-    // const [status, setStatus] = useState<number>(5);
-
     const [status, setStatus] = useState<string>("");
     const [loading, setLoading] = useState(true);
-    const orderStatusTypeMap = {
-        active: "1",
-        expired: "2",
-        cancled: "3",
-        deposited: "4",
-        all: "5",
-    } as const;
+    const [resultPerPage, setResultPerPage] = useState<string>("");
+    const [paginationInfo, setPaginationInfo] = useState<
+        paginationInfoType | undefined
+    >(undefined);
+    const [page, setPage] = useState<number>(1);
+    const [totalPages, setTotalPages] = useState<number>(0);
+
     useEffect(() => {
         getData({
             endPoint: `/v1/admin/installation/request`,
-            params: { status, pageSize: 1000 },
+            params: { status, pageSize: 10000000 },
         })
             .then((res) => {
                 console.log(res?.data);
                 setOrderList(res?.data?.data);
+                setPaginationInfo(res?.data?.pagination);
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
     }, [status]);
+
+    useEffect(() => {
+        if (paginationInfo?.totalItems) {
+            setTotalPages(
+                Math.ceil(
+                    paginationInfo?.totalItems /
+                        Number(resultPerPage !== "" ? resultPerPage : "10")
+                )
+            );
+        }
+        // paginationInfo && ;
+    }, [paginationInfo, resultPerPage]);
     const meta = {
         name: { label: "نام" },
         status: { label: "وضعیت" },
@@ -63,10 +75,25 @@ export default function Orders() {
                 fieldName="درخواست"
                 status={status}
                 setStatus={setStatus}
-                // resultPerPage={resultPerPage}
-                // setResultPerPage={setResultPerPage}
+                resultPerPage={resultPerPage}
+                setResultPerPage={setResultPerPage}
+                setPage={setPage}
             />
-            <CustomTable data={orderlist} meta={meta} loading={loading} />
+            <CustomTable
+                data={orderlist}
+                meta={meta}
+                loading={loading}
+                page={page}
+				setPage={setPage}
+                resultPerPage={resultPerPage !== "" ? resultPerPage : "10"}
+            />
+            <CustomPagination
+                currentPage={page}
+                setCurrentPage={setPage}
+                paginationInfo={{
+                    totalPages: totalPages,
+                }}
+            />
             {/* <>
                 <div className="flex flex-col mt-10">
                     <Header className="px-20" header="سفارش‌ها" />
