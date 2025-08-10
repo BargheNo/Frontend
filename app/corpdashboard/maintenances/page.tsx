@@ -18,7 +18,7 @@ export default function Page() {
     );
     const [repairItems, setRepairItems] = useState<CorpRepairItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [status, setStatus] = useState<string>("7");
+    const [status, setStatus] = useState<string>("");
 
     const [resultPerPage, setResultPerPage] = useState<string>("");
     const [paginationInfo, setPaginationInfo] = useState<

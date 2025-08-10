@@ -166,26 +166,26 @@ export const AdminNavItems = [
 ];
 
 export const AdminNavItemsMonitoring: NavItem[] = [
-	{ name: "سفارشات", path: "/admin-dashboard/orders", icon: <Layers /> },
+	{ name: "سفارشات", path: "/admin-dashboard/entity-monitoring/orders", icon: <Layers /> },
 	{
 		name: "پیشنهادات",
-		path: "/admin-dashboard/bids",
+		path: "/admin-dashboard/entity-monitoring/bids",
 		icon: <FilePlus />,
 	},
 	{
 		name: "تعمیرات",
-		path: "/admin-dashboard/maintenance",
+		path: "/admin-dashboard/entity-monitoring/maintenance",
 		icon: <History />,
 	},
 	{
 		name: "پنل‌ها",
-		path: "/admin-dashboard/panels",
+		path: "/admin-dashboard/entity-monitoring/panels",
 		RNPName: "panel.viewAll",
 		icon: <BarChart />,
 	},
 	{
 		name: "کارکنان شرکت",
-		path: "/admin-dashboard/corp-staff",
+		path: "/admin-dashboard/entity-monitoring/corp-staff",
 
 		icon: <MessageSquare />,
 	},

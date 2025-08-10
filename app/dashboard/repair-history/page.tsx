@@ -106,7 +106,7 @@ const Page = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
     // const [statuses, setStatuses] = useState<status[] | null>(null);
-    const [status, setStatus] = useState<string>("7");
+    const [status, setStatus] = useState<string>("");
     const [resultPerPage, setResultPerPage] = useState<string>("");
 
     const [paginationInfo, setPaginationInfo] = useState<

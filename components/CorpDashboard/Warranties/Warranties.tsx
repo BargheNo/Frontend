@@ -9,14 +9,6 @@ import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner.t
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound.tsx";
 import FilterSection from "@/components/FilterSection/FilterSection.tsx";
 
-const resultPerPages = [
-    { id: 4, name: "4" },
-    { id: 10, name: "10" },
-    { id: 20, name: "20" },
-    { id: 50, name: "50" },
-    { id: 100, name: "100" },
-];
-
 const Warranties = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [warrantyData, setWarrantyData] = useState<Warranty[]>([]);
@@ -24,8 +16,8 @@ const Warranties = () => {
     const [loadingGuarantees, setLoadingGuarantees] = useState(true);
 
     // const [statuses, setStatuses] = useState<status[] | null>(null);
-    const [status, setStatus] = useState<string>("3");
-    const [resultPerPage, setResultPerPage] = useState<string>("");
+    const [status, setStatus] = useState<string>("");
+    // const [resultPerPage, setResultPerPage] = useState<string>("");
     const corpId = useSelector((state: RootState) => state.user.corpId);
     useEffect(() => {
         setLoadingGuarantees(true);
@@ -33,7 +25,7 @@ const Warranties = () => {
 
         getData({
             endPoint: `/v1/corp/${corpId}/guarantee`,
-            params: { status, pageSize: resultPerPage },
+            params: { status },
         })
             .then((data) => {
                 console.log(data);
@@ -49,7 +41,7 @@ const Warranties = () => {
                 console.log(err);
             })
             .finally(() => setLoadingGuarantees(false));
-    }, [dispatch, status, corpId, resultPerPage]);
+    }, [dispatch, status, corpId]);
 
     // if (loadingGuarantees) {
     // 	return <LoadingSpinner />;
@@ -95,9 +87,9 @@ const Warranties = () => {
                 statusesListApiRoute={`/v1/guarantee/status`}
                 status={status}
                 setStatus={setStatus}
-                resultPerPage={resultPerPage}
-                setResultPerPage={setResultPerPage}
-                resultPerPages={resultPerPages}
+                // resultPerPage={resultPerPage}
+                // setResultPerPage={setResultPerPage}
+                // resultPerPages={resultPerPages}
             />
             {loadingGuarantees ? (
                 <LoadingSpinner />

@@ -95,7 +95,7 @@ const TicketSupportPage = () => {
         null
     );
     const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const [status, setStatus] = useState<string>("4");
+    const [status, setStatus] = useState<string>("");
     const [resultPerPage, setResultPerPage] = useState<string>("");
     const [paginationInfo, setPaginationInfo] = useState<
         paginationInfoType | undefined

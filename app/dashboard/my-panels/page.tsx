@@ -35,7 +35,7 @@ const Settings = () => {
     >(undefined);
     const [page, setPage] = useState<number>(1);
     const [panels, setPanels] = useState<PanelProps[]>([]);
-    const [status, setStatus] = useState<string>("4");
+    const [status, setStatus] = useState<string>("");
     const [resultPerPage, setResultPerPage] = useState<string>("");
     const [sortBy, setSortBy] = useState<string>("");
     const [asc, setAsc] = useState<boolean>(false);

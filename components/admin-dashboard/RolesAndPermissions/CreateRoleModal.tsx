@@ -61,7 +61,7 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
 	const getAllPermissions = async () => {
 		getData({ endPoint: `/v1/admin/permissions` })
 			.then((data) => {
-				setAllPermissions(data.data);
+				setAllPermissions(data?.data?.data);
 			})
 			.catch((err) => console.log(err));
 	};
@@ -99,7 +99,7 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
 	// }, [isOpen]);
 
 	// Group permissions by category
-	const permissionsByCategory = allPermissions.reduce((acc, permission) => {
+	const permissionsByCategory = allPermissions?.reduce((acc, permission) => {
 		if (!acc[permission.category]) {
 			acc[permission.category] = [];
 		}

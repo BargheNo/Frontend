@@ -3,26 +3,24 @@ import { editPanel } from "../types/Entity-Monitoring/panelType";
 import { baseURL, deleteData, getData, putData } from "./apiHub";
 
 class OrderService {
-    getOrdersList(status:number,limit:number,offset:number) {
+    getOrdersList(status: number, limit: number, offset: number) {
         return getData({
-            endPoint:`${baseURL}/v1/admin/installation/request?status=${status}&limit=${limit}&offset=${offset}`,
+            endPoint: `${baseURL}/v1/admin/installation/request?status=${status}`,
         });
     }
 
-    deleteOrder(requestId:number){
+    deleteOrder(requestId: number) {
         return deleteData({
-            endPoint:`${baseURL}/v1/admin/installation/request/${requestId}`
+            endPoint: `${baseURL}/v1/admin/installation/request/${requestId}`,
         });
     }
 
-    updateOrder(requestId:number,editted:editOrder){
+    updateOrder(requestId: number, editted: editOrder) {
         return putData({
-            endPoint:`${baseURL}/v1/admin/installation/request/${requestId}`,
+            endPoint: `${baseURL}/v1/admin/installation/request/${requestId}`,
             data: editted,
-        })
+        });
     }
 }
-
-
 
 export default new OrderService();
