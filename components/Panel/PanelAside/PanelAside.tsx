@@ -82,7 +82,7 @@ const PanelAside = ({
     useEffect(() => {
         getData({ endPoint: `/v1/user/corps` })
             .then((res) => {
-                console.log(res?.data);
+                // console.log(res?.data);
                 setCorps(res?.data);
                 changeCorp(res?.data?.[0]?.id);
                 // setCorp(String(res?.data?.[0]?.id));
