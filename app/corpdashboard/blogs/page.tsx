@@ -70,7 +70,13 @@ export default function Page() {
                             imageUrl={blog?.coverImage}
                             title={blog?.title}
                             description={blog?.description}
-                            writer={blog?.author}
+                            writer={
+                                typeof blog?.author === "string"
+                                    ? blog?.author
+                                    : blog?.author
+                                    ? `${blog.author.firstName} ${blog.author.lastName}`
+                                    : "ناشناس"
+                            }
                             date={blog?.createdAt}
                             likeCount={blog?.likeCount}
                             status={blog?.status}

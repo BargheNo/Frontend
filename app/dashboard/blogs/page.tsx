@@ -61,7 +61,9 @@ export default function Page() {
                                     title={blog.title}
                                     description={blog.description}
                                     writer={
-                                        blog.author ?? blog.corporation?.name
+                                        typeof blog.author === "object"
+                                            ? `${blog.author.firstName} ${blog.author.lastName}`
+                                            : blog.author ?? blog.corporation?.name ?? ""
                                     }
                                     date={blog.createdAt}
                                     likeCount={blog.likeCount}
