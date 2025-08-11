@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useCallback } from "react";
 import styles from "./RolesAndPermissions.module.css";
 import { User, SquareCheckBig, Trash2, Pencil } from "lucide-react";
 import { useSelector } from "react-redux";
@@ -16,6 +16,15 @@ import { Badge } from "@/components/ui/badge";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 import { deleteData, getData } from "@/src/services/apiHub";
 import useHasPermission from "@/src/functions/hasPermission";
+import FilterSection from "@/components/FilterSection/FilterSection";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import CustomPagination from "@/components/Custom/CustomPagination/CustomPagination";
 
 const initialValuesForm = { name: "", permissionIDs: [] };
 
@@ -47,16 +56,29 @@ const RolesAndPermissions = () => {
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentRole, setCurrentRole] = useState<Role | null>(null);
+    const [permissionFilter, setPermissionFilter] = useState<string>("");
 
-    const getRoles = () => {
-        setLoading(true);
-        getData({ endPoint: `/v1/admin/roles` })
-            .then((data) => {
-                setRoles(data?.data?.data);
+    const [resultPerPage, setResultPerPage] = useState<string>("");
+    const [paginationInfo, setPaginationInfo] = useState<
+        paginationInfoType | undefined
+    >(undefined);
+    const [page, setPage] = useState<number>(1);
+
+    const getRoles = useCallback(() => {
+        if (permissionFilter === "all" || permissionFilter === "") {
+            setLoading(true);
+            getData({
+                endPoint: `/v1/admin/roles`,
+                params: { pageSize: resultPerPage, page },
             })
-            .catch((err) => console.log(err))
-            .finally(() => setLoading(false));
-    };
+                .then((data) => {
+                    setRoles(data?.data?.data);
+                    setPaginationInfo(data?.data?.pagination);
+                })
+                .catch((err) => console.log(err))
+                .finally(() => setLoading(false));
+        }
+    }, [page, resultPerPage, permissionFilter]);
     const deleteRole = async (roleToDeleteId: string) => {
         setLoading(true);
         setDeletingId(roleToDeleteId);
@@ -73,23 +95,90 @@ const RolesAndPermissions = () => {
     };
 
     const getAllPermissions = () => {
-        getData({ endPoint: `/v1/admin/permissions` })
+        getData({
+            endPoint: `/v1/admin/permissions`,
+            params: { pageSize: 1000000 },
+        })
             .then((data) => {
-                console.log(data?.data);
-                setAllPermissions(data?.data);
+                // console.log(data?.data?.data);
+                setAllPermissions(data?.data?.data);
             })
             .catch((err) => console.log(err));
     };
+    const getRolesByPermission = useCallback(
+        (permissionId: string) => {
+            if (permissionFilter) {
+                setLoading(true);
+                getData({
+                    endPoint: `v1/admin/permissions/${permissionId}/roles`,
+                    params: { pageSize: resultPerPage, page },
+                })
+                    .then((data) => {
+                        console.log(data?.data);
+                        setRoles(data?.data?.data);
+                        setPaginationInfo(data?.data?.pagination);
+                    })
+                    .catch((err) => console.log(err))
+                    .finally(() => setLoading(false));
+            }
+        },
+        [page, resultPerPage, permissionFilter]
+    );
     useEffect(() => {
         getAllPermissions();
         getRoles();
-    }, []);
+    }, [getRoles]);
+
+    useEffect(() => {
+        if (permissionFilter !== "" && permissionFilter !== "all") {
+            getRolesByPermission(permissionFilter);
+        }
+    }, [permissionFilter, getRolesByPermission]);
     return (
         <>
             {hasCreateRolePermission && (
                 <CreateRoleModal onSaveSuccess={getRoles} />
             )}
-            <Header header="نقش‌ها و دسترسی‌ها" />
+            {/* <Header header="نقش‌ها و دسترسی‌ها" /> */}
+            <FilterSection
+                header="نقش‌ها و دسترسی‌ها"
+                resultPerPage={resultPerPage}
+                setResultPerPage={setResultPerPage}
+            >
+                <Select
+                    value={permissionFilter}
+                    onValueChange={(value) => {
+                        console.log(value);
+                        setPermissionFilter(value);
+                        if (value === "all" || value === "") {
+                            getRoles();
+                        }
+                    }}
+                >
+                    <SelectTrigger
+                        dir="rtl"
+                        className={`flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]`}
+                    >
+                        <SelectValue placeholder="فیلتر بر اساس دسترسی" />
+                    </SelectTrigger>
+                    <SelectContent dir="rtl">
+                        <SelectItem value={"all"} className="cursor-pointer">
+                            همه
+                        </SelectItem>
+                        {allPermissions?.map(
+                            (perm: Permission, index: number) => (
+                                <SelectItem
+                                    key={index}
+                                    value={String(perm.id)}
+                                    className="cursor-pointer"
+                                >
+                                    {perm?.description}
+                                </SelectItem>
+                            )
+                        )}
+                    </SelectContent>
+                </Select>
+            </FilterSection>
             <Dialog open={editOpen} onOpenChange={setEditOpen}>
                 <div className="flex flex-col relative bg-[#F0EDEF] text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
                     {loading ? (
@@ -111,7 +200,7 @@ const RolesAndPermissions = () => {
                                                 <User />
                                             </div>
                                             <p className="text-start content-start  text-xl ">
-                                                {role.name}
+                                                {role?.name}
                                             </p>
                                         </div>
                                         <div className="flex flex-row gap-2">
@@ -123,11 +212,11 @@ const RolesAndPermissions = () => {
                                                 dir="rtl"
                                             >
                                                 <p>دسترسی‌ها:</p>
-                                                {role.permissions.length ===
+                                                {role?.permissions?.length ===
                                                 0 ? (
                                                     <p>دسترسی موجود نیست</p>
                                                 ) : (
-                                                    role.permissions.map(
+                                                    role?.permissions?.map(
                                                         (
                                                             permission: Permission,
                                                             index: number
@@ -140,7 +229,7 @@ const RolesAndPermissions = () => {
                                                                     {/* <Dot /> */}
                                                                     <Badge className="bg-fire-orange">
                                                                         {
-                                                                            permission.description
+                                                                            permission?.description
                                                                         }
                                                                     </Badge>
                                                                     {/* <span>
@@ -150,7 +239,7 @@ const RolesAndPermissions = () => {
                                                             )
                                                     )
                                                 )}
-                                                {role.permissions.length >=
+                                                {role?.permissions?.length >=
                                                     5 && (
                                                     <Badge className="bg-fire-orange">
                                                         ...
@@ -178,11 +267,11 @@ const RolesAndPermissions = () => {
                                             <button
                                                 className={`cta-neu-button flex cursor-pointer w-1/8 ${styles.button} items-center content-center justify-center h-1/2 w-1/2 cursor-pointer`}
                                                 onClick={() =>
-                                                    deleteRole(role.id)
+                                                    deleteRole(role?.id)
                                                 }
-                                                key={role.id}
+                                                key={role?.id}
                                             >
-                                                {deletingId === role.id ? (
+                                                {deletingId === role?.id ? (
                                                     <LoadingOnButton />
                                                 ) : (
                                                     <>
@@ -217,6 +306,11 @@ const RolesAndPermissions = () => {
                     />
                 </DialogContent>
             </Dialog>
+            <CustomPagination
+                currentPage={page}
+                setCurrentPage={setPage}
+                paginationInfo={paginationInfo}
+            />
         </>
     );
 };
