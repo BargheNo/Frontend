@@ -44,7 +44,7 @@ jobs:
       continue-on-error: true
       run: |
         touch /tmp/build_output.log
-        docker compose build 2>&1 | sed -n '/Checking validity of types/,$p' > /tmp/build_output.log
+        docker compose build 2>&1 | sed -n '/Checking validity of types/,$p' | sed -r "s/\x1B\[[0-9;]*[JKmsu]//g" > /tmp/build_output.log
         # docker compose build > /tmp/build_output.log 2>&1
 
         PR_TITLE="${{ github.event.pull_request.title || 'Direct Push' }}"
