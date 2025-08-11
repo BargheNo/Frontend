@@ -54,14 +54,12 @@ jobs:
     - name: Send Build Results to Telegram
       continue-on-error: true
       run: |
-        # Get PR information
         PR_TITLE="${{ github.event.pull_request.title || 'Direct Push' }}"
         BRANCH_NAME="${{ github.head_ref || github.ref_name }}"
         COMMIT_SHA="${{ github.sha }}"
         COMMIT_SHA_SHORT="${COMMIT_SHA:0:7}"
         AUTHOR="${{ github.actor }}"
         
-        # Escape HTML entities
         escape_html() {
           echo "$1" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
         }
@@ -72,11 +70,6 @@ jobs:
 
         BUILD_OUTPUT="${{ steps.docker_build.outputs.build_output }}"
         
-        # Debug: Check if build output exists
-        echo "Debug: Build output length: ${#BUILD_OUTPUT}"
-        echo "Debug: Build output preview: ${BUILD_OUTPUT:0:200}"
-      
-        # Clean and truncate output
         if [[ ${#BUILD_OUTPUT} -gt 4000 ]]; then
           BUILD_OUTPUT="${BUILD_OUTPUT:0:4000}
 
@@ -94,11 +87,10 @@ jobs:
         <b>Error details:</b>
         <pre>${BUILD_OUTPUT_ESCAPED}</pre>"
 
-        # Send message to Telegram (without reply)
         curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
           -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
           -d "message_thread_id=${{ secrets.TELEGRAM_BUILD_THREAD_ID }}" \
-          -d "text=$(echo "$MESSAGE" | jq -Rs . | sed 's/^"//;s/"$//')" \
+          --data-urlencode "text=$MESSAGE" \
           -d "parse_mode=HTML" \
           -d "disable_web_page_preview=true" > /dev/null 2>&1
 
