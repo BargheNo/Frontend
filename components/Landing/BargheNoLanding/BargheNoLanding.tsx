@@ -189,6 +189,11 @@ export default function BargheNoLanding() {
                                 makeDefault
                                 position={[0, 1.5, 3]}
                             />
+                            <OrbitControls
+                                minDistance={4} // closest zoom
+                                maxDistance={8} // farthest zoom
+                                enableZoom={true} // make sure zoom is enabled
+                            />
                             <OrbitControls />
                             <ambientLight intensity={0.5} />
                             <directionalLight
