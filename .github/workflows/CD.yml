@@ -82,6 +82,21 @@ jobs:
           Docker image built successfully!"
         else
           BUILD_OUTPUT="${{ steps.docker_build.outputs.build_output }}"
+          
+          # Debug: Check if build output exists
+          echo "Debug: Build output length: ${#BUILD_OUTPUT}"
+          echo "Debug: Build output preview: ${BUILD_OUTPUT:0:200}"
+          
+          # If build output is empty, try to get it from the temp file
+          if [[ -z "$BUILD_OUTPUT" ]] && [[ -f /tmp/build_output.txt ]]; then
+            BUILD_OUTPUT=$(cat /tmp/build_output.txt)
+            echo "Debug: Using temp file, length: ${#BUILD_OUTPUT}"
+          fi
+          
+          # If still empty, provide a generic message
+          if [[ -z "$BUILD_OUTPUT" ]]; then
+            BUILD_OUTPUT="Docker compose build failed, but no detailed error output was captured. Check the GitHub Actions logs for more details."
+          fi
         
           # Clean and truncate output
           if [[ ${#BUILD_OUTPUT} -gt 3000 ]]; then
@@ -102,12 +117,11 @@ jobs:
           <pre>${BUILD_OUTPUT_ESCAPED}</pre>"
         fi
 
-        # Send message to Telegram
+        # Send message to Telegram (without reply)
         curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
           -H "Content-Type: application/json" \
           -d "{
             \"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\",
-            \"message_thread_id\": \"${{ secrets.TELEGRAM_BUILD_THREAD_ID }}\",
             \"text\": $(echo "$MESSAGE" | jq -Rs .),
             \"parse_mode\": \"HTML\",
             \"disable_web_page_preview\": true
