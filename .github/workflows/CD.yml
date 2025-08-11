@@ -74,30 +74,25 @@ jobs:
         BRANCH_NAME_ESCAPED=$(escape_html "$BRANCH_NAME")
         AUTHOR_ESCAPED=$(escape_html "$AUTHOR")
 
-        
-        # if [[ ${#BUILD_OUTPUT} -gt 4000 ]]; then
-        #   BUILD_OUTPUT="${BUILD_OUTPUT:0:4000}
-
-        #   ...[output truncated]"
-        # fi
-        # BUILD_OUTPUT_ESCAPED=$(escape_html "$BUILD_OUTPUT")
-        
-        # MESSAGE="<b>❌ Build Failed</b>
-
-        # <b>🎯 PR:</b> ${PR_TITLE_ESCAPED}
-        # <b>🌿 Branch:</b> ${BRANCH_NAME_ESCAPED}
-        # <b>👤 Author:</b> ${AUTHOR_ESCAPED}
-        # <b>📦 Commit:</b> <code>${COMMIT_SHA_SHORT}</code>
-
-        # <b>Error details:</b>
-        # <pre>${BUILD_OUTPUT_ESCAPED}</pre>"
-
         curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
           -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
           -d "message_thread_id=${{ secrets.TELEGRAM_BUILD_THREAD_ID }}" \
-          --data-urlencode "text=${{ steps.docker_build.outputs.build_output }}" \
-          -d "parse_mode=HTML" \
-          -d "disable_web_page_preview=true" > /dev/null 2>&1
+          --data-urlencode "text=*❌ Build Failed*
+
+            *🎯 PR:* $(echo "$PR_TITLE" | sed -e 's/\\/\\\\/g' -e 's/_/\\_/g' -e 's/\*/\\*/g' -e 's/\[/\\[/g' -e 's/\]/\\]/g' -e 's/(/\\(/g' -e 's/)/\\)/g' -e 's/~/\\~/g' -e 's/`/\\`/g' -e 's/>/\\>/g' -e 's/#/\\#/g' -e 's/+/\\+/g' -e 's/-/\\-/g' -e 's/=/\\=/g' -e 's/|/\\|/g' -e 's/{/\\{/g' -e 's/}/\\}/g' -e 's/./\\./g' -e 's/!/\\!/g') 
+
+            *🌿 Branch:* $(echo "$BRANCH_NAME" | sed -e '...' ) 
+
+            *👤 Author:* $(echo "$AUTHOR" | sed -e '...' ) 
+
+            *📦 Commit:* \`$COMMIT_SHA_SHORT\`  
+
+            *Error details:*
+            \`\`\`
+            $(echo ${{ steps.docker_build.outputs.build_output }} | sed -e '...')
+            \`\`\`" \
+          -d "parse_mode=MarkdownV2" \
+          -d "disable_web_page_preview=true"
 
         echo "Notification sent to Telegram"
 
