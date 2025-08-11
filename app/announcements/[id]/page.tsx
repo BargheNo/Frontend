@@ -11,7 +11,7 @@ export default function Page() {
     const id = params?.id;
     return (
         <PageContainer>
-            <div className="flex flex-col justify-center items-center gap-2 p-5 pt-20 overflow-hidden rtl">
+            <div className="flex flex-col justify-center items-center gap-2 p-3 md:pt-20 overflow-hidden rtl z-30">
                 <ChevronLeft
                     className="self-end ml-8 text-gray-600 cursor-pointer"
                     size={30}

@@ -72,7 +72,6 @@ export default function AddBlogForm({
             if (values.title) formData.append("title", values.title);
             if (values.description)
                 formData.append("description", values.description);
-            formData.append("content", "empty blog");
             if (file) {
                 formData.append("coverImage", file);
             }

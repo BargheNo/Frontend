@@ -5,17 +5,17 @@ import { ChevronLeft } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 
 export default function Page() {
-  const params = useParams();
-  const router = useRouter();
-  const id = params?.id;
-  return (
-    <div className="flex flex-col justify-center items-center gap-2 p-5 overflow-hidden">
-      <ChevronLeft
-        className="self-end text-gray-600 cursor-pointer"
-        size={38}
-        onClick={() => router.back()}
-      />
-      <AnnounceEditor newsID={id as string} onlyView={true} />
-    </div>
-  );
+    const params = useParams();
+    const router = useRouter();
+    const id = params?.id;
+    return (
+        <div className="flex flex-col justify-center items-center gap-2 p-3 m-10 overflow-hidden rtl z-20">
+            <ChevronLeft
+                className="self-end text-gray-600 hover:cursor-pointer z-30"
+                size={33}
+                onClick={() => router.back()}
+            />
+            <AnnounceEditor newsID={id as string} onlyView={true} />
+        </div>
+    );
 }
