@@ -41,7 +41,7 @@ export default function BlogCard({
     description: string;
     writer: string;
     date: string;
-    status?: number;
+    status?: string;
     viewOnly?: boolean;
     likeCount: number;
 }) {
@@ -52,7 +52,7 @@ export default function BlogCard({
     const handleDelete = useMutation({
         mutationFn: () =>
             deleteData({
-                endPoint: `/v1/corp/${corpId}/blog`,
+                endPoint: `/v1/corp/${corpId}/blog/`,
                 data: { postIDs: [Number(blogID)] },
             }),
         onSuccess: (responce) => {
@@ -73,7 +73,7 @@ export default function BlogCard({
                     <>
                         <div>
                             <Dialog>
-                                <DialogContent className="h-[90vh]! p-10">
+                                <DialogContent className="w-[90vw]! max-w-none! p-10 overflow-scroll">
                                     <BlogEditor blogID={blogID} />
                                 </DialogContent>
                                 <ContextMenu>
@@ -120,12 +120,14 @@ export default function BlogCard({
                                                             <div
                                                                 className={cn(
                                                                     "",
-                                                                    status == 1
+                                                                    status ==
+                                                                        "پیش نویس"
                                                                         ? "text-red-500"
                                                                         : "text-green-500"
                                                                 )}
                                                             >
-                                                                {status == 1
+                                                                {status ==
+                                                                "پیش نویس"
                                                                     ? "پیش نویس"
                                                                     : "منتشر شده"}
                                                             </div>
@@ -187,65 +189,91 @@ export default function BlogCard({
                         </div>
                     </>
                 ) : (
-                    <div
-                        className={cn(
-                            "flex flex-col m-5 neo-card rounded-2xl bg-warm-white relative overflow-hidden",
-                            className
-                        )}
-                    >
-                        <div
-                            className="relative z-10 self-center rounded-xl h-[300px] w-full  hover:cursor-pointer"
-                            onClick={() => {
-                                router.push(`./blogs/${blogID}`);
-                            }}
-                        >
-                            <div className="absolute top-0 bottom-0 right-0 left-0 bg-gradient-to-b opacity-40 from-black to-transparent z-20"></div>
-                            <Image
-                                className="object-cover"
-                                src={imageUrl || blogFallback}
-                                alt="Profile picture"
-                                fill={true}
-                            />
-                        </div>
-                        <div className="flex flex-col justify-between">
-                            <div className="flex flex-col gap-4 justify-start items-start p-5">
-                                <div className="flex justify-between w-full">
+                    <Dialog>
+                        <ContextMenu>
+                            <ContextMenuTrigger asChild>
+                                <div
+                                    className={cn(
+                                        "flex flex-col m-5 neo-card rounded-2xl bg-warm-white relative overflow-hidden w-full",
+                                        className
+                                    )}
+                                >
                                     <div
-                                        className="font-bold text-xl short-par hover:cursor-pointer"
+                                        className="relative z-10 self-center rounded-xl h-[300px] w-full hover:cursor-pointer"
                                         onClick={() => {
                                             router.push(`./blogs/${blogID}`);
                                         }}
                                     >
-                                        {title}
-                                    </div>
-                                    <div className="flex gap-1">
-                                        <Heart
-                                            fill="#fb8500"
-                                            className="cursor-pointer"
-                                            color="#fb8500"
+                                        <div className="absolute top-0 bottom-0 right-0 left-0 bg-gradient-to-b opacity-40 from-black to-transparent z-20"></div>
+                                        <Image
+                                            className="object-cover"
+                                            src={imageUrl || blogFallback}
+                                            alt="Profile picture"
+                                            fill={true}
                                         />
-                                        <span>{likeCount}</span>
+                                    </div>
+                                    <div className="flex flex-col justify-between">
+                                        <div className="flex flex-col gap-4 justify-start items-start p-5">
+                                            <div className="flex justify-between w-full">
+                                                <div
+                                                    className="font-bold text-xl short-par hover:cursor-pointer"
+                                                    onClick={() => {
+                                                        router.push(
+                                                            `./blogs/${blogID}`
+                                                        );
+                                                    }}
+                                                >
+                                                    {title}
+                                                </div>
+                                                <div className="flex gap-1">
+                                                    <Heart
+                                                        fill="#fb8500"
+                                                        className="cursor-pointer"
+                                                        color="#fb8500"
+                                                    />
+                                                    <span>{likeCount}</span>
+                                                </div>
+                                            </div>
+
+                                            <div className="text-lg text-gray-700 short-par">
+                                                {description ?? ""}
+                                            </div>
+                                        </div>
+                                        <div className="flex justify-between w-full px-5 pb-2">
+                                            <div className="flex gap-2 justify-between items-center">
+                                                <Calendar
+                                                    size={25}
+                                                    className="text-sunset-orange"
+                                                />
+                                                <span className="block text-center h-5">
+                                                    {DateConverter(date)}
+                                                </span>
+                                            </div>
+                                            <div>{writer}</div>
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div className="text-lg text-gray-700 short-par">
-                                    {description ?? ""}
-                                </div>
-                            </div>
-                            <div className="flex justify-between w-full px-5 pb-2">
-                                <div className="flex gap-2 justify-between items-center">
-                                    <Calendar
-                                        size={25}
-                                        className="text-sunset-orange"
-                                    />
-                                    <span className="block text-center h-5">
-                                        {DateConverter(date)}
-                                    </span>
-                                </div>
-                                <div>{writer}</div>
-                            </div>
-                        </div>
-                    </div>
+                            </ContextMenuTrigger>
+                            <ContextMenuContent
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                }}
+                                className="w-full h-full p-2 bg-warm-white border-0! neo-card flex flex-col gap-2"
+                            >
+                                <button
+                                    className="neo-btn rounded-lg!"
+                                    onClick={() => {
+                                        console.log(
+                                            "Interesting button clicked"
+                                        );
+                                        //TODO add like api call here
+                                    }}
+                                >
+                                    جالب بود
+                                </button>
+                            </ContextMenuContent>
+                        </ContextMenu>
+                    </Dialog>
                 )}
             </>
         );
