@@ -71,7 +71,7 @@ jobs:
         AUTHOR_ESCAPED=$(escape_html "$AUTHOR")
 
         # Determine build status and create message
-        if [[ "${{ steps.docker_build.outcome }}" == "success" ]]; then
+        if [[ "${{ steps.docker_build.outcome }}" == "success" && -n "${{ steps.docker_build.outputs.build_output }}" ]]; then
           MESSAGE="<b>✅ Build Successful</b>
 
           <b>🎯 PR:</b> ${PR_TITLE_ESCAPED}
