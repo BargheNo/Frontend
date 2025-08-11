@@ -43,7 +43,7 @@ jobs:
       id: docker_build
       continue-on-error: true
       run: |
-        touch /tmp/build_output.txt
+        touch /build_output.txt
         OUTPUT="$(docker compose build)"
         echo "$OUTPUT" > /tmp/build_output.txt
 
