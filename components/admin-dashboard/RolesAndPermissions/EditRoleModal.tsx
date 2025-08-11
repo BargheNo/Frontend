@@ -37,14 +37,14 @@ interface EditRoleModalProps {
 	isOpen?: boolean;
 	editOpen?: boolean;
 	setEditOpen?: any;
-	onClose: () => void;
+	// onClose: () => void;
 	role: Role | null;
 	onSaveSuccess: () => void;
 }
 
 const EditRoleModal: React.FC<EditRoleModalProps> = ({
 	editOpen,
-	onClose,
+	// onClose,
 	setEditOpen,
 	role,
 	onSaveSuccess,
@@ -119,7 +119,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 				CustomToast(data?.message, "success");
 				setEditOpen(false);
 				onSaveSuccess();
-				onClose();
+				// onClose();
 			})
 			.catch((err) => {
 				console.log(err);
@@ -215,7 +215,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 			validationSchema={validationSchemaForm}
 			onSubmit={(values) => savePermissions(values)}
 		>
-			<Form>
+			<Form className="flex flex-col gap-4">
 				<DialogHeader>
 					<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
 						افزودن نقش جدید
@@ -305,130 +305,9 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
 					<CancelButton />
 					<SubmitButton loading={isSaving}>ذخیره تغییرات</SubmitButton>
 				</StickyFooter>
-				{/* <div className="sticky bottom-0 bg-[#F1F4FC]">
-					<DialogFooter className="flex justify-end gap-96 mt-6 w-full py-4">
-						<button
-							disabled={isSaving}
-							type="button"
-							onClick={() => setEditOpen(false)}
-							className="px-4 py-2 text-gray-600 border cta-neu-button border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 disabled:opacity-50"
-						>
-							انصراف
-						</button>
-						<button
-							disabled={isLoading || isSaving}
-							className="px-4 py-2 bg-orange-500 cta-neu-button place-content-center items-center text-white rounded-lg hover:bg-orange-600 cursor-pointer disabled:opacity-50 flex gap-2"
-						>
-							{isSaving ? <LoadingOnButton /> : <p>ذخیره</p>}
-						</button>
-					</DialogFooter>
-				</div> */}
 			</Form>
 		</Formik>
 	);
-	// if (!isOpen || !role) return null;
-
-	// return ReactDOM.createPortal(
-	// 	<div
-	// 		className={`fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 rtl ${vazir.className}`}
-	// 	>
-	// 		<div className="bg-white rounded-xl p-6 w-full max-w-4xl max-h-[80vh] overflow-y-auto">
-	// 			<div className="flex justify-between items-center mb-4">
-	// 				<h3 className="text-xl font-bold text-blue-800">
-	// 					ویرایش دسترسی‌های نقش:
-	// 				</h3>
-	// 				<input
-	// 					type="text"
-	// 					value={roleName}
-	// 					onChange={(e) => setRoleName(e.target.value)}
-	// 					placeholder={role.name}
-	// 					className="p-1 border-b border-blue-800 focus:outline-none focus:border-orange-500 text-lg font-bold text-blue-800 w-50 text-center mx-auto block ltr"
-	// 				/>
-	// 				<button
-	// 					onClick={onClose}
-	// 					className="text-gray-500 hover:text-gray-700"
-	// 					disabled={isSaving}
-	// 				>
-	// 					<X size={24} />
-	// 				</button>
-	// 			</div>
-
-	// 			{isLoading ? (
-	// 				<div className="flex justify-center items-center h-40">
-	// 					<Loader2
-	// 						className="animate-spin text-orange-500"
-	// 						size={32}
-	// 					/>
-	// 				</div>
-	// 			) : (
-	// 				<div className="space-y-6">
-	// 					{Object.entries(permissionsByCategory).map(
-	// 						([category, permissions]) => (
-	// 							<div
-	// 								key={category}
-	// 								className={`bg-white p-4 rounded-xl w-full shadow-sm items-center gap-3 rtl ${styles.shadow} min-h-[140px]`}
-	// 							>
-	// 								<h4 className="text-lg text-orange-500 font-semibold mb-3 flex items-center gap-2">
-	// 									<Vote />
-	// 									{category}
-	// 								</h4>
-	// 								<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-	// 									{permissions.map((permission) => (
-	// 										<div
-	// 											key={permission.id}
-	// 											className="flex items-center gap-2"
-	// 										>
-	// 											<input
-	// 												type="checkbox"
-	// 												id={`perm-${permission.id}`}
-	// 												checked={selectedPermissions.includes(
-	// 													permission.id
-	// 												)}
-	// 												onChange={() =>
-	// 													handlePermissionChange(
-	// 														permission.id
-	// 													)
-	// 												}
-	// 												className="w-5 h-5 text-orange-500 rounded focus:ring-orange-400"
-	// 											/>
-	// 											<label
-	// 												htmlFor={`perm-${permission.id}`}
-	// 												className="text-gray-700"
-	// 											>
-	// 												{permission.description}
-	// 											</label>
-	// 										</div>
-	// 									))}
-	// 								</div>
-	// 							</div>
-	// 						)
-	// 					)}
-	// 				</div>
-	// 			)}
-
-	// 			<div className="flex justify-end gap-4 mt-6">
-	// 				<button
-	// 					onClick={onClose}
-	// 					disabled={isSaving}
-	// 					className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
-	// 				>
-	// 					انصراف
-	// 				</button>
-	// 				<button
-	// 					onClick={savePermissions}
-	// 					disabled={isLoading || isSaving}
-	// 					className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50 flex items-center gap-2"
-	// 				>
-	// 					{isSaving && (
-	// 						<Loader2 className="animate-spin" size={18} />
-	// 					)}
-	// 					ذخیره تغییرات
-	// 				</button>
-	// 			</div>
-	// 		</div>
-	// 	</div>,
-	// 	document.body
-	// );
 };
 
 export default EditRoleModal;
