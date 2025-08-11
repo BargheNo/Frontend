@@ -33,17 +33,17 @@ const validationSchemaForm = Yup.object({
     permissionIDs: Yup.array().of(Yup.number()),
 });
 
-type Permission = {
-    id: number;
-    name: string;
-    description: string;
-    category: string;
-};
-type Role = {
-    id: string;
-    name: string;
-    permissions: Permission[];
-};
+// type Permission = {
+//     id: number;
+//     name: string;
+//     description: string;
+//     category: string;
+// };
+// type Role = {
+//     id: string;
+//     name: string;
+//     permissions: Permission[];
+// };
 
 const RolesAndPermissions = () => {
     const hasCreateRolePermission = useHasPermission("user.createRole");
@@ -173,6 +173,7 @@ const RolesAndPermissions = () => {
                                 role={role}
                                 getRoles={getRoles}
                                 setLoading={setLoading}
+                                allPermissions={allPermissions}
                             />
                             {/* <div
                                 key={index}

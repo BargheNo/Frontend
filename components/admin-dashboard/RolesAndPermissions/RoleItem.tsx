@@ -13,10 +13,12 @@ export default function RoleItem({
     role,
     getRoles,
     setLoading,
+    allPermissions,
 }: {
     role: any;
     getRoles: () => void;
     setLoading: any;
+    allPermissions: Permission[];
 }) {
     const [editOpen, setEditOpen] = useState<boolean>(false);
     const editRolePermission = useHasPermission("user.manageRolePermissions");
@@ -106,7 +108,8 @@ export default function RoleItem({
                             className="w-full sm:min-w-[750px] mx-auto no-scrollbar p-4 dialog-width overflow-auto pb-0 max-h-[90vh] h-[90vh] overflow-y-auto rtl"
                         >
                             <EditRoleModal
-                                editOpen={editOpen}
+                                // editOpen={editOpen}
+                                allPermissions={allPermissions}
                                 setEditOpen={setEditOpen}
                                 // onClose={() => setIsModalOpen(false)}
                                 role={role}
