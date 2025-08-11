@@ -1,7 +1,14 @@
 "use client";
 import React, { useCallback } from "react";
 import styles from "./RolesAndPermissions.module.css";
-import { User, SquareCheckBig, Trash2, Pencil } from "lucide-react";
+import {
+    User,
+    SquareCheckBig,
+    Trash2,
+    Pencil,
+    Search,
+    CheckIcon,
+} from "lucide-react";
 import { useSelector } from "react-redux";
 
 import * as Yup from "yup";
@@ -23,8 +30,23 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
 import CustomPagination from "@/components/Custom/CustomPagination/CustomPagination";
 import RoleItem from "./RoleItem";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const initialValuesForm = { name: "", permissionIDs: [] };
 
@@ -51,6 +73,8 @@ const RolesAndPermissions = () => {
     const [allPermissions, setAllPermissions] = useState<Permission[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [permissionFilter, setPermissionFilter] = useState<string>("");
+    const [open, setOpen] = React.useState(false);
+    // const [value, setValue] = React.useState("");
 
     const [resultPerPage, setResultPerPage] = useState<string>("");
     const [paginationInfo, setPaginationInfo] = useState<
@@ -125,7 +149,80 @@ const RolesAndPermissions = () => {
                 resultPerPage={resultPerPage}
                 setResultPerPage={setResultPerPage}
             >
-                <Select
+                <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                        <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={open}
+                            className="min-w-40 relative rtl bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] justify-between gap-2"
+                        >
+                            {permissionFilter === "all" ? "همه" : ""}
+                            {permissionFilter
+                                ? allPermissions.find(
+                                      (perm) =>
+                                          perm.id === Number(permissionFilter)
+                                  )?.description
+                                : "فیلتر بر اساس دسترسی"}
+                            {/* <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" /> */}
+                            <Search className="shrink-0 opacity-50" />
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full p-0">
+                        <Command>
+                            <CommandInput placeholder="جستجوی دسترسی‌ها..." />
+                            <CommandList className="no-scrollbar">
+                                <CommandEmpty>
+                                    هیچ دسترسی پیدا نشد.
+                                </CommandEmpty>
+                                <CommandGroup>
+                                    <CommandItem
+                                        value={"all"}
+                                        onSelect={() => {
+                                            setPermissionFilter(String("all"));
+                                            setOpen(false);
+                                        }}
+                                    >
+                                        <CheckIcon
+                                            className={cn(
+                                                "mr-2 h-4 w-4",
+                                                permissionFilter === "all"
+                                                    ? "opacity-100"
+                                                    : "opacity-0"
+                                            )}
+                                        />
+                                        {"همه"}
+                                    </CommandItem>
+                                    {allPermissions.map((perm: Permission) => (
+                                        <CommandItem
+                                            key={perm?.id}
+                                            value={String(perm?.description)}
+                                            onSelect={() => {
+                                                setPermissionFilter(
+                                                    String(perm?.id)
+                                                );
+
+                                                setOpen(false);
+                                            }}
+                                        >
+                                            <CheckIcon
+                                                className={cn(
+                                                    "mr-2 h-4 w-4",
+                                                    permissionFilter ===
+                                                        String(perm?.id)
+                                                        ? "opacity-100"
+                                                        : "opacity-0"
+                                                )}
+                                            />
+                                            {perm?.description}
+                                        </CommandItem>
+                                    ))}
+                                </CommandGroup>
+                            </CommandList>
+                        </Command>
+                    </PopoverContent>
+                </Popover>
+                {/* <Select
                     value={permissionFilter}
                     onValueChange={(value) => {
                         console.log(value);
@@ -157,7 +254,7 @@ const RolesAndPermissions = () => {
                             )
                         )}
                     </SelectContent>
-                </Select>
+                </Select> */}
             </FilterSection>
             <div className="flex flex-col relative bg-[#F0EDEF] text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
                 {loading ? (
