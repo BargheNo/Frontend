@@ -77,7 +77,7 @@ const PanelCard = ({
 
 	const getStatusColor = () => {
 		if (status === "فعال")
-			return "bg-gradient-to-br from-green-400 to-green-500 border-1 border-gray-100/50 shadow-sm shadow-green-500";
+			return " bg-gradient-to-br from-green-400 to-green-500 border-1 border-gray-100/50 shadow-sm shadow-green-500";
 		if (status === "در حال نصب")
 			return "bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-yellow-500";
 		if (status === "غیر فعال")
@@ -103,13 +103,13 @@ const PanelCard = ({
 					</div>
 
 					{/* MAIN CONTENT DIV */}
-					<div className="flex flex-col-reverse sm:flex-row-reverse justify-between w-full mb-6 gap-4">
+					<div className="flex flex-col-reverse md:flex-col-reverse lg:flex-row-reverse sm:flex-row-reverse justify-between w-full mb-6 gap-4">
 						{/* LEFT SIDE - BUTTONS */}
-						<div className="flex flex-row sm:flex-col gap-5 sm:w-[20%] lg:w-[15%]">
+						<div className="flex flex-row md:flex-row lg:flex-col sm:flex-col gap-5 md:px-20">
 							<Dialog open={open} onOpenChange={setOpen}>
 								<DialogTrigger asChild>
 									<button className="w-full flex items-center justify-evenly bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
-										<span className="font-medium">
+										<span className="font-medium text-nowrap">
 											گزارش مشکل
 										</span>
 										<AlertCircle className="mr-2 w-4 h-4" />
@@ -162,7 +162,7 @@ const PanelCard = ({
 							</Dialog>
 							<Link href={`my-panels/123`} className="w-full">
 								<button className="w-full flex items-center justify-evenly bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
-									<span className="font-medium">
+									<span className="font-medium text-nowrap">
 										مدیریت پنل
 									</span>
 									<MoveLeft className="mr-2 w-4 h-4" />
@@ -171,7 +171,7 @@ const PanelCard = ({
 						</div>
 
 						{/* RIGHT SIDE - STATS */}
-						<div className="grid grid-cols-2 sm:grid-cols-4 gap-6 w-full sm:w-[80%] lg:w-[85%]">
+						<div className="grid grid-cols-2 md:m-auto md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-6 w-full sm:w-[80%] lg:w-[85%]">
 							<div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
 								<div className="flex items-center">
 									<PanelIconWithBackground
@@ -259,7 +259,7 @@ const PanelCard = ({
 										<div
 											className={`h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
 										/>
-										<span className="text-sm font-medium text-gray-600">
+										<span className="font-xl  text-gray-600">
 											{status}
 										</span>
 									</div>
