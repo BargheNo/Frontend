@@ -109,7 +109,7 @@ const CustomerRepairCard = ({
         <div
             className={`${className} w-full border-t-1 border-gray-300 first:border-t-0`}
         >
-            <div className="flex flex-col md:flex-row justify-between gap-6 w-full h-full bg-[#F0EDEF] p-5 overflow-hidden relative">
+            <div className="flex flex-col lg:flex-row justify-between gap-6 w-full h-full bg-[#F0EDEF] p-5 overflow-hidden relative">
                 {/* Left Section: Repair Details */}
                 <div className="flex flex-col justify-between w-full z-10">
                     <div className="space-y-3 w-full">
@@ -176,8 +176,8 @@ const CustomerRepairCard = ({
 
                 {/* Right Section: Status and Action Button */}
                 <div className="flex flex-row md:flex-col justify-between md:justify-around gap-4 items-center z-10 min-w-36 mt-6 md:mt-0">
-                    <div className="flex flex-col gap-4 w-full">
-                        <div className="flex flex-row-reverse items-center justify-center gap-2 p-3 inset-neu-container !w-full">
+                    <div className="flex flex-col gap-4 md:w-30 w-30">
+                        <div className="flex flex-row-reverse items-center justify-center gap-2 p-3 md:h-20 inset-neu-container w-full">
                             <div
                                 className={`h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
                             ></div>
@@ -186,7 +186,7 @@ const CustomerRepairCard = ({
                             </span>
                         </div>
                     </div>
-                    <div className="w-full">
+                    <div className="lg:w-full md:w-60">
                         <button 
                             className="flex items-center justify-center cta-neu-button !rounded-2xl"
                             onClick={onDetailsClick}

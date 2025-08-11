@@ -54,7 +54,7 @@ export default function LiveChart(): JSX.Element {
 				offsetY: 10,
 				align: "right",
 				style: {
-					fontSize: "24px",
+					fontSize: window.innerWidth<768? "15px":"24px",
 					color: "#333",
 					fontFamily: "vazir",
 					fontWeight: "bold",

@@ -23,9 +23,9 @@ export default function Page() {
 		}
 	};
 	return (
-		<div className="bg-white h-screen flex w-screen">
-			<div className="flex items-center w-1/2 mx-auto">
-				<div className="my-auto flex h-full px-16">
+		<div className="bg-white h-screen md:-ml-12 flex md:flex-row flex-col w-screen">
+			<div className="flex items-center md:w-1/2 mx-auto ">
+				<div className="my-auto flex h-full md:px-10">
 					<Image
 						src={panel}
 						alt="solar-panel-corp"
@@ -33,11 +33,11 @@ export default function Page() {
 					/>
 				</div>
 			</div>
-			<div className="w-1/2 flex flex-col items-center m-auto gap-4">
-				<h1 className="vazir-bold text-6xl flex place-self-center place-content-center w-full text-right rtl">
+			<div className="w-1/2 flex flex-col items-center m-auto md:mt-auto -mt-1 gap-4">
+				<h1 className="vazir-bold md:text-4xl text-2xl text-nowrap flex place-self-center place-content-center w-full text-right rtl">
 					در برق نو فروشنده شوید!
 				</h1>
-				<p className="vazir text-xl flex place-self-center place-content-center w-full text-right rtl">
+				<p className="vazir md:text-xl text-l text-nowrap flex place-self-center place-content-center w-full md:text-right text-center rtl">
 					تنها در برق نو به همه نقاط ایران خدمات رسانی کنید
 				</p>
 				<Link
@@ -47,9 +47,9 @@ export default function Page() {
 				>
 					<button
 						data-test="register-corp"
-						className="rtl w-2/5 place-self-center rounded-full flex justify-center gap-2 hover:cursor-pointer shadow-md hover:scale-105 items-center place-content-center cursor-pointer hover:shadow-lg transition duration-300 text-white p-4 font-bold bg-gradient-to-r from-[#EB4132] to-[#DD392B]"
+						className="rtl md:w-2/5 place-self-center rounded-full flex justify-center gap-2 hover:cursor-pointer shadow-md hover:scale-105 items-center place-content-center cursor-pointer hover:shadow-lg transition duration-300 text-white p-4 font-bold bg-gradient-to-r from-[#EB4132] to-[#DD392B]"
 					>
-						<span className={`vazir text-2xl`}>ثبت نام شرکت</span>
+						<span className={`vazir md:text-2xl text-xl text-nowrap`}>ثبت نام شرکت</span>
 						<ArrowLeft />
 					</button>
 				</Link>
