@@ -1,10 +1,16 @@
 "use client";
 import AddComponent from "@/components/AddComponent/AddComponent";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import AddAnnounceForm from "./AddAnnounceForm";
 import AnnounceEditor from "../AnnounceEditor/AnnounceEditor";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 export default function AddAnnounce() {
     const [step, setStep] = useState(0);
@@ -29,6 +35,9 @@ export default function AddAnnounce() {
                         : "w-[80vw]! max-w-none! h-[80vh]! p-8 overflow-scroll"
                 )}
             >
+                <DialogTitle></DialogTitle>
+                <DialogDescription></DialogDescription>
+
                 {step === 0 ? (
                     <AddAnnounceForm
                         setAnnounceID={setAnnounceID}
