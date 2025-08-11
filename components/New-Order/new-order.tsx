@@ -191,7 +191,7 @@ export default function Neworder({
 				>
 					{({ setFieldValue, values, errors, touched }) => (
 						<Form className="rtl">
-							<div className="flex flex-col items-end px-6 gap-4 h-auto">
+							<div className="flex flex-col items-end md:px-6 px-3 gap-4 h-auto">
 								<div
 									className="flex md:flex-row flex-col justify-end w-full items-center"
 									style={{ gap: "1vw" }}
