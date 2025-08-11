@@ -34,7 +34,7 @@ import useClientCheck from "@/src/hooks/useClientCheck";
 
 export default function Page() {
     const isClient = useClientCheck();
-    const { isLoading, data, error } = useQuery({
+    const { isLoading, data } = useQuery({
         queryKey: ["blogs"],
         queryFn: async () => {
             const r1 = await getData({
@@ -54,6 +54,19 @@ export default function Page() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-[2vw] w-full mx-auto">
                         {data &&
                             data?.map((blog: Blog) => {
+                                let writer = "ناشناس";
+                                if (blog?.author) {
+                                    if (typeof blog.author === "string") {
+                                        writer = blog.author;
+                                    } else if (
+                                        blog.author.firstName &&
+                                        blog.author.lastName
+                                    ) {
+                                        writer = `${blog.author.firstName} ${blog.author.lastName}`;
+                                    }
+                                } else if (blog?.corporation?.name) {
+                                    writer = blog.corporation.name;
+                                }
                                 return (
                                     <BlogCard
                                         key={blog?.id}
@@ -61,10 +74,7 @@ export default function Page() {
                                         imageUrl={blog?.coverImage}
                                         title={blog?.title}
                                         description={blog?.description}
-                                        writer={
-                                            blog?.author ??
-                                            blog?.corporation?.name
-                                        }
+                                        writer={writer}
                                         date={blog?.createdAt}
                                         likeCount={blog?.likeCount}
                                         status={blog?.status}

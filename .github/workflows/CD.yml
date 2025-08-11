@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - ops/ci
+      - ops/CD-error-reporting
       - develop
   pull_request:
     branches:
@@ -42,48 +43,93 @@ jobs:
       id: docker_build
       continue-on-error: true
       run: |
-        # docker compose build
-        # Capture the build output in a variable
-        touch /tmp/output.txt
-        # ERROR_OUTPUT=$(docker compose build 2>&1 | tee /tmp/output.txt)
-        # docker compose build | tee /tmp/output.txt
-        docker compose build | grep -A 1000 "#10" | tee /tmp/output.txt
-        # BUILD_EXIT_CODE=$?
-        # cat /tmp/output.txt
-        export OUTPUT="$(cat /tmp/output.txt)"
+        touch /tmp/build_output.log
+        docker compose build 2>&1 | sed -n '/Checking validity of types/,$p' | sed -r "s/\x1B\[[0-9;]*[JKmsu]//g" | sed '/^------$/q' > /tmp/build_output.log
+        status=${PIPESTATUS[0]}
 
-        # echo "$ERROR_OUTPUT"
-        
-        # Store the error output for later use
-        # echo "error_output<<EOF" >> $GITHUB_ENV
-        # echo "$ERROR_OUTPUT" >> $GITHUB_ENV
-        # echo "$OUTPUT" >> $GITHUB_ENV
-        # echo "EOF" >> $GITHUB_ENV
-        
-        # Store the build status
-        # echo "build_exit_code=$BUILD_EXIT_CODE" >> $GITHUB_ENV
-        # Exit with the original build exit code
-        # exit $BUILD_EXIT_CODE
+        echo "build_output<<EOF" >> "$GITHUB_OUTPUT"
+        echo "$(cat /tmp/build_output.log)" >> "$GITHUB_OUTPUT"
+        echo "EOF" >> "$GITHUB_OUTPUT"
 
-    - name: Push Docker image
-      if: success() && steps.docker_build.outcome == 'success'
+        if [ $status -ne 0 ]; then
+          exit $status
+        fi
+
+        # echo "build_output<<EOF" >> "$GITHUB_OUTPUT"
+        # echo "<b>❌ Build Failed</b>" >> "$GITHUB_OUTPUT"
+        # echo "<b>🎯 PR:</b> ${PR_TITLE_ESCAPED}" >> "$GITHUB_OUTPUT"
+        # echo "<b>🌿 Branch:</b> ${BRANCH_NAME_ESCAPED}" >> "$GITHUB_OUTPUT"
+        # echo "<b>👤 Author:</b> ${AUTHOR_ESCAPED}" >> "$GITHUB_OUTPUT"
+        # echo "<b>📦 Commit:</b> <code>${COMMIT_SHA_SHORT}</code>" >> "$GITHUB_OUTPUT"
+        # echo "<b>Error details:</b>" >> "$GITHUB_OUTPUT"
+        # echo "<pre>" >> "$GITHUB_OUTPUT"
+        # echo "$(cat /tmp/build_output.log)" >> "$GITHUB_OUTPUT"
+        # echo "<pre>" >> "$GITHUB_OUTPUT"
+        # echo "EOF" >> "$GITHUB_OUTPUT"
+
+    - name: Send Build Error Report to Telegram
       continue-on-error: true
-      run: docker compose push
-    - name: Handle Build Failure
-      if: ${{ steps.docker_build.outcome == 'failure' && github.event_name == 'pull_request' }}
+      if: steps.docker_build.outcome == 'failure'
       run: |
-        PR_TITLE="${{ github.event.pull_request.title }}"
-        PR_TITLE_ESCAPED=$(echo "$PR_TITLE" | sed -e 's/\./\\./g' -e 's/\-/\\-/g' -e 's/|/\\|/g')
-        ERRORMESSAGE=$(cat /tmp/output.txt)
-        ERRORMESSAGE_ESCAPED=$(echo "$ERRORMESSAGE" | sed -e 's/\./\\./g' -e 's/\-/\\-/g' -e 's/|/\\|/g')
+        COMMIT_SHA="${{ github.sha }}"
+        COMMIT_SHA_SHORT="${COMMIT_SHA:0:7}"
+        escape_md() {
+          sed -e 's/\\/\\\\/g' -e 's/_/\\_/g' -e 's/\*/\\*/g' -e 's/\[/\\[/g' -e 's/\]/\\]/g' \
+              -e 's/(/\\(/g' -e 's/)/\\)/g' -e 's/~ /\\~/g' -e 's/`/\\`/g' -e 's/>/\\>/g' \
+              -e 's/#/\\#/g' -e 's/\+/\\+/g' -e 's/-/\\-/g' -e 's/=\\/\\=/g' -e 's/{/\\{/g' \
+              -e 's/}/\\}/g' -e 's/\./\\./g' -e 's/!/\\!/g'
+        }
+
+        MESSAGE=$(escape_md < /tmp/build_output.log)
+
+        TEXT="*❌ Build Failed*
+        *🎯 PR:* $(escape_md <<<"${{ github.event.pull_request.title || 'Direct Push' }}")
+        *🌿 Branch:* $(escape_md <<<"${{ github.head_ref || github.ref_name }}")
+        *👤 Author:* $(escape_md <<<"${{ github.actor }}")
+        *📦 Commit:* \`${COMMIT_SHA_SHORT}\`
+        *Error details:*
+        \`\`\`${MESSAGE}\`\`\`"
+
         curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
-        -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
-        -d "message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }}" \
-        -d "text=PR ${PR_TITLE_ESCAPED} failed: \`\`\`${MESSAGE_ESCAPED}\`\`\`" \
-        -d "parse_mode=MarkdownV2"
+          -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+          -d "message_thread_id=${{ secrets.TELEGRAM_BUILD_THREAD_ID }}" \
+          --data-urlencode "text=$TEXT" \
+          -d "parse_mode=MarkdownV2" \
+          -d "disable_web_page_preview=true" > /dev/null 2>&1
+
+        echo "Notification sent to Telegram"
+
+    - name: Send Build Success Report to Telegram
+      continue-on-error: true
+      if: steps.docker_build.outcome == 'success'
+      run: |
+        COMMIT_SHA="${{ github.sha }}"
+        COMMIT_SHA_SHORT="${COMMIT_SHA:0:7}"
+        escape_md() {
+          sed -e 's/\\/\\\\/g' -e 's/_/\\_/g' -e 's/\*/\\*/g' -e 's/\[/\\[/g' -e 's/\]/\\]/g' \
+              -e 's/(/\\(/g' -e 's/)/\\)/g' -e 's/~ /\\~/g' -e 's/`/\\`/g' -e 's/>/\\>/g' \
+              -e 's/#/\\#/g' -e 's/\+/\\+/g' -e 's/-/\\-/g' -e 's/=\\/\\=/g' -e 's/{/\\{/g' \
+              -e 's/}/\\}/g' -e 's/\./\\./g' -e 's/!/\\!/g'
+        }
+
+        TEXT="*✅ Build Successful*
+        *🎯 PR:* $(escape_md <<<"${{ github.event.pull_request.title || 'Direct Push' }}")
+        *🌿 Branch:* $(escape_md <<<"${{ github.head_ref || github.ref_name }}")
+        *👤 Author:* $(escape_md <<<"${{ github.actor }}")
+        *📦 Commit:* \`${COMMIT_SHA_SHORT}\`"
+
+        curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+          -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+          -d "message_thread_id=${{ secrets.TELEGRAM_BUILD_THREAD_ID }}" \
+          --data-urlencode "text=$TEXT" \
+          -d "parse_mode=MarkdownV2" \
+          -d "disable_web_page_preview=true" > /dev/null 2>&1
+
+        echo "Notification sent to Telegram"
 
     - name: Handle Build Failure
       if: ${{ steps.docker_build.outcome == 'failure' && github.event_name == 'pull_request' }}
+      continue-on-error: true
       uses: actions/github-script@v6
       with:
         script: |
@@ -91,7 +137,7 @@ jobs:
           const { owner, repo, number } = context.issue;
           
           // const errorLog = process.env.OUTPUT || 'Docker build or push failed';
-          let errorMessage = `❌ Build failed!\n\nError details:\n\`\`\`\n${fs.readFileSync('/tmp/output.txt', 'utf8')}\n\`\`\``;
+          let errorMessage = `❌ Build failed!\n\nError details:\n\`\`\`\n${fs.readFileSync('/tmp/build_output.log', 'utf8')}\n\`\`\``;
 
           // Add comment to PR
           await github.rest.issues.createComment({
@@ -108,6 +154,11 @@ jobs:
             pull_number: number,
             state: 'closed'
           });
+
+    - name: Push Docker image
+      if: success() && steps.docker_build.outcome == 'success'
+      continue-on-error: true
+      run: docker compose push
 
     # Continue with remaining steps only if build was successful
     - name: Copy configuration files

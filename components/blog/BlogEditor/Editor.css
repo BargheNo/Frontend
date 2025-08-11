@@ -9,8 +9,8 @@
 /* Make EditorJS content full width */
 #editorjs .ce-block__content,
 #editorjs .ce-toolbar__content {
-  max-width: 100% !important;
-  width: 100% !important;
+  max-width: 90% !important;
+  width: 90% !important;
 }
 
 #editorjs .ce-paragraph,
