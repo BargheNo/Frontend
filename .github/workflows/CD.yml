@@ -43,10 +43,11 @@ jobs:
       id: docker_build
       continue-on-error: true
       run: |
-        OUTPUT="$(docker compose build 2>&1 | grep -A 1000 "Creating an optimized production build")"
-        # echo "output<<EOF" >> $GITHUB_OUTPUT
-        echo "$OUTPUT" >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
+        OUTPUT="$(docker compose build 2>&1)"
+        {
+          echo "$OUTPUT"
+          echo 'EOF'
+        } >> "$GITHUB_OUTPUT"
 
         # docker compose build
         # Capture the build output in a variable
