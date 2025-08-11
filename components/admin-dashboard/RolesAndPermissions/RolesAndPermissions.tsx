@@ -80,7 +80,7 @@ const RolesAndPermissions = () => {
             params: { pageSize: 1000000 },
         })
             .then((data) => {
-                // console.log(data?.data?.data);
+                console.log(data?.data?.data);
                 setAllPermissions(data?.data?.data);
             })
             .catch((err) => console.log(err));

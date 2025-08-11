@@ -110,6 +110,7 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
         acc[permission.category].push(permission);
         return acc;
     }, {} as Record<string, Permission[]>);
+	
     useEffect(() => {
         getAllPermissions();
         // console.log("allPermissions", allPermissions);

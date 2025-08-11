@@ -38,9 +38,6 @@ export default function RoleItem({
                 setLoading(false);
             });
     };
-    useEffect(() => {
-        console.log(role);
-    }, []);
     return (
         <div
             className={`w-full border-t-1 border-gray-300 first:border-t-0`}
