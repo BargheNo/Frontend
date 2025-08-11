@@ -23,9 +23,9 @@ export default function Page() {
 		}
 	};
 	return (
-		<div className="bg-white h-screen flex md:flex-row flex-col w-screen">
+		<div className="bg-white h-screen md:-ml-12 flex md:flex-row flex-col w-screen">
 			<div className="flex items-center md:w-1/2 mx-auto ">
-				<div className="my-auto flex h-full md:px-16">
+				<div className="my-auto flex h-full md:px-10">
 					<Image
 						src={panel}
 						alt="solar-panel-corp"
@@ -34,7 +34,7 @@ export default function Page() {
 				</div>
 			</div>
 			<div className="w-1/2 flex flex-col items-center m-auto md:mt-auto -mt-1 gap-4">
-				<h1 className="vazir-bold md:text-6xl text-2xl text-nowrap flex place-self-center place-content-center w-full text-right rtl">
+				<h1 className="vazir-bold md:text-4xl text-2xl text-nowrap flex place-self-center place-content-center w-full text-right rtl">
 					در برق نو فروشنده شوید!
 				</h1>
 				<p className="vazir md:text-xl text-l text-nowrap flex place-self-center place-content-center w-full md:text-right text-center rtl">
