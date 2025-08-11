@@ -52,7 +52,7 @@ jobs:
         echo "EOF" >> "$GITHUB_OUTPUT"
 
     - name: Send Build Results to Telegram
-      if: always()  # This ensures it runs whether build succeeds or fails
+      continue-on-error: true
       run: |
         # Get PR information
         PR_TITLE="${{ github.event.pull_request.title || 'Direct Push' }}"
@@ -122,7 +122,7 @@ jobs:
           -H "Content-Type: application/json" \
           -d "{
             \"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\",
-            \"message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }}",
+            \"message_thread_id=${{ secrets.TELEGRAM_BUILD_THREAD_ID }}",
             \"text\": $(echo "$MESSAGE" | jq -Rs .),
             \"parse_mode\": \"HTML\",
             \"disable_web_page_preview\": true
@@ -132,6 +132,7 @@ jobs:
 
     - name: Handle Build Failure
       if: ${{ steps.docker_build.outcome == 'failure' && github.event_name == 'pull_request' }}
+      continue-on-error: true
       uses: actions/github-script@v6
       with:
         script: |
@@ -139,7 +140,7 @@ jobs:
           const { owner, repo, number } = context.issue;
           
           // const errorLog = process.env.OUTPUT || 'Docker build or push failed';
-          let errorMessage = `❌ Build failed!\n\nError details:\n\`\`\`\n${fs.readFileSync('/output.txt', 'utf8')}\n\`\`\``;
+          let errorMessage = `❌ Build failed!\n\nError details:\n\`\`\`\n${fs.readFileSync('/tmp/build_output.txt', 'utf8')}\n\`\`\``;
 
           // Add comment to PR
           await github.rest.issues.createComment({
