@@ -44,36 +44,18 @@ jobs:
       continue-on-error: true
       run: |
         OUTPUT="$(docker compose build 2>&1)"
-        {
-          echo "$OUTPUT"
-          echo 'EOF'
-        } >> "$GITHUB_OUTPUT"
-
-        # docker compose build
-        # Capture the build output in a variable
-        # touch /tmp/output.txt
-        # ERROR_OUTPUT=$(docker compose build 2>&1 | tee /tmp/output.txt)
-        # docker compose build | tee /tmp/output.txt
-        # docker compose build | grep -A 1000 "#10" | tee /tmp/output.txt
-        # BUILD_EXIT_CODE=$?
-        # cat /tmp/output.txt
-        # export OUTPUT="$(cat /tmp/output.txt)"
-
-        # echo "$ERROR_OUTPUT"
+        echo "$OUTPUT" > /tmp/build_output.txt
+    
+        echo "build_output<<EOF" >> "$GITHUB_OUTPUT"
+        echo "$OUTPUT" >> "$GITHUB_OUTPUT"
+        echo "EOF" >> "$GITHUB_OUTPUT"
         
-        # Store the error output for later use
-        # echo "error_output<<EOF" >> $GITHUB_ENV
-        # echo "$ERROR_OUTPUT" >> $GITHUB_ENV
-        # echo "$OUTPUT" >> $GITHUB_ENV
-        # echo "EOF" >> $GITHUB_ENV
-        
-        # Store the build status
-        # echo "build_exit_code=$BUILD_EXIT_CODE" >> $GITHUB_ENV
-        # Exit with the original build exit code
-        # exit $BUILD_EXIT_CODE
+        # {
+        #   echo "$OUTPUT"
+        #   echo 'EOF'
+        # } >> "$GITHUB_OUTPUT"
 
     - name: Send Build Results to Telegram
-      if: always() # This ensures the step runs regardless of previous step outcome
       run: |
         # Get PR information
         PR_TITLE="${{ github.event.pull_request.title || 'Direct Push' }}"
@@ -84,56 +66,61 @@ jobs:
         AUTHOR="${{ github.actor }}"
         
         # Escape special characters for MarkdownV2
+        escape_html() {
+          echo "$1" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
+        }
         escape_markdown() {
           echo "$1" | sed -e 's/[_.\\*\[\]()~`>#+=|{}.!-]/\\&/g'
         }
-        
-        PR_TITLE_ESCAPED=$(escape_markdown "$PR_TITLE")
-        BRANCH_NAME_ESCAPED=$(escape_markdown "$BRANCH_NAME")
-        AUTHOR_ESCAPED=$(escape_markdown "$AUTHOR")
-        
+        # PR_TITLE_ESCAPED=$(escape_markdown "$PR_TITLE")
+        # BRANCH_NAME_ESCAPED=$(escape_markdown "$BRANCH_NAME")
+        # AUTHOR_ESCAPED=$(escape_markdown "$AUTHOR")
+
+        PR_TITLE_ESCAPED=$(escape_html "$PR_TITLE")
+        BRANCH_NAME_ESCAPED=$(escape_html "$BRANCH_NAME")
+        AUTHOR_ESCAPED=$(escape_html "$AUTHOR")
+
         # Determine build status and create message
         if [[ "${{ steps.docker_build.outcome }}" == "success" ]]; then
-          STATUS="✅ SUCCESS"
-          MESSAGE="*Build Successful*
+          MESSAGE="<b>✅ Build Successful</b>
 
-          🎯 *PR:* ${PR_TITLE_ESCAPED} \#${PR_NUMBER}
-          🌿 *Branch:* ${BRANCH_NAME_ESCAPED}
-          👤 *Author:* ${AUTHOR_ESCAPED}
-          📦 *Commit:* \`${COMMIT_SHA_SHORT}\`
-
-          Docker image built successfully\!"
+          <b>🎯 PR:</b> ${PR_TITLE_ESCAPED} #${PR_NUMBER}
+          <b>🌿 Branch:</b> ${BRANCH_NAME_ESCAPED}
+          <b>👤 Author:</b> ${AUTHOR_ESCAPED}
+          <b>📦 Commit:</b> <code>${COMMIT_SHA_SHORT}</code>
         else
-          STATUS="❌ FAILURE"
           BUILD_OUTPUT="${{ steps.docker_build.outputs.build_output }}"
-          # Truncate output if too long (Telegram has message limits)
-          if [[ ${#BUILD_OUTPUT} -gt 3000 ]]; then
-            BUILD_OUTPUT="${BUILD_OUTPUT:0:3000}...[truncated]"
-          fi
-          BUILD_OUTPUT_ESCAPED=$(escape_markdown "$BUILD_OUTPUT")
-          
-          MESSAGE="*Build Failed*
-
-          🎯 *PR:* ${PR_TITLE_ESCAPED} \#${PR_NUMBER}
-          🌿 *Branch:* ${BRANCH_NAME_ESCAPED}
-          👤 *Author:* ${AUTHOR_ESCAPED}
-          📦 *Commit:* \`${COMMIT_SHA_SHORT}\`
-
-          \`\`\`
-          ${BUILD_OUTPUT_ESCAPED}
-          \`\`\`"
-        fi
         
-        # Send message to Telegram
+        # Clean and truncate output
+          if [[ ${#BUILD_OUTPUT} -gt 3000 ]]; then
+            BUILD_OUTPUT="${BUILD_OUTPUT:0:3000}
+
+            ...[output truncated]"
+          fi
+          BUILD_OUTPUT_ESCAPED=$(escape_html "$BUILD_OUTPUT")
+          
+          MESSAGE="<b>❌ Build Failed</b>
+
+          <b>🎯 PR:</b> ${PR_TITLE_ESCAPED} #${PR_NUMBER}
+          <b>🌿 Branch:</b> ${BRANCH_NAME_ESCAPED}
+          <b>👤 Author:</b> ${AUTHOR_ESCAPED}
+          <b>📦 Commit:</b> <code>${COMMIT_SHA_SHORT}</code>
+
+          <b>Error details:</b>
+          <pre>${BUILD_OUTPUT_ESCAPED}</pre>"
+        fi
+
         curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
           -H "Content-Type: application/json" \
           -d "{
             \"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\",
             \"message_thread_id\": \"${{ secrets.TELEGRAM_THREAD_ID }}\",
-            \"text\": \"$MESSAGE\",
-            \"parse_mode\": \"MarkdownV2\",
+            \"text\": $(echo "$MESSAGE" | jq -Rs .),
+            \"parse_mode\": \"HTML\",
             \"disable_web_page_preview\": true
           }"
+
+        echo "Notification sent to Telegram"
 
     - name: Handle Build Failure
       if: ${{ steps.docker_build.outcome == 'failure' && github.event_name == 'pull_request' }}
