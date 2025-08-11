@@ -29,7 +29,7 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select/r";
 import {
     Command,
     CommandEmpty,
@@ -157,7 +157,7 @@ const RolesAndPermissions = () => {
                             aria-expanded={open}
                             className="min-w-40 relative rtl bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] justify-between gap-2"
                         >
-                            {permissionFilter === "all" ? "همه" : ""}}
+                            {permissionFilter === "all" ? "همه" : ""}
                             {permissionFilter
                                 ? allPermissions.find(
                                       (perm) =>

@@ -47,7 +47,7 @@ jobs:
         echo "output<<EOF" >> $GITHUB_OUTPUT
         echo "$OUTPUT" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
-        
+
         # docker compose build
         # Capture the build output in a variable
         # touch /tmp/output.txt
@@ -75,6 +75,7 @@ jobs:
       if: success() && steps.docker_build.outcome == 'success'
       continue-on-error: true
       run: docker compose push
+
     - name: Handle Build Failure
       if: ${{ steps.docker_build.outcome == 'failure' && github.event_name == 'pull_request' }}
       run: |
@@ -88,7 +89,7 @@ jobs:
         -d "text=PR ${PR_TITLE_ESCAPED} failed: \`\`\`${MESSAGE_ESCAPED}\`\`\`" \
         -d "parse_mode=MarkdownV2"
 
-    - name: Handle Build Failure
+    - name: Send Build Failure Results To Telegram
       if: ${{ steps.docker_build.outcome == 'failure' && github.event_name == 'pull_request' }}
       uses: actions/github-script@v6
       with:
