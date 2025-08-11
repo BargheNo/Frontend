@@ -105,17 +105,18 @@ const Page = () => {
     const [repairItems, setRepairItems] = useState<RepairHistoryItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
-    // const [statuses, setStatuses] = useState<status[] | null>(null);
-    const [status, setStatus] = useState<string>("");
-    const [resultPerPage, setResultPerPage] = useState<string>("");
 
+    const [status, setStatus] = useState<string>("");
+
+    const [resultPerPage, setResultPerPage] = useState<string>("");
     const [paginationInfo, setPaginationInfo] = useState<
         paginationInfoType | undefined
     >(undefined);
     const [page, setPage] = useState<number>(1);
+
     const [sortBy, setSortBy] = useState<string>("");
     const [asc, setAsc] = useState<boolean>(false);
-    // Function to filter repairs since the last month
+
     const getRecentRepairs = (items: RepairHistoryItem[]) => {
         const oneMonthAgo = new Date();
         oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
