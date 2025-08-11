@@ -302,7 +302,7 @@ const TicketSupportPage = () => {
                                         }
                                     }}
                                 >
-                                    <button className="cursor-pointer">
+                                    <button className="text-[13px] md:text-[20px] text-nowrap cursor-pointer">
                                         افزودن نظر
                                     </button>
                                     <MessageCirclePlus />
@@ -323,7 +323,7 @@ const TicketSupportPage = () => {
                                     }}
                                 >
                                     {/* <div className="flex gap-2 justify-end"> */}
-                                    <button className="cursor-pointer">
+                                    <button className="text-[13px] md:text-[20px] text-nowrap cursor-pointer">
                                         {showCommentBoxFor === id
                                             ? "بستن نظرات"
                                             : "مشاهده نظرات"}
@@ -624,19 +624,19 @@ const TicketSupportPage = () => {
                                                                 placeholder="متن نظر..."
                                                             />
 
-                                                            <div className="flex justify-between mb-4">
+                                                            <div className="flex justify-between md:gap-0 gap-4 mb-4">
                                                                 <button
                                                                     onClick={() =>
                                                                         setActiveCommentTicketId(
                                                                             null
                                                                         )
                                                                     }
-                                                                    className={`text-gray-500 cta-neu-button cursor-pointer w-1/9 ${styles.button}`}
+                                                                    className={`text-gray-500 text-[18px] md:text-[20px] cta-neu-button cursor-pointer md:w-1/9 ${styles.button}`}
                                                                 >
                                                                     لغو
                                                                 </button>
                                                                 <button
-                                                                    className={`text-left cta-neu-button flex ${styles.button} items-center content-center justify-center w-1/9`}
+                                                                    className={`text-[18px] md:text-[20px] text-left cta-neu-button flex ${styles.button} items-center content-center justify-center md:w-1/9`}
                                                                 >
                                                                     {putCommentLoading ? (
                                                                         <LoadingOnButton
@@ -696,7 +696,7 @@ const TicketSupportPage = () => {
                                                     </div>
                                                 )}
                                                 <button
-                                                    className={`text-left cursor-pointer cta-neu-button flex ${styles.button} self-end justify-center w-1/9`}
+                                                    className={`text-left cursor-pointer cta-neu-button flex ${styles.button} self-end justify-center md:w-1/9`}
                                                     onClick={() => {
                                                         setShowCommentBoxFor(
                                                             null
