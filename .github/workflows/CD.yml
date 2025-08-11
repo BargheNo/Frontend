@@ -47,6 +47,20 @@ jobs:
         docker compose build 2>&1 | sed -n '/Checking validity of types/,$p' > /tmp/build_output.log
         # docker compose build > /tmp/build_output.log 2>&1
 
+        PR_TITLE="${{ github.event.pull_request.title || 'Direct Push' }}"
+        BRANCH_NAME="${{ github.head_ref || github.ref_name }}"
+        COMMIT_SHA="${{ github.sha }}"
+        COMMIT_SHA_SHORT="${COMMIT_SHA:0:7}"
+        AUTHOR="${{ github.actor }}"
+
+        escape_html() {
+          echo "$1" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
+        }
+
+        PR_TITLE_ESCAPED=$(escape_html "$PR_TITLE")
+        BRANCH_NAME_ESCAPED=$(escape_html "$BRANCH_NAME")
+        AUTHOR_ESCAPED=$(escape_html "$AUTHOR")
+
         echo "build_output<<EOF" >> "$GITHUB_OUTPUT"
         echo "<b>❌ Build Failed</b>" >> "$GITHUB_OUTPUT"
         echo "<b>🎯 PR:</b> ${PR_TITLE_ESCAPED}" >> "$GITHUB_OUTPUT"
@@ -60,39 +74,12 @@ jobs:
     - name: Send Build Results to Telegram
       continue-on-error: true
       run: |
-        PR_TITLE="${{ github.event.pull_request.title || 'Direct Push' }}"
-        BRANCH_NAME="${{ github.head_ref || github.ref_name }}"
-        COMMIT_SHA="${{ github.sha }}"
-        COMMIT_SHA_SHORT="${COMMIT_SHA:0:7}"
-        AUTHOR="${{ github.actor }}"
-        
-        escape_html() {
-          echo "$1" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
-        }
-
-        PR_TITLE_ESCAPED=$(escape_html "$PR_TITLE")
-        BRANCH_NAME_ESCAPED=$(escape_html "$BRANCH_NAME")
-        AUTHOR_ESCAPED=$(escape_html "$AUTHOR")
-
         curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
           -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
           -d "message_thread_id=${{ secrets.TELEGRAM_BUILD_THREAD_ID }}" \
-          --data-urlencode "text=*❌ Build Failed*
-
-            *🎯 PR:* $(echo "$PR_TITLE" | sed -e 's/\\/\\\\/g' -e 's/_/\\_/g' -e 's/\*/\\*/g' -e 's/\[/\\[/g' -e 's/\]/\\]/g' -e 's/(/\\(/g' -e 's/)/\\)/g' -e 's/~/\\~/g' -e 's/`/\\`/g' -e 's/>/\\>/g' -e 's/#/\\#/g' -e 's/+/\\+/g' -e 's/-/\\-/g' -e 's/=/\\=/g' -e 's/|/\\|/g' -e 's/{/\\{/g' -e 's/}/\\}/g' -e 's/./\\./g' -e 's/!/\\!/g') 
-
-            *🌿 Branch:* $(echo "$BRANCH_NAME" | sed -e '...' ) 
-
-            *👤 Author:* $(echo "$AUTHOR" | sed -e '...' ) 
-
-            *📦 Commit:* \`$COMMIT_SHA_SHORT\`  
-
-            *Error details:*
-            \`\`\`
-            $(echo ${{ steps.docker_build.outputs.build_output }} | sed -e '...')
-            \`\`\`" \
-          -d "parse_mode=MarkdownV2" \
-          -d "disable_web_page_preview=true"
+          --data-urlencode "text=${{ steps.docker_build.outputs.build_output }}" \
+          -d "parse_mode=HTML" \
+          -d "disable_web_page_preview=true" > /dev/null 2>&1
 
         echo "Notification sent to Telegram"
 
