@@ -9,32 +9,25 @@ const BlogCard = nextDynamic(
         ssr: false,
     }
 );
-
 const PageContainer = nextDynamic(
     () => import("@/components/Dashboard/PageContainer/PageContainer"),
     {
         ssr: false,
     }
 );
-
 const Header = nextDynamic(() => import("@/components/Header/Header"), {
     ssr: false,
 });
-
-const LoadingSpinner = nextDynamic(
-    () => import("@/components/Loading/LoadingSpinner/LoadingSpinner"),
-    {
-        ssr: false,
-    }
-);
 import { getData } from "@/src/services/apiHub";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
+import { Skeleton } from "@/components/ui/skeleton";
+import Image from "next/image";
+import panelNotFound from "@/public/images/panelNotFound/panelNotFound.png";
 
 export default function Page() {
-    const corpID = useSelector((state: any) => state.user.corpId);
-    const { isLoading, data, error } = useQuery({
+    const { isLoading, data } = useQuery({
         queryKey: ["blogs"],
         queryFn: async () => {
             const r1 = await getData({
@@ -44,35 +37,73 @@ export default function Page() {
             return r1;
         },
     });
+    const blogs = data?.data?.data;
     return (
         <PageContainer>
-            {isLoading && <LoadingSpinner />}
-
-            {!isLoading && (
-                <>
-                    <Header header="مطالب" />
-                    <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-[2vw] w-full mx-auto">
-                        {data?.data?.data?.map((blog: Blog) => {
-                            return (
-                                <BlogCard
-                                    key={blog.id}
-                                    blogID={String(blog.id)}
-                                    imageUrl={blog.coverImage}
-                                    title={blog.title}
-                                    description={blog.description}
-                                    writer={
-                                        blog.author ?? blog.corporation?.name
-                                    }
-                                    date={blog.createdAt}
-                                    likeCount={blog.likeCount}
-                                    status={blog.status}
-                                    viewOnly={true}
-                                    className="mx-auto"
-                                />
-                            );
-                        })}
-                    </div>
-                </>
+            <Header header="مطالب" />
+            {isLoading ? (
+                <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-[2vw] w-full mx-auto mt-4">
+                    {[...Array(4)].map((_, i) => (
+                        <div
+                            key={i}
+                            className="flex flex-col gap-4 p-4 rounded-lg bg-white shadow"
+                        >
+                            <Skeleton className="h-40 w-full rounded-md" />
+                            <Skeleton className="h-6 w-3/4" />
+                            <Skeleton className="h-4 w-1/2" />
+                            <div className="flex gap-2">
+                                <Skeleton className="h-4 w-16" />
+                                <Skeleton className="h-4 w-16" />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ) : Array.isArray(blogs) && blogs.length > 0 ? (
+                <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-[2vw] w-full mx-auto">
+                    {blogs.map((blog: Blog) => {
+                        let writer = "ناشناس";
+                        if (blog?.author) {
+                            if (typeof blog.author === "string") {
+                                writer = blog.author;
+                            } else if (
+                                blog.author.firstName &&
+                                blog.author.lastName
+                            ) {
+                                writer = `${blog.author.firstName} ${blog.author.lastName}`;
+                            }
+                        } else if (blog?.corporation?.name) {
+                            writer = blog.corporation.name;
+                        }
+                        return (
+                            <BlogCard
+                                key={blog.id}
+                                blogID={String(blog.id)}
+                                imageUrl={blog.coverImage}
+                                title={blog.title}
+                                description={blog.description}
+                                writer={writer}
+                                date={blog.createdAt}
+                                likeCount={blog.likeCount}
+                                status={blog.status}
+                                viewOnly={true}
+                                className="mx-auto"
+                            />
+                        );
+                    })}
+                </div>
+            ) : (
+                <div className="flex flex-col items-center justify-center w-full py-8 bg-warm-white neu-card rounded-xl z-30">
+                    <Image
+                        src={panelNotFound}
+                        alt="No blogs found"
+                        width={256}
+                        height={256}
+                        className="w-[60%] h-[60%] object-contain mb-4"
+                    />
+                    <span className="text-lg text-gray-500">
+                        هیچ مطلبی یافت نشد
+                    </span>
+                </div>
             )}
         </PageContainer>
     );
