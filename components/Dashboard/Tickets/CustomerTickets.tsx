@@ -386,7 +386,7 @@ const TicketSupportPage = () => {
                     {({ setFieldValue, values }) => (
                         <Form
                             // onSubmit={formik.handleSubmit}
-                            className={`flex flex-row w-full p-5 gap-5 bg-[#F0EDEF] text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]`}
+                            className={`flex md:flex-row flex-col w-full p-5 gap-5 bg-[#F0EDEF] text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]`}
                         >
                             <CustomTextArea
                                 name="description"
@@ -399,7 +399,7 @@ const TicketSupportPage = () => {
                             />
                             <div
                                 className={`
-						flex flex-col gap-4 w-2/7`}
+						flex flex-col gap-4 md:w-2/7 `}
                             >
                                 {/* <div
 							className={`bg-white rounded-xl flex items-center gap-3 rtl ${styles.shadow}`}
@@ -418,7 +418,7 @@ const TicketSupportPage = () => {
                                 >
                                     <SelectTrigger
                                         name="subject"
-                                        className={`${styles.CustomInput} cursor-pointer w-full rtl`}
+                                        className={`${styles.CustomInput} cursor-pointer w-full rtl `}
                                         id="subject"
                                         // style={{ width: "25vw" }}
                                     >
