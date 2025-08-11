@@ -44,7 +44,7 @@ jobs:
       continue-on-error: true
       run: |
         touch /tmp/build_output.log
-        docker compose build 2>&1 | sed -n '/Checking validity of types/,$p' | sed -r "s/\x1B\[[0-9;]*[JKmsu]//g" > /tmp/build_output.log
+        docker compose build 2>&1 | sed -n '/Checking validity of types/,$p' | sed -r "s/\x1B\[[0-9;]*[JKmsu]//g" | sed '/^------$/q' > /tmp/build_output.log
         # docker compose build > /tmp/build_output.log 2>&1
 
         # echo "build_output<<EOF" >> "$GITHUB_OUTPUT"
@@ -78,16 +78,12 @@ jobs:
         TEXT="*❌ Build Failed*\n\
         *🎯 PR:* $(escape_md <<<"${{ github.event.pull_request.title || 'Direct Push' }}")
 
-
         *🌿 Branch:* $(escape_md <<<"${{ github.head_ref || github.ref_name }}")
-
 
         *👤 Author:* $(escape_md <<<"${{ github.actor }}")
 
-
         *📦 Commit:* \`${COMMIT_SHA_SHORT}\`
 
-        
         *Error details:*\n\`\`\`\n$(escape_md < /tmp/build_output.log)\n\`\`\`"
 
         curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
