@@ -119,14 +119,11 @@ jobs:
 
         # Send message to Telegram (without reply)
         curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
-          -H "Content-Type: application/json" \
-          -d "{
-            \"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\",
-            \"message_thread_id=${{ secrets.TELEGRAM_BUILD_THREAD_ID }}",
-            \"text\": $(echo "$MESSAGE" | jq -Rs .),
-            \"parse_mode\": \"HTML\",
-            \"disable_web_page_preview\": true
-          }" > /dev/null 2>&1
+          -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+          -d "message_thread_id=${{ secrets.TELEGRAM_BUILD_THREAD_ID }}" \
+          -d "text=$(echo "$MESSAGE" | jq -Rs . | sed 's/^"//;s/"$//')" \
+          -d "parse_mode=HTML" \
+          -d "disable_web_page_preview=true" > /dev/null 2>&1
 
         echo "Notification sent to Telegram"
 
