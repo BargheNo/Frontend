@@ -43,12 +43,11 @@ jobs:
       id: docker_build
       continue-on-error: true
       run: |
-        touch /build_output.txt
-        OUTPUT="$(docker compose build)"
-        echo "$OUTPUT" > /tmp/build_output.txt
+        touch /tmp/build_output.txt
+        docker compose build > /tmp/build_output.txt 2>&1
 
         echo "build_output<<EOF" >> "$GITHUB_OUTPUT"
-        echo "$OUTPUT" >> "$GITHUB_OUTPUT"
+        echo "$(cat build.log)" >> "$GITHUB_OUTPUT"
         echo "EOF" >> "$GITHUB_OUTPUT"
 
     - name: Send Build Results to Telegram
@@ -138,7 +137,7 @@ jobs:
           const { owner, repo, number } = context.issue;
           
           // const errorLog = process.env.OUTPUT || 'Docker build or push failed';
-          let errorMessage = `❌ Build failed!\n\nError details:\n\`\`\`\n${fs.readFileSync('/tmp/output.txt', 'utf8')}\n\`\`\``;
+          let errorMessage = `❌ Build failed!\n\nError details:\n\`\`\`\n${fs.readFileSync('/output.txt', 'utf8')}\n\`\`\``;
 
           // Add comment to PR
           await github.rest.issues.createComment({
