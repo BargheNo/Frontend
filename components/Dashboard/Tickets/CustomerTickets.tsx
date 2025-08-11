@@ -386,7 +386,7 @@ const TicketSupportPage = () => {
                     {({ setFieldValue, values }) => (
                         <Form
                             // onSubmit={formik.handleSubmit}
-                            className={`flex md:flex-row flex-col w-full p-5 gap-5 bg-[#F0EDEF] text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]`}
+                            className={`flex md:flex-row  flex-col w-full p-5 gap-5 bg-[#F0EDEF] text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]`}
                         >
                             <CustomTextArea
                                 name="description"
@@ -422,7 +422,7 @@ const TicketSupportPage = () => {
                                         id="subject"
                                         // style={{ width: "25vw" }}
                                     >
-                                        <SelectValue placeholder="انتخاب عنوان" />
+                                        <SelectValue  placeholder="انتخاب عنوان" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
@@ -494,7 +494,7 @@ const TicketSupportPage = () => {
                                         {/* Custom Styled Button */}
                                         <label
                                             htmlFor="image-upload"
-                                            className={`cursor-pointer bg-[#f0edef] cta-neu-button flex rounded-lg items-center content-center justify-center gap-2 w-full py-2`}
+                                            className={`cursor-pointer text-nowrap  bg-[#f0edef] cta-neu-button flex rounded-lg items-center content-center justify-center gap-0 w-full py-2`}
                                         >
                                             <span>انتخاب تصویر</span>
                                             <ImagePlus className="w-5 h-5" />
@@ -613,7 +613,7 @@ const TicketSupportPage = () => {
                                             {({ setFieldValue, values }) => (
                                                 <Form>
                                                     <div className="flex bg-[#F0EDEF] pb-4 items-center justify-center">
-                                                        <div className="px-10 rounded-lg w-full text-right space-y-8">
+                                                        <div className="px-10 rounded-lg w-full text-right space-y-8 ">
                                                             <h3 className="text-lg font-bold">
                                                                 ثبت نظر
                                                             </h3>
@@ -631,12 +631,12 @@ const TicketSupportPage = () => {
                                                                             null
                                                                         )
                                                                     }
-                                                                    className={`text-gray-500 text-[18px] md:text-[20px] cta-neu-button cursor-pointer md:w-1/9 ${styles.button}`}
+                                                                    className={`text-gray-500 text-[18px] md:text-[20px] cta-neu-button cursor-pointer md:w-2/9 ${styles.button}`}
                                                                 >
                                                                     لغو
                                                                 </button>
                                                                 <button
-                                                                    className={`text-[18px] md:text-[20px] text-left cta-neu-button flex ${styles.button} items-center content-center justify-center md:w-1/9`}
+                                                                    className={`text-[18px] md:text-[20px] text-left cta-neu-button flex ${styles.button} items-center content-center justify-center md:w-2/9`}
                                                                 >
                                                                     {putCommentLoading ? (
                                                                         <LoadingOnButton
@@ -645,9 +645,8 @@ const TicketSupportPage = () => {
                                                                             }
                                                                         />
                                                                     ) : (
-                                                                        <p>
-                                                                            ثبت
-                                                                            نظر
+                                                                        <p className="text-nowrap">
+                                                                            ثبت نظر
                                                                         </p>
                                                                     )}
                                                                 </button>
