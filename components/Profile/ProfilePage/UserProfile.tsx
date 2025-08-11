@@ -161,7 +161,7 @@ const UserProfile = () => {
             <Header header="پروفایل کاربری" />
             <div
                 // className={`vazir w-full mx-auto min-h-full flex flex-col gap-8 text-white bg-transparent relative`}
-                className={`vazir md:w-[40vw] w-full mx-auto min-h-full flex flex-col gap-8 text-white py-4 md:py-8 px-3 md:px-14 bg-transparent relative`}
+                className={`vazir lg:w-[40vw] w-full mx-auto min-h-full flex flex-col gap-8 text-white py-4 md:py-8 px-3 md:px-14 bg-transparent relative`}
             >
                 {isLoading ? (
                     <LoadingSpinner />
