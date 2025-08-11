@@ -44,7 +44,8 @@ jobs:
       continue-on-error: true
       run: |
         touch /tmp/build_output.txt
-        docker compose build > /tmp/build_output.txt 2>&1
+        docker compose build 2>&1 | sed -n '/Checking validity of types/,$p' > /tmp/build_output.txt
+        # docker compose build > /tmp/build_output.txt 2>&1
 
         echo "build_output<<EOF" >> "$GITHUB_OUTPUT"
         echo "$(cat build.log)" >> "$GITHUB_OUTPUT"
@@ -121,6 +122,7 @@ jobs:
           -H "Content-Type: application/json" \
           -d "{
             \"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\",
+            \"message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }}",
             \"text\": $(echo "$MESSAGE" | jq -Rs .),
             \"parse_mode\": \"HTML\",
             \"disable_web_page_preview\": true
