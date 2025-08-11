@@ -99,7 +99,7 @@ jobs:
 
         echo "Notification sent to Telegram"
 
-    - name: Send Build Report to Telegram
+    - name: Send Build Success Report to Telegram
       continue-on-error: true
       if: steps.docker_build.outcome == 'success'
       run: |

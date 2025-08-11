@@ -29,7 +29,7 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select/r";
+} from "@/components/ui/select";
 import {
     Command,
     CommandEmpty,
@@ -152,6 +152,7 @@ const RolesAndPermissions = () => {
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                         <Button
+                            gudo="gudo"
                             variant="outline"
                             role="combobox"
                             aria-expanded={open}
