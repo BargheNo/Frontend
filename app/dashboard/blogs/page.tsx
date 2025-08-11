@@ -60,27 +60,36 @@ export default function Page() {
                 </div>
             ) : Array.isArray(blogs) && blogs.length > 0 ? (
                 <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-[2vw] w-full mx-auto">
-                    {blogs.map((blog: Blog) => (
-                        <BlogCard
-                            key={blog.id}
-                            blogID={String(blog.id)}
-                            imageUrl={blog.coverImage}
-                            title={blog.title}
-                            description={blog.description}
-                            writer={
-                                typeof blog?.author === "string"
-                                    ? blog?.author
-                                    : blog?.author
-                                    ? `${blog.author.firstName} ${blog.author.lastName}`
-                                    : "ناشناس"
+                    {blogs.map((blog: Blog) => {
+                        let writer = "ناشناس";
+                        if (blog?.author) {
+                            if (typeof blog.author === "string") {
+                                writer = blog.author;
+                            } else if (
+                                blog.author.firstName &&
+                                blog.author.lastName
+                            ) {
+                                writer = `${blog.author.firstName} ${blog.author.lastName}`;
                             }
-                            date={blog.createdAt}
-                            likeCount={blog.likeCount}
-                            status={blog.status}
-                            viewOnly={true}
-                            className="mx-auto"
-                        />
-                    ))}
+                        } else if (blog?.corporation?.name) {
+                            writer = blog.corporation.name;
+                        }
+                        return (
+                            <BlogCard
+                                key={blog.id}
+                                blogID={String(blog.id)}
+                                imageUrl={blog.coverImage}
+                                title={blog.title}
+                                description={blog.description}
+                                writer={writer}
+                                date={blog.createdAt}
+                                likeCount={blog.likeCount}
+                                status={blog.status}
+                                viewOnly={true}
+                                className="mx-auto"
+                            />
+                        );
+                    })}
                 </div>
             ) : (
                 <div className="flex flex-col items-center justify-center w-full py-8 bg-warm-white neu-card rounded-xl z-30">

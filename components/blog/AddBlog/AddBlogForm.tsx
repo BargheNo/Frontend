@@ -1,7 +1,6 @@
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
-import urlToFile from "@/src/functions/fileHandler";
-import { getData, postData, putData, putDataFile } from "@/src/services/apiHub";
+import { getData, postData, putDataFile } from "@/src/services/apiHub";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Form, Formik } from "formik";
 import { ImageUp, SquarePlus } from "lucide-react";
@@ -151,19 +150,7 @@ export default function AddBlogForm({
                         }
                         return errors;
                     }}
-                    onSubmit={(values, actions) => {
-                        // const errors: { title?: string; description?: string } = {};
-                        // if (!values.title || values.title.trim() === "") {
-                        //     errors.title = "عنوان مقاله نمی‌تواند خالی باشد";
-                        // }
-                        // if (!values.description || values.description.trim() === "") {
-                        //     errors.description = "توضیحات مقاله نمی‌تواند خالی باشد";
-                        // }
-                        // if (errors.title || errors.description) {
-                        //     toast.error(errors.title || errors.description);
-                        //     actions.setSubmitting(false);
-                        //     return;
-                        // }
+                    onSubmit={(values) => {
                         if (edit) {
                             editBlog.mutate(values);
                         } else {
