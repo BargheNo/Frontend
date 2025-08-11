@@ -52,7 +52,7 @@ const PanelId = () => {
 					/>
 				</div>
 				<div className="border-t-1 border-gray-300 first:border-t-0 px-7 py-3">
-					<div className="flex w-full justify-between pb-3">
+					<div className="flex w-full justify-between pb-3 md:gap-2 gap-15">
 						<div className="flex items-start w-1/4">
 							<Item
 								icon={Map}
