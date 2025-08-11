@@ -76,10 +76,18 @@ jobs:
         }
 
         TEXT="*❌ Build Failed*\n\
-        *🎯 PR:* $(escape_md <<<"${{ github.event.pull_request.title || 'Direct Push' }}")\n\
-        *🌿 Branch:* $(escape_md <<<"${{ github.head_ref || github.ref_name }}")\n\
-        *👤 Author:* $(escape_md <<<"${{ github.actor }}")\n\
-        *📦 Commit:* \`${COMMIT_SHA_SHORT}\`\n\
+        *🎯 PR:* $(escape_md <<<"${{ github.event.pull_request.title || 'Direct Push' }}")
+
+
+        *🌿 Branch:* $(escape_md <<<"${{ github.head_ref || github.ref_name }}")
+
+
+        *👤 Author:* $(escape_md <<<"${{ github.actor }}")
+
+
+        *📦 Commit:* \`${COMMIT_SHA_SHORT}\`
+
+        
         *Error details:*\n\`\`\`\n$(escape_md < /tmp/build_output.log)\n\`\`\`"
 
         curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
