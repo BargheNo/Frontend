@@ -45,17 +45,13 @@ jobs:
       run: |
         OUTPUT="$(docker compose build 2>&1)"
         echo "$OUTPUT" > /tmp/build_output.txt
-    
+
         echo "build_output<<EOF" >> "$GITHUB_OUTPUT"
         echo "$OUTPUT" >> "$GITHUB_OUTPUT"
         echo "EOF" >> "$GITHUB_OUTPUT"
-        
-        # {
-        #   echo "$OUTPUT"
-        #   echo 'EOF'
-        # } >> "$GITHUB_OUTPUT"
 
     - name: Send Build Results to Telegram
+      if: always()  # This ensures it runs whether build succeeds or fails
       run: |
         # Get PR information
         PR_TITLE="${{ github.event.pull_request.title || 'Direct Push' }}"
@@ -65,16 +61,10 @@ jobs:
         COMMIT_SHA_SHORT="${COMMIT_SHA:0:7}"
         AUTHOR="${{ github.actor }}"
         
-        # Escape special characters for MarkdownV2
+        # Escape HTML entities
         escape_html() {
           echo "$1" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
         }
-        escape_markdown() {
-          echo "$1" | sed -e 's/[_.\\*\[\]()~`>#+=|{}.!-]/\\&/g'
-        }
-        # PR_TITLE_ESCAPED=$(escape_markdown "$PR_TITLE")
-        # BRANCH_NAME_ESCAPED=$(escape_markdown "$BRANCH_NAME")
-        # AUTHOR_ESCAPED=$(escape_markdown "$AUTHOR")
 
         PR_TITLE_ESCAPED=$(escape_html "$PR_TITLE")
         BRANCH_NAME_ESCAPED=$(escape_html "$BRANCH_NAME")
@@ -88,10 +78,12 @@ jobs:
           <b>🌿 Branch:</b> ${BRANCH_NAME_ESCAPED}
           <b>👤 Author:</b> ${AUTHOR_ESCAPED}
           <b>📦 Commit:</b> <code>${COMMIT_SHA_SHORT}</code>
+
+          Docker image built successfully!"
         else
           BUILD_OUTPUT="${{ steps.docker_build.outputs.build_output }}"
         
-        # Clean and truncate output
+          # Clean and truncate output
           if [[ ${#BUILD_OUTPUT} -gt 3000 ]]; then
             BUILD_OUTPUT="${BUILD_OUTPUT:0:3000}
 
@@ -110,11 +102,12 @@ jobs:
           <pre>${BUILD_OUTPUT_ESCAPED}</pre>"
         fi
 
+        # Send message to Telegram
         curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
           -H "Content-Type: application/json" \
           -d "{
             \"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\",
-            \"message_thread_id\": \"${{ secrets.TELEGRAM_THREAD_ID }}\",
+            \"message_thread_id\": \"${{ secrets.TELEGRAM_BUILD_THREAD_ID }}\",
             \"text\": $(echo "$MESSAGE" | jq -Rs .),
             \"parse_mode\": \"HTML\",
             \"disable_web_page_preview\": true
