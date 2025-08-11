@@ -7,6 +7,6 @@ interface Blog {
 	author: { firstName: string; lastName: string };
 	createdAt: string;
 	likeCount: number;
-	status: number;
+	status: string;
 	corporation?: { name: string };
 }

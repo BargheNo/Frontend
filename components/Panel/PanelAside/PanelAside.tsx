@@ -82,7 +82,7 @@ const PanelAside = ({
     useEffect(() => {
         getData({ endPoint: `/v1/user/corps` })
             .then((res) => {
-                console.log(res?.data);
+                // console.log(res?.data);
                 setCorps(res?.data);
                 changeCorp(res?.data?.[0]?.id);
                 // setCorp(String(res?.data?.[0]?.id));
@@ -126,10 +126,17 @@ const PanelAside = ({
                                             // className={`flex gap-2 text-[#003a8b] p-2 mt-0.5 rounded-lg cursor-pointer
                                             // 		hover:shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)] duration-200
                                             //     }`}
-                                            className="hover:shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)] duration-200 my-0 py-2"
+                                            className="px-2 hover:shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)] duration-200 my-0 py-2"
                                         >
+                                            {/* <Link href={""}>
+                                                <span
+                                                    className={`flex gap-2 text-[#003a8b] p-2 mt-0.5 rounded-lg cursor-pointer hover:shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)] duration-200`}
+                                                >
+                                                    پایش اطلاعات
+                                                </span>
+                                            </Link> */}
                                             <span
-                                                className={`flex gap-2 w-full text-[#003a8b] mt-0.5 rounded-lg cursor-pointer`}
+                                                className={`flex gap-2 w-full text-[#003a8b] mt-0.5 rounded-lg cursor-pointer text-md`}
                                             >
                                                 پایش اطلاعات
                                             </span>
@@ -194,7 +201,7 @@ const PanelAside = ({
                         sideOpen ? "ml-3" : "mx-3"
                     } flex flex-col items-center justify-between h-[100vh]`}
                 >
-                    <div>
+                    <div className="text-white">
                         {navItems.map((item: NavItem, index) => (
                             <PanelAsideIcon
                                 item={item}

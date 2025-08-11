@@ -12,7 +12,7 @@ export default function Page() {
     //     paginationInfoType | undefined
     // >(undefined);
     // const [currentPage, setCurrentPage] = useState<number>(1);
-    const [status, setStatus] = useState<string>("5");
+    const [status, setStatus] = useState<string>("");
     const [resultPerPage, setResultPerPage] = useState<string>("");
     const [isLoading, setIsLoading] = useState(true);
     const [history, sethistory] = useState<Orderhistory[]>([]);

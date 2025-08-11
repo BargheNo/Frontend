@@ -18,7 +18,7 @@ export default function Page() {
     );
     const [repairItems, setRepairItems] = useState<CorpRepairItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [status, setStatus] = useState<string>("7");
+    const [status, setStatus] = useState<string>("");
 
     const [resultPerPage, setResultPerPage] = useState<string>("");
     const [paginationInfo, setPaginationInfo] = useState<
@@ -28,19 +28,19 @@ export default function Page() {
     const [sortBy, setSortBy] = useState<string>("");
     const [asc, setAsc] = useState<boolean>(false);
 
-    const corpId = useSelector((state: RootState) => state.corp.id);
+    const corpId = useSelector((state: RootState) => state.user.corpId);
 
     useEffect(() => {
         setIsLoading(true);
         getData({
-            endPoint: `/v1/corp/${2}/maintenance/request`,
+            endPoint: `/v1/corp/${corpId}/maintenance/request`,
             params: {
                 status,
                 page,
                 sortBy,
                 asc,
                 pageSize: resultPerPage,
-                corporationID: 2,
+                corporationID: corpId,
             },
         })
             .then((res) => {

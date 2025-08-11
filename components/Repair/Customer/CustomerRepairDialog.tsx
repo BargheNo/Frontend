@@ -13,7 +13,7 @@ import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import moment from "jalali-moment";
 // import { useSelector } from "react-redux";
 import { toast } from "sonner";
-import { baseURL, postData, putData } from "@/src/services/apiHub";
+import { postData, putData } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 interface ErrorResponse {
@@ -144,7 +144,7 @@ const RepairDetailsDialog = ({
 
 	const handleOverrideRequest = async () => {
 		putData({
-			endPoint: `${baseURL}/v1/user/maintenance/request/${repairItem.id}/cancel`,
+			endPoint: `/v1/user/maintenance/request/${repairItem.id}/cancel`,
 		})
 			.then((res) => {
 				CustomToast(res?.message, "success");
@@ -157,7 +157,7 @@ const RepairDetailsDialog = ({
 	const handleFinalizeMaintenance = async () => {
 		console.log(repairItem.id);
 		putData({
-			endPoint: `${baseURL}/v1/user/maintenance/request/${repairItem?.id}/record/approve`,
+			endPoint: `/v1/user/maintenance/request/${repairItem?.id}/record/approve`,
 		})
 			.then((res) => {
 				CustomToast(res?.message, "success");

@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import "./Editor.css";
 import AddBlogForm from "../AddBlog/AddBlogForm";
 export default function BlogEditor({
     blogID,
@@ -28,7 +29,7 @@ export default function BlogEditor({
     const holderRef = useRef<HTMLDivElement>(null);
     const [data, setData] = useState<OutputData | null>(null);
     const [title, setTitle] = useState("");
-    const [status, setStatus] = useState(2);
+    const [status, setStatus] = useState("پیش نویس");
     const [loading, setLoading] = useState(true);
     const router = useRouter();
     const corpID = useSelector((state: any) => state.user.corpId);
@@ -96,7 +97,7 @@ export default function BlogEditor({
                     data: {
                         content: JSON.stringify(savedData),
                         title: title,
-                        status: 2,
+                        // status: 2,
                     },
                 });
                 return responce;
@@ -143,7 +144,10 @@ export default function BlogEditor({
         queryFn: async () => {
             try {
                 const responce = await getData({
-                    endPoint: `/v1/corp/${corpID}/blog/${blogID}`,
+                    endPoint: onlyView
+                        ? `/v1/blog/${blogID}`
+                        : `/v1/corp/${corpID}/blog/${blogID}`,
+                    // get it from blog/id if it was viewOnly
                 });
                 console.log(responce);
                 if (responce.statusCode == 200) {
@@ -166,8 +170,8 @@ export default function BlogEditor({
                 }
                 return responce;
             } catch (error) {
-                console.log(error);
-                // router.push("/not-found");
+                console.error(error);
+                router.push("/not-found");
             }
         },
     });
@@ -240,7 +244,7 @@ export default function BlogEditor({
             {loading && (
                 <LoadingSpinner className="absolute top-0 left-0 right-0 bottom-0 bg-white z-50" />
             )}
-            <div className="flex flex-col items-center justify-evenly gap-3 w-[70vw] mx-auto">
+            <div className="flex flex-col items-center justify-evenly gap-3 w-[70vw] mx-auto h-[80vh] z-20">
                 {!onlyView && (
                     <div className="flex justify-between items-center w-full self-end rtl">
                         <div className="text-bold text-2xl">ویرایشگر</div>
@@ -263,7 +267,7 @@ export default function BlogEditor({
                     </div>
                 )}
                 {onlyView ? (
-                    <div className="flex flex-col justify-center items-center p-5 h-[80vh] w-[85vw] z-3">
+                    <div className="flex flex-col justify-center items-center p-5 h-[60vh] w-[90vw] lg:w-[70vw]">
                         <div className="w-full h-full bg-warm-white neo-card rounded-md p-2 ">
                             <div className="overflow-y-auto overflow-x-hidden no-scrollbar neo-card-rev w-full h-full rounded-md p-3">
                                 <div
@@ -285,7 +289,7 @@ export default function BlogEditor({
                                 ></div>
                             </div>
                         </div>
-                        <div className="flex items-center gap-10 mt-2">
+                        <div className="flex flex-col items-center gap-2 lg:gap-10 mt-2 lg:flex-row ">
                             <button
                                 className="flex gap-3 items-center bg-fire-orange px-8 py-2 rounded-full! neo-btn text-white font-bold text-lg"
                                 onClick={() => {
@@ -295,7 +299,7 @@ export default function BlogEditor({
                                 <span>ذخیره</span>
                                 <Save />
                             </button>
-                            {status == 1 ? (
+                            {status == "پیش نویس" ? (
                                 <button
                                     className="flex gap-3 items-center bg-fire-orange px-8 py-2 rounded-full! neo-btn text-white font-bold text-lg"
                                     onClick={() => {

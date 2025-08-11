@@ -73,7 +73,7 @@ export default function Users() {
         setLoadingRoles(true);
         getData({ endPoint: `/v1/admin/roles` })
             .then((data) => {
-                setRoles(data?.data);
+                setRoles(data?.data?.data);
             })
             .catch((err) => console.log(err))
             .finally(() => setLoadingRoles(false));
@@ -86,7 +86,7 @@ export default function Users() {
         getData({
             endPoint: `/v1/admin/users`,
             params: {
-                statuses: filterValue,
+                status: filterValue,
                 sortBy,
                 asc,
                 page,
@@ -95,7 +95,8 @@ export default function Users() {
         })
             .then((data) => {
                 console.log(data?.data);
-                setUsers(data?.data);
+                setUsers(data?.data?.data);
+                setPaginationInfo(data?.data?.pagination);
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
@@ -106,11 +107,12 @@ export default function Users() {
         setLoading(true);
         getData({
             endPoint: `/v1/admin/roles/${filterValue}/owners`,
-            params: { statuses: filterValue, sortBy, asc },
+            params: { status: filterValue, sortBy, asc },
         })
             .then((data) => {
                 console.log(data?.data);
-                setUsers(data?.data);
+                setUsers(data?.data?.data);
+                setPaginationInfo(data?.data?.data);
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
@@ -120,17 +122,17 @@ export default function Users() {
         setLoading(true);
         console.log("all users");
         getData({
-            endPoint: `/v1/admin/users?statuses=1&statuses=2`,
-            params: { sortBy, asc },
+            endPoint: `/v1/admin/users?status=1&status=2`,
+            params: { sortBy, asc, page, pageSize: resultPerPage },
         })
             .then((data) => {
-                console.log(data);
-                setUsers(data?.data);
-                // setPaginationInfo(data?.data?.pagination)
+                console.log("all", data?.data?.data);
+                setUsers(data?.data?.data);
+                setPaginationInfo(data?.data?.pagination);
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [sortBy, asc]);
+    }, [sortBy, asc, page, resultPerPage]);
 
     useEffect(() => {
         fetchAllUsers();
@@ -342,17 +344,17 @@ const UserItem = ({
     useEffect(() => {
         getData({ endPoint: `/v1/admin/users/${id}/roles` })
             .then((data) => {
-                setUserRoles(data.data.map((role: Role) => role.id));
+                setUserRoles(data?.data?.map((role: Role) => role.id));
             })
             .catch((err) => console.log(err));
         setLoadingRoles(true);
         getData({ endPoint: `/v1/admin/roles` })
             .then((data) => {
-                setAllRoles(data.data);
+                setAllRoles(data?.data?.data);
             })
             .catch((err) => console.log(err))
             .finally(() => setLoadingRoles(false));
-    }, []);
+    }, [id]);
     const saveRoles = async () => {
         setIsSaving(true);
         const formData = {
@@ -438,7 +440,7 @@ const UserItem = ({
                             </div>
                         ) : (
                             <div className="space-y-3 py-4">
-                                {allRoles.map((role) => (
+                                {allRoles?.map((role) => (
                                     <div
                                         key={role.id}
                                         className="flex items-center gap-3 p-2"
