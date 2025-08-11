@@ -43,9 +43,9 @@ jobs:
       id: docker_build
       continue-on-error: true
       run: |
-        touch /tmp/build_output.txt
-        docker compose build 2>&1 | sed -n '/Checking validity of types/,$p' > /tmp/build_output.txt
-        # docker compose build > /tmp/build_output.txt 2>&1
+        touch /build_output.log
+        docker compose build 2>&1 | sed -n '/Checking validity of types/,$p' > /build_output.log
+        # docker compose build > /build_output.log 2>&1
 
         echo "build_output<<EOF" >> "$GITHUB_OUTPUT"
         echo "$(cat build.log)" >> "$GITHUB_OUTPUT"
@@ -88,8 +88,8 @@ jobs:
           echo "Debug: Build output preview: ${BUILD_OUTPUT:0:200}"
           
           # If build output is empty, try to get it from the temp file
-          if [[ -z "$BUILD_OUTPUT" ]] && [[ -f /tmp/build_output.txt ]]; then
-            BUILD_OUTPUT=$(cat /tmp/build_output.txt)
+          if [[ -z "$BUILD_OUTPUT" ]] && [[ -f /build_output.log ]]; then
+            BUILD_OUTPUT=$(cat /build_output.log)
             echo "Debug: Using temp file, length: ${#BUILD_OUTPUT}"
           fi
           
@@ -140,7 +140,7 @@ jobs:
           const { owner, repo, number } = context.issue;
           
           // const errorLog = process.env.OUTPUT || 'Docker build or push failed';
-          let errorMessage = `❌ Build failed!\n\nError details:\n\`\`\`\n${fs.readFileSync('/tmp/build_output.txt', 'utf8')}\n\`\`\``;
+          let errorMessage = `❌ Build failed!\n\nError details:\n\`\`\`\n${fs.readFileSync('/build_output.log', 'utf8')}\n\`\`\``;
 
           // Add comment to PR
           await github.rest.issues.createComment({
