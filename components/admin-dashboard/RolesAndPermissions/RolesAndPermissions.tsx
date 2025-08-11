@@ -152,7 +152,6 @@ const RolesAndPermissions = () => {
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                         <Button
-                            gudo="gudo"
                             variant="outline"
                             role="combobox"
                             aria-expanded={open}
