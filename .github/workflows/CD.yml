@@ -68,7 +68,9 @@ jobs:
         echo "<b>👤 Author:</b> ${AUTHOR_ESCAPED}" >> "$GITHUB_OUTPUT"
         echo "<b>📦 Commit:</b> <code>${COMMIT_SHA_SHORT}</code>" >> "$GITHUB_OUTPUT"
         echo "<b>Error details:</b>" >> "$GITHUB_OUTPUT"
+        echo "<pre>" >> "$GITHUB_OUTPUT"
         echo "$(cat /tmp/build_output.log)" >> "$GITHUB_OUTPUT"
+        echo "<pre>" >> "$GITHUB_OUTPUT"
         echo "EOF" >> "$GITHUB_OUTPUT"
 
     - name: Send Build Results to Telegram
