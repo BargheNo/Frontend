@@ -2,7 +2,7 @@
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 import PanelCard from "@/components/Panel/PanelCard/PanelCard";
 import { getData } from "@/src/services/apiHub";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 import FilterSection from "@/components/FilterSection/FilterSection";
@@ -40,11 +40,20 @@ const Settings = () => {
     const [sortBy, setSortBy] = useState<string>("");
     const [asc, setAsc] = useState<boolean>(false);
 
-    useEffect(() => {
+    const [query, setQuery] = useState<string>("");
+
+    const fetchPanels = useCallback(() => {
         setLoading(true);
         getData({
             endPoint: `/v1/user/installation/panel`,
-            params: { status, page, sortBy, asc, pageSize: resultPerPage },
+            params: {
+                status,
+                page,
+                sortBy,
+                asc,
+                pageSize: resultPerPage,
+                query,
+            },
         })
             .then((data) => {
                 // console.log(data?.data?.pagination);
@@ -53,7 +62,11 @@ const Settings = () => {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [status, resultPerPage, page, sortBy, asc]);
+    }, [status, resultPerPage, page, sortBy, asc, query]);
+
+    useEffect(() => {
+        fetchPanels();
+    }, [fetchPanels]);
     return (
         <PageContainer>
             <FilterSection
@@ -70,6 +83,9 @@ const Settings = () => {
                 setAsc={setAsc}
                 sortBy={sortBy}
                 setSortBy={setSortBy}
+                query={query}
+                setQuery={setQuery}
+                onSearchSubmit={() => fetchPanels()}
             />
             <div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden border-1 border-gray-200 shadow-[-6px_-6px_16px_rgba(255,255,255,1),6px_6px_16px_rgba(0,0,0,0.3)]">
                 {loading ? (

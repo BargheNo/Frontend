@@ -138,7 +138,7 @@ export default function CorpMessagesPagination() {
             <Header header="تنظیمات اعلان‌ها" />
             <div className="flex flex-col text-white bg-transparent w-full relative">
                 <div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] mb-5">
-                    <div className="flex flex-row mr-auto md:ml-30 m-auto md:gap-17 gap-6">
+                    <div className="flex flex-row mr-auto md:ml-30 m-auto md:gap-10 gap-6">
                         <p className="mt-8 whitespace-nowrap">
                             دریافت از طریق وبسایت
                         </p>
@@ -146,21 +146,21 @@ export default function CorpMessagesPagination() {
                             دریافت از طریق ایمیل
                         </p>
                     </div>
-                    <div className="flex flex-col text-gray-800 rounded-2xl no-scrollbar w-90/100 overflow-auto shadow-[inset_-6px_-6px_16px_rgba(255,255,255,0.8),inset_6px_6px_16px_rgba(0,0,0,0.2)] mt-6 m-auto md:h-65 h-60">
+                    <div className="flex flex-col text-gray-800 rounded-2xl no-scrollbar w-90/100 overflow-auto shadow-[inset_-6px_-6px_16px_rgba(255,255,255,0.8),inset_6px_6px_16px_rgba(0,0,0,0.2)] mt-6 m-auto h-full">
                         {notifSetting?.length <= 0 && loading ? (
                             <LoadingSpinner />
                         ) : (
                             notifSetting?.map((item, index) => (
                                 <div
                                     key={index}
-                                    className="flex flex-row justify-between border-t-2 border-gray-300 h-1/4 items-center "
+                                    className="flex flex-row justify-between border-t-2 first:border-t-0 border-gray-300 h-1/4 items-center px-2"
                                 >
-                                    <p className="text-gray-600 whitespace-nowrap md:mb-0 mb-9 md:mr-4 text-[0.9rem] ml-1">
+                                    <p className="text-gray-600 my-8 flex align-middle place-self-center whitespace-nowrap mr-0 md:mr-12">
                                         {item?.notificationType?.name}
                                     </p>
 
                                     <div className="flex flex-col">
-                                        <div className="flex flex-row md:gap-37 gap-17 md:mt-0 mt-9 md:ml-23 md:mb-0 mb-5 mr-2">
+                                        <div className="flex flex-row md:gap-37 gap-8 md:mt-0 mt-6 md:ml-23 md:mb-0 mb-6 mr-2">
                                             <Switch
                                                 className="rtl"
                                                 onClick={() =>

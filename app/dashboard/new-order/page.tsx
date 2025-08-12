@@ -13,11 +13,13 @@ export default function Page() {
     // >(undefined);
     // const [currentPage, setCurrentPage] = useState<number>(1);
     const [status, setStatus] = useState<string>("");
-    const [resultPerPage, setResultPerPage] = useState<string>("");
+    // const [resultPerPage, setResultPerPage] = useState<string>("");
     const [isLoading, setIsLoading] = useState(true);
     const [history, sethistory] = useState<Orderhistory[]>([]);
     const [sortBy, setSortBy] = useState<string>("");
     const [asc, setAsc] = useState<boolean>(false);
+
+    const [query, setQuery] = useState<string>("");
 
     const handelHistory = useCallback(() => {
         setIsLoading(true);
@@ -27,6 +29,7 @@ export default function Page() {
                 status,
                 sortBy,
                 asc,
+                query,
                 // page: currentPage,
                 // pageSize: resultPerPage,
             },
@@ -38,7 +41,7 @@ export default function Page() {
             })
             .catch((err) => console.log(err))
             .finally(() => setIsLoading(false));
-    }, [status, sortBy, asc]);
+    }, [status, sortBy, asc, query]);
     // }, [resultPerPage, status, currentPage]);
     useEffect(() => {
         handelHistory();
@@ -62,8 +65,9 @@ export default function Page() {
                     setAsc={setAsc}
                     sortBy={sortBy}
                     setSortBy={setSortBy}
-                    // resultPerPage={resultPerPage}
-                    // setResultPerPage={setResultPerPage}
+                    query={query}
+                    setQuery={setQuery}
+                    onSearchSubmit={() => handelHistory()}
                     // currentPage={currentPage}
                     // setCurrentPage={setCurrentPage}
                     // paginationInfo={paginationInfo}

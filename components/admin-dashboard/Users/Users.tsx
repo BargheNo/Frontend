@@ -68,6 +68,7 @@ export default function Users() {
         paginationInfoType | undefined
     >(undefined);
     const [page, setPage] = useState<number>(1);
+    const [query, setQuery] = useState<string>("");
 
     const fetchRoles = useCallback(async () => {
         setLoadingRoles(true);
@@ -80,7 +81,7 @@ export default function Users() {
     }, []);
 
     const fetchUsersByStatus = useCallback(() => {
-        console.log("status");
+        // console.log("status");
         setLoading(true);
 
         getData({
@@ -91,6 +92,7 @@ export default function Users() {
                 asc,
                 page,
                 pageSize: resultPerPage,
+                query,
             },
         })
             .then((data) => {
@@ -100,14 +102,14 @@ export default function Users() {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [filterValue, sortBy, asc, page, resultPerPage]);
+    }, [filterValue, sortBy, asc, page, resultPerPage, query]);
 
     const fetchUsersByRole = useCallback(() => {
-        console.log("role");
+        // console.log("role");
         setLoading(true);
         getData({
             endPoint: `/v1/admin/roles/${filterValue}/owners`,
-            params: { status: filterValue, sortBy, asc },
+            params: { status: filterValue, sortBy, asc, query },
         })
             .then((data) => {
                 console.log(data?.data);
@@ -116,14 +118,14 @@ export default function Users() {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [filterValue, sortBy, asc]);
+    }, [filterValue, sortBy, asc, query]);
 
     const fetchAllUsers = useCallback(() => {
         setLoading(true);
-        console.log("all users");
+        console.log("all users", query);
         getData({
             endPoint: `/v1/admin/users?status=1&status=2`,
-            params: { sortBy, asc, page, pageSize: resultPerPage },
+            params: { sortBy, asc, page, pageSize: resultPerPage, query },
         })
             .then((data) => {
                 console.log("all", data?.data?.data);
@@ -132,14 +134,13 @@ export default function Users() {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [sortBy, asc, page, resultPerPage]);
+    }, [sortBy, asc, page, resultPerPage, query]);
 
     useEffect(() => {
         fetchAllUsers();
         fetchRoles();
     }, [fetchAllUsers, fetchRoles]);
-
-    useEffect(() => {
+    const updateUsers = useCallback(() => {
         if (filterValue === "all") {
             fetchAllUsers();
         } else if (filterType === "role") {
@@ -155,9 +156,13 @@ export default function Users() {
         fetchUsersByRole,
     ]);
 
+    useEffect(() => {
+        updateUsers();
+    }, [updateUsers]);
+
     return (
         <>
-            <div className="flex place-items-center">
+            <div className="flex place-items-center w-full">
                 {/* <Header header="مدیریت کاربران" /> */}
 
                 <FilterSection
@@ -170,8 +175,15 @@ export default function Users() {
                     resultPerPage={resultPerPage}
                     setPage={setPage}
                     setResultPerPage={setResultPerPage}
+                    query={query}
+                    setQuery={setQuery}
+                    onSearchSubmit={() => updateUsers()}
                 >
-                    <div className="flex gap-4 ltr">
+                    <div
+                        className={`flex gap-4 ltr sm:rtl w-full ${
+                            filterType === "all" && "sm:w-40"
+                        }`}
+                    >
                         <Select
                             defaultValue="all"
                             onValueChange={(value) => {
@@ -181,7 +193,7 @@ export default function Users() {
                         >
                             <SelectTrigger
                                 dir="rtl"
-                                className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+                                className="flex w-full sm:w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
                             >
                                 <SelectValue placeholder="فیلتر بر اساس" />
                             </SelectTrigger>
@@ -214,7 +226,7 @@ export default function Users() {
                             >
                                 <SelectTrigger
                                     dir="rtl"
-                                    className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+                                    className="flex w-full sm:w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
                                 >
                                     <SelectValue
                                         placeholder={
@@ -247,7 +259,7 @@ export default function Users() {
                             >
                                 <SelectTrigger
                                     dir="rtl"
-                                    className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+                                    className="flex w-full sm:min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
                                 >
                                     <SelectValue placeholder="وضعیت" />
                                 </SelectTrigger>

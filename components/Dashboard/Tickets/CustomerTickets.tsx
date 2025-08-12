@@ -104,6 +104,8 @@ const TicketSupportPage = () => {
     const [sortBy, setSortBy] = useState<string>("");
     const [asc, setAsc] = useState<boolean>(false);
 
+    const [query, setQuery] = useState<string>("");
+
     const subjectOptions = [
         { id: 1, label: "عمومی" },
         { id: 2, label: "پنل" },
@@ -191,21 +193,22 @@ const TicketSupportPage = () => {
         setLoadingTickets(true);
         getData({
             endPoint: `/v1/user/ticket/list`,
-            params: { status, page, sortBy, asc, pageSize: resultPerPage },
+            params: {
+                status,
+                page,
+                sortBy,
+                asc,
+                pageSize: resultPerPage,
+                query,
+            },
         })
             .then((data) => {
                 setPaginationInfo(data?.data?.pagination);
                 setTickets(data?.data?.data);
-                // getData({ endPoint: `/v1/ticket/status` })
-                // 	.then((data) => {
-                // 		console.log(data.data);
-                // 		setStatuses(data?.data);
-                // 	})
-                // 	.catch((err) => console.log(err));
             })
             .catch((err) => console.log(err))
             .finally(() => setLoadingTickets(false));
-    }, [status, resultPerPage, page, sortBy, asc]);
+    }, [status, resultPerPage, page, sortBy, asc, query]);
 
     useEffect(() => {
         fetchTickets();
@@ -422,7 +425,7 @@ const TicketSupportPage = () => {
                                         id="subject"
                                         // style={{ width: "25vw" }}
                                     >
-                                        <SelectValue  placeholder="انتخاب عنوان" />
+                                        <SelectValue placeholder="انتخاب عنوان" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
@@ -570,6 +573,9 @@ const TicketSupportPage = () => {
                     setAsc={setAsc}
                     sortBy={sortBy}
                     setSortBy={setSortBy}
+                    query={query}
+                    setQuery={setQuery}
+                    onSearchSubmit={() => fetchTickets()}
                 />
                 <div className="space-y-4">
                     {loadingTickets ? (
@@ -646,7 +652,8 @@ const TicketSupportPage = () => {
                                                                         />
                                                                     ) : (
                                                                         <p className="text-nowrap">
-                                                                            ثبت نظر
+                                                                            ثبت
+                                                                            نظر
                                                                         </p>
                                                                     )}
                                                                 </button>
