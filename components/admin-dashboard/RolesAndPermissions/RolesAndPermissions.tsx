@@ -81,13 +81,15 @@ const RolesAndPermissions = () => {
         paginationInfoType | undefined
     >(undefined);
     const [page, setPage] = useState<number>(1);
+    const [query, setQuery] = useState<string>("");
 
     const getRoles = useCallback(() => {
+        console.log(query);
         if (permissionFilter === "all" || permissionFilter === "") {
             setLoading(true);
             getData({
                 endPoint: `/v1/admin/roles`,
-                params: { pageSize: resultPerPage, page },
+                params: { pageSize: resultPerPage, page, query },
             })
                 .then((data) => {
                     setRoles(data?.data?.data);
@@ -96,7 +98,7 @@ const RolesAndPermissions = () => {
                 .catch((err) => console.log(err))
                 .finally(() => setLoading(false));
         }
-    }, [page, resultPerPage, permissionFilter]);
+    }, [page, resultPerPage, permissionFilter, query]);
 
     const getAllPermissions = () => {
         getData({
@@ -115,7 +117,7 @@ const RolesAndPermissions = () => {
                 setLoading(true);
                 getData({
                     endPoint: `v1/admin/permissions/${permissionId}/roles`,
-                    params: { pageSize: resultPerPage, page },
+                    params: { pageSize: resultPerPage, page, query },
                 })
                     .then((data) => {
                         console.log(data?.data);
@@ -126,7 +128,7 @@ const RolesAndPermissions = () => {
                     .finally(() => setLoading(false));
             }
         },
-        [page, resultPerPage, permissionFilter]
+        [page, resultPerPage, permissionFilter, query]
     );
     useEffect(() => {
         getAllPermissions();
@@ -148,6 +150,15 @@ const RolesAndPermissions = () => {
                 header="نقش‌ها و دسترسی‌ها"
                 resultPerPage={resultPerPage}
                 setResultPerPage={setResultPerPage}
+                query={query}
+                setQuery={setQuery}
+                onSearchSubmit={() => {
+                    if (permissionFilter !== "" && permissionFilter !== "all") {
+                        getRolesByPermission(permissionFilter);
+                    } else {
+                        getRoles();
+                    }
+                }}
             >
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
@@ -155,7 +166,7 @@ const RolesAndPermissions = () => {
                             variant="outline"
                             role="combobox"
                             aria-expanded={open}
-                            className="min-w-40 relative rtl bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] justify-between gap-2"
+                            className="w-full sm:min-w-48 sm:max-w-60 relative rtl bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] justify-between gap-2"
                         >
                             {permissionFilter === "all" ? "همه" : ""}
                             {permissionFilter

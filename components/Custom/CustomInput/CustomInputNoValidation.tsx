@@ -57,7 +57,7 @@ export default function CustomInputNoValidation({
                     autoFocus={autoFocus}
                     onChange={(e) => {
                         if (onValueChange) {
-                            console.log(e?.target?.value);
+                            // console.log(e?.target?.value);
                             onValueChange(e?.target?.value);
                         }
                     }}
