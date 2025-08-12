@@ -15,6 +15,9 @@ export default function OrderHistoryPagination({
     setAsc,
     sortBy,
     setSortBy,
+    query,
+    setQuery,
+    onSearchSubmit,
 }: // resultPerPage,
 // setResultPerPage,
 // currentPage,
@@ -29,6 +32,9 @@ export default function OrderHistoryPagination({
     setAsc: React.Dispatch<React.SetStateAction<boolean>>;
     sortBy: string;
     setSortBy: React.Dispatch<React.SetStateAction<string>>;
+    query: string;
+    setQuery: React.Dispatch<React.SetStateAction<string>>;
+    onSearchSubmit: () => void;
     // resultPerPage: string;
     // setResultPerPage: React.Dispatch<React.SetStateAction<string>>;
     // currentPage: number;
@@ -48,6 +54,9 @@ export default function OrderHistoryPagination({
                 setAsc={setAsc}
                 sortBy={sortBy}
                 setSortBy={setSortBy}
+                query={query}
+                setQuery={setQuery}
+                onSearchSubmit={onSearchSubmit}
                 // resultPerPage={resultPerPage}
                 // setResultPerPage={setResultPerPage}
             />
