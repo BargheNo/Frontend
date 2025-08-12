@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Vazir';
-    src: url('@/public/fonts/vazir/Vazir.ttf') format('ttf');
+    src: url('../public/fonts/vazir/Vazir.ttf') format('ttf');
     font-weight: normal;
     font-style: normal;
     font-display: swap; /* Optional: Ensures text is visible while the font loads */

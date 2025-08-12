@@ -52,6 +52,7 @@ export default function DesktopNavbar() {
                                 <div className="flex flex-row-reverse justify-start items-center w-[50%] gap-8">
                                     <Skeleton className="h-[20px] w-[40px] rounded-full" />
                                     <Skeleton className="h-[20px] w-[80px] rounded-full" />
+                                    <Skeleton className="h-[20px] w-[80px] rounded-full" />
                                     <Skeleton className="h-[20px] w-[120px] rounded-full" />
                                 </div>
                             </div>
