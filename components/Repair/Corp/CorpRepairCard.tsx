@@ -139,16 +139,16 @@ const CorpRepairCard = ({
                     </div>
                 </div>
 
-                <div className="w-[30%] ">
+                <div className="md:w-[30%] w-[55%] m-auto ">
                     {/* Right Section: Status and Action Button */}
                     <div className="flex flex-col gap-4 w-full h-2/3">
                         <div className="flex flex-col items-center justify-center gap-2 p-3 inset-neu-container !h-full !w-full">
                             <div className="flex flex-col gap-2 text-sm font-black text-gray-800">
-                                <div className="flex items-center gap-2">
+                                <div className="text-nowrap flex items-center gap-2">
                                     <span>وضعیت: {getStatusText()}</span>
                                     {getStatusIcon()}
                                 </div>
-                                <div className="flex items-center gap-2">
+                                <div className="text-nowrap flex items-center gap-2">
                                     <span>ضرورت: {getUrgencyText()}</span>
                                     {getUrgencyIcon()}
                                 </div>
@@ -156,11 +156,11 @@ const CorpRepairCard = ({
                         </div>
                     </div>
                     <div className="w-full mt-2">
-                        <div className="flex flex-row-reverse gap-2 justify-center items-center red-circle-button !rounded-2xl w-full" onClick={onDetailsClick}>
+                        <div className="flex flex-row-reverse h-10 gap-2 justify-center items-center red-circle-button !rounded-2xl w-full" onClick={onDetailsClick}>
                             <button 
                                 className="flex items-center justify-center md:red-circle-button"
                             >
-                                <MoveLeft size={32} strokeWidth={1.5} />
+                                <MoveLeft size={30} strokeWidth={1.5} />
                             </button>
                             <span className="text-sm">مشاهدۀ جزئیات</span>
                         </div>
