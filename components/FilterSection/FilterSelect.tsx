@@ -23,6 +23,7 @@ export default function FilterSelect({
     possibleValues,
     loading,
     onValueChange,
+    className
 }: {
     placeholder?: string;
     width?: number;
@@ -31,9 +32,10 @@ export default function FilterSelect({
     possibleValues?: Item[];
     loading?: boolean;
     onValueChange?: any;
+    className?: string;
 }) {
     return loading === true ? (
-        <Skeleton className={`h-[40px] min-w-${width}`} />
+        <Skeleton className={`h-[40px] md:min-w-${width} w-full ${className}`} />
     ) : (
         <Select
             value={String(field)}
@@ -48,7 +50,7 @@ export default function FilterSelect({
         >
             <SelectTrigger
                 dir="rtl"
-                className={`flex min-w-${width} md:mb-0 -mb-15 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]`}
+                className={`flex md:min-w-${width} w-full cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] ${className}`}
             >
                 <SelectValue placeholder={placeholder} />
             </SelectTrigger>

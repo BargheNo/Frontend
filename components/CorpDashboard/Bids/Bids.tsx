@@ -102,8 +102,8 @@ export default function Bids() {
                     setSortBy={setSortBy}
                     asc={asc}
                     setAsc={setAsc}
-                    // searchPhrase={searchPhrase}
-                    // setSearchPhrase={setSearchPhrase}
+                    searchPhrase={searchPhrase}
+                    setSearchPhrase={setSearchPhrase}
                     // onSearchSubmit={() => updateBids()}
                 />
             </div>
