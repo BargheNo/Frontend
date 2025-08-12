@@ -65,9 +65,7 @@ export default function AnnounceView({
             {!onlyView && <AddAnnounce />}
             {/* </div> */}
 
-            {onlyView ? (
-                <FilterSection header="اخبار و اطلاعیه‌ها" /> // user
-            ) : (
+            {!onlyView && (
                 <FilterSection
                     header="اخبار و اطلاعیه‌ها"
                     // status={status}
