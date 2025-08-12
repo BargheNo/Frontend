@@ -64,13 +64,22 @@ export default function Bids() {
     const [sortBy, setSortBy] = useState<string>("");
     const [asc, setAsc] = useState<boolean>(false);
 
+    const [query, setQuery] = useState<string>("");
+
     const corpId = useSelector((state: RootState) => state.user.corpId);
 
     const updateBids = useCallback(() => {
         setLoading(true);
         getData({
             endPoint: `/v1/corp/${corpId}/bid`,
-            params: { status, page, sortBy, asc, pageSize: resultPerPage, query },
+            params: {
+                status,
+                page,
+                sortBy,
+                asc,
+                pageSize: resultPerPage,
+                query,
+            },
         })
             .then((data) => {
                 console.log("data", data);
@@ -102,9 +111,9 @@ export default function Bids() {
                     setSortBy={setSortBy}
                     asc={asc}
                     setAsc={setAsc}
-                    // searchPhrase={searchPhrase}
-                    // setSearchPhrase={setSearchPhrase}
-                    // onSearchSubmit={() => updateBids()}
+                    query={query}
+                    setQuery={setQuery}
+                    onSearchSubmit={() => updateBids()}
                 />
             </div>
             <div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F0EDEF] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
