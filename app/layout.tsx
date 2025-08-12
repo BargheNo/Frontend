@@ -7,14 +7,14 @@ import { Toaster } from "@/components/ui/sonner";
 import NavbarWrapper from "@/src/wrappers/NavbarWrappert/NavbarWrapper";
 
 export const metadata: Metadata = {
-	title: "Barghe No",
-	description: "Barghe No",
+    title: "Barghe No",
+    description: "Barghe No",
 };
 
 export default async function RootLayout({
-	children,
+    children,
 }: Readonly<{
-	children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
 	const baseOrange = "#FA682D";
 	const lightOrange = "#FF9C6F"; // Lightened by ~20%
