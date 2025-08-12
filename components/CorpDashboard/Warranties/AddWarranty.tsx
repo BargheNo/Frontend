@@ -48,7 +48,7 @@ const AddWarranty = () => {
 				className="w-full dialog-width mx-auto overflow-auto pb-0"
 			>
 				<DialogHeader>
-					<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
+					<DialogTitle className="flex justify-center items-end font-medium  md:font-bold mt-3.5">
 						ثبت گارانتی جدید
 					</DialogTitle>
 				</DialogHeader>

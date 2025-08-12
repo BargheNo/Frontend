@@ -18,10 +18,10 @@ const WarrantyCard = ({ id, name, guaranteeType, durationMonths, description, te
     <div className={`flex flex-col space-y-6 neu-container rounded-3xl justify-between
                     w-full h-full bg-[#F0EDEF] p-8 overflow-hidden relative ${isArchived && "grayscale-100"}`}
          data-test="warranty-card">
-        <h1 className='text-2xl font-black' data-test="warranty-name">
+        <h1 className='text-xl font-black' data-test="warranty-name">
           {name}
         </h1>
-        <div className='flex justify-around'>
+        <div className='flex justify-around gap-3'>
           <MetricBox
             title='نوع گارانتی'
             icon={Shapes}
