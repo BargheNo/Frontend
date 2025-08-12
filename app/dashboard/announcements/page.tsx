@@ -1,7 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
-import Header from "@/components/Header/Header";
 
 const AnnounceView = dynamic(
     () => import("@/components/Announcement/AnnounceView/AnnounceView"),
