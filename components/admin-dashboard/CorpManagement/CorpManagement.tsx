@@ -119,7 +119,7 @@ const CorporationItem = ({
 
     const fetchCorporationDetails = async () => {
         setLoading(true);
-        getData({ endPoint: `v1/admin/corporation/${id}` })
+        getData({ endPoint: `/v1/admin/corporation/${id}` })
             .then((data) => {
                 console.log("data", data);
                 setCorporation(data?.data);
@@ -530,17 +530,17 @@ const CorporationItem = ({
                                     <div className="flex gap-2">
                                         <SubmitButton
                                             loading={loading}
-                                            onClick={handleSuspend}
-                                            className="from-yellow-600 to-yellow-700 hover:from-yellow-500 hover:to-yellow-600 active:from-yellow-700 active:to-yellow-500"
-                                        >
-                                            معلق کردن
-                                        </SubmitButton>
-                                        <SubmitButton
-                                            loading={loading}
                                             onClick={handleReject}
                                             className="from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 active:from-red-700 active:to-red-500"
                                         >
                                             رد کردن
+                                        </SubmitButton>
+                                        <SubmitButton
+                                            loading={loading}
+                                            onClick={handleSuspend}
+                                            className="from-yellow-600 to-yellow-700 hover:from-yellow-500 hover:to-yellow-600 active:from-yellow-700 active:to-yellow-500"
+                                        >
+                                            معلق کردن
                                         </SubmitButton>
                                         <SubmitButton
                                             loading={loading}
@@ -605,6 +605,7 @@ const CorpManagement = () => {
             },
         })
             .then((data) => {
+                console.log(data?.data?.data);
                 setCorporations(data?.data?.data);
                 setPaginationInfo(data?.data?.pagination);
             })
