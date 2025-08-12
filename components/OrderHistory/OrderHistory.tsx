@@ -37,10 +37,10 @@ const OrderHistory = ({ name, status, address, createdTime }: Orderhistory) => {
 										icon={CalendarFold}
 										color="#6B7280"
 									/>
-									<span className="font-medium mr-2 whitespace-nowrap">
+									<span className="font-medium mr-2 whitespace-nowrap place-self-center">
 										تاریخ ثبت درخواست:
 									</span>
-									<span className="mr-2 whitespace-nowrap">
+									<span className="mr-2 whitespace-nowrap place-self-center">
 										{moment(createdTime)
 											.locale("fa")
 											.format("jYYYY/jMM/jDD")}
@@ -52,7 +52,7 @@ const OrderHistory = ({ name, status, address, createdTime }: Orderhistory) => {
 					<div className="flex items-start  text-gray-700 mt-6 ">
 						<div className="flex flex-row items-start text-black">
 							<IconWithBackground icon={MapPin} color="#6B7280" />
-							<div className="font-medium mx-2 ">
+							<div className="font-medium mx-2 place-self-center mt-2">
 								استان {address.province}، شهر {address.city}،{" "}
 								{address.streetAddress}، پلاک{" "}
 								{address.houseNumber}، واحد {address.unit}
