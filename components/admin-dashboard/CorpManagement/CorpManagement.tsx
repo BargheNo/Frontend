@@ -588,12 +588,20 @@ const CorpManagement = () => {
     const [page, setPage] = useState<number>(1);
     const [sortBy, setSortBy] = useState<string>("");
     const [asc, setAsc] = useState<boolean>(false);
+    const [query, setQuery] = useState<string>("");
 
     const fetchAllCorporations = useCallback(() => {
         setLoading(true);
         getData({
             endPoint: `/v1/admin/corporation`,
-            params: { status, page, sortBy, asc, pageSize: resultPerPage },
+            params: {
+                status,
+                page,
+                sortBy,
+                asc,
+                pageSize: resultPerPage,
+                query,
+            },
         })
             .then((data) => {
                 setCorporations(data?.data?.data);
@@ -601,7 +609,7 @@ const CorpManagement = () => {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [status, page, resultPerPage, sortBy, asc]);
+    }, [status, page, resultPerPage, sortBy, asc, query]);
 
     useEffect(() => {
         fetchAllCorporations();
@@ -624,6 +632,8 @@ const CorpManagement = () => {
                     setSortBy={setSortBy}
                     asc={asc}
                     setAsc={setAsc}
+                    query={query}
+                    setQuery={setQuery}
                 />
                 {loading ? (
                     <div className="flex justify-center items-center">
