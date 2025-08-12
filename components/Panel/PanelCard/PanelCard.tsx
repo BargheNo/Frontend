@@ -271,7 +271,7 @@ const PanelCard = ({
 					{/* ADDRESS SECTION */}
 					<div className="flex items-start text-sm text-gray-700 mt-6">
 						<div className="flex flex-row">
-							<IconWithBackground icon={MapPin} color="#6B7280" />
+							<IconWithBackground icon={MapPin} color="#6B7280" className="h-fit" />
 							<div className="font-medium mx-2 mt-[10px]">آدرس:</div>
 							<span className="mr-1 mt-[10px]">
 								{isExpanded ? address : truncateText(address)}
