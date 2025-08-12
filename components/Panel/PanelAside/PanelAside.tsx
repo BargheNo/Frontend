@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -27,22 +27,8 @@ import {
     PanelAsideIcon,
     PanelAsideTitle,
 } from "./PanelAsideItem/PanelAsideItem";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { useDispatch } from "react-redux";
-import { getData } from "@/src/services/apiHub";
-import { setCorpId } from "@/src/store/slices/userSlice";
+import { SwitchCorp } from "@/components/PanelAside/SwitchCorp/SwitchCorp";
 const myFont = localFont({ src: "../../../public/fonts/vazir/Vazir.ttf" });
-
-interface Corp {
-    id: number;
-    name: string;
-}
 
 const PanelAside = ({
     children,
@@ -50,12 +36,9 @@ const PanelAside = ({
     navItemsMonitoring,
     mode = "customer",
 }: PanelAsideProps) => {
-    const dispatch = useDispatch();
     const pathname = usePathname();
     const [isMobile, setIsMobile] = useState(false);
     const [sideOpen, setSideOpen] = useState(false);
-    const [corp, setCorp] = useState<string>("0");
-    const [corps, setCorps] = useState<Corp[]>([]);
 
     useEffect(() => {
         const checkMobile = () => {
@@ -71,27 +54,7 @@ const PanelAside = ({
         // Cleanup
         return () => window.removeEventListener("resize", checkMobile);
     }, []);
-    const changeCorp = useCallback(
-        (corpId: string) => {
-            setCorp(String(corpId));
-            dispatch(setCorpId(Number(corpId)));
-        },
-        [dispatch]
-    );
 
-    useEffect(() => {
-        getData({ endPoint: `/v1/user/corps` })
-            .then((res) => {
-                // console.log(res?.data);
-                setCorps(res?.data);
-                changeCorp(res?.data?.[0]?.id);
-                // setCorp(String(res?.data?.[0]?.id));
-                // console.log("rescorp", res?.data[0]?.id);
-                // const corpId = res?.data[0]?.id;
-                // dispatch(setCorpId(res?.data[0]?.id));
-            })
-            .catch((err) => console.log(err));
-    }, [dispatch, changeCorp]);
     if (isMobile) {
         return <main className="rtl w-screen pb-18">{children}</main>;
     }
@@ -167,33 +130,7 @@ const PanelAside = ({
                                 </Accordion>
                             )}
                         </nav>
-                        {mode === "corp" && (
-                            <Select
-                                value={corp}
-                                onValueChange={(value) => {
-                                    changeCorp(value);
-                                }}
-                            >
-                                <SelectTrigger
-                                    dir="rtl"
-                                    className="text-black w-full shadow-inner shadow-[rgba(0,0,0,0.2)] mb-3 text-right bg-white"
-                                >
-                                    <SelectValue placeholder="انتخاب شرکت" />
-                                </SelectTrigger>
-                                <SelectContent dir="rtl">
-                                    {corps &&
-                                        corps?.map((c, index: number) => (
-                                            <SelectItem
-                                                key={index}
-                                                value={String(c?.id)}
-                                                className="cursor-pointer"
-                                            >
-                                                {c?.name}
-                                            </SelectItem>
-                                        ))}
-                                </SelectContent>
-                            </Select>
-                        )}
+                        {mode === "corp" && <SwitchCorp />}
                     </SidebarContent>
                 </Sidebar>
                 <div

@@ -36,7 +36,7 @@ import panelNotFound from "@/public/images/panelNotFound/panelNotFound.png";
 export default function Page() {
     const corpID = useSelector((state: RootState) => state.user.corpId);
     const { isLoading, data } = useQuery({
-        queryKey: ["blogs"],
+        queryKey: ["blogs", corpID],
         queryFn: async () => {
             const r1 = await getData({
                 endPoint: `/v1/corp/${corpID}/blog/list?status=1`,
@@ -49,6 +49,7 @@ export default function Page() {
             r1.data?.data?.push(...r2?.data?.data);
             return r1;
         },
+        enabled: !!corpID,
     });
     console.log(data?.data?.data);
     const blogs = data?.data?.data;
