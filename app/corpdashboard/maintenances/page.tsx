@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import CorpRepairCard from "@/components/Repair/Corp/CorpRepairCard";
 import CorpRepairDialog from "@/components/Repair/Corp/CorpRepairDialog";
 import { CorpRepairItem } from "@/types/CorpTypes";
@@ -28,9 +28,11 @@ export default function Page() {
     const [sortBy, setSortBy] = useState<string>("");
     const [asc, setAsc] = useState<boolean>(false);
 
+    const [query, setQuery] = useState<string>("");
+
     const corpId = useSelector((state: RootState) => state.user.corpId);
 
-    useEffect(() => {
+    const fetchMaintenances = useCallback(() => {
         setIsLoading(true);
         getData({
             endPoint: `/v1/corp/${corpId}/maintenance/request`,
@@ -41,6 +43,7 @@ export default function Page() {
                 asc,
                 pageSize: resultPerPage,
                 corporationID: corpId,
+                query,
             },
         })
             .then((res) => {
@@ -50,7 +53,11 @@ export default function Page() {
             })
             .catch((err) => console.log(err))
             .finally(() => setIsLoading(false));
-    }, [corpId, status, page, sortBy, asc, resultPerPage]);
+    }, [corpId, status, page, sortBy, asc, resultPerPage, query]);
+
+    useEffect(() => {
+        fetchMaintenances();
+    }, [fetchMaintenances]);
 
     const handleOpenDialog = (item: CorpRepairItem) => {
         setSelectedItem(item);
@@ -80,6 +87,9 @@ export default function Page() {
                         setAsc={setAsc}
                         sortBy={sortBy}
                         setSortBy={setSortBy}
+                        query={query}
+                        setQuery={setQuery}
+                        onSearchSubmit={() => fetchMaintenances()}
                     />
                     <div className="flex flex-col neu-container">
                         {isLoading ? (

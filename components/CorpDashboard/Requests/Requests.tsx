@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useEffect, useState } from "react";
 import RequestCard from "./RequestCard/RequestCard";
 import { getData } from "@/src/services/apiHub";
@@ -36,9 +36,11 @@ export default function Requests() {
     const [sortBy, setSortBy] = useState<string>("");
     const [asc, setAsc] = useState<boolean>(false);
 
+    const [query, setQuery] = useState<string>("");
+
     const corpId = useSelector((state: RootState) => state.user.corpId);
 
-    useEffect(() => {
+    const fetchRequests = useCallback(() => {
         setLoading(true);
         getData({
             endPoint: `/v1/corp/${corpId}/installation/request`,
@@ -53,6 +55,10 @@ export default function Requests() {
             .finally(() => setLoading(false));
     }, [corpId, resultPerPage, page, sortBy, asc]);
 
+    useEffect(() => {
+        fetchRequests();
+    }, [fetchRequests]);
+
     return (
         <>
             <FilterSection
@@ -65,6 +71,9 @@ export default function Requests() {
                 setSortBy={setSortBy}
                 asc={asc}
                 setAsc={setAsc}
+                query={query}
+                setQuery={setQuery}
+                onSearchSubmit={() => fetchRequests()}
             />
             {/* <Header header="درخواست‌های موجود در سرتاسر سامانه" /> */}
             <div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F0EDEF] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
