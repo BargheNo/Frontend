@@ -25,7 +25,7 @@ interface Ticket {
     status: string;
     image: string;
     created_at: string;
-    Owner: {
+    owner: {
         email: string;
         firstName: string;
         lastName: string;
@@ -213,7 +213,7 @@ const TicketSupportPage = () => {
                                         ticket?.created_at
                                     ).toLocaleDateString("fa-IR")}
                                     image={ticket?.image}
-                                    Owner={ticket?.Owner}
+                                    owner={ticket?.owner}
                                     fetchTickets={fetchTickets}
                                     hasRespondTicketPermission={
                                         hasRespondTicketPermission
