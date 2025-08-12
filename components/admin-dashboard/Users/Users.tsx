@@ -157,7 +157,7 @@ export default function Users() {
 
     return (
         <>
-            <div className="flex place-items-center">
+            <div className="flex place-items-center w-full">
                 {/* <Header header="مدیریت کاربران" /> */}
 
                 <FilterSection
@@ -171,7 +171,7 @@ export default function Users() {
                     setPage={setPage}
                     setResultPerPage={setResultPerPage}
                 >
-                    <div className="flex gap-4 ltr">
+                    <div className="flex gap-4 rtl sm:ltr w-full">
                         <Select
                             defaultValue="all"
                             onValueChange={(value) => {
@@ -181,7 +181,7 @@ export default function Users() {
                         >
                             <SelectTrigger
                                 dir="rtl"
-                                className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+                                className="flex w-full min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
                             >
                                 <SelectValue placeholder="فیلتر بر اساس" />
                             </SelectTrigger>
@@ -214,7 +214,7 @@ export default function Users() {
                             >
                                 <SelectTrigger
                                     dir="rtl"
-                                    className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+                                    className="flex w-full min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
                                 >
                                     <SelectValue
                                         placeholder={

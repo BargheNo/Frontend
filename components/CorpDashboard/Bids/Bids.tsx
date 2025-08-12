@@ -70,7 +70,7 @@ export default function Bids() {
         setLoading(true);
         getData({
             endPoint: `/v1/corp/${corpId}/bid`,
-            params: { status, page, sortBy, asc, pageSize: resultPerPage },
+            params: { status, page, sortBy, asc, pageSize: resultPerPage, query: searchPhrase },
         })
             .then((data) => {
                 console.log("data", data);
@@ -79,7 +79,7 @@ export default function Bids() {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [status, resultPerPage, corpId, page, sortBy, asc]);
+    }, [status, resultPerPage, corpId, page, sortBy, asc, searchPhrase]);
 
     useEffect(() => {
         updateBids();
@@ -102,8 +102,8 @@ export default function Bids() {
                     setSortBy={setSortBy}
                     asc={asc}
                     setAsc={setAsc}
-                    searchPhrase={searchPhrase}
-                    setSearchPhrase={setSearchPhrase}
+                    // searchPhrase={searchPhrase}
+                    // setSearchPhrase={setSearchPhrase}
                     // onSearchSubmit={() => updateBids()}
                 />
             </div>
