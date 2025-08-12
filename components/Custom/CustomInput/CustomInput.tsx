@@ -2,9 +2,10 @@
 import style from "./CustomInput.module.css";
 import { LucideIcon } from "lucide-react";
 import { useField } from "formik";
+import { cn } from "@/lib/utils";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
-	name: string;
+	name?: string;
 	children?: React.ReactNode;
 	icon?: LucideIcon;
 	onIconClick?: () => void;
@@ -42,7 +43,7 @@ export default function CustomInput({
 	const value = field.value || "";
 
 	return (
-		<div className={`${containerClassName} ${style.Conter}`}>
+		<div className={cn(style.Conter, containerClassName)}>
 			<div className={style.inputWrapper}>
 				{Icon && (
 					<Icon
@@ -59,13 +60,12 @@ export default function CustomInput({
 					dir={isRTL(value) ? "rtl" : "ltr"}
 					{...field}
 					{...props}
-					value={value} // Controlled value
 					autoFocus={autoFocus}
 					className={`${style.CustomInput} ${
 						style.numberInput
 					} ${inputClassName} ${
 						isRTL(value) ? "text-right rtl" : "text-left ltr"
-					}`}
+					} bg-[#f1f4fc]`}
 					style={{ paddingLeft: Icon ? "42px" : "12px" }}
 				/>
 				{hasError && (

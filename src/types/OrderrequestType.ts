@@ -3,7 +3,7 @@ interface order{
     area:number,
     power: number,
     maxCost: number,
-    buildingType: string,
+    buildingType: number,
     description: string,
     provinceID: number,
     cityID: number,

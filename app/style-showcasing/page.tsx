@@ -3,8 +3,9 @@ import { ArrowLeft } from "lucide-react";
 import React from "react";
 import BidCard from "@/components/CorpDashboard/Bids/BidCard";
 import { toast } from "sonner";
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
-import TransparentLoading from "@/components/LoadingSpinner/TransparentLoading";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import Header from "@/components/Header/Header";
+import InteractiveGrid from "@/components/Decorative/InteractiveGrid";
 
 /**
  * Style Showcase Page
@@ -15,9 +16,10 @@ const StyleShowcase = () => {
 		toast("سلام شب بخیر");
 	};
 	return (
-		<div className="!w-full p-6 space-y-8 shadow-2xl bg-[#f1f4fc]">
+		<div className="!w-full p-6 space-y-8 shadow-2xl bg-[#f1f4fc] vazir mt-12 rtl">
 			<section className="space-y-4">
 				<br />
+				<Header header="این یک کامپوننت Header است، از آن برای تایتل صفحات در داشبورد استفاده کنید" />
 				<br />
 				<h2 className="text-xl font-bold">Form Elements</h2>
 
@@ -55,28 +57,6 @@ const StyleShowcase = () => {
 						BidCards inside neu-container style:
 					</label>
 					<div className="flex flex-col neu-container">
-						<BidCard
-							panelDetails={{
-								panelName: "پنل خانه تهرانپارس",
-								customerName: "مجتبی قاطع",
-								address:
-									"فلکه شانزدهم تهرانپارس، حیدرخانی، کوچه پارسا، پلاک 134",
-								capacity: 5000,
-								price: 200000,
-							}}
-							status="confirmed"
-						/>
-						<BidCard
-							panelDetails={{
-								panelName: "پنل باغ شهری",
-								customerName: "رضا موسوی نارنجی",
-								address:
-									"ایران، استان کبیر اردبیل، نرسیده ترکیه، 200 کیلومتری ارومیه، کنار دریای خزر، خیابان باقلوا، کوچه خوشمزه، پلاک 104، درب انتهای کوچه سبز",
-								capacity: 200,
-								price: 120050780123406,
-							}}
-							status="pending"
-						/>
 					</div>
 				</div>
 			</section>
@@ -181,14 +161,18 @@ const StyleShowcase = () => {
 				</button>
 			</section>
 
-
 			<section>
 				<div className="relative inline-block rounded-2xl">
 					<button className="bg-red-500 p-4 neu-shadow rounded-2xl">
 						Click me
 					</button>
-					<TransparentLoading size="sm" />
+					{/* <TransparentLoading size="sm" /> */}
 				</div>
+			</section>
+
+
+			<section>
+				<InteractiveGrid rows={4} cols={14} size={30} />
 			</section>
 		</div>
 	);

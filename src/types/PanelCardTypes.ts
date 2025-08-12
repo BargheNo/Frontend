@@ -5,8 +5,10 @@ interface TechnicalDetails {
 }
 
 export interface PanelCardProps {
+	id : string;
 	panelName: string;
 	technicalDetails: TechnicalDetails;
 	address: string;
 	className?: string;
+	status: string;
 }

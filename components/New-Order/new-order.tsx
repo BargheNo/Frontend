@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import {
-	Plus,
 	ShieldAlert,
 	Mailbox,
 	SquareMenu,
@@ -37,46 +36,62 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { City, Province } from "@/src/types/provinceType";
-import provinceService from "@/src/services/provinceService";
 import orderService from "@/src/services/orderService";
-import { toast } from "sonner";
-import { useSelector } from "react-redux";
-// import { RootState } from "@/src/store/types";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
-export default function Neworder() {
+import CustomToast from "../Custom/CustomToast/CustomToast";
+import AddComponent from "../AddComponent/AddComponent";
+import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
+import { getData } from "@/src/services/apiHub";
+import { Button } from "../ui/button";
+import StickyFooter from "../Dialog/StickyFooter/StickyFooter";
+import CancelButton from "../Dialog/CancelButton/CancelButton";
+
+interface BuildingTypeProps {
+	id: number;
+	name: string;
+}
+
+export default function Neworder({
+	handelHistory,
+}: {
+	handelHistory: any;
+}) {
+	const [loading, setLoading] = useState(false);
 	const [open, setOpen] = useState(false);
 	const [disable, Setdisable] = useState(true);
 	const [provinceid, Setprovinceid] = useState<number>();
 	const [provinces, Setprovinces] = useState<Province[]>([]);
 	const [cities, Setcities] = useState<City[]>([]);
-	const [building, Setbuilding] = useState("");
-	const [cityid, Setcityid] = useState<number>();
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
+	const [building, Setbuilding] = useState(1);
+	const [buildingTypes, setBuildingTypes] = useState<BuildingTypeProps[]>();
+
 	const Getprovinces = () => {
-		provinceService
-			.GetProvinces()
-			.then((res) => {
-				Setprovinces(res.data.data);
+		getData({ endPoint: `/v1/address/province` })
+			.then((data) => {
+				Setprovinces(data?.data);
 			})
-			.catch((err) => {
-				console.log(err.message);
-			});
+			.catch((err) => console.log(err));
 	};
 	useEffect(() => {
 		Getprovinces();
+		getData({ endPoint: `/v1/installation/request/building` })
+			.then((data) => {
+				setBuildingTypes(data?.data);
+			})
+			.catch((err) => console.log(err));
 	}, []);
 
 	const UpdateCityList = (provinceId: number) => {
-		provinceService
-			.GetCities(provinceId)
-			.then((res) => Setcities(res.data.data))
-			.catch((err) => console.log(err.message));
+		getData({
+			endPoint: `/v1/address/province/${provinceId}/city`,
+		})
+			.then((data) => {
+				Setcities(data?.data);
+			})
+			.catch((err) => console.log(err));
 	};
 	const Findprovinceid = (provinces: Province[], name: string) => {
-		const province = provinces.find((p) => p.name === name);
+		const province = provinces.find((p) => String(p.ID) === name);
 		return province?.ID ?? null;
 	};
 
@@ -88,33 +103,28 @@ export default function Neworder() {
 	useEffect(() => {
 		UpdateCityList(provinceid ?? 1);
 	}, [provinceid]);
-	// console.log("city is",cityid," ",provinceid)
 
-	const handelOrderrequest = (orderinfo: order, token: string) => {
-		setOpen(false);
-		console.log("hello", token);
+	const handleOrderRequest = (orderinfo: order) => {
+		setLoading(true);
 		orderService
-			.orderRequest(orderinfo, token)
+			.orderRequest(orderinfo)
 			.then((res) => {
-				toast(res?.message);
+				console.log(res);
+				CustomToast(res?.message, "success");
+				handelHistory();
 				setOpen(false);
 			})
-			.catch((err) => {
-				console.log(err);
-				toast(generateErrorMessage(err));
-				// setOpen(false);
-			});
+			.catch((err) => console.log(err))
+			.finally(() => setLoading(false));
 	};
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<SignupButton type="button">
-					<Plus className={style.icon} />
-				</SignupButton>
+				<AddComponent title="ثبت سفارش جدید" data-test="plus" />
 			</DialogTrigger>
 			<DialogContent
 				style={{ backgroundColor: "#F1F4FC" }}
-				className="min-w-[57vw] overflow-auto py-4"
+				className="w-full sm:min-w-[750px] max-w-xl mx-auto no-scrollbar overflow-auto pb-0 px-0 max-h-[90vh] overflow-y-auto"
 			>
 				<DialogHeader>
 					<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
@@ -127,17 +137,21 @@ export default function Neworder() {
 						address: "",
 						area: "",
 						electricity: "",
+						buildingType: "",
 						cost: "",
 						code: "",
 						unit: "",
 						number: "",
-						province: "",
-						city: "",
+						provinceID: "",
+						cityID: "",
 					}}
 					validationSchema={Yup.object({
 						name: Yup.string()
 							.required("این فیلد الزامی است.")
-							.max(50, "نام پنل نمی تواند بیش از 50 کارکتر باشد."),
+							.max(
+								50,
+								"نام پنل نمی تواند بیش از 50 کارکتر باشد."
+							),
 						address: Yup.string().required("این فیلد الزامی است."),
 						area: Yup.number().required("این فیلد الزامی است."),
 						electricity: Yup.number().required(
@@ -145,297 +159,338 @@ export default function Neworder() {
 						),
 						cost: Yup.number().required("این فیلد الزامی است."),
 						number: Yup.string().required("این فیلد الزامی است."),
+						buildingType: Yup.string().required(
+							"نوع ساختمان الزامی است"
+						),
 						code: Yup.string()
 							.required("این فیلد الزامی است.")
 							.length(10, "کد پستی وارد شده اشتباه است."),
 						unit: Yup.number().required("این فیلد الزامی است."),
-						province: Yup.string().required("این فیلد الزامی است."),
-						city: Yup.string().required("این فیلد الزامی است."),
+						provinceID: Yup.number().required(
+							"این فیلد الزامی است."
+						),
+						cityID: Yup.number().required("این فیلد الزامی است."),
 					})}
 					onSubmit={(values) => {
-                        // setOpen(false);
-						handelOrderrequest(
-							{
-								name: values.name,
-								area: Number(values.area),
-								power: Number(values.electricity),
-								maxCost: Number(values.cost),
-								buildingType: building,
-								description: "",
-								provinceID: provinceid ?? 1,
-								cityID: cityid ?? 1,
-								streetAddress: values.address,
-								postalCode: String(values.code),
-								houseNumber: String(values.number),
-								unit: Number(values.unit),
-							},
-							accessToken
-						);
+						// setOpen(false);
+						handleOrderRequest({
+							name: values.name,
+							area: Number(values.area),
+							power: Number(values.electricity),
+							maxCost: Number(values.cost),
+							buildingType: Number(building),
+							description: "",
+							provinceID: Number(values.provinceID),
+							cityID: Number(values.cityID),
+							streetAddress: values.address,
+							postalCode: String(values.code),
+							houseNumber: String(values.number),
+							unit: Number(values.unit),
+						});
 					}}
 				>
-					{({ setFieldValue, values }) => (
-						<Form className="flex flex-col items-end w-full h-auto gap-4 rtl">
-							<div
-								className="flex justify-end w-full items-center"
-								style={{ gap: "1vw" }}
-							>
-								<CustomInput
-									dir="rtl"
-									// style={{ width: "25vw" }}
-									placeholder="نام پنل"
-									icon={SquareMenu}
-									name="name"
+					{({ setFieldValue, values, errors, touched }) => (
+						<Form className="rtl">
+							<div className="flex flex-col items-end md:px-6 px-3 gap-4 h-auto">
+								<div
+									className="flex md:flex-row flex-col justify-end w-full items-center"
+									style={{ gap: "1vw" }}
 								>
-									{" "}
-								</CustomInput>
-								<div className="flex flex-row justify-center mt-5 gap-x-1 text-gray-500 w-full">
-									<ShieldAlert />
-									<p className="rtl">
-										پنل شما با این نام در بخش پنل‌ها ثبت
-										خواهد شد.
-									</p>
-								</div>
-							</div>
-
-							<div
-								className="flex justify-between w-full mt-2"
-								style={{ gap: "1vw" }}
-							>
-								<Select
-									name="province"
-									onValueChange={(value) => {
-										Setdisable(false);
-										setFieldValue("province", value);
-										setFieldValue("city", "");
-										const id = Findprovinceid(
-											provinces,
-											value
-										);
-										Setprovinceid(id ?? 1);
-										if (id) UpdateCityList(id);
-									}}
-								>
-									<SelectTrigger
-										className={style.CustomInput}
+									<CustomInput
+										dir="rtl"
 										// style={{ width: "25vw" }}
+										placeholder="نام پنل"
+										icon={SquareMenu}
+										name="name"
+										inputClassName={`${
+											errors.name && touched.name
+												? "!border-red-500 !ring-1 !ring-red-700"
+												: ""
+										}`}
+									/>
+									<div className="flex flex-row justify-center mt-5 gap-x-1 text-gray-500 w-full">
+										<ShieldAlert />
+										<p className="rtl whitespace-nowrap">
+											پنل شما با این نام در بخش پنل‌ها ثبت
+											خواهد شد.
+										</p>
+									</div>
+								</div>
+
+								<div
+									className={`${style.citypro} flex md:flex-row flex-col justify-between w-full mt-2`}
+								>
+									<Select
+										name="province"
+										value={values.provinceID}
+										onValueChange={(value) => {
+											setFieldValue("provinceID", value);
+											setFieldValue("cityID", "");
+											const id = Findprovinceid(
+												provinces,
+												value
+											);
+											Setprovinceid(id ?? 1);
+											if (id) UpdateCityList(id);
+											Setdisable(false);
+										}}
 									>
-										<SelectValue placeholder="استان" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectGroup>
-											<SelectLabel>استان</SelectLabel>
-											{provinces?.length > 0 ? (
-												provinces.map(
-													(provincearr, index) => (
-														<SelectItem
-															key={index}
-															value={
-																provincearr.name
-															}
-														>
-															{provincearr.name}
-														</SelectItem>
+										<SelectTrigger
+											className={`${style.CustomInput} cursor-pointer`}
+											// id="province"
+											// style={{ width: "25vw" }}
+										>
+											<SelectValue placeholder="استان" />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectGroup>
+												<SelectLabel>استان</SelectLabel>
+												{provinces?.length > 0 ? (
+													provinces.map(
+														(
+															provincearr,
+															index
+														) => (
+															<SelectItem
+																key={index}
+																className="cursor-pointer"
+																value={String(
+																	provincearr?.ID
+																)}
+															>
+																{
+																	provincearr?.name
+																}
+															</SelectItem>
+														)
 													)
-												)
-											) : (
-												<p>هیچ استانی یافت نشد</p>
-											)}
-										</SelectGroup>
-									</SelectContent>
-								</Select>
-								<Select
-									name="city"
-									disabled={disable}
-									onValueChange={(value) => {
-										const iD = FindCityid(cities, value);
-										Setcityid(iD ?? 1);
-										setFieldValue("city", value);
-									}}
-								>
-									<SelectTrigger
+												) : (
+													<p>هیچ استانی یافت نشد</p>
+												)}
+											</SelectGroup>
+										</SelectContent>
+									</Select>
+									<Select
+										name="cityID"
+										value={values?.cityID}
 										disabled={disable}
-										className={style.CustomInput}
-										// style={{ width: "25vw" }}
+										onValueChange={(value) => {
+											setFieldValue("cityID", value);
+										}}
 									>
-										<SelectValue placeholder="شهر" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectGroup>
-											<SelectLabel>شهر</SelectLabel>
-											{cities?.length > 0 ? (
-												cities.map((city, index) => (
-													<SelectItem
-														key={index}
-														value={city.name}
-													>
-														{Object.values(
-															city.name
-														)}
-													</SelectItem>
-												))
-											) : (
-												<p>هیچ شهری یافت نشد</p>
-											)}
-										</SelectGroup>
-									</SelectContent>
-								</Select>
-							</div>
-							<div className="-mt-5 w-full">
-								<CustomTextArea
-									icon={MapPinHouse}
-									name="address"
-									placeholder="آدرس"
-								>
-									{" "}
-								</CustomTextArea>
-							</div>
-							<div
-								className="flex justify-end w-full -mt-4"
-								style={{ gap: "1vw" }}
-							>
-								<CustomInput
-									type="number"
-									// style={{ width: "25vw" }}
-									dir="rtl"
-									icon={Mailbox}
-									name="code"
-									placeholder="کد پستی"
-								>
-									{" "}
-								</CustomInput>
-								<CustomInput
-									type="number"
-									style={{ width: "12vw" }}
-									dir="rtl"
-									icon={House}
-									placeholder="پلاک"
-									name="number"
-								>
-									{" "}
-								</CustomInput>
-								<CustomInput
-									type="number"
-									style={{ width: "12vw" }}
-									dir="rtl"
-									icon={BellRing}
-									placeholder="واحد"
-									name="unit"
-								>
-									{" "}
-								</CustomInput>
-							</div>
-
-							<div className="flex w-full gap-x-1 text-gray-500 -mb-6 mt-2">
-								<ShieldAlert />
-								<p>مکانی که برای نصب پنل در نظر دارید.</p>
-							</div>
-
-							<div
-								className="grid grid-cols-2 grid-rows-3 h-52 gap-x-3 w-full items-center -mt-2"
-								// style={{ gap: "1vw" }}
-							>
-								<CustomInput
-									type="number"
-									dir="rtl"
-									// style={{ width: "25vw" }}
-									placeholder="مساحت(مترمربع)"
-									icon={LandPlot}
-									name="area"
-								>
-									{" "}
-								</CustomInput>
-								<div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
-									<ShieldAlert />
-									<p>مساحت محل نصب پنل (متر مربع)</p>
+										<SelectTrigger
+											disabled={disable}
+											className={`${style.CustomInput} cursor-pointer`}
+										>
+											<SelectValue placeholder="شهر" />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectGroup>
+												<SelectLabel>شهر</SelectLabel>
+												{cities?.length > 0 ? (
+													cities.map(
+														(city, index) => (
+															<SelectItem
+																key={index}
+																value={String(
+																	city?.ID
+																)}
+																className="cursor-pointer"
+															>
+																{Object.values(
+																	city?.name
+																)}
+															</SelectItem>
+														)
+													)
+												) : (
+													<p>هیچ شهری یافت نشد</p>
+												)}
+											</SelectGroup>
+										</SelectContent>
+									</Select>
 								</div>
-								<CustomInput
-									type="number"
-									dir="rtl"
-									// style={{ width: "25vw" }}
-									placeholder="میزان برق مورد نیاز(کیلووات)"
-									icon={Gauge}
-									name="electricity"
-								>
-									{" "}
-								</CustomInput>
-								<div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
-									<ShieldAlert />
-									<p className="">میزان برق مورد نیاز </p>
+								<div className="-mt-5 w-full">
+									<CustomTextArea
+										icon={MapPinHouse}
+										name="address"
+										id="address"
+										placeholder="آدرس"
+										inputClassName={
+											errors.address && touched.address
+												? "!border-red-500 !ring-1 !ring-red-700"
+												: ""
+										}
+									/>
 								</div>
-								<CustomInput
-									type="number"
-									dir="rtl"
-									// style={{ width: "25vw" }}
-									placeholder="سقف هزینه(ریال)"
-									icon={CircleDollarSign}
-									name="cost"
+								<div
+									className="flex md:flex-row flex-col justify-end w-full -mt-4"
+									style={{ gap: "1vw" }}
 								>
-									{" "}
-								</CustomInput>
-								{/* <div className="mb-6 w-full">
+									<CustomInput
+										type="number"
+										// style={{ width: "25vw" }}
+										dir="rtl"
+										icon={Mailbox}
+										name="code"
+										placeholder="کد پستی"
+										inputClassName={
+											errors.code && touched.code
+												? "!border-red-500 !ring-1 !ring-red-700"
+												: ""
+										}
+									/>
+									<CustomInput
+										type="number"
+										style={{ width: "12vw" }}
+										dir="rtl"
+										icon={House}
+										placeholder="پلاک"
+										name="number"
+										inputClassName={
+											errors.number && touched.number
+												? "!border-red-500 !ring-1 !ring-red-700"
+												: ""
+										}
+									/>
+									<CustomInput
+										type="number"
+										style={{ width: "12vw" }}
+										dir="rtl"
+										icon={BellRing}
+										placeholder="واحد"
+										name="unit"
+										inputClassName={
+											errors.unit && touched.unit
+												? "!border-red-500 !ring-1 !ring-red-700"
+												: ""
+										}
+									/>
+								</div>
+
+								<div className="flex w-full gap-x-1 text-gray-500 -mb-6 mt-2">
+									<ShieldAlert />
+									<p>مکانی که برای نصب پنل در نظر دارید.</p>
+								</div>
+
+								<div
+									className="grid grid-cols-2 grid-rows-3 h-52 gap-x-3 w-full items-center -mt-2"
+									// style={{ gap: "1vw" }}
+								>
 									<CustomInput
 										type="number"
 										dir="rtl"
 										// style={{ width: "25vw" }}
-										placeholder="سقف هزینه"
+										placeholder="مساحت(مترمربع)"
+										icon={LandPlot}
+										name="area"
+										inputClassName={
+											errors.area && touched.area
+												? "!border-red-500 !ring-1 !ring-red-700"
+												: ""
+										}
+									/>
+									<div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
+										<ShieldAlert />
+										<p>مساحت محل نصب پنل (متر مربع)</p>
+									</div>
+									<CustomInput
+										type="number"
+										dir="rtl"
+										// style={{ width: "25vw" }}
+										placeholder="میزان برق مورد نیاز(کیلووات)"
+										icon={Gauge}
+										name="electricity"
+										inputClassName={
+											errors.electricity &&
+											touched.electricity
+												? "!border-red-500 !ring-1 !ring-red-700"
+												: ""
+										}
+									/>
+									<div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
+										<ShieldAlert />
+										<p className="">میزان برق مورد نیاز </p>
+									</div>
+
+									<CustomInput
+										type="number"
+										dir="rtl"
+										placeholder="سقف هزینه(ریال)"
 										icon={CircleDollarSign}
 										name="cost"
-									>
-										{" "}
-									</CustomInput>
-								</div> */}
-								<Select
-									name="building"
-									onValueChange={(value) =>
-										Setbuilding(value)
-									}
-								>
-									<SelectTrigger
-										className={`${style.CustomInput} mt-[27px] min-h-[43px]`}
-										// style={{ width: "25vw" }}
-									>
-										<SelectValue placeholder="نوع ساختمان" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectGroup>
-											<SelectLabel>
-												نوع ساختمان
-											</SelectLabel>
-											<SelectItem value="residential">
-												مسکونی
-											</SelectItem>
-											<SelectItem value="commercial">
-												تجاری
-											</SelectItem>
-											<SelectItem value="industrial">
-												صنعتی
-											</SelectItem>
-											<SelectItem value="argiculture">
-												کشاورزی
-											</SelectItem>
-											<SelectItem value="more">
-												سایر
-											</SelectItem>
-										</SelectGroup>
-									</SelectContent>
-								</Select>
-							</div>
+										inputClassName={
+											errors.cost && touched.cost
+												? "!border-red-500 !ring-1 !ring-red-700"
+												: ""
+										}
+									/>
 
-							<div className="flex flex-row justify-center items-center self-center">
-								<SignupButton
-									type="submit"
-									style={{
-										marginTop: "10px",
-										width: "25vw",
-									}}
-								>
-									{" "}
-									ثبت سفارش
-								</SignupButton>
+									<Select
+										name="buildingType"
+										onValueChange={(value) => {
+											setFieldValue(
+												"buildingType",
+												value
+											);
+											Setbuilding(Number(value));
+										}}
+									>
+										<SelectTrigger
+											value={values.buildingType}
+											onChange={(value) => {
+												setFieldValue(
+													"buildingType",
+													value
+												);
+											}}
+											className={`${style.CustomInput} mt-[27px] min-h-[43px] cursor-pointer`}
+										>
+											<SelectValue placeholder="نوع ساختمان" />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectGroup>
+												<SelectLabel>
+													نوع ساختمان
+												</SelectLabel>
+												{buildingTypes?.map(
+													(buildingType, index) => (
+														<SelectItem
+															key={index}
+															className="cursor-pointer"
+															value={String(
+																buildingType?.id
+															)}
+														>
+															{buildingType?.name}
+														</SelectItem>
+													)
+												)}
+											</SelectGroup>
+										</SelectContent>
+									</Select>
+								</div>
 							</div>
-							<DialogFooter>
+							<StickyFooter
+								className="bg-[#F1F4FC]"
+								footerClassName="w-full justify-between px-6"
+							>
+								<CancelButton />
+								<Button
+									type="submit"
+									disabled={loading}
+									className="min-w-28 flex place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white rounded-md transition-all duration-300"
+								>
+									{loading ? (
+										<LoadingOnButton />
+									) : (
+										<p>ثبت سفارش</p>
+									)}
+								</Button>
+							</StickyFooter>
+							{/* <DialogFooter>
 								<DialogClose />
-							</DialogFooter>
+							</DialogFooter> */}
 						</Form>
 					)}
 				</Formik>

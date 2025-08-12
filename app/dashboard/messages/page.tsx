@@ -1,95 +1,18 @@
-"use client";
-import ChatBox from "@/components/Chat/ChatBox/ChatBox";
-import ChatList from "@/components/Chat/ChatList/ChatList";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
-import useClientCheck from "@/src/hooks/useClientCheck";
-import React, { useEffect, useState } from "react";
-import { useMediaQuery } from "@/src/hooks/useMediaQuery";
-import {
-  Sidebar,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { SidebarContent } from "@/components/ui/sidebar";
-import { Menu } from "lucide-react";
-import { ChatRoom } from "@/types/chat";
-import { getData } from "@/src/services/apiHub";
+import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
+import MessagesPagination from "@/components/Messages/message-pagination";
+import Head from "next/head";
+import React from "react";
 
-
-
-export default function Page({mode}:{mode:"user" | "admin"}) {
-  const [panelWidth, setPanelWidth] = useState(5);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const isMobile = useMediaQuery("(max-width: 768px)");
-
-
-
-  const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
-
-
-  const isClient = useClientCheck();
-  if (!isClient)
-    return <div className="h-full w-full bg-gray-100 p-4">Loading...</div>;
-
-
-
-  if (isMobile) {
+export default function page() {
     return (
-      <>
-        <SidebarProvider>
-          <Sidebar side="right">
-            <SidebarContent className="neo-card! bg-[#F0EDEF]! rtl">
-              <ChatList className="w-full h-full" conditionWidth={100} />
-            </SidebarContent>
-          </Sidebar>
-
-          <div className="fixed bottom-[95px] left-3 right-3 top-3">
-            <SidebarTrigger
-              className="fixed top-8 left-20 z-50 p-2 bg-gray-100 rounded-lg text-black"
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            >
-              <Menu />
-            </SidebarTrigger>
-            <ChatBox className="w-full h-full rtl" />
-          </div>
-        </SidebarProvider>
-      </>
+        <PageContainer>
+            <Head>
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1"
+                />
+            </Head>
+            <MessagesPagination />
+        </PageContainer>
     );
-  }
-
-  return (
-    <ResizablePanelGroup className="min-h-full" direction="horizontal">
-      <ResizablePanel
-        className="h-full flex justify-center items-center py-2 pl-1 pr-2 rounded-lg bg-transparent min-w-24"
-        defaultSize={5}
-        minSize={5}
-        maxSize={35}
-        style={{
-          flexGrow: panelWidth,
-          flexShrink: 1,
-          flexBasis: "0%",
-          width: `${panelWidth}%`,
-        }}
-        onResize={(size) => {
-          if (size < 20) {
-            if (panelWidth > 5) {
-              setPanelWidth(5);
-            }
-            return;
-          }
-          setPanelWidth(size);
-        }}
-      >
-        <ChatList conditionWidth={panelWidth} className="w-full h-full" mode="user" />
-      </ResizablePanel>
-      <ResizableHandle className="bg-transparent" />
-      <ResizablePanel className="h-full flex justify-center items-center py-2 pl-3 pr-2 bg-transparent rounded-lg">
-        <ChatBox className="w-full h-full" mode="user" />
-      </ResizablePanel>
-    </ResizablePanelGroup>
-  );
 }

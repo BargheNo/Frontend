@@ -8,33 +8,34 @@ import * as Yup from "yup";
 import CustomInput from "../../Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import LoginButton from "./LoginButton";
-import { postData } from "../../../src/services/apiHub";
-import { toast } from "sonner";
-import { setUser } from "@/src/store/slices/userSlice";
+import { getData, postData } from "../../../src/services/apiHub";
+import { useWebSocket } from "@/src/hooks/useWebSocket";
+import { setCorps, setUser } from "@/src/store/slices/userSlice";
 import { useDispatch } from "react-redux";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 
 const validationSchema = Yup.object({
-	phoneNumber: Yup.string()
-		.matches(/^[0-9]{10}$/, "شماره تلفن باید ۱۰ رقم باشد")
-		.required("شماره تلفن الزامی است"),
-	password: Yup.string()
-		.min(8, "رمز عبور باید حداقل 8 کاراکتر باشد.")
-		.matches(/[a-z]/, ".رمز عبور باید شامل حداقل یک حرف کوچک باشد")
-		.matches(/[A-Z]/, ".رمز عبور باید شامل حداقل یک حرف بزرگ باشد")
-		.matches(/\d/, ".رمز عبور باید شامل حداقل یک عدد باشد")
-		.matches(/[\W_]/, ".رمز عبور باید شامل حداقل یک نماد باشد")
-		.required("رمز عبور الزامی است"),
+  phoneNumber: Yup.string()
+    .matches(/^[0-9]{10}$/, "شماره تلفن باید ۱۰ رقم باشد")
+    .required("شماره تلفن الزامی است"),
+  password: Yup.string()
+    // .min(8, "رمز عبور باید حداقل 8 کاراکتر باشد.")
+    // .matches(/[a-z]/, ".رمز عبور باید شامل حداقل یک حرف کوچک باشد")
+    // .matches(/[A-Z]/, ".رمز عبور باید شامل حداقل یک حرف بزرگ باشد")
+    // .matches(/\d/, ".رمز عبور باید شامل حداقل یک عدد باشد")
+    // .matches(/[\W_]/, ".رمز عبور باید شامل حداقل یک نماد باشد")
+    .required("رمز عبور الزامی است"),
 });
 
 const initialValues = {
-	phoneNumber: "",
-	password: "",
+  phoneNumber: "",
+  password: "",
 };
 
 const Login = () => {
-	const [showPassword, setShowPassword] = useState(false);
-	const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
 	const togglePasswordVisibility = () => {
 		setShowPassword(!showPassword);
@@ -48,49 +49,44 @@ const Login = () => {
 		password: string;
 	}) => {
 		const { phoneNumber, password } = values;
-
-		try {
-			console.log(localStorage.getItem("user"));
-			const response = await postData({
-				endPoint: "/v1/auth/login",
-				data: {
-					phone: "+98" + phoneNumber,
-					password: password,
-				},
-			});
-
-			if (response?.statusCode === 200) {
-				toast(<div id="sonner-toast">{response?.message}</div>);
-				// toast.success(response?.message);
+		setLoading(true);
+		console.log(localStorage.getItem("user"));
+		postData({
+			endPoint: "/v1/auth/login",
+			data: {
+				phone: "+98" + phoneNumber,
+				password: password,
+			},
+		})
+			.then(async (data) => {
+				// console.log("data", data);
+				CustomToast(data?.message, "success");
 				dispatch(
 					setUser({
-						firstName: response.data.firstName,
-						lastName: response.data.lastName,
-						accessToken: response.data.accessToken,
-						refreshToken: response.data.accessToken,
+						firstName: data?.data?.firstName,
+						lastName: data?.data?.lastName,
+						permissions: data?.data?.permissions,
+						accessToken: data?.data?.accessToken,
+						refreshToken: data?.data?.accessToken,
 					})
 				);
-				window.location.href = "/dashboard";
-			}
-		} catch (error: any) {
-			// toast.error(
-			// 	generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد."
-			// );
-			toast(
-				<div id="sonner-toast">
-					{generateErrorMessage(error) || "هنگام ورود مشکلی پیش آمد."}
-				</div>
-			);
-		}
-	};
+				await Promise.resolve();
+				getData({ endPoint: `/v1/user/corps` })
+					.then((data) => {
+						dispatch(setCorps(data?.data));
+						window.location.href = "/dashboard/profile";
+					})
+					.catch((err) => console.log(err));
 
+			})
+			.catch((err) => console.log(err))
+			.finally(() => setLoading(false));
+	};
 	return (
 		<div className={`${vazir.className} w-full`}>
 			<div dir="rtl" className={`${styles.mainbg} w-full`}>
 				<div className="w-full max-w-md p-6 space-y-4 shadow-2xl rounded-2xl bg-[#f1f4fc]">
-					<h2 className="text-3xl text-black text-center">
-						{"ورود"}
-					</h2>
+					<h2 className="text-3xl text-black text-center">ورود</h2>
 
 					<Formik
 						initialValues={initialValues}
@@ -110,9 +106,9 @@ const Login = () => {
 										readOnly={true}
 										icon={Smartphone}
 										type="text"
-										value="+98"
+										// value="+98"
 									>
-										+98
+										98+
 									</CustomInput>
 								</div>
 							</div>
@@ -129,20 +125,28 @@ const Login = () => {
 								</CustomInput>
 							</div>
 							<LoginButton>
-								ورود
-								<MoveLeft />
+								{loading ? (
+									<LoadingOnButton size={28} />
+								) : (
+									<>
+										<p>ورود</p>
+										<MoveLeft />
+									</>
+								)}
 							</LoginButton>
 						</Form>
 					</Formik>
 
-					<p className="flex gap-5 justify-center text-center text-sm text-blue-600">
-						<a href="/forgot-password">فراموشی رمز عبور</a>
-						<Link href="/signup">ثبت نام نکرده ام</Link>
-					</p>
-				</div>
-			</div>
-		</div>
-	);
+          <p className="flex gap-5 justify-center text-center text-sm text-blue-600">
+            <a href="/forgot-password" data-test="forget-password">
+              فراموشی رمز عبور
+            </a>
+            <Link href="/signup">ثبت نام نکرده ام</Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Login;

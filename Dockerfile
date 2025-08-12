@@ -13,7 +13,8 @@ COPY package.json package-lock.json ./
 # Install dependencies
 RUN npm uninstall tailwindcss --legacy-peer-deps && \
     rm -rf node_modules package-lock.json && \
-    npm install --legacy-peer-deps
+    npm install --legacy-peer-deps && \
+    npm audit fix
 
 # Copy the rest of the project files
 COPY . .

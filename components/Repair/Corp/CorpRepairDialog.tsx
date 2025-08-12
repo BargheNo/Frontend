@@ -1,177 +1,189 @@
-"use client"
-import React from 'react'
+"use client";
+import React, { useEffect, useState } from "react";
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog"
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import { Calendar as CalendarIcon, NotebookPen, NotepadText, Captions } from 'lucide-react';
-import CustomInput from '@/components/Custom/CustomInput/CustomInput';
-import CustomTextArea from '@/components/Custom/CustomTextArea/CustomTextArea';
-import { Datepicker } from '@ijavad805/react-datepicker';
-import moment from 'moment';
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
+import { baseURL, getData, putData } from "@/src/services/apiHub";
+import { CorpRepairDialogProps, MaintenanceRecord } from "@/types/CorpTypes";
+import RepairHistory from "./RepairHistory";
+import RepairForm from "./RepairForm";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import { Button } from "@/components/ui/button";
+import { CheckCircle, XCircle } from "lucide-react";
+import useHasPermission from "@/src/functions/hasPermission";
+import { useSelector } from "react-redux";
 
-export interface CorpRepairItem {
-    id: string;
-    text: string;
-    date: string;
-    panelName: string;
-    technicalDetails: {
-        capacity: number;
-        todayProduction: number;
-        efficiency: number;
-    };
-    address: string;
-    owner: string;
+interface RepairHistoryProps {
+	id: string;
+	operator: {
+		firstName: string;
+		lastName: string;
+	};
+	createdAt: string;
+	title: string;
+	details: string;
+	violation?: {
+		reason: string;
+		details: string;
+	};
 }
 
-interface CorpRepairDialogProps {
-    isOpen: boolean;
-    onClose: () => void;
-    repairItem: CorpRepairItem | null;
-}
+const CorpRepairDialog = ({
+	isOpen,
+	onClose,
+	repairItem,
+}: CorpRepairDialogProps) => {
+	const hasAcceptMaintenanceRequestPermission = useHasPermission(
+		"maintenance.acceptRequest"
+	);
+	const corpId = useSelector((state: RootState) => state.user.corpId);
+	// const [notes, setNotes] = useState<MaintenanceRecord[] | null>(null);
+	const [notes, setNotes] = useState<RepairHistoryProps | null>(null);
+	const [isLoadingNotes, setIsLoadingNotes] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
+	const [isFormOpen, setIsFormOpen] = useState(false);
 
-const CorpRepairDialog = ({ isOpen, onClose, repairItem }: CorpRepairDialogProps) => {
-    if (!repairItem) return null;
+	useEffect(() => {
+		if (repairItem) {
+			getData({
+				endPoint: `${baseURL}/v1/corp/${corpId}/maintenance/request/${repairItem.id}`, // TODO: corpIDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+			})
+				.then((res) => {
+					setNotes(res.data.record);
+					setIsLoadingNotes(false);
+				})
+				.catch((err) => {
+					console.log(err);
+					// CustomToast("خطا در دریافت یادداشت‌‌های پنل", "error");
+					setIsLoadingNotes(false);
+				});
+		}
+	}, [repairItem]);
 
-    return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent style={{backgroundColor:"#FEFEFE"}} className='min-w-[57vw] h-[80vh]'>
-                <DialogHeader>
-                    <DialogTitle className='flex justify-center items-end font-bold mt-3.5'>
-                        جزئیات تعمیرات
-                    </DialogTitle>
-                </DialogHeader>
-                
-                <div className="overflow-y-auto max-h-[calc(80vh-100px)] pr-2">
-                    <div dir="rtl" className='flex flex-col gap-5'>
-                        {/* Repair History Section */}
-                        <h4 className="text-lg font-semibold text-navy-blue">تاریخچۀ تعمیرات قبلی</h4>
-                        <div className='inset-neu-container overflow-y-auto max-h-[40vh] w-full bg-gradient-to-br from-[#FAFAFB] to-[#E9EBEF]'>
-                            <div className='flex flex-col divide-y divide-gray-300'>
-                                {[1, 2, 3].map((item, index) => (
-                                    <div key={index} className='flex flex-col p-5 gap-3'>
-                                        <div className='flex gap-1'>
-                                            <CalendarIcon size={18} className='text-fire-orange' />
-                                            <span className='font-black'>تاریخ:</span>
-                                            <span>{repairItem.date}</span>
-                                        </div>
-                                        <div className='flex gap-1'>
-                                            <Captions size={18} className='text-fire-orange' />
-                                            <span className='font-black'>عنوان:</span>
-                                            <span>{repairItem.panelName}</span>
-                                        </div>
-                                        <div className='flex gap-1'>
-                                            <NotepadText size={18} className='text-fire-orange' />
-                                            <span className='font-black'>یادداشت:</span>
-                                            <span>{repairItem.panelName}</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+	if (!repairItem) return null;
 
-                        {/* Repair Form Section */}
-                        <div className='w-full p-5'>
-                            <Formik
-                                initialValues={{
-                                    date: '',
-                                    title: '',
-                                    note: '',
-                                }}
-                                validationSchema={Yup.object({
-                                    date: Yup.string().required('تاریخ را مشخص کنید.'),
-                                    title: Yup.string().required('لطفا عنوان را وارد کنید!'),
-                                    note: Yup.string().required('لطفا جزئیات تعمیر را وارد کنید!'),
-                                })}
-                                onSubmit={(values) => {
-                                    console.log('Form Submitted:', values);
-                                }}
-                            >
-                                {(formik) => (
-                                    <form onSubmit={formik.handleSubmit} className="space-y-4">
-                                        <h4 className="text-lg font-semibold text-navy-blue mb-3">افزودن سابقۀ تعمیر</h4>
-                                        {/* Date & Title */}
-                                        <div className="flex flex-col md:flex-row gap-4">
-                                            <div className="flex-1">
-                                                <div className="relative">
-                                                    <Datepicker
-                                                        name="date"
-                                                        input={
-                                                            <input
-                                                                placeholder="تاریخ را انتخاب کنید"
-                                                                className="w-full inset-input p-2 pl-10"
-                                                                style={{ paddingLeft: '42px' }}
-                                                            />
-                                                        }
-                                                        lang="fa"
-                                                        theme="blue"
-                                                        format="YYYY-MM-DD"
-                                                        closeWhenSelectADay={true}
-                                                        defaultValue={formik.values.date ? moment(formik.values.date) : undefined}
-                                                        onChange={(val: moment.Moment | undefined) => {
-                                                            formik.setFieldValue('date', val?.format('YYYY-MM-DD'));
-                                                        }}
-                                                        adjustPosition="auto"
-                                                    />
-                                                    <CalendarIcon
-                                                        size={18}
-                                                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-fire-orange"
-                                                    />
-                                                </div>
-                                                {formik.touched.date && formik.errors.date && (
-                                                    <p className="text-red-500 text-xs mt-1">{formik.errors.date}</p>
-                                                )}
-                                            </div>
+	const handleAccept = async () => {
+		setIsLoading(true);
+		putData({
+			endPoint: `${baseURL}/v1/corp/${corpId}/maintenance/request/${repairItem.id}/accept`, // TODO: corpIDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+		})
+			.then((res) => {
+				CustomToast(res?.message, "success");
+				onClose();
+			})
+			.catch((err) => console.log(err))
+			.finally(() => {
+				setIsLoading(false);
+			});
+	};
 
-                                            <div className="flex-1">
-                                                <CustomInput
-                                                    name="title"
-                                                    icon={CalendarIcon}
-                                                    type="text"
-                                                    inputClassName='!bg-[#FEFEFE]'
-                                                    containerClassName="!m-0"
-                                                >
-                                                    عنوان
-                                                </CustomInput>
-                                            </div>
-                                        </div>
+	const handleReject = async () => {
+		setIsLoading(true);
+		putData({
+			endPoint: `${baseURL}/v1/corp/${corpId}/maintenance/request/${repairItem.id}/reject`, // TODO: corpIDDDDDDDD
+		})
+			.then((res) => {
+				CustomToast(res?.message, "success");
+				onClose();
+			})
+			.catch((err) => console.log(err))
+			.finally(() => {
+				setIsLoading(false);
+			});
+	};
 
-                                        {/* Note */}
-                                        <div>
-                                            <CustomTextArea
-                                                name="note"
-                                                icon={NotebookPen}
-                                                textareaClassName="!bg-[#FEFEFE] h-32"
-                                            >
-                                                یادداشت تعمیر
-                                            </CustomTextArea>
-                                        </div>
+	return (
+		<Dialog open={isOpen} onOpenChange={onClose}>
+			<DialogContent
+				style={{ backgroundColor: "#FEFEFE" }}
+				className="min-w-[57vw] max-h-[80vh] dialog-width"
+			>
+				<DialogHeader>
+					<DialogTitle className="flex justify-center items-end font-bold mt-3.5">
+						جزئیات تعمیرات
+					</DialogTitle>
+				</DialogHeader>
 
-                                        {/* Submit Button */}
-                                        <div className='flex justify-end'>
-                                            <button
-                                                type="submit"
-                                                className="bg-gradient-to-br from-[#34C759] to-[#00A92B]
-                                                    hover:from-[#2AAE4F] hover:to-[#008C25]
-                                                    active:from-[#008C25] active:to-[#2AAE4F]
-                                                    text-white py-2 px-4 rounded-md transition-all duration-300"
-                                            >
-                                                ثبت سابقۀ تعمیرات
-                                            </button>
-                                        </div>
-                                    </form>
-                                )}
-                            </Formik>
-                        </div>
-                    </div>
-                </div>
-            </DialogContent>
-        </Dialog>
-    );
+				<div className="overflow-y-auto max-h-[calc(80vh-100px)] pr-2 no-scrollbar">
+					<div dir="rtl" className="flex flex-col gap-5">
+						{isLoadingNotes ? (
+							<LoadingSpinner />
+						) : notes ? (
+							<RepairHistory note={notes} />
+						) : (
+							<div className="flex flex-col items-center justify-center gap-4 py-8">
+								<div className="text-6xl text-gray-400 font-bold">
+									!
+								</div>
+								<p className="text-gray-500">
+									هیچ یادداشتی ثبت نشده است
+								</p>
+							</div>
+						)}
+						<div className="flex flex-col gap-2 justify-center items-center inset-neu-container !w-full !p-5 !bg-gray-50">
+							<h4 className="text-lg self-start font-semibold text-navy-blue">
+								جزئیات تعمیر
+							</h4>
+							<span className="self-start">
+								{repairItem.description}
+							</span>
+						</div>
+
+						{/* Action Buttons */}
+						<div className="flex justify-end gap-4">
+							{hasAcceptMaintenanceRequestPermission &&
+								repairItem.status === "در انتظار تایید" && (
+									<>
+										<Button
+											variant="outline"
+											className="flex items-center gap-2 cursor-pointer text-red-600 hover:text-red-700"
+											onClick={handleReject}
+											disabled={isLoading}
+										>
+											<XCircle size={20} />
+											رد درخواست
+										</Button>
+										<Button
+											className="flex items-center gap-2 cursor-pointer bg-green-600 hover:bg-green-700"
+											onClick={handleAccept}
+											disabled={isLoading}
+										>
+											<CheckCircle size={20} />
+											تایید درخواست
+										</Button>
+									</>
+								)}
+							{repairItem.status === "تایید شده" && (
+								<Button
+									onClick={() => setIsFormOpen(true)}
+									className="red-circle-button mx-2 p-2 w-fit"
+								>
+									افزودن یادداشت
+								</Button>
+							)}
+						</div>
+
+						{/* Repair Form */}
+						{isFormOpen && (
+							<div className="p-4 bg-gray-50 rounded-lg">
+								<RepairForm
+									panelId={repairItem.id}
+									onSuccess={() => {
+										setIsFormOpen(false);
+										onClose();
+									}}
+								/>
+							</div>
+						)}
+					</div>
+				</div>
+			</DialogContent>
+		</Dialog>
+	);
 };
 
 export default CorpRepairDialog;

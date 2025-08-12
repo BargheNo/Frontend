@@ -15,7 +15,7 @@ export default function RepairFilterSection() {
 	const [searchQuery, setSearchQuery] = useState("");
 
 	return (
-		<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F4F1F3] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+		<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F0EDEF] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
 			<div className="p-5 items-center flex">
 				<div className="w-4/5">
 					<CustomInput

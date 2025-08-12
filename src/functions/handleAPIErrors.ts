@@ -1,54 +1,109 @@
 const ErrorField = {
-	User: "user",
-	Phone: "phone",
-	Password: "password",
-	OTP: "otp",
-	Corporation: "corporation",
-	NationalID: "nationalID",
-	RegistrationNumber: "registrationNumber",
-	IBAN: "iban",
-	InstallationRequest: "installationRequest",
-	Bid: "bid",
-	Address: "address",
-	Name: "name",
-	Province: "province",
-	City: "city",
-	Page: "page",
-	ContactType: "contactType",
+    firstName: "firstName",
+    lastName: "lastName",
+    phone: "phone",
+    password: "password",
+    confirmPassword: "confirmPassword",
+    isAcceptTerms: "isAcceptTerms",
+    corporation: "corporation",
+    nationalID: "nationalID",
+    registrationNumber: "registrationNumber",
+    iban: "iban",
+    installationRequest: "installationRequest",
+    bid: "bid",
+    user: "user",
+    address: "address",
+    name: "name",
+    province: "province",
+    city: "city",
+    page: "page",
+    contactType: "contactType",
+    room: "room",
+    notificationType: "notificationType",
+    notificationTypes: "notificationTypes",
+    notification: "notification",
+    notificationSetting: "notificationSetting",
+    panel: "panel",
+    maintenanceRequest: "maintenanceRequest",
+    email: "email",
+    maintenanceRecord: "maintenanceRecord",
+    ticket: "ticket",
+    role: "role",
+    permission: "permission",
+    ticketComment: "ticketComment",
+    report: "report",
+    contactInformation: "contactInformation",
+    paymentTerm: "paymentTerm",
+    guarantee: "guarantee",
+    guaranteeViolation: "guaranteeViolation",
+    news: "news",
+    tittle: "tittle",
+    media: "media",
+    blog: "blog",
+    post: "post",
+    like: "like",
+    unlike: "unlike",
+    corporationReview: "corporationReview",
+    otp: "otp",
+    corporationID: "corporationID",
 };
+
 const ErrorTag = {
-	AlreadyRegistered: "alreadyRegistered",
-	MinimumLength: "minimumLength",
-	ContainsLowercase: "containsLowercase",
-	ContainsUppercase: "containsUppercase",
-	ContainsNumber: "containsNumber",
-	ContainsSpecialChar: "containsSpecialChar",
-	Expired: "Expired",
-	Invalid: "invalid",
-	NotRegistered: "notRegistered",
-	NotVerified: "notVerified",
-	InvalidAuthCredentials: "invalidAuthCredentials",
-	ExpiredAuthToken: "expiredAuthToken",
-	InvalidAuthToken: "invalidAuthToken",
-	Unauthorized: "unauthorized",
-	AwaitingApproval: "awaitingApproval",
-	Rejected: "rejected",
-	NotExist: "notExist",
-	AlreadyExist: "alreadyExist",
-	ForbiddenStatus: "forbiddenStatus",
+    alreadyRegistered: "alreadyRegistered",
+    minimumLength: "minimumLength",
+    containsLowercase: "containsLowercase",
+    containsUppercase: "containsUppercase",
+    containsNumber: "containsNumber",
+    containsSpecialChar: "containsSpecialChar",
+    expired: "expired",
+    invalid: "invalid",
+    notRegistered: "notRegistered",
+    notVerified: "notVerified",
+    notActive: "notActive",
+    invalidAuthCredentials: "invalidAuthCredentials",
+    expiredAuthToken: "expiredAuthToken",
+    invalidAuthToken: "invalidAuthToken",
+    unauthorized: "unauthorized",
+    awaitingApproval: "awaitingApproval",
+    rejected: "rejected",
+    notExist: "notExist",
+    alreadyExist: "alreadyExist",
+    forbiddenStatus: "forbiddenStatus",
+    pending: "pending",
+    alreadyBlocked: "alreadyBlocked",
+    alreadyActive: "alreadyActive",
+    alreadyResolved: "alreadyResolved",
+    alreadyArchived: "alreadyArchived",
+    statusNotChange: "statusNotChange",
+    alreadyCanceled: "alreadyCanceled",
+    alreadyRejected: "alreadyRejected",
+    alreadyAccepted: "alreadyAccepted",
+    alreadyDraft: "alreadyDraft",
+    generic: "generic",
+    numeric: "numeric",
+    fileRequired: "fileRequired",
+    required: "required",
+    e164: "e164",
+    eqfield: "eqfield",
+    eq: "eq",
+    notFound: "notFound",
+    rateLimitExceed: "rateLimitExceed",
+    installRateLimit: "installRateLimit",
+    forbiddenError: "forbiddenError",
+    email: "email",
 };
 interface ErrorResponse {
-	response: {
-		data: {
-			message?: string;
-			messages?: {
-				[key in keyof typeof ErrorField]?: {
-					[key in keyof typeof ErrorTag]?: string;
-					// [key in keyof typeof String]?: string;
-				};
-			};
-		};
-	};
+    response: {
+        data: {
+            message?: string;
+            messages?: {
+                [key in keyof typeof ErrorField]?: {
+                    [key in keyof typeof ErrorTag]?: string;
+                    // [key in keyof typeof String]?: string;
+                };
+            };
+        };
+    };
 }
 
 // function iterateFields<T extends object>(referenceObject: T): (keyof T)[] {
@@ -59,66 +114,66 @@ interface ErrorResponse {
 // }
 
 export default function generateErrorMessage<T extends object>(
-	err: ErrorResponse
-	// referenceObject: T,
-	// fields?: string[]
+    err: ErrorResponse
+    // referenceObject: T,
+    // fields?: string[]
 ): string {
-	// console.log("recieved:", err?.response?.data?.messages);
-	let errorMessage: string = err?.response?.data?.message
-		? err?.response?.data?.message
-		: "";
-	// const fields = iterateFields(referenceObject as T);
-	// console.log("fields");
-	// fields.forEach((field) => {
-	// 	console.log(field);
-	// });
-	// fields?.forEach((field) => {
-	// 	const fieldErrors = err?.response?.data?.messages?.[field as string];
+    // console.log("recieved:", err?.response?.data?.messages);
+    let errorMessage: string = err?.response?.data?.message
+        ? err?.response?.data?.message
+        : "";
+    // const fields = iterateFields(referenceObject as T);
+    // console.log("fields");
+    // fields.forEach((field) => {
+    // 	console.log(field);
+    // });
+    // fields?.forEach((field) => {
+    // 	const fieldErrors = err?.response?.data?.messages?.[field as string];
 
-	// 	if (fieldErrors) {
-	// 		Object.entries(ErrorTag).forEach(([errorKey, errorValue]) => {
-	// 			// if (fieldErrors[errorValue as keyof typeof fieldErrors]) {
-	// 			console.log(
-	// 				"f",
-	// 				fieldErrors,
-	// 				errorValue,
-	// 				fieldErrors[errorValue as keyof typeof String]
-	// 			);
-	// 			if (fieldErrors[errorValue as keyof typeof fieldErrors]) {
-	// 				// Append each error message
-	// 				errorMessage += `\n${
-	// 					fieldErrors[errorValue as keyof typeof fieldErrors]
-	// 				}`;
-	// 			}
-	// 		});
-	// 	}
-	// 	// if (err.messages?.[field as string]) {
-	// 	// 	errorMessage += `${err.messages[field as string]}\n`;
-	// 	// }
-	// });
+    // 	if (fieldErrors) {
+    // 		Object.entries(ErrorTag).forEach(([errorKey, errorValue]) => {
+    // 			// if (fieldErrors[errorValue as keyof typeof fieldErrors]) {
+    // 			console.log(
+    // 				"f",
+    // 				fieldErrors,
+    // 				errorValue,
+    // 				fieldErrors[errorValue as keyof typeof String]
+    // 			);
+    // 			if (fieldErrors[errorValue as keyof typeof fieldErrors]) {
+    // 				// Append each error message
+    // 				errorMessage += `\n${
+    // 					fieldErrors[errorValue as keyof typeof fieldErrors]
+    // 				}`;
+    // 			}
+    // 		});
+    // 	}
+    // 	// if (err.messages?.[field as string]) {
+    // 	// 	errorMessage += `${err.messages[field as string]}\n`;
+    // 	// }
+    // });
 
-	Object.entries(ErrorTag).forEach(([errorTagKey, errorTagValue]) => {
-		Object.entries(ErrorField).forEach(
-			([errorFieldKey, errorFieldValue]) => {
-				// if (fieldErrors[errorValue as keyof typeof fieldErrors]) {
-				// console.log(
-				// 	"f",
-				// 	fieldErrors,
-				// 	errorValue,
-				// 	fieldErrors[errorValue as keyof typeof String]
-				// );
-				const Errors = err?.response?.data?.messages;
-				const msg =
-					Errors?.[errorFieldValue as keyof typeof Errors]?.[
-						errorTagValue as keyof (typeof Errors)[keyof typeof Errors]
-					];
-				if (msg) {
-					// Append each error message
-					errorMessage += `\n${msg}`;
-				}
-			}
-		);
-	});
+    Object.entries(ErrorTag).forEach(([errorTagKey, errorTagValue]) => {
+        Object.entries(ErrorField).forEach(
+            ([errorFieldKey, errorFieldValue]) => {
+                // if (fieldErrors[errorValue as keyof typeof fieldErrors]) {
+                // console.log(
+                // 	"f",
+                // 	fieldErrors,
+                // 	errorValue,
+                // 	fieldErrors[errorValue as keyof typeof String]
+                // );
+                const Errors = err?.response?.data?.messages;
+                const msg =
+                    Errors?.[errorFieldValue as keyof typeof Errors]?.[
+                        errorTagValue as keyof (typeof Errors)[keyof typeof Errors]
+                    ];
+                if (msg) {
+                    // Append each error message
+                    errorMessage += `\n${msg}`;
+                }
+            }
+        );
+    });
 
-	return errorMessage;
+    return errorMessage || "خطایی رخ داده است";
 }

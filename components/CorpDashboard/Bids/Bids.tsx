@@ -1,121 +1,144 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import BidCard from "./BidCard";
-import { baseURL } from "@/src/services/apiHub";
+import { getData } from "@/src/services/apiHub";
 import { useSelector } from "react-redux";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import { GuaranteeProps } from "@/src/types/BidCardTypes";
+import Header from "@/components/Header/Header";
 // import { RootState } from "@/src/store/types";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
+import CustomPagination from "@/components/Custom/CustomPagination/CustomPagination";
+import FilterSection from "../../FilterSection/FilterSection";
 
 interface address {
-	province: string;
-	city: string;
-	streetAddress: string;
+    province: string;
+    city: string;
+    streetAddress: string;
 }
 
 interface Customer {
-	firstName: string;
-	lastName: string;
+    firstName: string;
+    lastName: string;
+}
+
+interface RequestDetails {
+    id: number;
+    buildingType: string;
+    createdTime: string;
+    maxCost: number;
+    name: string;
+    powerRequest: number;
+    status: string;
+    address: Address;
 }
 
 interface Bid {
-	id: number;
-	installationRequest: {
-		name: string;
-		customer: Customer;
-		address: address;
-		powerRequest: number;
-	};
-	status: string;
-	cost: number;
+    id: number;
+    cost: number;
+    status: string;
+    description: string;
+    installationTime: string;
+    request: RequestDetails;
+    power: number;
+    area: number;
+    guarantee: GuaranteeProps;
 }
 
 export default function Bids() {
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
-	// const accessToken =
-	// 	"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU0MDcwMzcsImlhdCI6MTc0MjgxNTAzNywic3ViIjoxfQ.U245pmQco3hU0VATsXU8hovIl75FCpvcPGHDef0BVtRqPny5A9LBMMHRNcD4hQk9OciVS8v-kMYQvyuGsq6ido2ebNVFhIR0Vja023B48S5tW3yzSOyySEvcLEt3pWxTRQo45mK9GLBRtdpQu18qoKqreHOzr98K2mTd4E7lVE8";
-	const [bidData, setBidData] = useState<Bid[] | null>(null);
-	const [error, setError] = useState<string | null>(null);
+    const [bidData, setBidData] = useState<Bid[] | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [status, setStatus] = useState<string>("");
+    const [searchPhrase, setSearchPhrase] = useState<string>("");
+    const [resultPerPage, setResultPerPage] = useState<string>("");
+    const [paginationInfo, setPaginationInfo] = useState<
+        paginationInfoType | undefined
+    >(undefined);
+    const [page, setPage] = useState<number>(1);
+    const [sortBy, setSortBy] = useState<string>("");
+    const [asc, setAsc] = useState<boolean>(false);
 
-	useEffect(() => {
-		const fetchBids = async () => {
-			try {
-				console.log("Fetching bids...");
-				const response = await fetch(`${baseURL}/v1/bids/list`, {
-					headers: {
-						Authorization: `Bearer ${accessToken}`,
-						"ngrok-skip-browser-warning": "69420",
-					},
-				});
+    const corpId = useSelector((state: RootState) => state.user.corpId);
 
-				const data = await response.json();
-				console.log("Raw response:", data.data);
-				setBidData(data.data);
-			} catch (error: any) {
-				console.error("Error fetching bids:", {
-					message: error.message,
-					response: error.response?.data,
-					status: error.response?.status,
-				});
-				setError(error.message);
-			}
-		};
+    const updateBids = useCallback(() => {
+        setLoading(true);
+        getData({
+            endPoint: `/v1/corp/${corpId}/bid`,
+            params: { status, page, sortBy, asc, pageSize: resultPerPage },
+        })
+            .then((data) => {
+                console.log("data", data);
+                setBidData(data?.data?.data);
+                setPaginationInfo(data?.data?.pagination);
+            })
+            .catch((err) => console.log(err))
+            .finally(() => setLoading(false));
+    }, [status, resultPerPage, corpId, page, sortBy, asc]);
 
-		fetchBids();
-	}, [accessToken]);
+    useEffect(() => {
+        updateBids();
+    }, [updateBids]);
 
-	if (error) {
-		return <div className="text-red-500">Error loading bids: {error}</div>;
-	}
-
-	if (!bidData) {
-		return <div>Loading...</div>;
-	}
-
-	return (
-		<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F4F1F3] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
-			{bidData.map((bid) => (
-				<BidCard
-					key={bid.id}
-					panelDetails={{
-						panelName: bid.installationRequest.name,
-						customerName:
-							bid.installationRequest.customer.firstName +
-							" " +
-							bid.installationRequest.customer.lastName,
-						address:
-							bid.installationRequest.address.province +
-							"، " +
-							bid.installationRequest.address.city +
-							"، " +
-							bid.installationRequest.address.streetAddress,
-						capacity: bid.installationRequest.powerRequest, //
-						price: bid.cost, //
-					}}
-					status={bid.status}
-				/>
-			))}
-			{/* <BidCard
-				panelDetails={{
-					panelName: "پنل خانه تهرانپارس",
-					customerName: "مجتبی قاطع",
-					address:
-						"فلکه شانزدهم تهرانپارس، حیدرخانی، کوچه پارسا، پلاک 134",
-					capacity: 5000,
-					price: 200000,
-				}}
-				status="confirmed"
-			/>
-			<BidCard
-				panelDetails={{
-					panelName: "پنل باغ شهری",
-					customerName: "رضا موسوی نارنجی",
-					address:
-						"ایران، استان کبیر اردبیل، نرسیده ترکیه، 200 کیلومتری ارومیه، کنار دریای خزر، خیابان باقلوا، کوچه خوشمزه، پلاک 104، درب انتهای کوچه سبز",
-					capacity: 200,
-					price: 120050780123406,
-				}}
-				status="pending"
-			/> */}
-		</div>
-	);
+    return (
+        <>
+            <div className="flex place-items-center">
+                <FilterSection
+                    fieldName="پنل"
+                    header="پیشنهادهای ارسال شده"
+                    statusesListApiRoute={`/v1/corp/${corpId}/bid/status`}
+                    status={status}
+                    setStatus={setStatus}
+                    resultPerPage={resultPerPage}
+                    setResultPerPage={setResultPerPage}
+                    setPage={setPage}
+                    columnsListApiRoute={`/v1/bid/sortable`}
+                    sortBy={sortBy}
+                    setSortBy={setSortBy}
+                    asc={asc}
+                    setAsc={setAsc}
+                    // searchPhrase={searchPhrase}
+                    // setSearchPhrase={setSearchPhrase}
+                    // onSearchSubmit={() => updateBids()}
+                />
+            </div>
+            <div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F0EDEF] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+                {loading ? (
+                    <LoadingSpinner />
+                ) : bidData && bidData?.length > 0 ? (
+                    bidData?.map((bid, index) => (
+                        <BidCard
+                            key={index}
+                            id={bid?.id}
+                            price={bid?.cost}
+                            date={bid?.installationTime}
+                            power={bid?.power}
+                            area={bid?.area}
+                            status={bid?.status}
+                            description={bid?.description}
+                            panelName={bid?.request?.name}
+                            buildingType={bid?.request?.buildingType}
+                            address={bid?.request?.address}
+                            guaranteeID={bid?.guarantee?.id}
+                            updateBids={updateBids}
+                        />
+                    ))
+                ) : (
+                    <div>
+                        <NoRecordFound text="هیچ پیشنهادی یافت نشد." />
+                    </div>
+                )}
+            </div>
+            <CustomPagination
+                currentPage={page}
+                setCurrentPage={setPage}
+                paginationInfo={paginationInfo}
+            />
+        </>
+    );
 }

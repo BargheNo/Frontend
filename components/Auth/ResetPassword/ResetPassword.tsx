@@ -1,25 +1,23 @@
 "use client";
 import { useState } from "react";
-import { MoveLeft, Lock, Unlock, Smartphone } from "lucide-react";
+import { MoveLeft, Lock, Unlock } from "lucide-react";
 import styles from "./ResetPassword.module.css";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import CustomInput from "../../Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import LoginButton from "../Login/LoginButton";
-import { toast } from "sonner";
 import { useSelector } from "react-redux";
-// import { RootState } from "@/src/store/types";
-import generateErrorMessage from "@/src/functions/handleAPIErrors";
-import { postData } from "@/src/services/apiHub";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import { putData } from "@/src/services/apiHub";
 
 const validationSchema = Yup.object({
 	password: Yup.string()
-		.min(8, "رمز عبور باید حداقل 8 کاراکتر باشد.")
-		.matches(/[a-z]/, ".رمز عبور باید شامل حداقل یک حرف کوچک باشد")
-		.matches(/[A-Z]/, ".رمز عبور باید شامل حداقل یک حرف بزرگ باشد")
-		.matches(/\d/, ".رمز عبور باید شامل حداقل یک عدد باشد")
-		.matches(/[\W_]/, ".رمز عبور باید شامل حداقل یک نماد باشد")
+		// .min(8, "رمز عبور باید حداقل 8 کاراکتر باشد.")
+		// .matches(/[a-z]/, ".رمز عبور باید شامل حداقل یک حرف کوچک باشد")
+		// .matches(/[A-Z]/, ".رمز عبور باید شامل حداقل یک حرف بزرگ باشد")
+		// .matches(/\d/, ".رمز عبور باید شامل حداقل یک عدد باشد")
+		// .matches(/[\W_]/, ".رمز عبور باید شامل حداقل یک نماد باشد")
 		.required("رمز عبور جدید الزامی است"),
 	confirmPassword: Yup.string()
 		.oneOf(
@@ -35,42 +33,27 @@ const initialValues = {
 };
 
 const ResetPassword = () => {
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-	
-
-const handleFormSubmit = async (values: {
-	password: string;
-	confirmPassword: string;
-}) => {
-	const { confirmPassword, password } = values;
-	
-	try {
-		const response = await postData({
-			endPoint: "/v1/user/auth/reset-password",
-
+	const handleFormSubmit = async (values: {
+		password: string;
+		confirmPassword: string;
+	}) => {
+		const { confirmPassword, password } = values;
+		putData({
+			endPoint: `/v1/user/profile/password`,
 			data: {
 				password,
 				confirmPassword,
 			},
-			accessToken: accessToken,
-		});
-
-		if (response?.statusCode === 200) {
-			toast.success(response?.message);
-			window.location.href = "/dashboard";
-		}
-	} catch (error: any) {
-		const errMsg =
-			generateErrorMessage(error) || "هنگام تغییر رمز عبور مشکلی پیش آمد.";
-		toast.error(errMsg);
-	}
-};
-
+		})
+			.then((data) => {
+				CustomToast(data?.message, "success");
+				window.location.href = "/dashboard/profile";
+			})
+			.catch((err) => console.log(err));
+	};
 
 	return (
 		<div className={`${vazir.className} min-h-screen w-full`}>

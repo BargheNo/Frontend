@@ -1,129 +1,83 @@
 "use client";
-import Image from "next/image";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import orderService from "@/src/services/orderService";
-import { useEffect, useState } from "react";
 import { Orderhistory } from "@/src/types/OrderhistoryType";
 import OrderHistory from "@/components/OrderHistory/OrderHistory";
-import { useSelector } from "react-redux";
-import panelNotFound from "../../public/images/panelNotFound/panelNotFound.png";
-import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "../Loading/LoadingSpinner/LoadingSpinner";
+import NoRecordFound from "../NoRecordFound/NoRecordFound";
+import FilterSection from "../FilterSection/FilterSection";
+import CustomPagination from "../Custom/CustomPagination/CustomPagination";
 
-// import { RootState } from "@/src/store/types";
-
-export default function OrderHistoryPagination() {
-  const [history, sethistory] = useState<Orderhistory[]>([]);
-  const [currpage, Setcurrpage] = useState<string>("1");
-  const [isLoading, setIsLoading] = useState(true);
-  const accessToken = useSelector((state: RootState) => state.user.accessToken);
-  const handelHistory = (page: string, pageSize: string) => {
-    orderService
-      .orderHistory({ page: page, pageSize: pageSize }, accessToken)
-      .then((res) => {
-        sethistory(res.data);
-        setIsLoading(false);
-      })
-      .catch((err) => console.log(err));
-  };
-  useEffect(() => {
-    handelHistory(currpage, "3");
-  }, [currpage]);
-  // const address = {
-  //   ID: 2,
-  //   province: "mazandaran",
-  //   city: "amol",
-  //   streetAddress: "khiaban haraz",
-  //   postalCode: "9473647546",
-  //   houseNumber: "1",
-  //   unit: 1,
-  // };
-  return (
-    <>
-      {isLoading ? (
-        <LoadingSpinner />
-      ) : history?.length > 0 ? (
+export default function OrderHistoryPagination({
+    status,
+    setStatus,
+    isLoading,
+    history,
+    asc,
+    setAsc,
+    sortBy,
+    setSortBy,
+}: // resultPerPage,
+// setResultPerPage,
+// currentPage,
+// setCurrentPage,
+// paginationInfo,
+{
+    status: string;
+    setStatus: any;
+    isLoading: boolean;
+    history: Orderhistory[];
+    asc: boolean;
+    setAsc: React.Dispatch<React.SetStateAction<boolean>>;
+    sortBy: string;
+    setSortBy: React.Dispatch<React.SetStateAction<string>>;
+    // resultPerPage: string;
+    // setResultPerPage: React.Dispatch<React.SetStateAction<string>>;
+    // currentPage: number;
+    // setCurrentPage: any;
+    // paginationInfo: any;
+}) {
+    return (
         <>
-          <div className="min-h-full flex flex-col text-white px-14 bg-transparent">
-            	<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
-              
-
-              {history.map((order: Orderhistory, index) => (
-					<OrderHistory
-					key={index}
-					id={index}
-						name={order.name}
-						address={order.address}
-						status={order.status}
-						createdTime={order.createdTime}
-						/>
-						))}
-              
-            </div>
-          </div>
+            <FilterSection
+                header="سابقه سفارشات"
+                statusesListApiRoute={`/v1/installation/request/status`}
+                fieldName="درخواست"
+                status={status}
+                setStatus={setStatus}
+                columnsListApiRoute={`/v1/installation/request/sortable`}
+                asc={asc}
+                setAsc={setAsc}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
+                // resultPerPage={resultPerPage}
+                // setResultPerPage={setResultPerPage}
+            />
+            {isLoading ? (
+                <LoadingSpinner />
+            ) : history?.length > 0 ? (
+                <>
+                    <div className="flex flex-col bg-transparent">
+                        <div className="flex flex-col text-gray-800 rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+                            {history.map((order: Orderhistory, index) => (
+                                <OrderHistory
+                                    key={index}
+                                    id={index}
+                                    name={order.name}
+                                    address={order.address}
+                                    status={order.status}
+                                    createdTime={order.createdTime}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </>
+            ) : (
+                <NoRecordFound text="هیچ سفارشی یافت نشد." />
+            )}
+            {/* <CustomPagination
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                paginationInfo={paginationInfo}
+            /> */}
         </>
-      ) : (
-        <div className="text-center place-items-center mt-6">
-          <Image className="w-1/3" src={panelNotFound} alt="orderNotFound" />
-          <div className="-mt-8">
-            <p
-              className=" mt-6 text-navy-blue font-bold rtl"
-              style={{ fontSize: "1.1rem" }}
-            >
-              هیچ سفارشی یافت نشد.
-            </p>
-          </div>
-        </div>
-      )}
-      {history?.length > 0 && (
-        <div className="p-5">
-          <Pagination className="mt-3">
-            <PaginationContent>
-              <PaginationItem>
-                {Number(currpage) > 1 && (
-                  <PaginationPrevious
-                    href="#"
-                    onClick={() =>
-                      Setcurrpage((prev) =>
-                        String(Math.max(Number(prev) - 1, 1))
-                      )
-                    }
-                  />
-                )}
-              </PaginationItem>
-              {["1", "2", "3"].map((page) => (
-                <PaginationItem key={page}>
-                  <PaginationLink
-                    href="#"
-                    onClick={() => Setcurrpage(page)}
-                    isActive={page === currpage}
-                  >
-                    {page}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={() =>
-                    Setcurrpage((prev) => String(Number(prev) + 1))
-                  }
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
-      )}
-    </>
-  );
+    );
 }

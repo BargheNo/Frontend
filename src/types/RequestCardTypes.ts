@@ -1,9 +1,11 @@
 interface PanelDetailsProps {
 	panelName: string;
-    customerName: string;
 	address: string;
     capacity: number;
     price: number;
+    buildingType: string;
+    createdTime: string;
+    status: string;
 }
 
 export interface RequestCardProps {
@@ -15,4 +17,5 @@ export interface RequestCardProps {
 export interface BidFormProps {
 	panelDetails: PanelDetailsProps;
     requestId: number;
+    setOpen: any;
 }

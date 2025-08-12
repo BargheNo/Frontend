@@ -1,96 +1,132 @@
-"use client"
-import React, { useState } from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import CorpRepairCard from "@/components/Repair/Corp/CorpRepairCard";
-import CorpRepairDialog, { CorpRepairItem } from "@/components/Repair/Corp/CorpRepairDialog";
-
-const repairItems: CorpRepairItem[] = [
-	{
-		id: "1",
-		text: "سرویس ماهانۀ پنل شیارز",
-		date: "1404/1/22",
-		panelName: "پنل شیارز",
-		technicalDetails: {
-			capacity: 5.2,
-			todayProduction: 12.3,
-			efficiency: 92,
-		},
-		address: "تهران، شیارز، خیابان اصلی، پلاک 123",
-		owner: "حافظ شیرازی"
-	},
-	{
-		id: "2",
-		text: "سرویس سالانۀ پنل اهواز",
-		date: "1404/1/23",
-		panelName: "پنل اهواز",
-		technicalDetails: {
-			capacity: 4.8,
-			todayProduction: 10.5,
-			efficiency: 88,
-		},
-		address: "اهواز، خیابان آزادی، پلاک 456",
-		owner: "حیرون خیرون"
-	},
-	{
-		id: "3",
-		text: "تمیزکاری پنل بیرجند",
-		date: "1404/1/24",
-		panelName: "پنل بیرجند",
-		technicalDetails: {
-			capacity: 3.5,
-			todayProduction: 8.2,
-			efficiency: 85,
-		},
-		address: "بیرجند، خیابان امام، پلاک 789",
-		owner: "رضا نصیری اقدم"
-	},
-]
+import CorpRepairDialog from "@/components/Repair/Corp/CorpRepairDialog";
+import { CorpRepairItem } from "@/types/CorpTypes";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
+import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
+import FilterSection from "@/components/FilterSection/FilterSection";
+import { getData } from "@/src/services/apiHub";
+import { useSelector } from "react-redux";
+import CustomPagination from "@/components/Custom/CustomPagination/CustomPagination";
 
 export default function Page() {
-	const [isDialogOpen, setIsDialogOpen] = useState(false);
-	const [selectedItem, setSelectedItem] = useState<CorpRepairItem | null>(null);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState<CorpRepairItem | null>(
+        null
+    );
+    const [repairItems, setRepairItems] = useState<CorpRepairItem[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [status, setStatus] = useState<string>("");
 
-	const handleOpenDialog = (item: CorpRepairItem) => {
-		setSelectedItem(item);
-		setIsDialogOpen(true);
-	};
+    const [resultPerPage, setResultPerPage] = useState<string>("");
+    const [paginationInfo, setPaginationInfo] = useState<
+        paginationInfoType | undefined
+    >(undefined);
+    const [page, setPage] = useState<number>(1);
+    const [sortBy, setSortBy] = useState<string>("");
+    const [asc, setAsc] = useState<boolean>(false);
 
-	const handleCloseDialog = () => {
-		setIsDialogOpen(false);
-		setSelectedItem(null);
-	};
+    const corpId = useSelector((state: RootState) => state.user.corpId);
 
-	return (
-		<div className="min-h-full flex flex-col gap-8 text-white py-8 px-14 bg-transparent">
-			<h1 className="text-navy-blue text-3xl font-black">
-				تعمیرات پیش رو
-			</h1>
+    useEffect(() => {
+        setIsLoading(true);
+        getData({
+            endPoint: `/v1/corp/${corpId}/maintenance/request`,
+            params: {
+                status,
+                page,
+                sortBy,
+                asc,
+                pageSize: resultPerPage,
+                corporationID: corpId,
+            },
+        })
+            .then((res) => {
+                console.log(res?.data);
+                setPaginationInfo(res?.data?.pagination);
+                setRepairItems(res?.data?.data);
+            })
+            .catch((err) => console.log(err))
+            .finally(() => setIsLoading(false));
+    }, [corpId, status, page, sortBy, asc, resultPerPage]);
 
-			<div>
-				<div className="flex flex-col neu-container">
-					{repairItems.map((item) => (
-						<div 
-							key={item.id} 
-							className=""
-						>
-							<CorpRepairCard
-								panelName={item.panelName}
-								technicalDetails={item.technicalDetails}
-								owner={item.owner}
-								date={item.date}
-								address={item.address}
-								className="w-full"
-								onDetailsClick={() => handleOpenDialog(item)}
-							/>
-						</div>
-					))}
-				</div>
-			</div>
+    const handleOpenDialog = (item: CorpRepairItem) => {
+        setSelectedItem(item);
+        setIsDialogOpen(true);
+    };
 
-			<CorpRepairDialog
-				isOpen={isDialogOpen}
-				onClose={handleCloseDialog}
-				repairItem={selectedItem}
-			/>
-		</div>
-	);
+    const handleCloseDialog = () => {
+        setIsDialogOpen(false);
+        setSelectedItem(null);
+    };
+
+    return (
+        <PageContainer>
+            <div className="space-y-8 relative">
+                <div>
+                    <FilterSection
+                        header="درخواست‌های تعمیر"
+                        fieldName="تعمیر"
+                        statusesListApiRoute={`/v1/maintenance/status`}
+                        status={status}
+                        setStatus={setStatus}
+                        resultPerPage={resultPerPage}
+                        setResultPerPage={setResultPerPage}
+                        setPage={setPage}
+                        columnsListApiRoute={`/v1/maintenance/sortable`}
+                        asc={asc}
+                        setAsc={setAsc}
+                        sortBy={sortBy}
+                        setSortBy={setSortBy}
+                    />
+                    <div className="flex flex-col neu-container">
+                        {isLoading ? (
+                            <LoadingSpinner />
+                        ) : repairItems?.length === 0 ? (
+                            <NoRecordFound text="هیچ درخواست تعمیراتی موجود نیست." />
+                        ) : (
+                            repairItems?.map((item) => (
+                                <div key={item.id} className="">
+                                    <CorpRepairCard
+                                        panelName={item.panel.name}
+                                        panelPower={item.panel.power}
+                                        owner={`${item.panel.customer.firstName} ${item.panel.customer.lastName}`}
+                                        date={item.createdAt}
+                                        status={item.status}
+                                        UrgencyLevel={
+                                            item.urgencyLevel.toLowerCase() as
+                                                | "low"
+                                                | "medium"
+                                                | "high"
+                                        }
+                                        address={
+                                            item.panel.address.streetAddress
+                                        }
+                                        className="w-full"
+                                        onDetailsClick={() =>
+                                            handleOpenDialog(item)
+                                        }
+                                    />
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
+            </div>
+            <CustomPagination
+                currentPage={page}
+                setCurrentPage={setPage}
+                paginationInfo={paginationInfo}
+            />
+            {isDialogOpen && (
+                <CorpRepairDialog
+                    isOpen={isDialogOpen}
+                    onClose={handleCloseDialog}
+                    repairItem={selectedItem}
+                />
+            )}
+        </PageContainer>
+    );
 }

@@ -1,29 +1,91 @@
 "use client";
+export const dynamic = "force-dynamic";
 
-import BlogsList from "@/components/admin-dashboard/Blogs/BlogsList/BlogsList";
-import NewBlog from "@/components/admin-dashboard/Blogs/NewBlog/NewBlog";
-import Header from "@/components/Header/Header";
-import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
-import useClientCheck from "@/src/hooks/useClientCheck";
+import nextDynamic from "next/dynamic";
+const BlogCard = nextDynamic(
+    () => import("@/components/blog/BlogCard/BlogCard"),
+    {
+        ssr: false,
+    }
+);
+
+const PageContainer = nextDynamic(
+    () => import("@/components/Dashboard/PageContainer/PageContainer"),
+    {
+        ssr: false,
+    }
+);
+
+const Header = nextDynamic(() => import("@/components/Header/Header"), {
+    ssr: false,
+});
+
+const LoadingSpinner = nextDynamic(
+    () => import("@/components/Loading/LoadingSpinner/LoadingSpinner"),
+    {
+        ssr: false,
+    }
+);
+
+import { getData } from "@/src/services/apiHub";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
+import useClientCheck from "@/src/hooks/useClientCheck";
 
 export default function Page() {
-	if (!useClientCheck()) {
-		return <LoadingSpinner />;
-	}
-	return (
-		<div className="page">
-			<div className={`flex justify-center items-center mt-15`}>
-				<div className="w-full">
-					<NewBlog />
-
-					<div className="mt-3 text-navy-blue font-bold text-center">
-						<p>ثبت مطلب جدید</p>
-					</div>
-				</div>
-			</div>
-			<Header header="مطالب قبلی" />
-			<BlogsList />
-		</div>
-	);
+    const isClient = useClientCheck();
+    const { isLoading, data } = useQuery({
+        queryKey: ["blogs"],
+        queryFn: async () => {
+            const r1 = await getData({
+                endPoint: `/v1/blog`,
+            });
+            console.log("r1: ", r1?.data?.data);
+            return r1?.data?.data;
+        },
+    });
+    return (
+        <PageContainer>
+            {isClient && isLoading ? (
+                <LoadingSpinner />
+            ) : (
+                <>
+                    <Header header="مطالب" />
+                    <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-[2vw] w-full mx-auto">
+                        {data &&
+                            data?.map((blog: Blog) => {
+                                let writer = "ناشناس";
+                                if (blog?.author) {
+                                    if (typeof blog.author === "string") {
+                                        writer = blog.author;
+                                    } else if (
+                                        blog.author.firstName &&
+                                        blog.author.lastName
+                                    ) {
+                                        writer = `${blog.author.firstName} ${blog.author.lastName}`;
+                                    }
+                                } else if (blog?.corporation?.name) {
+                                    writer = blog.corporation.name;
+                                }
+                                return (
+                                    <BlogCard
+                                        key={blog?.id}
+                                        blogID={String(blog?.id)}
+                                        imageUrl={blog?.coverImage}
+                                        title={blog?.title}
+                                        description={blog?.description}
+                                        writer={writer}
+                                        date={blog?.createdAt}
+                                        likeCount={blog?.likeCount}
+                                        status={blog?.status}
+                                        viewOnly={true}
+                                        className="mx-auto"
+                                    />
+                                );
+                            })}
+                    </div>
+                </>
+            )}
+        </PageContainer>
+    );
 }

@@ -1,109 +1,102 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import RequestCard from "./RequestCard/RequestCard";
-import { baseURL } from "@/src/services/apiHub";
+import { getData } from "@/src/services/apiHub";
 import { useSelector } from "react-redux";
-// import { RootState } from "@/src/store/types";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import DateConverter from "@/src/functions/toJalali";
+import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
+import FilterSection from "@/components/FilterSection/FilterSection";
+import CustomPagination from "@/components/Custom/CustomPagination/CustomPagination";
 
 interface address {
-	province: string;
-	city: string;
-	streetAddress: string;
-}
-
-interface Customer {
-	firstName: string;
-	lastName: string;
+    province: string;
+    city: string;
 }
 
 interface Request {
-	id: number;
-	name: string;
-	customer: Customer;
-	address: address;
-	powerRequest: number;
-	status: string;
-	maxCost: number;
+    id: number;
+    name: string;
+    buildingType: string;
+    createdTime: string;
+    status: string;
+    address: address;
+    powerRequest: number;
+    maxCost: number;
 }
 
 export default function Requests() {
-	const accessToken = useSelector(
-		(state: RootState) => state.user.accessToken
-	);
-	const [requestData, setRequestData] = useState<Request[] | null>(null);
-	const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [requestData, setRequestData] = useState<Request[] | null>(null);
+    const [resultPerPage, setResultPerPage] = useState<string>("");
+    const [paginationInfo, setPaginationInfo] = useState<
+        paginationInfoType | undefined
+    >(undefined);
+    const [page, setPage] = useState<number>(1);
+    const [sortBy, setSortBy] = useState<string>("");
+    const [asc, setAsc] = useState<boolean>(false);
 
-	useEffect(() => {
-		console.log("accessToken", accessToken);
-		const fetchRequests = async () => {
-			try {
-				console.log("Fetching Requests...");
-				const response = await fetch(`${baseURL}/v1/bids/list`, {
-					headers: {
-						Authorization: `Bearer ${accessToken}`,
-					},
-				});
+    const corpId = useSelector((state: RootState) => state.user.corpId);
 
-				const data = await response.json();
-				console.log("Raw response:", data.data);
-				setRequestData(data.data);
-			} catch (error: any) {
-				console.error("Error fetching requests:", {
-					message: error.message,
-					response: error.response?.data,
-					status: error.response?.status,
-				});
-				setError(error.message);
-			}
-		};
+    useEffect(() => {
+        setLoading(true);
+        getData({
+            endPoint: `/v1/corp/${corpId}/installation/request`,
+            params: { page, sortBy, asc, pageSize: resultPerPage },
+        })
+            .then((data) => {
+                // console.log(data?.data?.data);
+                setRequestData(data?.data?.data);
+                setPaginationInfo(data?.data?.pagination);
+            })
+            .catch((err) => console.log(err))
+            .finally(() => setLoading(false));
+    }, [corpId, resultPerPage, page, sortBy, asc]);
 
-		fetchRequests();
-	}, [accessToken]);
-
-	if (error) {
-		return (
-			<div className="text-red-500">Error loading requests: {error}</div>
-		);
-	}
-
-	if (!requestData) {
-		return <div>Loading...</div>;
-	}
-
-	return (
-		<div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F4F1F3] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
-			{requestData.map((request) => (
-				<RequestCard
-					key={request.id}
-					panelDetails={{
-						panelName: request.name,
-						customerName: `${request.customer.firstName} ${request.customer.lastName}`,
-						address: `${request.address.province}، ${request.address.city}، ${request.address.streetAddress}`,
-						capacity: request.powerRequest,
-						price: request.maxCost,
-					}}
-					requestId={request.id}
-				/>
-			))}
-
-			{/* <RequestCard
-				panelDetails={{
-					panelName: "پنل خانه تهرانپارس",
-					customerName: "مجتبی قاطع",
-					address: "فلکه شانزدهم تهرانپارس، حیدرخانی، کوچه پارسا، پلاک 134",
-					capacity: 5000,
-					price: 200000,
-				}}
-			/>
-			<RequestCard
-				panelDetails={{
-					panelName: "پنل باغ شهری",
-					customerName: "رضا موسوی نارنجی",
-					address: " ایران، استان کبیر اردبیل، نرسیده ترکیه، 200 کیلومتری ارومیه، کنار دریای خزر، خیابان باقلوا، کوچه خوشمزه، پلاک 104، درب انتهای کوچه سبز خراسان رضوی شمالی نبش میدان بنفش",
-					capacity: 200,
-					price: 120050780123406,
-				}}
-			/> */}
-		</div>
-	);
+    return (
+        <>
+            <FilterSection
+                header="درخواست‌های موجود در سرتاسر سامانه"
+                resultPerPage={resultPerPage}
+                setResultPerPage={setResultPerPage}
+                setPage={setPage}
+                columnsListApiRoute={`/v1/installation/request/sortable`}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
+                asc={asc}
+                setAsc={setAsc}
+            />
+            {/* <Header header="درخواست‌های موجود در سرتاسر سامانه" /> */}
+            <div className="flex flex-col text-gray-800 rounded-2xl overflow-hidden bg-[#F0EDEF] shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)]">
+                {loading ? (
+                    <LoadingSpinner />
+                ) : requestData && requestData?.length > 0 ? (
+                    requestData?.map((request) => (
+                        <RequestCard
+                            key={request.id}
+                            panelDetails={{
+                                panelName: request?.name,
+                                address: `استان ${request?.address?.province}، شهر ${request?.address?.city}`,
+                                capacity: request?.powerRequest,
+                                price: request?.maxCost,
+                                buildingType: request?.buildingType,
+                                status: request?.status,
+                                createdTime: DateConverter(
+                                    request?.createdTime
+                                ),
+                            }}
+                            requestId={request?.id}
+                        />
+                    ))
+                ) : (
+                    <NoRecordFound text="هیچ درخواستی یافت نشد." />
+                )}
+            </div>
+            <CustomPagination
+                currentPage={page}
+                setCurrentPage={setPage}
+                paginationInfo={paginationInfo}
+            />
+        </>
+    );
 }

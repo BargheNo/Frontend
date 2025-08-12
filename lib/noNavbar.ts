@@ -1,5 +1,5 @@
 const noNavbarPath = (): string[] => {
-  return ['/signup', '/login'];
+  return ['/signup', '/login', '/forgot-password', '/reset-password'];
 };
 
 export default noNavbarPath;
