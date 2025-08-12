@@ -81,6 +81,7 @@ const RolesAndPermissions = () => {
         paginationInfoType | undefined
     >(undefined);
     const [page, setPage] = useState<number>(1);
+    
     const [query, setQuery] = useState<string>("");
 
     const getRoles = useCallback(() => {

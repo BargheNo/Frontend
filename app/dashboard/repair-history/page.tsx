@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Carousel from "@/components/Slider/Slider";
 
 import CustomerRepairCard from "@/components/Repair/Customer/CustomerRepairCard";
@@ -117,6 +117,8 @@ const Page = () => {
     const [sortBy, setSortBy] = useState<string>("");
     const [asc, setAsc] = useState<boolean>(false);
 
+    const [query, setQuery] = useState<string>("");
+
     const getRecentRepairs = (items: RepairHistoryItem[]) => {
         const oneMonthAgo = new Date();
         oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
@@ -126,12 +128,18 @@ const Page = () => {
             return repairDate >= oneMonthAgo;
         });
     };
-
-    useEffect(() => {
+    const fetchRepairs = useCallback(() => {
         setIsLoading(true);
         getData({
             endPoint: `/v1/user/maintenance/request`,
-            params: { status, page, sortBy, asc, pageSize: resultPerPage },
+            params: {
+                status,
+                page,
+                sortBy,
+                asc,
+                pageSize: resultPerPage,
+                query,
+            },
         })
             .then((data) => {
                 setRepairItems(data?.data?.data);
@@ -139,7 +147,10 @@ const Page = () => {
             })
             .catch((err) => console.log(err))
             .finally(() => setIsLoading(false));
-    }, [refreshTrigger, status, resultPerPage, page, sortBy, asc]);
+    }, [status, resultPerPage, page, sortBy, asc, query]);
+    useEffect(() => {
+        fetchRepairs();
+    }, [refreshTrigger, fetchRepairs]);
 
     const handleOpenDialog = (item: RepairHistoryItem) => {
         setSelectedItem(item);
@@ -203,6 +214,9 @@ const Page = () => {
                     setAsc={setAsc}
                     sortBy={sortBy}
                     setSortBy={setSortBy}
+                    query={query}
+                    setQuery={setQuery}
+                    onSearchSubmit={() => fetchRepairs()}
                 />
                 {isLoading ? (
                     <div className="relative">

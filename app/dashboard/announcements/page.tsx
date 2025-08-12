@@ -11,7 +11,7 @@ const AnnounceView = dynamic(
 export default function page() {
     return (
         <PageContainer>
-            <Header header="اخبار و اطلاعیه‌ها" />
+            {/* <Header header="اخبار و اطلاعیه‌ها" /> */}
             <AnnounceView onlyView={true} />
             {/* <AnnounceAddCard /> */}
         </PageContainer>
