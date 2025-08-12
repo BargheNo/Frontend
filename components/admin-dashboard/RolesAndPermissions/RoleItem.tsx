@@ -8,6 +8,7 @@ import useHasPermission from "@/src/functions/hasPermission";
 import EditRoleModal from "./EditRoleModal";
 import { deleteData } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import { permission } from "process";
 
 export default function RoleItem({
     role,
@@ -21,6 +22,7 @@ export default function RoleItem({
     allPermissions: Permission[];
 }) {
     const [editOpen, setEditOpen] = useState<boolean>(false);
+    const [expanded, setExpanded] = useState<boolean>(false);
     const editRolePermission = useHasPermission("user.manageRolePermissions");
     const removeRolePermission = useHasPermission("user.removeRole");
     const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -58,29 +60,38 @@ export default function RoleItem({
                             <SquareCheckBig />
                         </div>
                         <div
-                            className="content-start w-full flex gap-2 text-xl"
+                            className="content-start w-full flex gap-2 flex-wrap text-xl"
                             dir="rtl"
                         >
                             <p>دسترسی‌ها:</p>
                             {role?.permissions?.length === 0 ? (
                                 <p>دسترسی موجود نیست</p>
                             ) : (
-                                role?.permissions?.map(
-                                    (permission: Permission, index: number) =>
-                                        index < 5 && (
-                                            <div
-                                                className="flex flex-row"
-                                                key={index}
-                                            >
-                                                <Badge className="bg-fire-orange">
-                                                    {permission?.description}
-                                                </Badge>
-                                            </div>
+                                role?.permissions
+                                    ?.filter(
+                                        (
+                                            permission: Permission,
+                                            index: number
+                                        ) => (expanded ? true : index < 5)
+                                    )
+                                    .map(
+                                        (
+                                            permission: Permission,
+                                            index: number
+                                        ) => (
+                                            <Badge className="bg-fire-orange h-fit" key={index}>
+                                                {permission?.description}
+                                            </Badge>
                                         )
-                                )
+                                    )
                             )}
                             {role?.permissions?.length >= 5 && (
-                                <Badge className="bg-fire-orange">...</Badge>
+                                <Badge
+                                    className="bg-fire-orange cursor-pointer h-fit"
+                                    onClick={() => setExpanded(!expanded)}
+                                >
+                                    {expanded ? "<" : "..."}
+                                </Badge> 
                             )}
                         </div>
                     </div>
