@@ -109,8 +109,7 @@ export default function FilterSection({
         <div className="flex flex-col sm:flex-row place-items-center justify-between sm:w-full w-full gap-4">
             <div
                 className={`flex min-w-fit ${
-                    setQuery &&
-                    "text-start place-self-center sm:place-self-end"
+                    setQuery && "text-start place-self-center sm:place-self-end"
                 }`}
             >
                 {header && <Header header={header} />}
@@ -170,7 +169,7 @@ export default function FilterSection({
                 )}
                 {children &&
                     (initialLoading ? (
-                        <Skeleton className={`h-[40px] w-full sm:min-w-40`} />
+                        <Skeleton className={`h-[40px] w-full sm:max-w-40`} />
                     ) : (
                         children
                     ))}
@@ -184,6 +183,7 @@ export default function FilterSection({
                             value={query}
                             onSubmit={onSearchSubmit}
                             onValueChange={setQuery}
+                            // containerClassName="w-full"
                         />
                     ))}
             </div>

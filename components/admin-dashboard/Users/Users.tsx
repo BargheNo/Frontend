@@ -179,7 +179,11 @@ export default function Users() {
                     setQuery={setQuery}
                     onSearchSubmit={() => updateUsers()}
                 >
-                    <div className="flex gap-4 rtl sm:ltr w-full">
+                    <div
+                        className={`flex gap-4 ltr sm:rtl w-full ${
+                            filterType === "all" && "sm:w-40"
+                        }`}
+                    >
                         <Select
                             defaultValue="all"
                             onValueChange={(value) => {
@@ -189,7 +193,7 @@ export default function Users() {
                         >
                             <SelectTrigger
                                 dir="rtl"
-                                className="flex w-full min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+                                className="flex w-full sm:w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
                             >
                                 <SelectValue placeholder="فیلتر بر اساس" />
                             </SelectTrigger>
@@ -222,7 +226,7 @@ export default function Users() {
                             >
                                 <SelectTrigger
                                     dir="rtl"
-                                    className="flex w-full min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+                                    className="flex w-full sm:w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
                                 >
                                     <SelectValue
                                         placeholder={
@@ -255,7 +259,7 @@ export default function Users() {
                             >
                                 <SelectTrigger
                                     dir="rtl"
-                                    className="flex min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+                                    className="flex w-full sm:min-w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
                                 >
                                     <SelectValue placeholder="وضعیت" />
                                 </SelectTrigger>
