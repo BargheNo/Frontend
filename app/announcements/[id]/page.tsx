@@ -1,8 +1,10 @@
 "use client";
+export const dynamic = "force-dynamic";
+
+import nextDynamic from "next/dynamic";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 import { ChevronLeft } from "lucide-react";
-import dynamic from "next/dynamic";
-const AnnounceEditor = dynamic(
+const AnnounceEditor = nextDynamic(
     () => import("@/components/Announcement/AnnounceEditor/AnnounceEditor"),
     { ssr: false }
 );

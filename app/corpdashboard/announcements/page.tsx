@@ -1,9 +1,10 @@
 "use client";
+export const dynamic = "force-dynamic";
+import nextDynamic from "next/dynamic";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 import Header from "@/components/Header/Header";
-import dynamic from "next/dynamic";
 import React from "react";
-const AnnounceView = dynamic(
+const AnnounceView = nextDynamic(
     () => import("@/components/Announcement/AnnounceView/AnnounceView"),
     { ssr: false }
 );

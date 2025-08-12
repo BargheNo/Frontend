@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import { useSelector } from "react-redux";
-import styles from "@/components/admin-dashboard/CorpManagement/CorpManagement";
+import styles from "./CorpMnagement.module.css";
 import { postData } from "@/src/services/apiHub";
 
 interface CorporationDetailType {
