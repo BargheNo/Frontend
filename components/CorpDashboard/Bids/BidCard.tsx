@@ -341,10 +341,10 @@ export default function BidCard({
                             prefix="تومان"
                         />
                     </div>
-                    <div className="flex md:flex-col flex-row justify-evenly w-1/5 items-center text-center md:mr-0 mr-6 md:gap-0 gap-40 md:mb-0 mb-10">
-                        <div className="flex flex-col  md:ml-9 ml-auto items-center justify-center gap-2 md:p-3 p-5 rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)] w-37">
+                    <div className="flex md:flex-col flex-row justify-evenly w-1/5 items-center text-center md:-mr-0 mr-6 md:gap-0 gap-28 md:mb-0 mb-10">
+                        <div className="text-nowrap flex flex-col  md:ml-2 ml-auto items-center justify-center gap-2 md:p-3 p-5 rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)] w-30">
                             <div
-                                className={`h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
+                                className={` h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
                             />
                             <span className="text-sm font-medium text-gray-600">
                                 {status}
@@ -396,7 +396,7 @@ export default function BidCard({
                                         errors,
                                         touched,
                                     }) => (
-                                        <Form className="w-full flex flex-col gap-6">
+                                        <Form className="m-auto md:w-full w-75 flex flex-col gap-6">
                                             <FormObserver
                                                 guaranteeID={Number(
                                                     values?.guaranteeID
@@ -414,7 +414,7 @@ export default function BidCard({
                                                     مشخصات درخواست
                                                 </span>
                                                 <div className={styles.Box}>
-                                                    <div className="flex">
+                                                    <div className="flex md:flex-row flex-col">
                                                         <DialogItem
                                                             icon={Eclipse}
                                                             fieldName="نام پنل"
@@ -430,7 +430,7 @@ export default function BidCard({
                                                             }
                                                         />
                                                     </div>
-                                                    <div className="flex">
+                                                    <div className="flex md:flex-row flex-col">
                                                         <DialogItem
                                                             className="first:border-t-2"
                                                             icon={Battery}
