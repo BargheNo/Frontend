@@ -55,8 +55,6 @@ export default function Bids() {
     const [bidData, setBidData] = useState<Bid[] | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [status, setStatus] = useState<string>("");
-    
-    const [searchPhrase, setSearchPhrase] = useState<string>("");
 
     const [resultPerPage, setResultPerPage] = useState<string>("");
     const [paginationInfo, setPaginationInfo] = useState<
@@ -72,7 +70,7 @@ export default function Bids() {
         setLoading(true);
         getData({
             endPoint: `/v1/corp/${corpId}/bid`,
-            params: { status, page, sortBy, asc, pageSize: resultPerPage, query: searchPhrase },
+            params: { status, page, sortBy, asc, pageSize: resultPerPage, query },
         })
             .then((data) => {
                 console.log("data", data);
@@ -81,7 +79,7 @@ export default function Bids() {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [status, resultPerPage, corpId, page, sortBy, asc, searchPhrase]);
+    }, [status, resultPerPage, corpId, page, sortBy, asc, query]);
 
     useEffect(() => {
         updateBids();

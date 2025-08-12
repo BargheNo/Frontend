@@ -41,6 +41,7 @@ import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
 import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
 import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
 import CustomPagination from "@/components/Custom/CustomPagination/CustomPagination";
+import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 
 interface CorporationType {
     id: number;
@@ -634,6 +635,7 @@ const CorpManagement = () => {
                     setAsc={setAsc}
                     query={query}
                     setQuery={setQuery}
+                    onSearchSubmit={() => fetchAllCorporations()}
                 />
                 {loading ? (
                     <div className="flex justify-center items-center">
@@ -641,13 +643,16 @@ const CorpManagement = () => {
                     </div>
                 ) : (
                     <div className="flex flex-col w-full neu-container">
-                        {corporations &&
+                        {corporations && corporations?.length === 0 ? (
+                            <NoRecordFound text="هیچ شرکتی یافت نشد." />
+                        ) : (
                             corporations?.map((corporation) => (
                                 <CorporationItem
                                     key={corporation.id}
                                     {...corporation}
                                 />
-                            ))}
+                            ))
+                        )}
                     </div>
                 )}
             </div>

@@ -190,6 +190,7 @@ const TicketSupportPage = () => {
                 setSortBy={setSortBy}
                 query={query}
                 setQuery={setQuery}
+                onSearchSubmit={() => fetchTickets()}
             />
             {loading ? (
                 <LoadingSpinner />

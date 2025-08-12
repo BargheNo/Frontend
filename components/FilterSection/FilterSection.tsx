@@ -159,7 +159,7 @@ export default function FilterSection({
                 {setStatus && (
                     <div className="w-full sm:w-40 flex justify-start">
                         <FilterSelect
-                            placeholder={`وضعیت ${fieldName ?? fieldName}`}
+                            placeholder={`وضعیت ${fieldName ? fieldName : ""}`}
                             field={status}
                             setField={setStatus}
                             possibleValues={statuses}
