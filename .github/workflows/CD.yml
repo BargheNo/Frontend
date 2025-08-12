@@ -173,6 +173,7 @@ jobs:
     
     - name: Deploy
       if: steps.docker_build.outcome == 'success'
+      id: deploy_prod
       uses: appleboy/ssh-action@v0.1.8
       with:
         host: ${{ secrets.SERVER_HOST }}
@@ -188,3 +189,17 @@ jobs:
           docker compose down --remove-orphans
           docker compose up -d
           docker image prune -f
+
+    - name: Send Push On Prod Report to Telegram
+      continue-on-error: true
+      if: steps.deploy_prod.outcome == 'success'
+      run: |
+
+        curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+          -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+          -d "message_thread_id=${{ secrets.TELEGRAM_BUILD_THREAD_ID }}" \
+          --data-urlencode "text=✅ *Deploy was successful*" \
+          -d "parse_mode=MarkdownV2" \
+          -d "disable_web_page_preview=true" > /dev/null 2>&1
+
+        echo "Notification sent to Telegram"
