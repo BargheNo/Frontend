@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast.tsx";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput.tsx";
-import AddAnnounceForm from "../AddAnnounce/AddAnnounceForm.tsx";
+import AddAnnounceForm from "@/components/Announcement/AddAnnounce/AddAnnounceForm.tsx";
 
 export default function AnnounceEditor({
     newsID,

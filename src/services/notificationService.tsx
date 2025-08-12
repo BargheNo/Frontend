@@ -1,6 +1,6 @@
 import { data } from "cypress/types/jquery";
-import { baseURL, getData, postData, putData } from "./apiHub";
-import { changeNotificationSetting, page } from "../types/notificationTypes";
+import { baseURL, getData, postData, putData } from "@/src/services/apiHub";
+import { changeNotificationSetting, page } from "@/src/types/notificationTypes";
 
 class notification {
 	getNotificationType() {

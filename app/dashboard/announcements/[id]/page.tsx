@@ -1,9 +1,11 @@
 "use client";
+export const dynamic = "force-dynamic";
+import nextDynamic from "next/dynamic";
 import { ChevronLeft } from "lucide-react";
 // import AnnounceView from "@/components/Announcement/AnnounceView/AnnounceView";
 import { useParams, useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
-const AnnounceEditor = dynamic(
+
+const AnnounceEditor = nextDynamic(
     () => import("@/components/Announcement/AnnounceEditor/AnnounceEditor"),
     { ssr: false }
 );

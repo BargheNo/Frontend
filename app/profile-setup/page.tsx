@@ -3,7 +3,7 @@
 
 import ProfileSetup from "@/components/Profile/ProfileSetup/ProfileSetup";
 import Image from "next/image";
-import Background from "../../public/signup.jpg"
+import Background from "@/public/signup.jpg"
 
 const page = () => {
 

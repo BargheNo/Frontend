@@ -108,7 +108,7 @@ const PanelCard = ({
 						<div className="flex flex-row md:flex-row lg:flex-col sm:flex-col gap-5 md:px-20">
 							<Dialog open={open} onOpenChange={setOpen}>
 								<DialogTrigger asChild>
-									<button className="w-full flex items-center justify-evenly bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
+									<button className="w-full flex items-center justify-evenly gradient-red px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
 										<span className="font-medium text-nowrap">
 											گزارش مشکل
 										</span>
@@ -146,7 +146,7 @@ const PanelCard = ({
 													<Button
 														type="submit"
 														disabled={isSubmitting}
-														className="min-w-28 flex place-content-center bg-gradient-to-br cursor-pointer from-[#34C759] to-[#00A92B] hover:from-[#2AAE4F] hover:to-[#008C25] active:from-[#008C25] active:to-[#2AAE4F] text-white px-4 rounded-md transition-all duration-300"
+														className="min-w-28 flex place-content-center cursor-pointer gradient-green text-white px-4 rounded-md transition-all duration-300"
 													>
 														{loading ? (
 															<LoadingOnButton />
@@ -161,7 +161,7 @@ const PanelCard = ({
 								</DialogContent>
 							</Dialog>
 							<Link href={`my-panels/123`} className="w-full">
-								<button className="w-full flex items-center justify-evenly bg-gradient-to-r from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
+								<button className="w-full flex items-center justify-evenly gradient-blue px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
 									<span className="font-medium text-nowrap">
 										مدیریت پنل
 									</span>

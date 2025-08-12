@@ -1,6 +1,6 @@
 "use client";
-import AnnouncementBox from "../AnnouncementBox/AnnouncementBox";
-import AnnounceCard from "../AnnounceCard/AnnounceCard";
+import AnnouncementBox from "@/components/Announcement/AnnouncementBox/AnnouncementBox";
+import AnnounceCard from "@/components/Announcement/AnnounceCard/AnnounceCard";
 import { getData } from "@/src/services/apiHub";
 import { useQuery } from "@tanstack/react-query";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
@@ -12,7 +12,8 @@ import { cn } from "@/lib/utils";
 import useHasPermission from "@/src/functions/hasPermission";
 import { useEffect } from "react";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
-import AddAnnounce from "../AddAnnounce/AddAnnounce";
+import AddAnnounce from "@/components/Announcement/AddAnnounce/AddAnnounce";
+import FilterSection from "@/components/FilterSection/FilterSection";
 
 interface News {
     id: string;
@@ -62,6 +63,15 @@ export default function AnnounceView({
             {/* <div className="flex flex-row w-full items-center"> */}
             {!onlyView && <AddAnnounce />}
             {/* </div> */}
+
+            {!onlyView && (
+                <FilterSection
+                    header="اخبار و اطلاعیه‌ها"
+                    // status={status}
+                    // setStatus={setStatus}
+                    // statusesListApiRoute={`/v1/news/status`}
+                /> // admin
+            )}
             <AnnouncementBox
                 onlyView={onlyView}
                 className={cn("bg-warm-white h-[60vh] w-full", className)}

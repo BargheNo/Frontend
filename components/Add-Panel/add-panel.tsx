@@ -40,16 +40,15 @@ import {
 } from "@/components/ui/select";
 import { City, Province } from "@/src/types/provinceType";
 import provinceService from "@/src/services/provinceService";
-import CustomTextArea from "../Custom/CustomTextArea/CustomTextArea";
+import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import addpanelService from "@/src/services/addpanelService";
-import CustomToast from "../Custom/CustomToast/CustomToast";
-import AddComponent from "../AddComponent/AddComponent";
-import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
+import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import AddComponent from "@/components/AddComponent/AddComponent";
 import { useSelector } from "react-redux";
 import { getData } from "@/src/services/apiHub";
-import StickyFooter from "../Dialog/StickyFooter/StickyFooter";
-import CancelButton from "../Dialog/CancelButton/CancelButton";
-import SubmitButton from "../Dialog/SubmitButton/SubmitButton";
+import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
+import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
+import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
 
 interface BuildingTypeProps {
 	id: number;

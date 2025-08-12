@@ -124,7 +124,7 @@ const ForgotPassword = () => {
 										icon={Smartphone}
 										type="text"
 									>
-										+98
+										+۹۸
 									</CustomInput>
 								</div>
 							</div>
