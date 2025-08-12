@@ -41,6 +41,7 @@ import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
 import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
 import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
 import CustomPagination from "@/components/Custom/CustomPagination/CustomPagination";
+import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 
 interface CorporationType {
     id: number;
@@ -588,12 +589,20 @@ const CorpManagement = () => {
     const [page, setPage] = useState<number>(1);
     const [sortBy, setSortBy] = useState<string>("");
     const [asc, setAsc] = useState<boolean>(false);
+    const [query, setQuery] = useState<string>("");
 
     const fetchAllCorporations = useCallback(() => {
         setLoading(true);
         getData({
             endPoint: `/v1/admin/corporation`,
-            params: { status, page, sortBy, asc, pageSize: resultPerPage },
+            params: {
+                status,
+                page,
+                sortBy,
+                asc,
+                pageSize: resultPerPage,
+                query,
+            },
         })
             .then((data) => {
                 setCorporations(data?.data?.data);
@@ -601,7 +610,7 @@ const CorpManagement = () => {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [status, page, resultPerPage, sortBy, asc]);
+    }, [status, page, resultPerPage, sortBy, asc, query]);
 
     useEffect(() => {
         fetchAllCorporations();
@@ -624,6 +633,9 @@ const CorpManagement = () => {
                     setSortBy={setSortBy}
                     asc={asc}
                     setAsc={setAsc}
+                    query={query}
+                    setQuery={setQuery}
+                    onSearchSubmit={() => fetchAllCorporations()}
                 />
                 {loading ? (
                     <div className="flex justify-center items-center">
@@ -631,13 +643,16 @@ const CorpManagement = () => {
                     </div>
                 ) : (
                     <div className="flex flex-col w-full neu-container">
-                        {corporations &&
+                        {corporations && corporations?.length === 0 ? (
+                            <NoRecordFound text="هیچ شرکتی یافت نشد." />
+                        ) : (
                             corporations?.map((corporation) => (
                                 <CorporationItem
                                     key={corporation.id}
                                     {...corporation}
                                 />
-                            ))}
+                            ))
+                        )}
                     </div>
                 )}
             </div>

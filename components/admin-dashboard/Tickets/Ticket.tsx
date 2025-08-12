@@ -10,7 +10,7 @@ export default function Ticket({
     subject,
     description,
     status,
-    createdAt,
+    created_at,
     image,
     Owner,
     fetchTickets,
@@ -25,7 +25,7 @@ export default function Ticket({
     subject: string;
     description: string;
     status: string;
-    createdAt: string;
+    created_at: string;
     image: string;
     Owner: {
         id?: number;
@@ -103,13 +103,13 @@ export default function Ticket({
                                 className={`flex flex-col items-center w-full align-middle h-full ${styles.status} py-8 justify-center gap-2`}
                             >
                                 <span className="text-[#636363] font-bold">
-                                    {createdAt}{" "}
+                                    {created_at}
                                 </span>
                                 <div className="flex items-center gap-2">
                                     <span className="font-bold">{status}</span>
                                     <div
                                         className={`h-4 w-4 rounded-full ${
-                                            status === "پاسخ دادید"
+                                            status === "پاسخ داده شده"
                                                 ? "green"
                                                 : "red"
                                         }-status shadow-md`}

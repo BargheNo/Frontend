@@ -24,7 +24,7 @@ interface Ticket {
     description: string;
     status: string;
     image: string;
-    createdAt: string;
+    created_at: string;
     Owner: {
         email: string;
         firstName: string;
@@ -77,6 +77,7 @@ const TicketSupportPage = () => {
     const [sortBy, setSortBy] = useState<string>("");
     const [asc, setAsc] = useState<boolean>(false);
 
+    const [query, setQuery] = useState<string>("");
     const createComment = async (
         comment: string,
         activeCommentTicketId: string
@@ -114,15 +115,23 @@ const TicketSupportPage = () => {
         setLoading(true);
         getData({
             endPoint: `/v1/admin/ticket`,
-            params: { status, page, sortBy, asc, pageSize: resultPerPage },
+            params: {
+                status,
+                page,
+                sortBy,
+                asc,
+                pageSize: resultPerPage,
+                query,
+            },
         })
             .then((data) => {
+                console.log(data?.data?.data);
                 setTickets(data?.data?.data);
                 setPaginationInfo(data?.data?.pagination);
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [status, resultPerPage, page, sortBy, asc]);
+    }, [status, resultPerPage, page, sortBy, asc, query]);
 
     useEffect(() => {
         fetchTickets();
@@ -179,6 +188,9 @@ const TicketSupportPage = () => {
                 setAsc={setAsc}
                 sortBy={sortBy}
                 setSortBy={setSortBy}
+                query={query}
+                setQuery={setQuery}
+                onSearchSubmit={() => fetchTickets()}
             />
             {loading ? (
                 <LoadingSpinner />
@@ -196,13 +208,9 @@ const TicketSupportPage = () => {
                                     id={ticket?.id}
                                     subject={ticket?.subject}
                                     description={ticket?.description}
-                                    status={
-                                        ticket?.status === "resolved"
-                                            ? "پاسخ دادید"
-                                            : "بررسی نشده"
-                                    }
-                                    createdAt={new Date(
-                                        ticket?.createdAt
+                                    status={ticket?.status}
+                                    created_at={new Date(
+                                        ticket?.created_at
                                     ).toLocaleDateString("fa-IR")}
                                     image={ticket?.image}
                                     Owner={ticket?.Owner}

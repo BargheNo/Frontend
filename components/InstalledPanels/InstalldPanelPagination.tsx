@@ -32,6 +32,8 @@ export default function InstalledPanelPagination() {
     const [sortBy, setSortBy] = useState<string>("");
     const [asc, setAsc] = useState<boolean>(false);
 
+    const [query, setQuery] = useState<string>("");
+
     const corpId = useSelector((state: RootState) => state.user.corpId);
 
     const handelHistory = useCallback(() => {
@@ -39,9 +41,15 @@ export default function InstalledPanelPagination() {
             setIsLoading(true);
             console.log("corpId", corpId);
             getData({
-                // endPoint: `/v1/corp/7/installation/panel`,
                 endPoint: `/v1/corp/${corpId}/installation/panel`,
-                params: { status, page, sortBy, asc, pageSize: resultPerPage },
+                params: {
+                    status,
+                    page,
+                    sortBy,
+                    asc,
+                    pageSize: resultPerPage,
+                    query,
+                },
             })
                 .then((res) => {
                     sethistory(res?.data?.data);
@@ -50,7 +58,8 @@ export default function InstalledPanelPagination() {
                 .catch((err) => console.log(err))
                 .finally(() => setIsLoading(false));
         }
-    }, [status, resultPerPage, corpId, page, sortBy, asc]);
+    }, [status, resultPerPage, corpId, page, sortBy, asc, query]);
+
     useEffect(() => {
         handelHistory();
     }, [handelHistory]);
@@ -71,6 +80,9 @@ export default function InstalledPanelPagination() {
                 setAsc={setAsc}
                 sortBy={sortBy}
                 setSortBy={setSortBy}
+                query={query}
+                setQuery={setQuery}
+                onSearchSubmit={() => handelHistory()}
             />
             {isLoading ? (
                 <LoadingSpinner />

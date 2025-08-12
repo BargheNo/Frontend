@@ -38,11 +38,13 @@ const Reports = () => {
     const [maintenanceReports, setMaintenanceReports] = useState<any[]>([]);
     const [panelStatus, setPanelStatus] = useState<string>("");
     const [maintenanceStatus, setMaintenanceStatus] = useState<string>("");
+    const [maintenanceQuery, setMaintenanceQuery] = useState<string>("");
+    const [panelQuery, setPanelQuery] = useState<string>("");
     const fetchPanelReports = useCallback(() => {
         setLoadingPanel(true);
         getData({
             endPoint: `/v1/admin/report/panel`,
-            params: { status: panelStatus },
+            params: { status: panelStatus, query: panelQuery },
         })
             .then((data) => {
                 // console.log(data?.data?.data);
@@ -50,20 +52,20 @@ const Reports = () => {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoadingPanel(false));
-    }, [panelStatus]);
+    }, [panelStatus, panelQuery]);
 
     const fetchMaintenanceReports = useCallback(() => {
         setLoadingRepair(true);
         getData({
             endPoint: `/v1/admin/report/maintenance`,
-            params: { status: maintenanceStatus },
+            params: { status: maintenanceStatus, query: maintenanceQuery },
         })
             .then((data) => {
                 setMaintenanceReports(data?.data?.data);
             })
             .catch((err) => console.log(err))
             .finally(() => setLoadingRepair(false));
-    }, [maintenanceStatus]);
+    }, [maintenanceStatus, maintenanceQuery]);
 
     const resolveReport = async (reportId: string) => {
         postData({ endPoint: `/v1/admin/report/resolve/${reportId}` })
@@ -295,6 +297,8 @@ const Reports = () => {
                 status={maintenanceStatus}
                 setStatus={setMaintenanceStatus}
                 statusesListApiRoute={`/v1/report/status`}
+                query={maintenanceQuery}
+                setQuery={setMaintenanceQuery}
             />
             {loadingRepair ? (
                 <LoadingSpinner />
@@ -332,6 +336,8 @@ const Reports = () => {
                 status={panelStatus}
                 setStatus={setPanelStatus}
                 statusesListApiRoute={`/v1/report/status`}
+                query={panelQuery}
+                setQuery={setPanelQuery}
             />
             {loadingPanel ? (
                 <LoadingSpinner />

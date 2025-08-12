@@ -187,7 +187,7 @@ export default function AnnouncementBox({
           <div
             ref={holder}
             className={cn(
-              "neo-card-rev rounded-lg pt-5 px-4 h-full w-full overflow-y-scroll scroll-smooth no-scrollbar flex flex-col justify-start items-center",
+              "neo-card-rev rounded-lg p-4 h-full w-full overflow-y-scroll scroll-smooth no-scrollbar flex flex-col justify-start items-center",
               insideClassName
             )}
           >
