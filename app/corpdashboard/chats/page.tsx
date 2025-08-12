@@ -1,0 +1,125 @@
+"use client";
+import ChatBox from "@/components/Chat/ChatBox/ChatBox";
+import ChatList from "@/components/Chat/ChatList/ChatList";
+import {
+    ResizableHandle,
+    ResizablePanel,
+    ResizablePanelGroup,
+} from "@/components/ui/resizable";
+import useClientCheck from "@/src/hooks/useClientCheck";
+import React, { useEffect, useState } from "react";
+import { useMediaQuery } from "@/src/hooks/useMediaQuery";
+import {
+    Sidebar,
+    SidebarProvider,
+    SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { SidebarContent } from "@/components/ui/sidebar";
+import { Menu } from "lucide-react";
+import { ChatRoom } from "@/types/chat";
+import { getData } from "@/src/services/apiHub";
+import { useDispatch, useSelector } from "react-redux";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import { stat } from "fs";
+import {
+    setChatRooms,
+    setSelectedChatRoom,
+} from "@/src/store/slices/chatSlice";
+
+export default function Page() {
+    const [panelWidth, setPanelWidth] = useState(5);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const isMobile = useMediaQuery("(max-width: 768px)");
+    const corpID = useSelector((state: RootState) => state.user.corpId);
+    const [mode, setMode] = useState("corp");
+    const [loading, setLoading] = useState(true);
+    // const selectedChatRoom = useSelector(
+    //     (state: any) => state.chat.selectedChatRoom
+    // );
+    const dispatch = useDispatch();
+    // const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
+    useEffect(() => {
+        getData({
+            endPoint:
+                mode === "user"
+                    ? "/v1/user/chat/room"
+                    : `/v1/corp/chat/rooms/${corpID}`,
+        }).then((res: any) => {
+            console.log(res);
+            dispatch(setChatRooms(res?.data));
+            if (res?.data?.length > 0) {
+                dispatch(setSelectedChatRoom(res?.data[0]));
+            } else {
+                dispatch(setSelectedChatRoom(null));
+            }
+            setLoading(false);
+        });
+    }, [corpID]);
+    const isClient = useClientCheck();
+    if (!isClient || loading)
+        return (
+            <div className="h-full w-full bg-gray-100 p-4">
+                <LoadingSpinner className="bg-white w-full h-[88vh] z-20" />
+            </div>
+        );
+
+    if (isMobile) {
+        return (
+            <>
+                <SidebarProvider>
+                    <Sidebar side="right">
+                        <SidebarContent className="neo-card! bg-[#F0EDEF]! rtl">
+                            <ChatList
+                                className="w-full h-full"
+                                conditionWidth={100}
+                                mode="corp"
+                                corpID={corpID}
+                            />
+                        </SidebarContent>
+                    </Sidebar>
+
+                    <div className="fixed bottom-[95px] left-3 right-3 top-3">
+                        <ChatBox className="w-full h-full rtl" mode="corp" />
+                    </div>
+                </SidebarProvider>
+            </>
+        );
+    }
+
+    return (
+        <ResizablePanelGroup className="min-h-full" direction="horizontal">
+            <ResizablePanel
+                className="h-full flex justify-center items-start py-2 pl-1 pr-2 rounded-lg bg-transparent min-w-24"
+                defaultSize={5}
+                minSize={5}
+                maxSize={35}
+                style={{
+                    flexGrow: panelWidth,
+                    flexShrink: 1,
+                    flexBasis: "0%",
+                    width: `${panelWidth}%`,
+                }}
+                onResize={(size) => {
+                    if (size < 20) {
+                        if (panelWidth > 5) {
+                            setPanelWidth(5);
+                        }
+                        return;
+                    }
+                    setPanelWidth(size);
+                }}
+            >
+                <ChatList
+                    conditionWidth={panelWidth}
+                    className="w-full h-[90vh]"
+                    mode="corp"
+                    corpID={corpID}
+                />
+            </ResizablePanel>
+            <ResizableHandle className="bg-transparent" />
+            <ResizablePanel className="h-full flex justify-center items-start py-2 pl-3 pr-2 bg-transparent rounded-lg">
+                <ChatBox className="w-full h-[90vh]" mode="corp" />
+            </ResizablePanel>
+        </ResizablePanelGroup>
+    );
+}

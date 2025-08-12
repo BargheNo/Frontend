@@ -13,7 +13,8 @@ export interface Message {
     type: string,
     room_id: number,
     content: string,
-    timestamp: string
+    timeStamp?: string
+    timestamp?: string
 }
 
 export interface Customer {

@@ -18,7 +18,7 @@ export const chatSlice = createSlice({
     },
     setSelectedChatRoom: (
       state: chatData,
-      action: PayloadAction<ChatRoom>
+      action: PayloadAction<ChatRoom|null>
     ) => {
         state.selectedChatRoom = action.payload;
     },

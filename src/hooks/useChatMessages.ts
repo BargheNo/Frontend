@@ -3,8 +3,9 @@ import { useSelector } from "react-redux";
 import { getData } from "@/src/services/apiHub";
 // import { useWebSocket } from './useChatWebSocket';
 import { Message } from "@/types/chat";
+import { toast } from "sonner";
 
-export const useChatMessages = (selectedChatRoom: any) => {
+export const useChatMessages = (selectedChatRoom:any, mode="user" ) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,24 +40,24 @@ export const useChatMessages = (selectedChatRoom: any) => {
           pageSize: 10,
         },
       });
-
-      if (!res?.data?.length && !isInitial) {
+      console.log("rezzz: ", res)
+      if (!res?.data?.data?.length && !isInitial) {
         // setHasMore(false);
         setIsLoading(false);
         return;
       }
 
       if (keepData) {
-        setMessages((prev) => [...prev, ...res?.data]);
+        setMessages((prev) => [...prev, ...res?.data?.data]);
       } else {
-        setMessages(res?.data);
+        setMessages(res?.data?.data);
       }
 
       //   setHasMore(res?.data?.length === 10);
       setIsLoading(false);
 
       if (isInitial) {
-        setTimeout(scrollToBottom, 100);
+        setTimeout(scrollToBottom, 200);
       }
     } catch (error) {
       console.error("Error fetching messages:", error);
@@ -66,8 +67,10 @@ export const useChatMessages = (selectedChatRoom: any) => {
 
   const connectSocket = (selectedChatRoom: any, token: string) => {
     if (selectedChatRoom?.roomID && token) {
-        const ws = new WebSocket(
-          `ws://46.249.99.69:8080/v1/user/chat/room/${selectedChatRoom.roomID}/token/${token}`
+        const ws: WebSocket = new WebSocket(
+          (mode == "corp"
+            ? `ws://46.249.99.69:8080/v1/corp/chat/room/${selectedChatRoom.roomID}/token/${token}`
+            : `ws://46.249.99.69:8080/v1/user/chat/room/${selectedChatRoom.roomID}/token/${token}`)
         );
         ws.onopen = () => {
           console.log("WebSocket connected");
@@ -76,16 +79,15 @@ export const useChatMessages = (selectedChatRoom: any) => {
         ws.onclose = () => {
           console.log("WebSocket closed");
           setIsConnected(false);
+          toast.error("در اتصال به چت مشکلی به وجود امده است");
         };
         ws.onerror = (error) => {
           console.error("WebSocket error:", error);
+          toast.error("در اتصال به چت مشکلی به وجود امده است");
         };
         ws.onmessage = (event) => {
           console.log("Received message:", event.data);
-        };
-        ws.onmessage = (event) => {
-          console.log("Received message:", event.data);
-          setMessages((prev) => [JSON.parse(event.data), ...prev]);
+          setMessages((prev) => [...prev, JSON.parse(event.data)]);
           setTimeout(scrollToBottom, 100);
         };
         setSocket(ws);
