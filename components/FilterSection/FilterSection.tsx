@@ -114,29 +114,31 @@ export default function FilterSection({
         <div className="flex flex-col sm:flex-row place-items-center justify-between sm:w-full w-full gap-4">
             <div
                 className={`flex min-w-fit ${
-                    setSearchPhrase && "text-start place-self-center sm:place-self-end"
+                    setSearchPhrase &&
+                    "text-start place-self-center sm:place-self-end"
                 }`}
             >
                 {header && <Header header={header} />}
             </div>
-            <div className="flex sm:flex-row flex-col sm:gap-4 gap-2 w-full place-items-center ltr">
-                <div className="flex sm:gap-4 gap-2 w-full place-items-center">
-                    {setAsc &&
-                        (initialLoading ? (
-                            <Skeleton className={`h-[40px] w-[50px]`} />
-                        ) : (
-                            <div
-                                className="border-input py-[5.5px] relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground cursor-pointer aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex w-fit items-center justify-between gap-2 rounded-md border bg-transparent px-3 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 rtl:flex-row-reverse"
-                                onClick={() => setAsc && setAsc(!asc)}
-                            >
-                                {asc ? (
-                                    <ArrowUpWideNarrow className="text-[#FA682D]" />
-                                ) : (
-                                    <ArrowDownWideNarrow className="text-[#FA682D]" />
-                                )}
-                            </div>
-                        ))}
-                    {setSortBy && (
+
+            <div className="flex sm:flex-row flex-col sm:gap-4 gap-2 w-full place-items-center relative ltr">
+                {setSortBy && (
+                    <div className="flex sm:gap-4 gap-2 w-full sm:w-fit place-items-center justify-start">
+                        {setAsc &&
+                            (initialLoading ? (
+                                <Skeleton className={`h-[40px] w-[50px]`} />
+                            ) : (
+                                <div
+                                    className="border-input py-[5.5px] relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground cursor-pointer aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex w-fit items-center justify-between gap-2 rounded-md border bg-transparent px-3 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8"
+                                    onClick={() => setAsc && setAsc(!asc)}
+                                >
+                                    {asc ? (
+                                        <ArrowUpWideNarrow className="text-[#FA682D]" />
+                                    ) : (
+                                        <ArrowDownWideNarrow className="text-[#FA682D]" />
+                                    )}
+                                </div>
+                            ))}
                         <FilterSelect
                             placeholder="مرتب سازی بر اساس"
                             field={sortBy}
@@ -145,50 +147,31 @@ export default function FilterSection({
                             loading={initialLoading}
                             className=""
                         />
-                    )}
-                </div>
-                {setStatus && (
-                    <FilterSelect
-                        placeholder={`وضعیت ${fieldName ?? fieldName}`}
-                        field={status}
-                        setField={setStatus}
-                        possibleValues={statuses}
-                        loading={initialLoading}
-                    />
+                    </div>
                 )}
+
                 {setResultPerPage && (
-                    <FilterSelect
-                        placeholder="نتایج هر صفحه"
-                        field={resultPerPage}
-                        setField={setResultPerPage}
-                        possibleValues={initalResultPerPages}
-                        loading={initialLoading}
-                        onValueChange={() => setPage && setPage(1)}
-                    />
-                    // <Select
-                    // 	value={resultPerPage}
-                    // 	onValueChange={(value) => setResultPerPage(value)}
-                    // >
-                    // 	<SelectTrigger
-                    // 		dir="rtl"
-                    // 		className="flex min-w-36 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
-                    // 	>
-                    // 		<SelectValue placeholder="نتایج هر صفحه" />
-                    // 	</SelectTrigger>
-                    // 	<SelectContent dir="rtl">
-                    // 		{resultPerPages?.map(
-                    // 			(resultPerPage: string, index: number) => (
-                    // 				<SelectItem
-                    // 					key={index}
-                    // 					value={resultPerPage}
-                    // 					className="cursor-pointer"
-                    // 				>
-                    // 					{resultPerPage}
-                    // 				</SelectItem>
-                    // 			)
-                    // 		)}
-                    // 	</SelectContent>
-                    // </Select>
+                    <div className="w-full sm:w-40 flex justify-start">
+                        <FilterSelect
+                            placeholder="نتایج هر صفحه"
+                            field={resultPerPage}
+                            setField={setResultPerPage}
+                            possibleValues={initalResultPerPages}
+                            loading={initialLoading}
+                            onValueChange={() => setPage && setPage(1)}
+                        />
+                    </div>
+                )}
+                {setStatus && (
+                    <div className="w-full sm:w-40 flex justify-start">
+                        <FilterSelect
+                            placeholder={`وضعیت ${fieldName ?? fieldName}`}
+                            field={status}
+                            setField={setStatus}
+                            possibleValues={statuses}
+                            loading={initialLoading}
+                        />
+                    </div>
                 )}
                 {children &&
                     (initialLoading ? (
@@ -196,15 +179,18 @@ export default function FilterSection({
                     ) : (
                         children
                     ))}
-                {setSearchPhrase && !initialLoading && (
-                    <CustomInputNoValidation
-                        icon={Search}
-                        placeholder="جستجو..."
-                        value={searchPhrase}
-                        onSubmit={onSearchSubmit}
-                        // onValueChange={setSearchPhrase}
-                    />
-                )}
+                {setSearchPhrase &&
+                    (initialLoading ? (
+                        <Skeleton className={`h-[40px] w-full`} />
+                    ) : (
+                        <CustomInputNoValidation
+                            icon={Search}
+                            placeholder="جستجو..."
+                            value={searchPhrase}
+                            onSubmit={onSearchSubmit}
+                            // onValueChange={setSearchPhrase}
+                        />
+                    ))}
             </div>
         </div>
     );
