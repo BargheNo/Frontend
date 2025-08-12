@@ -10,8 +10,8 @@ const AnnounceView = dynamic(
 
 export default function page() {
     return (
-        <PageContainer>
-            <Header header="اخبار و اطلاعیه‌ها" />
+        <PageContainer className="rtl my-24">
+            <Header header="اخبار و اطلاعیه‌ها" className="rtl bg-red-500" />
             <AnnounceView onlyView={true} />
             {/* <AnnounceAddCard /> */}
         </PageContainer>

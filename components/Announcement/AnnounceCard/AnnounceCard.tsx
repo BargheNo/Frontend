@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/context-menu";
 import { cn } from "@/lib/utils";
 import { useState, useContext, useEffect } from "react";
-import { AnnounceContex } from "../AnnouncementBox/AnnouncementBox";
+import { AnnounceContex } from "@/components/Announcement/AnnouncementBox/AnnouncementBox";
 import { useRouter } from "next/navigation";
 import {
     Dialog,

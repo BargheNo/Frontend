@@ -10,7 +10,7 @@ export default function PageContainer({
 	return (
 		<>
 			<div
-				className={`${className} w-full overflow-x-hidden min-h-full flex flex-col text-black py-8 pb-24 md:px-14 px-2.5 gap-3`}
+				className={`w-full overflow-x-hidden min-h-full flex flex-col text-black py-8 pb-24 md:px-14 px-2.5 gap-3 ${className}`}
 			>
 				{children}
 			</div>

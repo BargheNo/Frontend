@@ -23,7 +23,7 @@ export default async function RootLayout({
   const shadow = 2;
   const spread = 5;
 	return (
-		<html lang="fa" className="no-scrollbar">
+		<html lang="fa" className="no-scrollbar vazir">
 			<body className="">
 				<Providers>
 					<NavbarWrapper />

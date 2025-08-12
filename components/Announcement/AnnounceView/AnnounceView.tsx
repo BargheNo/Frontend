@@ -1,6 +1,6 @@
 "use client";
-import AnnouncementBox from "../AnnouncementBox/AnnouncementBox";
-import AnnounceCard from "../AnnounceCard/AnnounceCard";
+import AnnouncementBox from "@/components/Announcement/AnnouncementBox/AnnouncementBox";
+import AnnounceCard from "@/components/Announcement/AnnounceCard/AnnounceCard";
 import { getData } from "@/src/services/apiHub";
 import { useQuery } from "@tanstack/react-query";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import useHasPermission from "@/src/functions/hasPermission";
 import { useEffect, useState } from "react";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
-import AddAnnounce from "../AddAnnounce/AddAnnounce";
+import AddAnnounce from "@/components/Announcement/AddAnnounce/AddAnnounce";
 import FilterSection from "@/components/FilterSection/FilterSection";
 
 interface News {

@@ -1,5 +1,5 @@
 import Signup from "@/components/Auth/Signup/signup";
-import Background from "../../public/signup.jpg";
+import Background from "@/public/signup.jpg";
 import Image from "next/image";
 
 function signup() {

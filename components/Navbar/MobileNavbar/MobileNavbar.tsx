@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { EllipsisVertical, House, User, LayoutDashboard } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import MobileNavbarSlider from "../MobileNavbarSlider/MobileNavbarSlider";
+import MobileNavbarSlider from "@/components/Navbar/MobileNavbarSlider/MobileNavbarSlider";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import {

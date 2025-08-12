@@ -8,8 +8,8 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import AddAnnounceForm from "./AddAnnounceForm";
-import AnnounceEditor from "../AnnounceEditor/AnnounceEditor";
+import AddAnnounceForm from "@/components/Announcement/AddAnnounce/AddAnnounceForm";
+import AnnounceEditor from "@/components/Announcement/AnnounceEditor/AnnounceEditor";
 import { DialogDescription } from "@radix-ui/react-dialog";
 
 export default function AddAnnounce() {

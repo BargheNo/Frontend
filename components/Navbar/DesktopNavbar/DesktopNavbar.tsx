@@ -96,6 +96,18 @@ export default function DesktopNavbar() {
                                         isCorp={isCorp}
                                         isAdmin={isAdmin}
                                     />
+                                    <Link
+                                        className={`vazir-bold rtl ${
+                                            pathname?.startsWith(
+                                                "/announcements"
+                                            )
+                                                ? "text-[#FA682D]"
+                                                : ""
+                                        }`}
+                                        href={"/announcements"}
+                                    >
+                                        اطلاعیه‌ها
+                                    </Link>
                                     {accessToken && (
                                         <Link
                                             className={`vazir-bold rtl ${
