@@ -1,10 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-const initialValues = {
-    search: "",
-    resultPerPage: "10",
-    sorting: "most-recent",
-};
 
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
@@ -33,8 +28,8 @@ export default function FilterSection({
     setSortBy,
     resultPerPage,
     setResultPerPage,
-    searchPhrase,
-    setSearchPhrase,
+    query,
+    setQuery,
     onSearchSubmit,
     resultPerPages,
     setPage,
@@ -52,8 +47,8 @@ export default function FilterSection({
     setSortBy?: React.Dispatch<React.SetStateAction<string>>;
     resultPerPage?: string;
     setResultPerPage?: React.Dispatch<React.SetStateAction<string>>;
-    searchPhrase?: string;
-    setSearchPhrase?: React.Dispatch<React.SetStateAction<string>>;
+    query?: string;
+    setQuery?: React.Dispatch<React.SetStateAction<string>>;
     onSearchSubmit?: any;
     resultPerPages?: Item[];
     setPage?: React.Dispatch<React.SetStateAction<number>>;
@@ -114,7 +109,7 @@ export default function FilterSection({
         <div className="flex flex-col sm:flex-row place-items-center justify-between sm:w-full w-full gap-4">
             <div
                 className={`flex min-w-fit ${
-                    setSearchPhrase &&
+                    setQuery &&
                     "text-start place-self-center sm:place-self-end"
                 }`}
             >
@@ -175,20 +170,20 @@ export default function FilterSection({
                 )}
                 {children &&
                     (initialLoading ? (
-                        <Skeleton className={`h-[40px] w-40`} />
+                        <Skeleton className={`h-[40px] w-full sm:min-w-40`} />
                     ) : (
                         children
                     ))}
-                {setSearchPhrase &&
+                {setQuery &&
                     (initialLoading ? (
                         <Skeleton className={`h-[40px] w-full`} />
                     ) : (
                         <CustomInputNoValidation
                             icon={Search}
                             placeholder="جستجو..."
-                            value={searchPhrase}
+                            value={query}
                             onSubmit={onSearchSubmit}
-                            // onValueChange={setSearchPhrase}
+                            onValueChange={setQuery}
                         />
                     ))}
             </div>
