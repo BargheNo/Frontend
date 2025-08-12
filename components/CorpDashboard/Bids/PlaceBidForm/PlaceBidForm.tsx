@@ -62,7 +62,7 @@ const Item = ({
 		>
 			<Icon className="min-w-6 min-h-6 transition-transform duration-200 hover:scale-115 text-[#FA682D]" />
 			<div className="flex gap-1">
-				<span>{fieldName}: </span>
+				<span className="text-nowrap">{fieldName}: </span>
 				<span className="text-[#5E5E5E]">
 					{value}
 					{changed && english ? "" : " "}
@@ -191,7 +191,7 @@ export default function PlaceBidForm({
 							مشخصات درخواست
 						</span>
 						<div className={styles.Box}>
-							<div className="flex">
+							<div className="flex md:flex-row flex-col">
 								<Item
 									icon={Eclipse}
 									fieldName="نام پنل"
@@ -203,7 +203,7 @@ export default function PlaceBidForm({
 									fieldValue={panelDetails.buildingType}
 								/>
 							</div>
-							<div className="flex">
+							<div className="flex md:flex-row flex-col">
 								<Item
 									className="first:border-t-2"
 									icon={Battery}

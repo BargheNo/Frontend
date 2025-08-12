@@ -37,16 +37,16 @@ const ItemWithBackground = ({
 			<div className="flex items-start">
 				<IconWithBackground icon={Icon} />
 			</div>
-			<div className="flex gap-1 items-start">
+			<div className="flex gap-1  items-start">
 				<span
-					className={`${smallValue ? "text-xl" : "text-xl mt-[2px]"}`}
+					className={`text-nowrap ${smallValue ? "text-xl" : "text-xl mt-[2px]"}`}
 				>
 					{fieldName}:{" "}
 				</span>
 				<span
 					dir={english ? "ltr" : "rtl"}
 					className={`text-black ${
-						smallValue ? "mt-[3px]" : "font-bold text-2xl"
+						smallValue ? "mt-[3px]" : "font-bold text-xl"
 					}`}
 				>
 					{value}
@@ -70,7 +70,7 @@ export default function RequestCard({
 			className={`${className} w-full min-h-48 border-t-1 border-gray-300 first:border-t-0`}
 		>
 			<div className="flex flex-row justify-between w-full min-h-32 bg-[#F0EDEF] overflow-hidden relative">
-				<div className="flex flex-row justify-between w-full">
+				<div className="flex md:flex-row flex-col justify-between w-full">
 					<div className="flex flex-col w-full p-6">
 						<div className="flex w-4/5 h-4/5">
 							<div className="flex flex-col">
@@ -146,11 +146,11 @@ export default function RequestCard({
 							<Dialog open={open} onOpenChange={setOpen}>
 								{hasCreateBidPermission && (
 									<DialogTrigger asChild>
-										<div className="flex flex-col items-center gap-4 hover:cursor-pointer">
+										<div className="flex flex-col md:mr-0 mr-[70vw] items-center gap-4 hover:cursor-pointer mb-3">
 											<div className="bg-gradient-to-b from-[#EE4334] to-[#D73628] rounded-full w-16 h-16 flex items-center place-content-center text-white cursor-pointer shadow-md hover:shadow-lg transition duration-300 hover:scale-105">
 												<ArrowLeft />
 											</div>
-											<span className="flex content-center">
+											<span className="flex content-center text-nowrap">
 												ثبت پیشنهاد
 											</span>
 										</div>

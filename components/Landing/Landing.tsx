@@ -11,7 +11,7 @@ export default function Landing() {
         <div
             className={`items-center rtl no-scrollbar bg-[#F4F7F9] ${vazir.className} w-[100vw] overflow-hidden`}
         >
-            <BargheNoLanding />
+            {/* <BargheNoLanding /> */}
             <NewsLanding />
             <AboutUsLanding />
             <Footer />
