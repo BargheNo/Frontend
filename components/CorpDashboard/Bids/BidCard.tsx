@@ -181,13 +181,13 @@ const Item = ({
     prefix?: string;
     english?: boolean;
 }) => {
-    const { value, changed } = wordExpression(fieldValue, english, "simple");
+    const { value, changed } = wordExpression(fieldValue, english);
     return (
         <div className="flex my-2 h-full gap-3">
             <div className="flex items-start">
                 <IconWithBackground icon={Icon} />
             </div>
-            <div className="flex gap-1 items-start">
+            <div className="flex flex-col sm:flex-row gap-1 items-start">
                 <span
                     className={`text-nowrap ${
                         smallValue ? "text-xl" : "text-xl mt-[2px]"
@@ -225,7 +225,7 @@ const DialogItem = ({
     prefix?: string;
     className?: string;
 }) => {
-    const { value, changed } = wordExpression(fieldValue, english, "simple");
+    const { value, changed } = wordExpression(fieldValue, english);
     return (
         <div
             className={`flex items-start gap-2 border-t-2 first:border-t-0 border-gray-300 w-full py-2 ${className}`}
