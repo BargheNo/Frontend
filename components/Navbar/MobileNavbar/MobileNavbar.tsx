@@ -31,9 +31,9 @@ const MobileNavItems = [
 export default function MobileNavbar() {
     const pathname = usePathname();
     const [dashMode, setDashMode] = useState<"customer" | "corp" | "admin">(
-        pathname.startsWith("/corpdashboard")
+        pathname?.startsWith("/corpdashboard")
             ? "corp"
-            : pathname.startsWith("/admin-dashboard")
+            : pathname?.startsWith("/admin-dashboard")
             ? "admin"
             : "customer"
     );

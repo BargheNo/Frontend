@@ -363,7 +363,6 @@ export default function Neworder({ handelHistory }: { handelHistory: any }) {
                                                 ? "!border-red-500 !ring-1 !ring-red-700"
                                                 : ""
                                         }
-                                        onlyNumbers
                                     />
                                 </div>
 
