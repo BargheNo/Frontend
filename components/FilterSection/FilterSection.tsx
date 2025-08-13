@@ -139,7 +139,7 @@ export default function FilterSection({
                             setField={setSortBy}
                             possibleValues={columns}
                             loading={initialLoading}
-                            className=""
+                            onValueChange={() => setPage && setPage(1)}
                         />
                     </div>
                 )}
@@ -164,6 +164,7 @@ export default function FilterSection({
                             setField={setStatus}
                             possibleValues={statuses}
                             loading={initialLoading}
+                            onValueChange={() => setPage && setPage(1)}
                         />
                     </div>
                 )}
@@ -182,7 +183,12 @@ export default function FilterSection({
                             placeholder="جستجو..."
                             value={query}
                             onSubmit={onSearchSubmit}
-                            onValueChange={setQuery}
+                            onValueChange={(e) => {
+                                setQuery(e);
+                                if (setPage) {
+                                    setPage(1);
+                                }
+                            }}
                             // containerClassName="w-full"
                         />
                     ))}
