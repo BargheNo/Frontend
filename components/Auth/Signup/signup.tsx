@@ -149,14 +149,14 @@ function Signup() {
                                                 readOnly={true}
                                                 placeholder="+98"
                                                 icon={Smartphone}
-                                                type="number"
+                                                onlyNumbers
                                             />
                                         </div>
                                         <div className="w-3/4">
                                             <CustomInput
                                                 name="phonenumber"
                                                 placeholder="شماره تلفن همراه"
-                                                type="number"
+                                                onlyNumbers
                                             />
                                         </div>
                                     </div>
