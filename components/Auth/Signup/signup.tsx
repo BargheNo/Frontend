@@ -193,7 +193,7 @@ function Signup() {
                                         >
                                             .را می پذیرم
                                             <Link
-                                                href="#"
+                                                href="/terms-and-conditions"
                                                 className={`${styles.link} hover:underline`}
                                             >
                                                 قوانین و مقررات
