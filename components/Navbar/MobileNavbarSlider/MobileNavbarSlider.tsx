@@ -1,13 +1,21 @@
 import { SwitchCorp } from "@/components/PanelAside/SwitchCorp/SwitchCorp";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion";
 import { SidebarContent } from "@/components/ui/sidebar";
 import { Sidebar } from "@/components/ui/sidebar";
 import { NavItem } from "@/src/types/PanelAsideTypes";
 import { PanelAsideProps } from "@/src/types/PanelAsideTypes";
+import { Activity } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
 export default function MobileNavbarSlider({
+    navItemsMonitoring,
     navItems,
     mode,
 }: PanelAsideProps) {
@@ -42,6 +50,60 @@ export default function MobileNavbarSlider({
                             ))}
                         </div>
                     </nav>
+                    {mode == "admin" && (
+                        <div className="flex items-center gap-2 text-[#003a8b] px-2 rounded-lg cursor-pointer">
+                            <Accordion
+                                type="single"
+                                collapsible
+                                className="w-full no-underline"
+                            >
+                                <AccordionItem value="item-1">
+                                    <AccordionTrigger
+                                        // className={`flex gap-2 text-[#003a8b] p-2 mt-0.5 rounded-lg cursor-pointer
+                                        // 		hover:shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)] duration-200
+                                        //     }`}
+                                        className="px-2 hover:shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)] duration-200 my-0 py-2"
+                                    >
+                                        {/* <Link href={""}>
+                                                <span
+                                                    className={`flex gap-2 text-[#003a8b] p-2 mt-0.5 rounded-lg cursor-pointer hover:shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)] duration-200`}
+                                                >
+                                                    پایش اطلاعات
+                                                </span>
+                                            </Link> */}
+                                        <span
+                                            className={`flex gap-2 w-full text-[#003a8b] mt-0.5 rounded-lg cursor-pointer text-md`}
+                                        >
+                                            پایش اطلاعات
+                                        </span>
+                                        {/* <span>پایش اطلاعات</span> */}
+                                    </AccordionTrigger>
+                                    <AccordionContent className="flex flex-col text-base mr-4">
+                                        {navItemsMonitoring?.map(
+                                            (item: NavItem, index) => (
+                                                <Link
+                                                    key={item.path}
+                                                    href={item.path}
+                                                >
+                                                    <span
+                                                        className={`flex gap-2 text-[#003a8b] p-2 mt-0.5 rounded-lg cursor-pointer ${
+                                                            pathname ===
+                                                            item.path
+                                                                ? `shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.3),inset_1px_1px_3px_rgba(0,0,0,0.3)] bg-gradient-to-r ${"from-[#FF5B18] to-[#FF6809]"} text-white`
+                                                                : "hover:shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.5),inset_1px_1px_3px_rgba(0,0,0,0.2)] duration-200"
+                                                        }`}
+                                                    >
+                                                        {item.name}
+                                                    </span>
+                                                </Link>
+                                            )
+                                        )}
+                                    </AccordionContent>
+                                </AccordionItem>
+                            </Accordion>
+                        </div>
+                    )}
+
                     {mode == "corp" && <SwitchCorp />}
                 </div>
             </SidebarContent>
