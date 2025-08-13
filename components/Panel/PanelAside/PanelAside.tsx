@@ -37,6 +37,8 @@ import {
 import { useDispatch } from "react-redux";
 import { getData } from "@/src/services/apiHub";
 import { setCorpId } from "@/src/store/slices/userSlice";
+import useClientCheck from "@/src/hooks/useClientCheck";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 const myFont = localFont({ src: "../../../public/fonts/vazir/Vazir.ttf" });
 
 interface Corp {
@@ -56,7 +58,7 @@ const PanelAside = ({
     const [sideOpen, setSideOpen] = useState(false);
     const [corp, setCorp] = useState<string>("0");
     const [corps, setCorps] = useState<Corp[]>([]);
-
+    const isClient = useClientCheck();
     useEffect(() => {
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768); // 768px is typical mobile breakpoint
@@ -92,6 +94,7 @@ const PanelAside = ({
             })
             .catch((err) => console.log(err));
     }, [dispatch, changeCorp]);
+    if (!isClient) return <LoadingSpinner />;
     if (isMobile) {
         return <main className="rtl w-screen pb-18">{children}</main>;
     }
