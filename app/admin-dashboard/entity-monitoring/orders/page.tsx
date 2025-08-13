@@ -26,18 +26,21 @@ import CustomPagination from "@/components/Custom/CustomPagination/CustomPaginat
 export default function Orders() {
     const [orderlist, setOrderList] = useState<getOrder[]>([]);
     const [status, setStatus] = useState<string>("");
+    const [query, setQuery] = useState<string>("");
     const [loading, setLoading] = useState(true);
-    const [resultPerPage, setResultPerPage] = useState<string>("");
+    const [pageSize, setPageSize] = useState<string>("");
     const [paginationInfo, setPaginationInfo] = useState<
         paginationInfoType | undefined
     >(undefined);
     const [page, setPage] = useState<number>(1);
-    const [totalPages, setTotalPages] = useState<number>(0);
+    const [sortBy, setSortBy] = useState<string>("");
+    const [asc, setAsc] = useState<boolean>(false);
+    // const [totalPages, setTotalPages] = useState<number>(0);
     const fetchOrders = useCallback(() => {
         setLoading(true);
         getData({
             endPoint: `/v1/admin/installation/request`,
-            params: { status, pageSize: 10000000 },
+            params: { status, pageSize, query, page, sortBy, asc },
         })
             .then((res) => {
                 console.log(res?.data);
@@ -46,7 +49,7 @@ export default function Orders() {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [status]);
+    }, [status, query, pageSize, page, sortBy, asc]);
     useEffect(() => {
         fetchOrders();
         // getData({
@@ -62,17 +65,6 @@ export default function Orders() {
         //     .finally(() => setLoading(false));
     }, [fetchOrders]);
 
-    useEffect(() => {
-        if (paginationInfo?.totalItems) {
-            setTotalPages(
-                Math.ceil(
-                    paginationInfo?.totalItems /
-                        Number(resultPerPage !== "" ? resultPerPage : "10")
-                )
-            );
-        }
-        // paginationInfo && ;
-    }, [paginationInfo, resultPerPage]);
     const meta = {
         name: { label: "نام" },
         status: { label: "وضعیت" },
@@ -89,9 +81,17 @@ export default function Orders() {
                 fieldName="درخواست"
                 status={status}
                 setStatus={setStatus}
-                resultPerPage={resultPerPage}
-                setResultPerPage={setResultPerPage}
+                resultPerPage={pageSize}
+                setResultPerPage={setPageSize}
                 setPage={setPage}
+                query={query}
+                setQuery={setQuery}
+                onSearchSubmit={() => fetchOrders()}
+                columnsListApiRoute={`/v1/installation/request/sortable`}
+                asc={asc}
+                setAsc={setAsc}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
             />
             <CustomTable
                 data={orderlist}
@@ -99,7 +99,7 @@ export default function Orders() {
                 loading={loading}
                 page={page}
                 setPage={setPage}
-                resultPerPage={resultPerPage !== "" ? resultPerPage : "10"}
+                // resultPerPage={resultPerPage !== "" ? resultPerPage : "10"}
                 deleteApiUrl={`/v1/admin/installation/request/:id`}
                 fetchData={fetchOrders}
                 updateApiUrl={`/v1/admin/installation/request/:id`}
@@ -107,9 +107,7 @@ export default function Orders() {
             <CustomPagination
                 currentPage={page}
                 setCurrentPage={setPage}
-                paginationInfo={{
-                    totalPages: totalPages,
-                }}
+                paginationInfo={paginationInfo}
             />
             {/* <>
                 <div className="flex flex-col mt-10">
