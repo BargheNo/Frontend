@@ -2,7 +2,7 @@
 
 import React from 'react';
 import PanelIconWithBackground from '../Panel/PanelCard/PanelIconWithBackground';
-import { Battery, CircleDollarSign, Eclipse, Grid3X3, HandCoins, LampCeiling, Leaf, PiggyBankIcon, Zap } from 'lucide-react';
+import { Battery, CircleDollarSign, Eclipse, Grid3X3, HandCoins, LampCeiling, Leaf, PiggyBankIcon, Zap, AlertCircle } from 'lucide-react';
 import wordExpression from '@/src/functions/Calculations';
 import CustomInput from '../Custom/CustomInput/CustomInput';
 import { Formik, Form } from 'formik';
@@ -15,6 +15,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 
 
@@ -88,48 +89,66 @@ const Calculator = () => {
                         <div
                             className={`vazir w-full mx-auto min-h-full flex flex-col gap-8 text-white py-0 md:py-0 px-3 md:px-14 bg-transparent relative justify-center items-center`}
                         >
-                            <div className="p-6 flex justify-between w-full neu-container">
-                                <div className='flex flex-col'>
+                            <div className="p-6 flex flex-col md:flex-row justify-between gap-8 md:gap-0 w-full neu-container">
+                                <div className='flex flex-col w-full md:w-1/2'>
                                     <CustomInput
                                         dir='rtl'
-                                        placeholder='میزان مصرف برق ماهانه'
+                                        placeholder='میزان مصرف برق ماهانه (کیلووات ساعت)'
                                         icon={LampCeiling}
                                         name='monthlyElectricityConsumption'
                                         type='number'
                                     />
                                     <CustomInput
                                         dir='rtl'
-                                        placeholder='هزینۀ برق ماهانه'
+                                        placeholder='هزینۀ برق ماهانه (تومان)'
                                         icon={CircleDollarSign}
                                         name="monthlyElectricityCost"
                                         type='number'
                                     />
                                     <CustomInput
                                         dir='rtl'
-                                        placeholder='مساحت مفید سقف'
+                                        placeholder='مساحت مفید سقف (متر مربع)'
                                         icon={Grid3X3}
                                         name='ceilingArea'
                                         type='number'
                                     />
-                                    <Select
-                                        name="sunSituation"
-                                        value={values.sunSituation}
-                                        onValueChange={val => setFieldValue('sunSituation', val)}
-                                    >
-                                        <SelectTrigger dir='rtl' className="mt-4 min-h-[43px] w-full cursor-pointer bg-[#f1f4fc]">
-                                            <SelectValue placeholder="وضعیت تابش خورشید" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectLabel>وضعیت تابش خورشید</SelectLabel>
-                                                <SelectItem value="mostly_sunny">کاملاً آفتابی</SelectItem>
-                                                <SelectItem value="partly_sunny">نیمه آفتابی</SelectItem>
-                                                <SelectItem value="less_sunny">کم آفتاب</SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
+                                    <div className="flex items-center gap-2 mt-4">
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <span className="flex items-center justify-center w-6 h-6 rounded-full text-white cursor-pointer">
+                                                    <AlertCircle size={20} className="text-gray-700" />
+                                                </span>
+                                            </TooltipTrigger>
+                                            <TooltipContent side="top" className="text-xs max-w-xs text-right leading-6">
+                                                <div dir='rtl'>
+                                                    <b>راهنمای انتخاب وضعیت تابش خورشید:</b><br />
+                                                    <b>کاملاً آفتابی:</b> حدود ۱۷۵۰ ساعت آفتاب سالانه (مناطق جنوبی و مرکزی ایران)<br />
+                                                    <b>نیمه آفتابی:</b> حدود ۱۵۰۰ ساعت آفتاب سالانه (مناطق معتدل)<br />
+                                                    <b>کم آفتاب:</b> حدود ۱۲۵۰ ساعت آفتاب سالانه (مناطق شمالی یا ابری)<br />
+                                                    <b>ساعت آفتاب سالانه</b> یعنی مجموع ساعاتی که در طول سال نور خورشید به پنل‌ها می‌تابد و بر تولید برق تأثیرگذار است.
+                                                </div>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                        <Select
+                                            name="sunSituation"
+                                            value={values.sunSituation}
+                                            onValueChange={val => setFieldValue('sunSituation', val)}
+                                        >
+                                            <SelectTrigger dir='rtl' className="min-h-[43px] w-full cursor-pointer bg-[#f1f4fc]">
+                                                <SelectValue placeholder="وضعیت تابش خورشید" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>وضعیت تابش خورشید</SelectLabel>
+                                                    <SelectItem value="mostly_sunny">کاملاً آفتابی</SelectItem>
+                                                    <SelectItem value="partly_sunny">نیمه آفتابی</SelectItem>
+                                                    <SelectItem value="less_sunny">کم آفتاب</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
                                 </div>
-                                <div className='grid grid-cols-2 gap-6 w-[30vw]'>
+                                <div className='grid grid-cols-2 gap-6 w-full md:w-[30vw]'>
                                     {/* Suggested Capacity */}
                                     <div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
                                         <div className="flex items-center">
