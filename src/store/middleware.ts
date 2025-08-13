@@ -8,6 +8,7 @@ const localStorageMiddleware: Middleware = (store) => (next) => (action) => {
 
   // Save only the specific reducer's state (e.g., 'user')
   localStorage.setItem("user", JSON.stringify(state.user));
+  localStorage.setItem("corp", JSON.stringify(state.corp));
 
   return result;
 };

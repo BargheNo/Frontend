@@ -36,7 +36,7 @@ export const SwitchCorp = () => {
                 // console.log(res?.data);
                 setCorps(res?.data);
                 setLoading(false);
-                if (corpID == null) {
+                if (!corpID) {
                     dispatch(setCorpId(res?.data?.[0]?.id));
                 }
                 // changeCorp(res?.data?.[0]?.id);
@@ -47,7 +47,7 @@ export const SwitchCorp = () => {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [dispatch]);
+    }, [dispatch, corpID]);
 
     return loading ? (
         <Skeleton className="w-full mb-3 h-9 bg-gray-200" />

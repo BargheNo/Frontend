@@ -172,7 +172,7 @@ export default function Ticket({
                         {/* <div
 								className={`cta-neu-button flex ${styles.button} items-center mt-4 content-center w-50 justify-center`}
 							> */}
-                        {status === "بررسی نشده" &&
+                        {status !== "بسته شده" &&
                             hasCloseTicketPermission && (
                                 <button
                                     className={`cursor-pointer cta-neu-button flex ${styles.button} items-center mt-4 content-center w-50 justify-center`}

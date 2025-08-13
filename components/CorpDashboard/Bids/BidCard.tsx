@@ -499,8 +499,7 @@ export default function BidCard({
                                                             !hasEditBidPermission
                                                         }
                                                         icon={DollarSign}
-                                                        type="number"
-                                                        autoFocus={true}
+                                                        onlyNumbers
                                                         containerClassName="w-1/2"
                                                         inputClassName={
                                                             errors.cost &&
@@ -537,8 +536,7 @@ export default function BidCard({
                                                         }
                                                         name="power"
                                                         icon={Battery}
-                                                        type="number"
-                                                        autoFocus={true}
+                                                        onlyNumbers
                                                         containerClassName="w-1/2"
                                                         inputClassName={
                                                             errors.power &&
@@ -554,7 +552,7 @@ export default function BidCard({
                                                         }
                                                         name="area"
                                                         icon={LandPlot}
-                                                        type="number"
+                                                        onlyNumbers
                                                         containerClassName="w-1/2"
                                                         inputClassName={
                                                             errors.area &&
