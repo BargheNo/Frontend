@@ -35,6 +35,9 @@ export const SwitchCorp = () => {
                 // console.log(res?.data);
                 setCorps(res?.data);
                 setLoading(false);
+                if (res?.data.length > 0) {
+                    dispatch(setCorpId(res?.data?.[0]?.id));
+                }
                 // changeCorp(res?.data?.[0]?.id);
                 // setCorp(String(res?.data?.[0]?.id));
                 // console.log("rescorp", res?.data[0]?.id);
@@ -42,11 +45,7 @@ export const SwitchCorp = () => {
                 // dispatch(setCorpId(res?.data[0]?.id));
             })
             .catch((err) => console.log(err));
-    }, []);
-
-    useEffect(() => {
-        console.log("Selected Corp ID:", corpID);
-    }, [corpID]);
+    }, [dispatch]);
 
     return loading ? (
         <LoadingSpinner />

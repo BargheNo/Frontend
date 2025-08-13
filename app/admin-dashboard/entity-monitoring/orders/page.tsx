@@ -33,12 +33,14 @@ export default function Orders() {
         paginationInfoType | undefined
     >(undefined);
     const [page, setPage] = useState<number>(1);
+    const [sortBy, setSortBy] = useState<string>("");
+    const [asc, setAsc] = useState<boolean>(false);
     // const [totalPages, setTotalPages] = useState<number>(0);
     const fetchOrders = useCallback(() => {
         setLoading(true);
         getData({
             endPoint: `/v1/admin/installation/request`,
-            params: { status, pageSize, query, page },
+            params: { status, pageSize, query, page, sortBy, asc },
         })
             .then((res) => {
                 console.log(res?.data);
@@ -47,7 +49,7 @@ export default function Orders() {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [status, query, pageSize, page]);
+    }, [status, query, pageSize, page, sortBy, asc]);
     useEffect(() => {
         fetchOrders();
         // getData({
@@ -85,6 +87,11 @@ export default function Orders() {
                 query={query}
                 setQuery={setQuery}
                 onSearchSubmit={() => fetchOrders()}
+                columnsListApiRoute={`/v1/installation/request/sortable`}
+                asc={asc}
+                setAsc={setAsc}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
             />
             <CustomTable
                 data={orderlist}
