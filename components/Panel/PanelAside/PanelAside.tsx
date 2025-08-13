@@ -28,6 +28,8 @@ import {
     PanelAsideTitle,
 } from "./PanelAsideItem/PanelAsideItem";
 import { SwitchCorp } from "@/components/PanelAside/SwitchCorp/SwitchCorp";
+import useClientCheck from "@/src/hooks/useClientCheck";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 const myFont = localFont({ src: "../../../public/fonts/vazir/Vazir.ttf" });
 
 const PanelAside = ({
@@ -38,7 +40,8 @@ const PanelAside = ({
 }: PanelAsideProps) => {
     const pathname = usePathname();
     const [isMobile, setIsMobile] = useState(false);
-    const [sideOpen, setSideOpen] = useState(false);
+    const [sideOpen, setSideOpen] = useState(true);
+    const isClient = useClientCheck();
     useEffect(() => {
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768); // 768px is typical mobile breakpoint
@@ -53,6 +56,8 @@ const PanelAside = ({
         // Cleanup
         return () => window.removeEventListener("resize", checkMobile);
     }, []);
+
+    if (!isClient) return <LoadingSpinner />;
 
     if (isMobile) {
         return <main className="rtl w-screen pb-18">{children}</main>;

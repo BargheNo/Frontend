@@ -12,6 +12,7 @@ import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import React, { useEffect, useState } from "react";
 import { RootState } from "@/src/store/store";
 import { useDispatch, useSelector } from "react-redux";
+import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
 interface Corp {
     id: number;
     name: string;
@@ -35,6 +36,9 @@ export const SwitchCorp = () => {
                 // console.log(res?.data);
                 setCorps(res?.data);
                 setLoading(false);
+                if (corpID == null) {
+                    dispatch(setCorpId(res?.data?.[0]?.id));
+                }
                 // changeCorp(res?.data?.[0]?.id);
                 // setCorp(String(res?.data?.[0]?.id));
                 // console.log("rescorp", res?.data[0]?.id);
@@ -48,9 +52,7 @@ export const SwitchCorp = () => {
         console.log("Selected Corp ID:", corpID);
     }, [corpID]);
 
-    return loading ? (
-        <LoadingSpinner />
-    ) : (
+    return (
         <Select
             value={String(corpID)}
             onValueChange={(value) => {
@@ -61,7 +63,11 @@ export const SwitchCorp = () => {
                 dir="rtl"
                 className="text-black w-full shadow-inner shadow-[rgba(0,0,0,0.2)] mb-3 text-right bg-white"
             >
-                <SelectValue placeholder="انتخاب شرکت" />
+                {loading ? (
+                    <LoadingOnButton size={28} />
+                ) : (
+                    <SelectValue placeholder="انتخاب شرکت" />
+                )}
             </SelectTrigger>
             <SelectContent dir="rtl">
                 {corps &&
