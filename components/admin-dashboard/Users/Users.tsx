@@ -340,7 +340,7 @@ const UserItem = ({
     const {
         hasPermission: hasBanUnbanPermission,
         loading: permissionLoading1,
-    } = useHasPermission("user.ban_unban");
+    } = useHasPermission("user.banUnban");
     const {
         hasPermission: hasChangeRolePermission,
         loading: permissionLoading2,
