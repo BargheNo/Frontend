@@ -22,10 +22,12 @@ const AddWarranty = () => {
 		error,
 	} = useSelector((state: RootState) => state.warrantyTypes);
 
+	const corpID = useSelector((state: RootState) => state.user.corpId);
+
 	const handleSubmit = (values: FormValues) => {
 		console.log("Form submitted:", values);
 		postData({
-			endPoint: `${baseURL}/v1/corp/2/guarantee`, // TODO: add corpID ................................................................
+			endPoint: `${baseURL}/v1/corp/${corpID}/guarantee`,
 			data: values,
 		})
 			.then((res) => {

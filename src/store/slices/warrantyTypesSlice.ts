@@ -4,10 +4,10 @@ import { WarrantyType } from "@/components/CorpDashboard/Warranties/warrantyType
 
 export const fetchWarrantyTypes = createAsyncThunk(
   'warrantyTypes/fetchWarrantyTypes',
-  async () => {
+  async (corpId: number) => {
     try {
       const response = await getData({
-        endPoint: `${baseURL}/v1/corp/2/guarantee/type`    // TODO: add corp iddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        endPoint: `${baseURL}/v1/corp/${corpId}/guarantee/type`
       });
       return response.data;
     } catch (error) {

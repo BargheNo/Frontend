@@ -21,6 +21,7 @@ import { baseURL, putData } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter.tsx";
 import { Button } from "@/components/ui/button.tsx";
+import { useSelector } from "react-redux";
 
 const TermItemSection = ({ title, description, limitations }: TermItem) => {
 	return (
@@ -55,6 +56,8 @@ const WarrantyDetails = ({
 }: Warranty) => {
 	const [open, setOpen] = useState(false);
 
+	const corpID = useSelector((state: RootState) => state.user.corpId);
+
 	const handleArchive = async () => {
 		if (isArchived) {
 			CustomToast("این گارانتی قبلاً آرشیو شده است!", "warning");
@@ -62,7 +65,7 @@ const WarrantyDetails = ({
 		}
 
 		putData({
-			endPoint: `${baseURL}/v1/corp/2/guarantee/${id}/status`, // TODO: add corp id .........................................
+			endPoint: `${baseURL}/v1/corp/${corpID}/guarantee/${id}/status`,
 			data: { status: 2 },
 		})
 			.then(() => {

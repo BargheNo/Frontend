@@ -18,8 +18,9 @@ const Warranties = () => {
     const corpId = useSelector((state: RootState) => state.user.corpId);
 
     const fetchWarranties = useCallback(() => {
+        if (!corpId || typeof corpId !== 'number') return;
         setLoadingGuarantees(true);
-        dispatch(fetchWarrantyTypes());
+        dispatch(fetchWarrantyTypes(corpId));
 
         getData({
             endPoint: `/v1/corp/${corpId}/guarantee`,
@@ -36,8 +37,10 @@ const Warranties = () => {
     }, [dispatch, status, corpId]);
 
     useEffect(() => {
-        fetchWarranties();
-    }, [fetchWarranties]);
+        if (corpId && typeof corpId === 'number') {
+            fetchWarranties();
+        }
+    }, [fetchWarranties, corpId]);
 
     return (
         <div className="space-y-6 relative">

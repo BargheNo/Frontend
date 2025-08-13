@@ -7,6 +7,7 @@ import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import { RepairFormValues } from "@/types/CorpTypes";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import { useSelector } from "react-redux";
 
 interface RepairFormProps {
 	panelId: number;
@@ -38,9 +39,11 @@ const RepairForm = ({ panelId, onSuccess }: RepairFormProps) => {
 		},
 	};
 
+	const corpID = useSelector((state: RootState) => state.user.corpId);
+
 	const handleSubmit = async (values: RepairFormValues) => {
 		postData({
-			endPoint: `${baseURL}/v1/corp/2/maintenance/request/${panelId}/record`, // TODO: add corpIDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+			endPoint: `${baseURL}/v1/corp/${corpID}/maintenance/request/${panelId}/record`,
 			data: values,
 		})
 			.then((res) => {
