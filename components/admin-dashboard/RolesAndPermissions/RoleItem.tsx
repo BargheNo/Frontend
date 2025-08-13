@@ -23,8 +23,10 @@ export default function RoleItem({
 }) {
     const [editOpen, setEditOpen] = useState<boolean>(false);
     const [expanded, setExpanded] = useState<boolean>(false);
-    const { hasPermission: editRolePermission, permissionLoading1 } = useHasPermission("user.manageRolePermissions");
-    const { hasPermission: removeRolePermission, permissionLoading2 } = useHasPermission("user.removeRole");
+    const { hasPermission: editRolePermission, loading: permissionLoading1 } =
+        useHasPermission("user.manageRolePermissions");
+    const { hasPermission: removeRolePermission, loading: permissionLoading2 } =
+        useHasPermission("user.removeRole");
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const deleteRole = async (roleToDeleteId: string) => {
         setLoading(true);
@@ -79,7 +81,10 @@ export default function RoleItem({
                                             permission: Permission,
                                             index: number
                                         ) => (
-                                            <Badge className="bg-fire-orange h-fit" key={index}>
+                                            <Badge
+                                                className="bg-fire-orange h-fit"
+                                                key={index}
+                                            >
                                                 {permission?.description}
                                             </Badge>
                                         )
@@ -91,7 +96,7 @@ export default function RoleItem({
                                     onClick={() => setExpanded(!expanded)}
                                 >
                                     {expanded ? "<" : "..."}
-                                </Badge> 
+                                </Badge>
                             )}
                         </div>
                     </div>

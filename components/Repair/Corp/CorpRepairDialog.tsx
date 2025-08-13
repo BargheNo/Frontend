@@ -39,7 +39,7 @@ const CorpRepairDialog = ({
 }: CorpRepairDialogProps) => {
     const {
         hasPermission: hasAcceptMaintenanceRequestPermission,
-        permissionLoading,
+        loading: permissionLoading,
     } = useHasPermission("maintenance.acceptRequest");
     const corpId = useSelector((state: RootState) => state.user.corpId);
     // const [notes, setNotes] = useState<MaintenanceRecord[] | null>(null);

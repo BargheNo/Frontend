@@ -337,8 +337,14 @@ const UserItem = ({
     id,
     fetchAllUsers,
 }: UserType) => {
-    const { hasPermission: hasBanUnbanPermission, permissionLoading1 } = useHasPermission("user.ban_unban");
-    const { hasPermission: hasChangeRolePermission, permissionLoading2 } = useHasPermission("user.changeRole");
+    const {
+        hasPermission: hasBanUnbanPermission,
+        loading: permissionLoading1,
+    } = useHasPermission("user.ban_unban");
+    const {
+        hasPermission: hasChangeRolePermission,
+        loading: permissionLoading2,
+    } = useHasPermission("user.changeRole");
 
     const [loadingRoles, setLoadingRoles] = useState(false);
     const [isSaving, setIsSaving] = useState(false);

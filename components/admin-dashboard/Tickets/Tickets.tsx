@@ -53,9 +53,18 @@ const commentValidationSchemaForm = Yup.object({
 });
 
 const TicketSupportPage = () => {
-    const { hasPermission: hasCloseTicketPermission, permissionLoading1 } = useHasPermission("ticket.close");
-    const { hasPermission: hasRespondTicketPermission, permissionLoading2 } = useHasPermission("ticket.respond");
-    const { hasPermission: hasCommentTicketPermission, permissionLoading3 } = useHasPermission("ticket.comment");
+    const {
+        hasPermission: hasCloseTicketPermission,
+        loading: permissionLoading1,
+    } = useHasPermission("ticket.close");
+    const {
+        hasPermission: hasRespondTicketPermission,
+        loading: permissionLoading2,
+    } = useHasPermission("ticket.respond");
+    const {
+        hasPermission: hasCommentTicketPermission,
+        loading: permissionLoading3,
+    } = useHasPermission("ticket.comment");
     const [putCommentLoading, setPutCommentLoading] = useState<boolean>(false);
 
     const [isLoadingComments, setIsLoadingComments] = useState(false);

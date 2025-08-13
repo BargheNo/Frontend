@@ -109,9 +109,10 @@ const CorporationItem = ({
     addresses,
     id,
 }: CorporationType) => {
-    const { hasPermission: hasApproveDeclinePermission, permissionLoading } = useHasPermission(
-        "corporation.approveDecline"
-    );
+    const {
+        hasPermission: hasApproveDeclinePermission,
+        loading: permissionLoading,
+    } = useHasPermission("corporation.approveDecline");
     const [open, setOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [corporation, setCorporation] =
