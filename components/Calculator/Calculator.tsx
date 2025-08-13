@@ -20,7 +20,19 @@ import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip
 
 
 // Calculation function as described
-function calculateSolarMetrics(monthlyConsumption, monthlyCost, ceilingArea, sunlightExposure) {
+function calculateSolarMetrics(
+    monthlyConsumption: number,
+    monthlyCost: number,
+    ceilingArea: number,
+    sunlightExposure: string
+): {
+    suggestedCapacity: string;
+    numberOfPanels: number;
+    annualProduction: string;
+    annualSavings: number;
+    paybackPeriod: string | null;
+    carbonReduction: number;
+} | null {
     const carbonEmissionFactor = 0.6;
     const singlePanelWattage = 450;
     const costPerKwp = 15000000;
@@ -60,9 +72,17 @@ function calculateSolarMetrics(monthlyConsumption, monthlyCost, ceilingArea, sun
     };
 }
 
-const Calculator = () => {
+
+interface CalculatorFormValues {
+    monthlyElectricityConsumption: string;
+    monthlyElectricityCost: string;
+    ceilingArea: string;
+    sunSituation: string;
+}
+
+const Calculator: React.FC = () => {
     return (
-        <Formik
+        <Formik<CalculatorFormValues>
             initialValues={{
                 monthlyElectricityConsumption: '',
                 monthlyElectricityCost: '',
@@ -72,7 +92,6 @@ const Calculator = () => {
             onSubmit={() => {}}
         >
             {({ values, setFieldValue }) => {
-                // Parse values to numbers where needed
                 const monthlyConsumption = parseFloat(values.monthlyElectricityConsumption);
                 const monthlyCost = parseFloat(values.monthlyElectricityCost);
                 const ceilingArea = parseFloat(values.ceilingArea);
@@ -86,185 +105,11 @@ const Calculator = () => {
                 const placeholder = '-';
                 return (
                     <Form>
+                        {/* ...existing code... */}
                         <div
                             className={`vazir w-full mx-auto min-h-full flex flex-col gap-8 text-white py-0 md:py-0 px-3 md:px-14 bg-transparent relative justify-center items-center`}
                         >
-                            <div className="p-6 flex flex-col md:flex-row justify-between gap-8 md:gap-0 w-full neu-container">
-                                <div className='flex flex-col w-full md:w-1/2'>
-                                    <CustomInput
-                                        dir='rtl'
-                                        placeholder='میزان مصرف برق ماهانه (کیلووات ساعت)'
-                                        icon={LampCeiling}
-                                        name='monthlyElectricityConsumption'
-                                        type='number'
-                                    />
-                                    <CustomInput
-                                        dir='rtl'
-                                        placeholder='هزینۀ برق ماهانه (تومان)'
-                                        icon={CircleDollarSign}
-                                        name="monthlyElectricityCost"
-                                        type='number'
-                                    />
-                                    <CustomInput
-                                        dir='rtl'
-                                        placeholder='مساحت مفید سقف (متر مربع)'
-                                        icon={Grid3X3}
-                                        name='ceilingArea'
-                                        type='number'
-                                    />
-                                    <div className="flex items-center gap-2 mt-4">
-                                        <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <span className="flex items-center justify-center w-6 h-6 rounded-full text-white cursor-pointer">
-                                                    <AlertCircle size={20} className="text-gray-700" />
-                                                </span>
-                                            </TooltipTrigger>
-                                            <TooltipContent side="top" className="text-xs max-w-xs text-right leading-6">
-                                                <div dir='rtl'>
-                                                    <b>راهنمای انتخاب وضعیت تابش خورشید:</b><br />
-                                                    <b>کاملاً آفتابی:</b> حدود ۱۷۵۰ ساعت آفتاب سالانه (مناطق جنوبی و مرکزی ایران)<br />
-                                                    <b>نیمه آفتابی:</b> حدود ۱۵۰۰ ساعت آفتاب سالانه (مناطق معتدل)<br />
-                                                    <b>کم آفتاب:</b> حدود ۱۲۵۰ ساعت آفتاب سالانه (مناطق شمالی یا ابری)<br />
-                                                    <b>ساعت آفتاب سالانه</b> یعنی مجموع ساعاتی که در طول سال نور خورشید به پنل‌ها می‌تابد و بر تولید برق تأثیرگذار است.
-                                                </div>
-                                            </TooltipContent>
-                                        </Tooltip>
-                                        <Select
-                                            name="sunSituation"
-                                            value={values.sunSituation}
-                                            onValueChange={val => setFieldValue('sunSituation', val)}
-                                        >
-                                            <SelectTrigger dir='rtl' className="min-h-[43px] w-full cursor-pointer bg-[#f1f4fc]">
-                                                <SelectValue placeholder="وضعیت تابش خورشید" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    <SelectLabel>وضعیت تابش خورشید</SelectLabel>
-                                                    <SelectItem value="mostly_sunny">کاملاً آفتابی</SelectItem>
-                                                    <SelectItem value="partly_sunny">نیمه آفتابی</SelectItem>
-                                                    <SelectItem value="less_sunny">کم آفتاب</SelectItem>
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                </div>
-                                <div className='grid grid-cols-2 gap-6 w-full md:w-[30vw]'>
-                                    {/* Suggested Capacity */}
-                                    <div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
-                                        <div className="flex items-center">
-                                            <PanelIconWithBackground 
-                                                icon={Zap}
-                                                className="w-full justify-between"
-                                                text={"ظرفیت پیشنهادی"}
-                                                color="#F77F00"
-                                            />
-                                        </div>
-                                        <div className="flex flex-col m-2 sm:m-3 items-center justify-center">
-                                            <div className="flex flex-row-reverse gap-2 items-center">
-                                                <span className="text-xl sm:text-3xl font-bold">
-                                                    {results ? wordExpression(results.suggestedCapacity, true).value : placeholder}
-                                                </span>
-                                                <span className="text-xl sm:text-3xl font-bold">kW</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/* Number of Panels */}
-                                    <div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
-                                        <div className="flex items-center">
-                                            <PanelIconWithBackground 
-                                                icon={Eclipse}
-                                                className="w-full justify-between"
-                                                text={"تعداد پنل"}
-                                                color="#8095E4"
-                                            />
-                                        </div>
-                                        <div className="flex flex-col m-2 sm:m-3 items-center justify-center">
-                                            <div dir='rtl' className="flex flex-row-reverse gap-2 items-center">
-                                                <span className="text-xl sm:text-3xl font-bold">عدد</span>
-                                                <span className="text-xl sm:text-3xl font-bold">
-                                                    {results ? wordExpression(results.numberOfPanels, true).value : placeholder}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/* Annual Production */}
-                                    <div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
-                                        <div className="flex items-center">
-                                            <PanelIconWithBackground 
-                                                icon={Battery}
-                                                className="w-full justify-between"
-                                                text={"تولید برق سالانه"}
-                                                color="#5F9B8C"
-                                            />
-                                        </div>
-                                        <div className="flex flex-col m-2 sm:m-3 items-center justify-center">
-                                            <div className="flex flex-row-reverse gap-2 items-center">
-                                                <span className="text-xl sm:text-3xl font-bold">
-                                                    {results ? wordExpression(results.annualProduction, true).value : placeholder}
-                                                </span>
-                                                <span className="text-xl sm:text-3xl font-bold">kWh</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/* Annual Savings */}
-                                    <div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
-                                        <div className="flex items-center">
-                                            <PanelIconWithBackground 
-                                                icon={PiggyBankIcon}
-                                                className="w-full justify-between"
-                                                text={"صرفه‌جویی سالانه"}
-                                                color="#F06293"
-                                            />
-                                        </div>
-                                        <div className="flex flex-col m-2 sm:m-3 items-center justify-center">
-                                            <div className="flex flex-row gap-2 items-center">
-                                                <span className="text-xl sm:text-3xl font-bold">
-                                                    {results ? wordExpression(results.annualSavings, true).value : placeholder}
-                                                </span>
-                                                <span className="text-xl sm:text-3xl font-bold">تومان</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/* Payback Period */}
-                                    <div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
-                                        <div className="flex items-center">
-                                            <PanelIconWithBackground 
-                                                icon={HandCoins}
-                                                className="w-full justify-between"
-                                                text={"بازگشت سرمایه"}
-                                                color="#D62828"
-                                            />
-                                        </div>
-                                        <div className="flex flex-col m-2 sm:m-3 items-center justify-center">
-                                            <div className="flex flex-row gap-2 items-center">
-                                                <span className="text-xl sm:text-3xl font-bold">
-                                                    {results ? wordExpression(results.paybackPeriod, true).value : placeholder}
-                                                </span>
-                                                <span className="text-xl sm:text-3xl font-bold">سال</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/* Carbon Reduction */}
-                                    <div className="w-full rounded-xl items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
-                                        <div className="flex items-center">
-                                            <PanelIconWithBackground 
-                                                icon={Leaf}
-                                                className="w-full justify-between"
-                                                text={"اثر زیست‌محیطی"}
-                                                color="#50C878"
-                                            />
-                                        </div>
-                                        <div className="flex flex-col m-2 sm:m-3 items-center justify-center">
-                                            <div className="flex flex-row-reverse gap-2 items-center">
-                                                <span className="text-xl sm:text-3xl font-bold">
-                                                    {results ? wordExpression(results.carbonReduction, true).value : placeholder}
-                                                </span>
-                                                <span className="text-xl sm:text-3xl font-bold">kG CO₂</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            {/* ...existing code... */}
                         </div>
                     </Form>
                 );
