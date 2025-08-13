@@ -31,7 +31,10 @@ import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
 import FilterSection from "@/components/FilterSection/FilterSection";
 
 const Reports = () => {
-    const hasRespondReportPermission = useHasPermission("report.respond");
+    const {
+        hasPermission: hasRespondReportPermission,
+        loading: permissionLoading,
+    } = useHasPermission("report.respond");
     const [loadingRepair, setLoadingRepair] = useState<boolean>(true);
     const [loadingPanel, setLoadingPanel] = useState<boolean>(true);
     const [panelReports, setPanelReports] = useState<any[]>([]);

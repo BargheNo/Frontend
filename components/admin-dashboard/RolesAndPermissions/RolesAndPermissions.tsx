@@ -68,7 +68,10 @@ const validationSchemaForm = Yup.object({
 // };
 
 const RolesAndPermissions = () => {
-    const hasCreateRolePermission = useHasPermission("user.createRole");
+    const {
+        hasPermission: hasCreateRolePermission,
+        loading: permissionLoading,
+    } = useHasPermission("user.createRole");
     const [roles, setRoles] = useState<any[]>([]);
     const [allPermissions, setAllPermissions] = useState<Permission[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -81,7 +84,7 @@ const RolesAndPermissions = () => {
         paginationInfoType | undefined
     >(undefined);
     const [page, setPage] = useState<number>(1);
-    
+
     const [query, setQuery] = useState<string>("");
 
     const getRoles = useCallback(() => {
