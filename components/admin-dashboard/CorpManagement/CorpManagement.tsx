@@ -209,7 +209,8 @@ const CorporationItem = ({
                         </div>
                     </div>
                 </DialogTrigger>
-                <DialogContent className="max-h-[90vh] overflow-y-auto dialog-width pb-0">
+                <DialogContent className="max-h-[90vh] overflow-y-auto  dialog-width pb-0 ">
+
                     {loading ? (
                         <div className="flex justify-center items-center">
                             <LoadingSpinner className="h-full" />
@@ -220,15 +221,16 @@ const CorporationItem = ({
                         </div>
                     ) : (
                         <>
+                        <div className="">
                             <DialogHeader>
                                 <DialogTitle className="text-right text-2xl text-blue-800">
                                     مشخصات شرکت
                                 </DialogTitle>
                             </DialogHeader>
-
+                            
                             {/* General Information */}
                             <div
-                                className={`flex flex-row justify-between gap-4 p-4 rounded-lg mb-4 rtl ${styles.shadow} min-h-40`}
+                                className={`flex flex-row justify-between  p-4 rounded-lg mb-4 rtl ${styles.shadow} min-h-40`}
                             >
                                 <div className="flex flex-col justify-between items-start">
                                     <div className="flex flex-row gap-2">
@@ -245,13 +247,13 @@ const CorporationItem = ({
                                             {corporation?.registrationNumber}
                                         </p>
                                     </div>
-                                    <div className="flex flex-row gap-10">
+                                    <div className="flex flex-col md:flex-row md:gap-10 gap-5">
                                         <div className="flex flex-row gap-2">
                                             <div className="text-orange-400">
                                                 <IdCard />
                                             </div>
                                             <p>
-                                                <span className="font-semibold">
+                                                <span className="text-nowrap font-semibold">
                                                     شناسه ملی:
                                                 </span>
                                                 {corporation?.nationalID}
@@ -262,7 +264,7 @@ const CorporationItem = ({
                                                 <CreditCard />
                                             </div>
                                             <p>
-                                                <span className="font-semibold">
+                                                <span className="font-semibold text-nowrap">
                                                     شماره شبا:
                                                 </span>
                                                 {corporation?.iban}
@@ -530,11 +532,11 @@ const CorporationItem = ({
                             {hasApproveDeclinePermission && (
                                 <StickyFooter className="rtl">
                                     <CancelButton />
-                                    <div className="flex gap-2">
+                                    <div className="flex gap-2 ">
                                         <SubmitButton
                                             loading={loading}
                                             onClick={handleReject}
-                                            className="from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 active:from-red-700 active:to-red-500"
+                                            className= "from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 active:from-red-700 active:to-red-500"
                                         >
                                             رد کردن
                                         </SubmitButton>
@@ -574,8 +576,10 @@ const CorporationItem = ({
                                 // 	</Button>
                                 // </DialogFooter>
                             )}
+                            </div>
                         </>
                     )}
+                    
                 </DialogContent>
             </Dialog>
         </div>
