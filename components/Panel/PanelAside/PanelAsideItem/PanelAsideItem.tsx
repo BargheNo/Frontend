@@ -14,10 +14,18 @@ export function PanelAsideIcon({
     const pathname = usePathname();
     // const hasPermission = true;
     const hasPermission = useHasPermission(item?.RNPName || "");
-    return hasPermission ? (
-        <Link key={item.path} href={item.path}>
+    const isSuspended = true;
+    const notAllowed =
+        isSuspended && item.path !== "/corpdashboard/editprofile";
+
+    if (!hasPermission) return <></>;
+
+    return (
+        <Link key={item.path} href={notAllowed ? item.path : ""}>
             <span
-                className={`flex gap-2 text-[#003a8b] p-2 mt-0.5 rounded-lg cursor-pointer ${
+                className={`flex gap-2 text-[#003a8b] p-2 mt-0.5 rounded-lg cursor-${
+                    notAllowed ? "not-allowed" : "pointer"
+                } ${
                     pathname === item.path
                         ? `shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.3),inset_1px_1px_3px_rgba(0,0,0,0.3)] bg-gradient-to-r ${
                               mode === "customer"
@@ -32,8 +40,6 @@ export function PanelAsideIcon({
                 {item?.icon}
             </span>
         </Link>
-    ) : (
-        <></>
     );
 }
 
@@ -47,10 +53,18 @@ export function PanelAsideTitle({
     const pathname = usePathname();
     // const hasPermission = true;
     const hasPermission = useHasPermission(item?.RNPName || "");
-    return hasPermission ? (
-        <Link key={item.path} href={item.path}>
+    const isSuspended = true;
+    const notAllowed =
+        isSuspended && item.path !== "/corpdashboard/editprofile";
+
+    if (!hasPermission) return <></>;
+
+    return (
+        <Link key={item.path} href={notAllowed ? item.path : ""}>
             <span
-                className={`flex gap-2 text-[#003a8b] p-2 mt-0.5 rounded-lg cursor-pointer ${
+                className={`flex gap-2 text-[#003a8b] p-2 mt-0.5 rounded-lg cursor-${
+                    notAllowed ? "not-allowed" : "pointer"
+                } ${
                     pathname === item.path
                         ? `shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.3),inset_1px_1px_3px_rgba(0,0,0,0.3)] bg-gradient-to-r ${
                               mode === "customer"
@@ -65,7 +79,5 @@ export function PanelAsideTitle({
                 {item.name}
             </span>
         </Link>
-    ) : (
-        <></>
     );
 }
