@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getParams, postParams } from "../types/apiHubType";
-import generateErrorMessage from "../functions/handleAPIErrors";
+import { getParams, postParams } from "@/src/types/apiHubType";
+import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 
 export const serverIPAndPort = "46.249.99.69:8080";

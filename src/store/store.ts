@@ -6,6 +6,7 @@ import userReducer from "./slices/userSlice";
 import corpReducer from "./slices/corpSlice";
 import localStorageMiddleware from "./middleware";
 import { preloadedState } from "./preLoader";
+import chatReducer from "./slices/chatSlice";
 import warrantyTypesReducer from "./slices/warrantyTypesSlice"
 
 export const store = configureStore({
@@ -13,6 +14,7 @@ export const store = configureStore({
 		counter: counterReducer,
 		user: userReducer,
 		corp: corpReducer,
+		chat: chatReducer,
 		warrantyTypes: warrantyTypesReducer,
 	},
 	preloadedState,

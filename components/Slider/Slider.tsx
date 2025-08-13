@@ -31,7 +31,7 @@ const Carousel = ({ items, onItemClick }: CarouselProps) => {
         }
     }, [items, currentIndex]);
     const nextSlide = useCallback(() => {
-        if (isTransitioning) return;
+        if (items?.length === 0 || isTransitioning) return;
         setIsTransitioning(true);
         setTimeout(() => {
             setCurrentIndex((prevIndex) => (prevIndex + 1) % items?.length);

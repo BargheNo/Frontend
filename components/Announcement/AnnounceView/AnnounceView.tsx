@@ -1,6 +1,6 @@
 "use client";
-import AnnouncementBox from "../AnnouncementBox/AnnouncementBox";
-import AnnounceCard from "../AnnounceCard/AnnounceCard";
+import AnnouncementBox from "@/components/Announcement/AnnouncementBox/AnnouncementBox";
+import AnnounceCard from "@/components/Announcement/AnnounceCard/AnnounceCard";
 import { getData } from "@/src/services/apiHub";
 import { useQuery } from "@tanstack/react-query";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
@@ -10,9 +10,9 @@ import Image from "next/image";
 import panelNotFound from "@/public/images/panelNotFound/panelNotFound.png";
 import { cn } from "@/lib/utils";
 import useHasPermission from "@/src/functions/hasPermission";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
-import AddAnnounce from "../AddAnnounce/AddAnnounce";
+import AddAnnounce from "@/components/Announcement/AddAnnounce/AddAnnounce";
 import FilterSection from "@/components/FilterSection/FilterSection";
 
 interface News {
@@ -31,7 +31,6 @@ export default function AnnounceView({
     onlyView?: boolean;
     className?: string;
 }) {
-    const [status, setStatus] = useState<string>("");
     //   const [news, setNews] = useState<News[]>([]);
     const { isLoading, data, error } = useQuery({
         queryKey: ["news"],
@@ -40,7 +39,7 @@ export default function AnnounceView({
                 return await getData({ endPoint: "/v1/news" });
             } else {
                 const r1 = await getData({
-                    endPoint: "/v1/admin/news",
+                    endPoint: "/v1/admin/news?statuses=1&statuses=2",
                 });
                 // console.log("r1: ", r1);
                 // const r2 = await getData({
@@ -65,9 +64,7 @@ export default function AnnounceView({
             {!onlyView && <AddAnnounce />}
             {/* </div> */}
 
-            {onlyView ? (
-                <FilterSection header="اخبار و اطلاعیه‌ها" /> // user
-            ) : (
+            {!onlyView && (
                 <FilterSection
                     header="اخبار و اطلاعیه‌ها"
                     // status={status}
@@ -77,27 +74,26 @@ export default function AnnounceView({
             )}
             <AnnouncementBox
                 onlyView={onlyView}
-                className={cn("bg-warm-white w-full", className)}
+                className={cn("bg-warm-white h-[60vh] w-full", className)}
                 insideClassName="gap-5"
             >
                 {isLoading || (error && <LoadingSpinner />)}
                 {data?.data == 0 && (
-                    <NoRecordFound text="هیچ خبری یافت نشد." />
-                    // <div className="text-center flex flex-col items-center justify-center gap-4">
-                    //     <Image
-                    //         className="w-1/3"
-                    //         src={panelNotFound}
-                    //         alt="orderNotFound"
-                    //     />
-                    //     <div className="-mt-8">
-                    //         <p
-                    //             className=" mt-6 text-navy-blue font-bold rtl"
-                    //             style={{ fontSize: "1.1rem" }}
-                    //         >
-                    //             هیچ خبری یافت نشد.
-                    //         </p>
-                    //     </div>
-                    // </div>
+                    <div className="text-center flex flex-col items-center justify-center gap-4">
+                        <Image
+                            className="w-1/3"
+                            src={panelNotFound}
+                            alt="orderNotFound"
+                        />
+                        <div className="-mt-8">
+                            <p
+                                className=" mt-6 text-navy-blue font-bold rtl"
+                                style={{ fontSize: "1.1rem" }}
+                            >
+                                هیچ خبری یافت نشد.
+                            </p>
+                        </div>
+                    </div>
                 )}
                 {data?.data?.data?.map((item: News) => (
                     <AnnounceCard

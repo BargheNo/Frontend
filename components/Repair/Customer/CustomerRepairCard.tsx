@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
 import React, { useState } from "react";
 import IconWithBackground from "@/components/IconWithBackground/IconWithBackground";
-import moment from 'jalali-moment'
+import moment from "jalali-moment";
 import { Eclipse, CalendarCheck, ChevronDown, TextSearch } from "lucide-react";
 
 interface ContactInfo {
@@ -94,7 +94,7 @@ const CustomerRepairCard = ({
     const [isExpanded, setIsExpanded] = useState(false);
 
     const getStatusColor = () => {
-        if (repairItem.status === "تکمیل شده") return "green-status";
+        if (repairItem.status === "تایید شده") return "green-status";
         if (repairItem.status === "در حال انجام") return "yellow-status";
         return "red-status";
     };
@@ -122,7 +122,7 @@ const CustomerRepairCard = ({
                                     <div className="flex items-center">
                                         <IconWithBackground
                                             icon={Eclipse}
-                                            color="#6B7280"
+                                            color="#F59E0B"
                                         />
                                         <span className="font-medium mr-2 whitespace-nowrap">
                                             پنل تعمیر شده:
@@ -146,7 +146,15 @@ const CustomerRepairCard = ({
                                     </div>
                                     <div className="truncate">
                                         <span className="mr-1">
-                                            {moment(repairItem.createdAt.slice(0, 10), "YYYY-MM-DD").locale('fa').format('YYYY/MM/DD')}
+                                            {moment(
+                                                repairItem.createdAt.slice(
+                                                    0,
+                                                    10
+                                                ),
+                                                "YYYY-MM-DD"
+                                            )
+                                                .locale("fa")
+                                                .format("YYYY/MM/DD")}
                                         </span>
                                     </div>
                                 </div>
@@ -154,51 +162,68 @@ const CustomerRepairCard = ({
                         </div>
                     </div>
                     <div className="flex flex-col text-sm text-gray-700 mt-6">
-                        <div className={`mt-2 transition-all duration-200 ${isExpanded ? 'opacity-100 max-h-48' : 'opacity-0 max-h-0 overflow-hidden'}`}>
-                            <span className="mr-1">{repairItem.description}</span>
+                        <div
+                            className={`mt-2 transition-all duration-200 ${
+                                isExpanded
+                                    ? "opacity-100 max-h-48"
+                                    : "opacity-0 max-h-0 overflow-hidden"
+                            }`}
+                        >
+                            <span className="mr-1">
+                                {repairItem.description}
+                            </span>
                         </div>
                         {!isExpanded && (
                             <div className="mt-2 text-gray-600">
-                                <span className="mr-1">{truncateText(repairItem.description)}</span>
+                                <span className="mr-1">
+                                    {truncateText(repairItem.description)}
+                                </span>
                             </div>
                         )}
-                        { repairItem.description.length > MAXLENGTH && 
-                        <div 
-                            className="flex items-center text-gray-400 mt-4 cursor-pointer"
-                            onClick={() => setIsExpanded(!isExpanded)}>
-                            <span className="font-medium">بیشتر</span>
-                            <ChevronDown 
-                                className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
-                            />
-                        </div>}
+                        {repairItem.description.length > MAXLENGTH && (
+                            <div
+                                className="flex items-center text-gray-400 mt-4 cursor-pointer"
+                                onClick={() => setIsExpanded(!isExpanded)}
+                            >
+                                <span className="font-medium">بیشتر</span>
+                                <ChevronDown
+                                    className={`w-4 h-4 transition-transform duration-200 ${
+                                        isExpanded ? "rotate-180" : ""
+                                    }`}
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
 
                 {/* Right Section: Status and Action Button */}
                 <div className="flex flex-row md:flex-col justify-between md:justify-around gap-4 items-center z-10 min-w-36 mt-6 md:mt-0">
-                    <div className="flex flex-col gap-4 md:w-30 w-30">
+                    <div className="flex flex-col gap-4 md:w-full w-30">
                         <div className="flex flex-row-reverse items-center justify-center gap-2 p-3 md:h-20 inset-neu-container w-full">
                             <div
                                 className={`h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
-                            ></div>
+                            />
                             <span className="text-sm font-black text-gray-800">
                                 {repairItem.status}
                             </span>
                         </div>
                     </div>
                     <div className="lg:w-full md:w-60">
-                        <button 
+                        <button
                             className="flex items-center justify-center cta-neu-button !rounded-2xl"
                             onClick={onDetailsClick}
                         >
                             <span className="text-md font-black">جزئیات</span>
-                            <TextSearch strokeWidth={3} className="mr-2 w-6 h-6" />
+                            <TextSearch
+                                strokeWidth={3}
+                                className="mr-2 w-6 h-6"
+                            />
                         </button>
                     </div>
                 </div>
             </div>
         </div>
     );
-}
+};
 
 export default CustomerRepairCard;

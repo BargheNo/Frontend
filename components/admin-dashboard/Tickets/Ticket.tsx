@@ -12,7 +12,7 @@ export default function Ticket({
     status,
     created_at,
     image,
-    Owner,
+    owner,
     fetchTickets,
     hasRespondTicketPermission,
     hasCloseTicketPermission,
@@ -27,7 +27,7 @@ export default function Ticket({
     status: string;
     created_at: string;
     image: string;
-    Owner: {
+    owner: {
         id?: number;
         firstName: string;
         lastName: string;
@@ -81,7 +81,7 @@ export default function Ticket({
                                 {translateSubjectToPersian(subject)}
                             </p>
                             <p className="text-start content-start w-full text-lg ">
-                                از طرف {Owner?.firstName} {Owner?.lastName}
+                                از طرف {owner?.firstName} {owner?.lastName}
                             </p>
 
                             <p className="break-words">{description}</p>

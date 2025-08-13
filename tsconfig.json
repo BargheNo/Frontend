@@ -6,14 +6,20 @@
     // "target": "esnext",
     "allowImportingTsExtensions": true,
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "commonjs",
-    "types": ["cypress"],
+    "types": [
+      "cypress"
+    ],
     // "moduleResolution": "NodeNext",
     "moduleResolution": "node",
     // "moduleResolution": "bundler",
@@ -27,7 +33,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ]
     }
   },
   "include": [
@@ -38,5 +46,7 @@
     "testSetup.js",
     "tests/page.test.tsx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

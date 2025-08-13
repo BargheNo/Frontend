@@ -1,10 +1,9 @@
 "use client";
 import { Orderhistory } from "@/src/types/OrderhistoryType";
 import OrderHistory from "@/components/OrderHistory/OrderHistory";
-import LoadingSpinner from "../Loading/LoadingSpinner/LoadingSpinner";
-import NoRecordFound from "../NoRecordFound/NoRecordFound";
-import FilterSection from "../FilterSection/FilterSection";
-import CustomPagination from "../Custom/CustomPagination/CustomPagination";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
+import FilterSection from "@/components/FilterSection/FilterSection";
 
 export default function OrderHistoryPagination({
     status,

@@ -2,11 +2,8 @@
 
 import PanelAside from '@/components/Panel/PanelAside/PanelAside';
 import { NavItem } from '@/src/types/PanelAsideTypes';
-// import '../styles/globals.css';
 import '@/styles/global.css';
 import { Layers, FilePlus, History, BarChart, MessageSquare, Calculator } from "lucide-react";
-
-// const myFont = localFont({ src: '../..' })
   
 export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
 

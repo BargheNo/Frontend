@@ -2,7 +2,7 @@
 "use client"; // Mark this component as a Client Component
 
 import { Provider } from "react-redux";
-import { store } from "../src/store/store"; // Corrected path based on your `src/store/store.ts`
+import { store } from "@/src/store/store"; // Corrected path based on your `src/store/store.ts`
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
