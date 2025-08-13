@@ -11,6 +11,8 @@ import {
 import { useSelector } from "react-redux";
 import { Skeleton } from "@/components/ui/skeleton";
 
+const SkelethonClassName = "h-10 m-[2px]";
+
 const ToolTipWrapper = ({
     notAllowed,
     children,
@@ -47,7 +49,7 @@ export function PanelAsideIcon({
         isSuspended &&
         item.path !== "/corpdashboard/editprofile";
 
-    if (loading) return <Skeleton className="h-10 w-10" />;
+    if (loading) return <Skeleton className={`w-10 ${SkelethonClassName}`} />;
     if (!hasPermission) return <></>;
 
     return (
@@ -94,7 +96,7 @@ export function PanelAsideTitle({
         isSuspended &&
         item.path !== "/corpdashboard/editprofile";
 
-    if (loading) return <Skeleton className="h-10 w-10 p-2" />;
+    if (loading) return <Skeleton className={`w-full ${SkelethonClassName}`} />;
     if (!hasPermission) return <></>;
 
     return (
