@@ -28,8 +28,10 @@ import {
     PanelAsideTitle,
 } from "./PanelAsideItem/PanelAsideItem";
 import { SwitchCorp } from "@/components/PanelAside/SwitchCorp/SwitchCorp";
-import { Skeleton } from "@/components/ui/skeleton";
 import useClientCheck from "@/src/hooks/useClientCheck";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+const myFont = localFont({ src: "../../../public/fonts/vazir/Vazir.ttf" });
+import { Skeleton } from "@/components/ui/skeleton";
 import { useSelector } from "react-redux";
 
 const PanelAside = ({
@@ -52,6 +54,8 @@ const PanelAside = ({
         window.addEventListener("resize", checkMobile);
         return () => window.removeEventListener("resize", checkMobile);
     }, []);
+
+    if (!isClient) return <LoadingSpinner />;
 
     if (isMobile) {
         return <main className="rtl w-screen pb-18">{children}</main>;

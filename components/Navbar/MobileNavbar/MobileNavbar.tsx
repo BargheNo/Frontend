@@ -1,18 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { EllipsisVertical, House, User, LayoutDashboard } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import MobileNavbarSlider from "@/components/Navbar/MobileNavbarSlider/MobileNavbarSlider";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-} from "@/components/ui/select";
-import {
     AdminNavItems,
+    AdminNavItemsMonitoring,
     CorpNavItems,
     UserNavItems,
 } from "@/src/constants/navItems";
@@ -23,20 +18,48 @@ import {
 } from "@/components/ui/popover";
 import { useDispatch, useSelector } from "react-redux";
 import { resetUser } from "@/src/store/slices/userSlice";
+import MobileDashboard from "../DesktopNavbar/Dashboard/MobileDashboard";
+import hasAdminAnyPermission from "@/src/functions/isAdmin";
 
 const MobileNavItems = [
     { name: "خانه", path: "/", icon: <House /> },
     { name: "داشبورد", path: "/dashboard/profile", icon: <LayoutDashboard /> },
     { name: "پروفایل", path: "/profile", icon: <User /> },
-    { name: "بیشتر", path: "", icon: <EllipsisVertical size={24} /> },
+    { name: "بیشتر", path: "", icon: <EllipsisVertical /> },
 ];
 
 export default function MobileNavbar() {
     const pathname = usePathname();
-    const [dashMode, setDashMode] = useState("customer");
+    const [dashMode, setDashMode] = useState<"customer" | "corp" | "admin">(
+        pathname.startsWith("/corpdashboard")
+            ? "corp"
+            : pathname.startsWith("/admin-dashboard")
+            ? "admin"
+            : "customer"
+    );
     const dispatch = useDispatch();
     const accessToken = useSelector((state: any) => state.user.accessToken);
     const router = useRouter();
+    const [loading, setLoading] = useState<boolean>(true);
+    const [isCorp, setIsCorp] = useState<boolean>(false);
+
+    const isAdmin = hasAdminAnyPermission();
+    const perms = useSelector((state: RootState) => state.user.permissions);
+    const corps = useSelector((state: RootState) => state.user.corps);
+
+    useEffect(() => {
+        const corpsList = corps ?? [];
+        setIsCorp(corpsList?.length > 0);
+        // console.log(perms);
+        const hasInitialized =
+            typeof accessToken !== "undefined" &&
+            typeof corps !== "undefined" &&
+            typeof isAdmin != "undefined" &&
+            typeof isCorp != "undefined";
+        if (hasInitialized) {
+            setLoading(false);
+        }
+    }, [accessToken, isAdmin, setLoading, isCorp, corps, perms]);
     return (
         <>
             <MobileNavbarSlider
@@ -47,76 +70,68 @@ export default function MobileNavbar() {
                         ? CorpNavItems
                         : AdminNavItems
                 }
+                navItemsMonitoring={AdminNavItemsMonitoring}
                 mode={dashMode}
             />
             <div className="fixed bottom-3 w-full flex justify-center items-center z-40">
                 <div className="min-h-[6vh] flex justify-evenly items-center bg-warm-white p-2 w-[90%] rounded-full mx-auto neo-oval">
                     {MobileNavItems.map((select) => {
                         if (select.name === "بیشتر") {
-                            return (
-                                <SidebarTrigger
-                                    className="neo-btn rounded-lg! p-1.5 w-[36px]! h-[36px]!"
-                                    key={select.name}
-                                >
-                                    <button>{select.icon}</button>
-                                </SidebarTrigger>
-                            );
+                            if (!accessToken) {
+                                return (
+                                    <Popover key={select.name}>
+                                        <PopoverTrigger>
+                                            <button
+                                                className={
+                                                    pathname === select.path
+                                                        ? "neo-btn-active p-1.5 text-[#FA682D]"
+                                                        : "neo-btn rounded-lg! p-1.5"
+                                                }
+                                            >
+                                                {select.icon}
+                                            </button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-full h-full bg-warm-white neo-card py-2 px-3 border-none ">
+                                            <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+                                                <>
+                                                    <Link
+                                                        href="/announcements"
+                                                        className="cursor-pointer neo-btn rounded-lg! bg-transparent w-full py-2 px-3 text-center"
+                                                    >
+                                                        اطلاعیه‌ها
+                                                    </Link>
+                                                    {/* TODO add blogs route here*/}
+                                                    <Link
+                                                        href="/"
+                                                        className="cursor-pointer neo-btn rounded-lg! bg-transparent w-full py-2 px-3 text-center"
+                                                    >
+                                                        مطالب
+                                                    </Link>
+                                                </>
+                                            </div>
+                                        </PopoverContent>
+                                    </Popover>
+                                );
+                            } else {
+                                return (
+                                    <SidebarTrigger
+                                        className="neo-btn rounded-lg! p-1.5 w-[36px]! h-[36px]!"
+                                        key={select.name}
+                                    >
+                                        <button>{select.icon}</button>
+                                    </SidebarTrigger>
+                                );
+                            }
                         } else if (select.name === "داشبورد") {
                             return (
-                                <Select
+                                <MobileDashboard
                                     key={select.name}
-                                    onValueChange={(value) => {
-                                        setDashMode(value);
-                                        if (value === "customer") {
-                                            router.push("/dashboard/profile");
-                                        } else if (value === "corp") {
-                                            router.push(
-                                                "/corpdashboard/installed-panels"
-                                            );
-                                        } else if (value === "admin") {
-                                            router.push(
-                                                "/admin-dashboard/manage-users"
-                                            );
-                                        }
-                                    }}
-                                >
-                                    <SelectTrigger
-                                        onClick={() => {
-                                            if (!accessToken) {
-                                                router.push("/login");
-                                            }
-                                        }}
-                                        className={
-                                            pathname === select.path
-                                                ? "neo-btn-active p-1.5 text-[#FA682D]"
-                                                : "neo-btn rounded-lg! p-1.5"
-                                        }
-                                    >
-                                        <div>{select.icon}</div>
-                                    </SelectTrigger>
-                                    <SelectContent className="w-full h-full bg-warm-white neo-card p-1 ">
-                                        <div className="w-full h-full flex flex-col items-center justify-center gap-2">
-                                            <SelectItem
-                                                value="customer"
-                                                className="cursor-pointer neo-btn rounded-lg! bg-transparent text-center flex items-center justify-center"
-                                            >
-                                                <span>داشبورد کاربر</span>
-                                            </SelectItem>
-                                            <SelectItem
-                                                value="corp"
-                                                className="cursor-pointer neo-btn rounded-lg! bg-transparent text-center flex items-center justify-center "
-                                            >
-                                                <span>داشبورد شرکت</span>
-                                            </SelectItem>
-                                            <SelectItem
-                                                value="admin"
-                                                className="cursor-pointer neo-btn rounded-lg! bg-transparent flex items-center justify-center "
-                                            >
-                                                داشبورد ادمین
-                                            </SelectItem>
-                                        </div>
-                                    </SelectContent>
-                                </Select>
+                                    accessToken={accessToken}
+                                    isAdmin={isAdmin}
+                                    isCorp={isCorp}
+                                    setDashMode={setDashMode}
+                                    dashMode={dashMode}
+                                />
                             );
                         } else if (select.name === "پروفایل") {
                             return (

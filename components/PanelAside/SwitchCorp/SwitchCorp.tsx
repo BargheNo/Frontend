@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/select";
 import { getData } from "@/src/services/apiHub";
 import { setCorpId } from "@/src/store/slices/userSlice";
-import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import React, { useEffect, useState } from "react";
 import { RootState } from "@/src/store/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -36,7 +35,8 @@ export const SwitchCorp = () => {
             .then((res) => {
                 // console.log(res?.data);
                 setCorps(res?.data);
-                if (res?.data.length > 0) {
+                setLoading(false);
+                if (corpID == null) {
                     dispatch(setCorpId(res?.data?.[0]?.id));
                 }
                 // changeCorp(res?.data?.[0]?.id);
@@ -50,7 +50,7 @@ export const SwitchCorp = () => {
     }, [dispatch]);
 
     return loading ? (
-        <Skeleton className="w-full mb-3 h-9" />
+        <Skeleton className="w-full mb-3 h-9 bg-gray-200" />
     ) : (
         <Select
             value={String(corpID)}
