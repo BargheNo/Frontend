@@ -25,7 +25,7 @@ const MobileNavItems = [
     { name: "خانه", path: "/", icon: <House /> },
     { name: "داشبورد", path: "/dashboard/profile", icon: <LayoutDashboard /> },
     { name: "پروفایل", path: "/profile", icon: <User /> },
-    { name: "بیشتر", path: "" },
+    { name: "بیشتر", path: "", icon: <EllipsisVertical /> },
 ];
 
 export default function MobileNavbar() {
@@ -77,15 +77,51 @@ export default function MobileNavbar() {
                 <div className="min-h-[6vh] flex justify-evenly items-center bg-warm-white p-2 w-[90%] rounded-full mx-auto neo-oval">
                     {MobileNavItems.map((select) => {
                         if (select.name === "بیشتر") {
-                            if (!accessToken) return <></>;
-                            return (
-                                <SidebarTrigger
-                                    className="neo-btn rounded-lg! p-1.5 w-[36px]! h-[36px]!"
-                                    key={select.name}
-                                >
-                                    <button>{select.icon}</button>
-                                </SidebarTrigger>
-                            );
+                            if (!accessToken) {
+                                return (
+                                    <Popover key={select.name}>
+                                        <PopoverTrigger>
+                                            <button
+                                                className={
+                                                    pathname === select.path
+                                                        ? "neo-btn-active p-1.5 text-[#FA682D]"
+                                                        : "neo-btn rounded-lg! p-1.5"
+                                                }
+                                            >
+                                                {select.icon}
+                                            </button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-full h-full bg-warm-white neo-card py-2 px-3 border-none ">
+                                            <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+                                                <>
+                                                    <Link
+                                                        href="/announcements"
+                                                        className="cursor-pointer neo-btn rounded-lg! bg-transparent w-full py-2 px-3 text-center"
+                                                    >
+                                                        اطلاعیه‌ها
+                                                    </Link>
+                                                    {/* TODO add blogs route here*/}
+                                                    <Link
+                                                        href="/"
+                                                        className="cursor-pointer neo-btn rounded-lg! bg-transparent w-full py-2 px-3 text-center"
+                                                    >
+                                                        مطالب
+                                                    </Link>
+                                                </>
+                                            </div>
+                                        </PopoverContent>
+                                    </Popover>
+                                );
+                            } else {
+                                return (
+                                    <SidebarTrigger
+                                        className="neo-btn rounded-lg! p-1.5 w-[36px]! h-[36px]!"
+                                        key={select.name}
+                                    >
+                                        <button>{select.icon}</button>
+                                    </SidebarTrigger>
+                                );
+                            }
                         } else if (select.name === "داشبورد") {
                             return (
                                 <MobileDashboard
