@@ -9,6 +9,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useSelector } from "react-redux";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ToolTipWrapper = ({
     notAllowed,
@@ -36,14 +37,17 @@ export function PanelAsideIcon({
 }) {
     const pathname = usePathname();
     // const hasPermission = true;
-    const hasPermission = useHasPermission(item?.RNPName || "");
+    const { hasPermission, loading } = useHasPermission(item?.RNPName || "");
     const corps = useSelector((state: RootState) => state.user.corps);
     const corpId = useSelector((state: RootState) => state.user.corpId);
     const isSuspended =
         corps?.find((corp) => corp?.id === corpId)?.isSuspended ?? false;
     const notAllowed =
-        isSuspended && item.path !== "/corpdashboard/editprofile";
+        mode === "corp" &&
+        isSuspended &&
+        item.path !== "/corpdashboard/editprofile";
 
+    if (loading) return <Skeleton className="h-10 w-10" />;
     if (!hasPermission) return <></>;
 
     return (
@@ -80,14 +84,17 @@ export function PanelAsideTitle({
 }) {
     const pathname = usePathname();
     // const hasPermission = true;
-    const hasPermission = useHasPermission(item?.RNPName || "");
+    const { hasPermission, loading } = useHasPermission(item?.RNPName || "");
     const corps = useSelector((state: RootState) => state.user.corps);
     const corpId = useSelector((state: RootState) => state.user.corpId);
     const isSuspended =
         corps?.find((corp) => corp?.id === corpId)?.isSuspended ?? false;
     const notAllowed =
-        isSuspended && item.path !== "/corpdashboard/editprofile";
+        mode === "corp" &&
+        isSuspended &&
+        item.path !== "/corpdashboard/editprofile";
 
+    if (loading) return <Skeleton className="h-10 w-10 p-2" />;
     if (!hasPermission) return <></>;
 
     return (

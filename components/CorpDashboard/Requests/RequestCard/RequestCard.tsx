@@ -63,7 +63,7 @@ export default function RequestCard({
 	panelDetails,
 	requestId,
 }: RequestCardProps) {
-	const hasCreateBidPermission = useHasPermission("bid.create");
+	const { hasPermission: hasCreateBidPermission, permissionLoading } = useHasPermission("bid.create");
 	const [open, setOpen] = useState<boolean>(false);
 	return (
 		<div

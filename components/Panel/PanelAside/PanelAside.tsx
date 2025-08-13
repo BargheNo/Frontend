@@ -28,7 +28,9 @@ import {
     PanelAsideTitle,
 } from "./PanelAsideItem/PanelAsideItem";
 import { SwitchCorp } from "@/components/PanelAside/SwitchCorp/SwitchCorp";
-const myFont = localFont({ src: "../../../public/fonts/vazir/Vazir.ttf" });
+import { Skeleton } from "@/components/ui/skeleton";
+
+const mockSkelethons = 10;
 
 const PanelAside = ({
     children,
@@ -37,21 +39,16 @@ const PanelAside = ({
     mode = "customer",
 }: PanelAsideProps) => {
     const pathname = usePathname();
-    const [isMobile, setIsMobile] = useState(false);
-    const [sideOpen, setSideOpen] = useState(false);
+    // const [loading, setLoading] = useState<boolean>(true);
+    const [isMobile, setIsMobile] = useState<boolean>(false);
+    const [sideOpen, setSideOpen] = useState<boolean>(false);
 
     useEffect(() => {
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768); // 768px is typical mobile breakpoint
         };
-
-        // Check on mount
         checkMobile();
-
-        // Add resize listener
         window.addEventListener("resize", checkMobile);
-
-        // Cleanup
         return () => window.removeEventListener("resize", checkMobile);
     }, []);
 
@@ -61,7 +58,7 @@ const PanelAside = ({
 
     return (
         <div
-            className={`flex fixed h-full w-full bg-[#F0EDEF] under-navbar-content ${myFont.className}`}
+            className={`flex fixed h-full w-full bg-[#F0EDEF] under-navbar-content vazir`}
             dir="rtl"
         >
             <SidebarProvider open={sideOpen}>
@@ -71,13 +68,28 @@ const PanelAside = ({
                 >
                     <SidebarContent className="bg-[#F0EDEF] no-scrollbar flex justify-between">
                         <nav className="space-y-2 bg-transparent">
-                            {navItems.map((item: NavItem, index) => (
-                                <PanelAsideTitle
-                                    item={item}
-                                    mode={mode}
-                                    key={index}
-                                />
-                            ))}
+                            {
+                                // loading ? (
+                                //     <>
+                                //         {Array.from({ length: mockSkelethons }).map(
+                                //             (_, index) => (
+                                //                 <Skeleton
+                                //                     className="h-10 w-full"
+                                //                     key={index}
+                                //                 />
+                                //             )
+                                //         )}
+                                //     </>
+                                // ) : (
+                                navItems.map((item: NavItem, index) => (
+                                    <PanelAsideTitle
+                                        item={item}
+                                        mode={mode}
+                                        key={index}
+                                    />
+                                ))
+                                // )
+                            }
                             {mode == "admin" && (
                                 <Accordion
                                     type="single"
@@ -139,18 +151,34 @@ const PanelAside = ({
                     } flex flex-col items-center justify-between h-[100vh]`}
                 >
                     <div className="text-white">
-                        {navItems.map((item: NavItem, index) => (
-                            <PanelAsideIcon
-                                item={item}
-                                mode={mode}
-                                key={index}
-                            />
-                        ))}
+                        {
+                            // loading ? (
+                            //     <div className="space-y-2">
+                            //         {Array.from({ length: mockSkelethons }).map(
+                            //             (_, index) => (
+                            //                 <Skeleton
+                            //                     className="h-10 w-10"
+                            //                     key={index}
+                            //                 />
+                            //             )
+                            //         )}
+                            //     </div>
+                            // ) : (
+                            navItems.map((item: NavItem, index) => (
+                                <PanelAsideIcon
+                                    item={item}
+                                    mode={mode}
+                                    key={index}
+                                />
+                            ))
+                            // )
+                        }
                         {mode == "admin" && (
                             <PanelAsideIcon
                                 item={{
                                     name: "",
                                     path: "",
+                                    RNPName: "",
                                     icon: <Activity />,
                                 }}
                                 mode={mode}

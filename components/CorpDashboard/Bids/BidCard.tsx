@@ -257,8 +257,8 @@ export default function BidCard({
     guaranteeID,
     updateBids,
 }: BidInfo) {
-    const hasEditBidPermission = useHasPermission("bid.edit");
-    const hasCancelBidPermission = useHasPermission("bid.cancel");
+    const { hasPermission: hasEditBidPermission, permissionLoading1 } = useHasPermission("bid.edit");
+    const { hasPermission: hasCancelBidPermission, permissionLoading2 } = useHasPermission("bid.cancel");
     const [guarantees, setGuarantees] = React.useState<GuaranteeProps[]>([]);
     const [open, setOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);

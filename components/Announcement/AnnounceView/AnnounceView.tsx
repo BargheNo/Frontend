@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import Image from "next/image";
 import panelNotFound from "@/public/images/panelNotFound/panelNotFound.png";
 import { cn } from "@/lib/utils";
-import useHasPermission from "@/src/functions/hasPermission";
 import { useEffect } from "react";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 import AddAnnounce from "@/components/Announcement/AddAnnounce/AddAnnounce";

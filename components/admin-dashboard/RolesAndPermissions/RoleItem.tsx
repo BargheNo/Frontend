@@ -23,8 +23,8 @@ export default function RoleItem({
 }) {
     const [editOpen, setEditOpen] = useState<boolean>(false);
     const [expanded, setExpanded] = useState<boolean>(false);
-    const editRolePermission = useHasPermission("user.manageRolePermissions");
-    const removeRolePermission = useHasPermission("user.removeRole");
+    const { hasPermission: editRolePermission, permissionLoading1 } = useHasPermission("user.manageRolePermissions");
+    const { hasPermission: removeRolePermission, permissionLoading2 } = useHasPermission("user.removeRole");
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const deleteRole = async (roleToDeleteId: string) => {
         setLoading(true);
