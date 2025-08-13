@@ -8,6 +8,7 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useSelector } from "react-redux";
 
 const ToolTipWrapper = ({
     notAllowed,
@@ -36,7 +37,10 @@ export function PanelAsideIcon({
     const pathname = usePathname();
     // const hasPermission = true;
     const hasPermission = useHasPermission(item?.RNPName || "");
-    const isSuspended = true;
+    const corps = useSelector((state: RootState) => state.user.corps);
+    const corpId = useSelector((state: RootState) => state.user.corpId);
+    const isSuspended =
+        corps?.find((corp) => corp?.id === corpId)?.isSuspended ?? false;
     const notAllowed =
         isSuspended && item.path !== "/corpdashboard/editprofile";
 
@@ -44,7 +48,7 @@ export function PanelAsideIcon({
 
     return (
         <ToolTipWrapper notAllowed={notAllowed}>
-            <Link key={item.path} href={notAllowed ? item.path : ""}>
+            <Link key={item.path} href={notAllowed ? "" : item.path}>
                 <span
                     className={`flex gap-2 text-[#003a8b] p-2 mt-0.5 rounded-lg cursor-${
                         notAllowed ? "not-allowed" : "pointer"
@@ -77,7 +81,10 @@ export function PanelAsideTitle({
     const pathname = usePathname();
     // const hasPermission = true;
     const hasPermission = useHasPermission(item?.RNPName || "");
-    const isSuspended = true;
+    const corps = useSelector((state: RootState) => state.user.corps);
+    const corpId = useSelector((state: RootState) => state.user.corpId);
+    const isSuspended =
+        corps?.find((corp) => corp?.id === corpId)?.isSuspended ?? false;
     const notAllowed =
         isSuspended && item.path !== "/corpdashboard/editprofile";
 
@@ -85,7 +92,7 @@ export function PanelAsideTitle({
 
     return (
         <ToolTipWrapper notAllowed={notAllowed}>
-            <Link key={item.path} href={notAllowed ? item.path : ""}>
+            <Link key={item.path} href={notAllowed ? "" : item.path}>
                 <span
                     className={`flex gap-2 text-[#003a8b] p-2 mt-0.5 rounded-lg cursor-${
                         notAllowed ? "not-allowed" : "pointer"
