@@ -10,7 +10,7 @@ import {
     XIcon,
 } from "lucide-react";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
-import { baseURL, getData } from "@/src/services/apiHub";
+import { getData } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import { useSelector } from "react-redux";
@@ -22,17 +22,20 @@ interface SignatoriesProps {
 export default function CorpInfoForm({
     values,
     setFieldValue,
+    setFieldTouched,
 }: {
     values: corpData;
     setFieldValue: any;
+    setFieldTouched: any;
 }) {
     const [loading, setLoading] = useState<boolean>(true);
-    const corpId = useSelector((state: RootState) => state.user.corpId);
+    const corpId = useSelector((state: RootState) => state.corp.id);
     useEffect(() => {
+        console.log("corpId", corpId);
         setLoading(true);
         if (corpId) {
             getData({
-                endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
+                endPoint: `/v1/user/corps/registration/${corpId}`,
             })
                 .then((res) => {
                     console.log("res", res);
@@ -44,13 +47,18 @@ export default function CorpInfoForm({
                     setFieldValue("nationalID", res.data.nationalID);
                     setFieldValue("iban", res.data.iban);
                     setFieldValue("signatories", res.data.signatories);
+
+                    setFieldTouched("name", false);
+                    setFieldTouched("registrationNumber", false);
+                    setFieldTouched("nationalID", false);
+                    setFieldTouched("iban", false);
                 })
                 .catch((err) => console.log(err))
                 .finally(() => setLoading(false));
         } else {
             setLoading(false);
         }
-    }, []);
+    }, [setFieldTouched, setFieldValue, corpId]);
     if (loading)
         return (
             <div className="h-fit">
@@ -80,12 +88,14 @@ export default function CorpInfoForm({
                         placeholder="شناسه ملی"
                         icon={IdCard}
                         onlyNumbers
+                        maxLength={11}
                     />
                     <CustomInput
                         name="iban"
                         placeholder="شماره شبا"
                         icon={CreditCard}
                         onlyNumbers
+                        maxLength={26}
                     />
                 </div>
                 <h2 className="mt-8 text-xl">صاحبان امضا</h2>
@@ -121,6 +131,8 @@ const Signatories: React.FC<SignatoriesProps> = ({
                                         icon={UserRound}
                                     />
                                     <CustomInput
+                                        onlyNumbers
+                                        maxLength={10}
                                         name={`signatories.[${index}].nationalCardNumber`}
                                         placeholder="کد ملی"
                                         icon={IdCard}

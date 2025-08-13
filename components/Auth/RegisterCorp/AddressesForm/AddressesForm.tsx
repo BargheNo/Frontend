@@ -70,22 +70,21 @@ export default function AddressesForm({
     // const dispatch = useDispatch();
     const [addresses, setAddresses] = useState<Address[]>();
     const [loading, setLoading] = useState<boolean>(true);
-    const corpId = useSelector((state: RootState) => state.user.corpId);
+    const corpId = useSelector((state: RootState) => state.corp.id);
 
     useEffect(() => {
         setLoading(true);
         getData({
-            endPoint: `${baseURL}/v1/user/corps/registration/${corpId}`,
+            endPoint: `/v1/user/corps/registration/${corpId}`,
         })
             .then((res) => {
-                setAddresses(res.data.addresses);
+                console.log(res);
+                setAddresses(res?.data?.addresses);
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, []);
-    useEffect(() => {
-        console.log(addresses);
-    }, [addresses]);
+    }, [corpId]);
+
     if (loading)
         return (
             <div className="h-fit">
@@ -102,14 +101,21 @@ export default function AddressesForm({
                             onClick={() => {
                                 setAddresses(
                                     addresses?.filter(
-                                        (add) => add.ID !== address.ID
+                                        (add) => add.id !== address.id
                                     )
                                 );
+                                console.log(
+                                    `/v1/user/corps/registration/${corpId}/address/${address.id}`
+                                );
                                 deleteData({
-                                    endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/address/${address.ID}`,
+                                    endPoint: `/v1/user/corps/registration/${corpId}/address/${address.id}`,
                                     // endPoint: `${baseURL}/v1/user/corps/registration/${corpId}/contacts/0`,
                                 })
                                     .then((res) => {
+                                        console.log(
+                                            res?.message,
+                                            `/v1/user/corps/registration/${corpId}/address/${address.id}`
+                                        );
                                         CustomToast(res?.message, "success");
                                         // toast(res.message);
                                     })
@@ -201,164 +207,6 @@ export default function AddressesForm({
                                             setFieldValue={setFieldValue}
                                             address={address}
                                         />
-                                        {/* <div className="flex w-full h-full gap-4">
-											<Select
-												value={String(
-													values.addresses?.[index]
-														.provinceID
-												)}
-												name={`addresses.[${index}].provinceID`}
-												onValueChange={(value) => {
-													setDisable(false);
-													setFieldValue(
-														`addresses.[${index}].provinceID`,
-														Number(value)
-													);
-													setFieldValue(
-														`addresses.[${index}].cityID`,
-														""
-													);
-													console.log(
-														"provinces",
-														provinces
-													);
-													const province =
-														provinces?.find(
-															(p) =>
-																p.ID ===
-																Number(value)
-														);
-													const provinceId =
-														province?.ID ?? 1;
-													// return province?.ID ?? null;
-													// const provinceId =
-													// 	findProvinceId(
-													// 		provinces,
-													// 		String(value)
-													// 	);
-
-													console.log(
-														"provinceId",
-														provinceId
-													);
-													setProvinceId(
-														provinceId ?? 1
-													);
-													if (provinceId)
-														UpdateCityList(
-															provinceId
-														);
-												}}
-											>
-												<SelectTrigger
-													data-test="select-province"
-													value={address.provinceID}
-													// name={`addresses.[${index}].province`}
-
-													className={`${styles.CustomInput} cursor-pointer`}
-												>
-													<SelectValue placeholder="استان" />
-												</SelectTrigger>
-												<SelectContent>
-													<SelectGroup className="vazir">
-														<SelectLabel>
-															استان
-														</SelectLabel>
-														{provinces?.length >
-														0 ? (
-															provinces.map(
-																(
-																	province,
-																	index
-																) => (
-																	<SelectItem
-																		key={
-																			index
-																		}
-																		data-test={`select-province-${index}`}
-																		value={String(
-																			province.ID
-																		)}
-																		className="cursor-pointer"
-																	>
-																		{
-																			province.name
-																		}
-																	</SelectItem>
-																)
-															)
-														) : (
-															<p>
-																هیچ استانی یافت
-																نشد
-															</p>
-														)}
-													</SelectGroup>
-												</SelectContent>
-											</Select>
-											<Select
-												name={`addresses.[${index}].cityID`}
-												value={String(
-													values.addresses?.[index]
-														.cityID
-												)}
-												disabled={disable}
-												onValueChange={(value) => {
-													const iD = FindCityid(
-														cities,
-														value
-													);
-													setCityId(iD ?? 1);
-													setFieldValue(
-														`addresses.[${index}].cityID`,
-														Number(value)
-													);
-												}}
-											>
-												<SelectTrigger
-													data-test="select-city"
-													disabled={disable}
-													className={`${styles.CustomInput} cursor-pointer`}
-												>
-													<SelectValue placeholder="شهر" />
-												</SelectTrigger>
-												<SelectContent>
-													<SelectGroup className="vazir">
-														<SelectLabel>
-															شهر
-														</SelectLabel>
-														{cities?.length > 0 ? (
-															cities.map(
-																(
-																	city,
-																	index
-																) => (
-																	<SelectItem
-																		key={
-																			index
-																		}
-																		data-test={`select-city-${index}`}
-																		value={String(
-																			city.ID
-																		)}
-																		className="cursor-pointer"
-																	>
-																		{Object.values(
-																			city.name
-																		)}
-																	</SelectItem>
-																)
-															)
-														) : (
-															<p>
-																هیچ شهری یافت
-																نشد
-															</p>
-														)}
-													</SelectGroup>
-												</SelectContent>
-											</Select>
-										</div> */}
                                         <CustomTextArea
                                             name={`addresses.[${index}].streetAddress`}
                                             // name="streetAddress"
@@ -371,19 +219,22 @@ export default function AddressesForm({
                                                 // name="postalCode"
                                                 placeholder="کد پستی"
                                                 icon={Mailbox}
+                                                onlyNumbers
+                                                maxLength={10}
                                             />
                                             <CustomInput
                                                 name={`addresses.[${index}].houseNumber`}
                                                 // name="houseNumber"
                                                 placeholder="پلاک"
                                                 icon={Building}
+                                                onlyNumbers
                                             />
                                             <CustomInput
                                                 name={`addresses.[${index}].unit`}
                                                 // name="unit"
                                                 placeholder="واحد"
                                                 icon={Home}
-                                                onlyNumbers
+                                                type="number"
                                             />
                                         </div>
                                     </div>
@@ -448,7 +299,8 @@ function ProvinceAndCity({
         provinceService
             .GetProvinces()
             .then((res) => {
-                setProvinces(res.data.data);
+                console.log(res);
+                setProvinces(res.data);
             })
             .catch((err) => {
                 console.log(err.message);
@@ -461,7 +313,7 @@ function ProvinceAndCity({
     const UpdateCityList = (provinceId: number) => {
         provinceService
             .GetCities(provinceId)
-            .then((res) => setCities(res.data.data))
+            .then((res) => setCities(res.data))
             .catch((err) => console.log(err.message));
     };
     const findProvinceId = (provinces: Province[], name: any) => {
