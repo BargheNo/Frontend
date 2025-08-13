@@ -167,7 +167,7 @@ const CorporationItem = ({
             .catch((err) => console.log(err));
     };
     return (
-        <div className="flex flex-row justify-between w-full h-full bg-[#F4F1F3] p-5 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 items-center">
+        <div className="flex lg:flex-row lg:gap-0 gap-4 flex-col justify-between w-full h-full bg-[#F4F1F3] p-5 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 lg:items-center ">
             <div className="flex items-center gap-3 w-1/4">
                 {logo ? (
                     <img
@@ -189,22 +189,24 @@ const CorporationItem = ({
                 <div className="text-orange-400">
                     <Phone />
                 </div>
-                <p>اطلاعات تماس: {contactInfo.length > 0 ? "دارد" : "ندارد"}</p>
+                <p className="text-nowrap">اطلاعات تماس: {contactInfo.length > 0 ? "دارد" : "ندارد"}</p>
             </div>
 
             <div className="flex items-center gap-3 w-1/4">
                 <div className="text-orange-400">
                     <MapPinHouse />
                 </div>
-                <p>آدرس: {addresses.length > 0 ? "دارد" : "ندارد"}</p>
+                <p className="text-nowrap">آدرس: {addresses.length > 0 ? "دارد" : "ندارد"}</p>
             </div>
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger>
                     <div
-                        className={`bg-white ${styles.detailsButton} text-[#FA682D] flex gap-2 items-center p-2 hover:cursor-pointer`}
+                        className={`bg-white ${styles.detailsButton} text-[#FA682D] flex gap-2 m-auto items-center p-2   hover:cursor-pointer`}
                     >
-                        <p className="font-bold">مشاهده پروفایل و مدیریت</p>
-                        <Settings />
+                        <div className="flex flex-row m-auto">
+                        <p className="font-bold ">مشاهده پروفایل و مدیریت</p>
+                        <Settings  />
+                        </div>
                     </div>
                 </DialogTrigger>
                 <DialogContent className="max-h-[90vh] overflow-y-auto dialog-width pb-0">
