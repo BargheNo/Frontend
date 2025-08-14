@@ -1,15 +1,19 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, forwardRef, useImperativeHandle } from "react";
 import WarrantyCard from "./WarrantyCard";
 import { Warranty } from "./warrantyTypes.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWarrantyTypes } from "@/src/store/slices/warrantyTypesSlice.ts";
-import { AppDispatch } from "@/src/store/store";
+import { AppDispatch, RootState } from "@/src/store/store";
 import { getData } from "@/src/services/apiHub.tsx";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner.tsx";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound.tsx";
 import FilterSection from "@/components/FilterSection/FilterSection.tsx";
 
-const Warranties = () => {
+export interface WarrantiesRef {
+    refreshWarranties: () => void;
+}
+
+const Warranties = forwardRef<WarrantiesRef>((props, ref) => {
     const dispatch = useDispatch<AppDispatch>();
     const [warrantyData, setWarrantyData] = useState<Warranty[]>([]);
     const [loadingGuarantees, setLoadingGuarantees] = useState(true);
@@ -18,8 +22,9 @@ const Warranties = () => {
     const corpId = useSelector((state: RootState) => state.user.corpId);
 
     const fetchWarranties = useCallback(() => {
+        if (!corpId || typeof corpId !== 'number') return;
         setLoadingGuarantees(true);
-        dispatch(fetchWarrantyTypes());
+        dispatch(fetchWarrantyTypes(corpId));
 
         getData({
             endPoint: `/v1/corp/${corpId}/guarantee`,
@@ -36,8 +41,14 @@ const Warranties = () => {
     }, [dispatch, status, corpId]);
 
     useEffect(() => {
-        fetchWarranties();
-    }, [fetchWarranties]);
+        if (corpId && typeof corpId === 'number') {
+            fetchWarranties();
+        }
+    }, [fetchWarranties, corpId]);
+
+    useImperativeHandle(ref, () => ({
+        refreshWarranties: fetchWarranties,
+    }));
 
     return (
         <div className="space-y-6 relative">
@@ -60,6 +71,7 @@ const Warranties = () => {
                             key={warrantyItem.id}
                             {...warrantyItem}
                             isArchived={warrantyItem.status !== "فعال"}
+                            onWarrantyUpdate={fetchWarranties}
                         />
                     ))}
                 </div>
@@ -68,6 +80,8 @@ const Warranties = () => {
             )}
         </div>
     );
-};
+});
+
+Warranties.displayName = 'Warranties';
 
 export default Warranties;

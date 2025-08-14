@@ -6,7 +6,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { Siren, AlertCircle, Eclipse, Calendar } from "lucide-react";
+import { Siren, AlertCircle, Eclipse, Calendar, Package, PanelTopClose } from "lucide-react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
@@ -252,6 +252,36 @@ const RepairDetailsDialog = ({
 										{repairItem.status}
 									</span>
 								</div>
+								<div className="flex flex-col">
+									<div className="flex items-center gap-1">
+										<PanelTopClose
+											size={14}
+											strokeWidth={2.5}
+											className="text-fire-orange"
+										/>
+										<span className="text-sm text-gray-500">
+											شرکت تعمیرکننده
+										</span>
+									</div>
+									<span className="text-lg font-medium">
+										{repairItem.corporation.name}
+									</span>
+								</div>
+								<div className="flex flex-col">
+									<div className="flex items-center gap-1">
+										<Package
+											size={14}
+											strokeWidth={2.5}
+											className="text-fire-orange"
+										/>
+										<span className="text-sm text-gray-500">
+											شرکت سازنده
+										</span>
+									</div>
+									<span className="text-lg font-medium">
+										{repairItem.panel.corporation.name}
+									</span>
+								</div>
 							</div>
 						</div>
 
@@ -263,6 +293,61 @@ const RepairDetailsDialog = ({
 							<p className="text-gray-700">
 								{repairItem.description}
 							</p>
+						</div>
+
+						{/* Repair Record */}
+						<div className="inset-neu-container !w-full !p-5 !bg-[#FEFEFE]">
+							<h4 className="text-lg font-semibold text-navy-blue mb-3">
+								سابقه تعمیرات
+							</h4>
+							{repairItem.record && (repairItem.record.title || repairItem.record.details) ? (
+								<div className="flex flex-col space-y-2">
+									<p className="text-gray-700">
+										<strong>عنوان:</strong> {repairItem.record.title}
+									</p>
+									<p className="text-gray-700">
+										<strong>جزئیات:</strong> {repairItem.record.details}
+									</p>
+									<p className="text-gray-700">
+										<strong>تاریخ:</strong>{" "}
+										{repairItem.record.date}
+										
+										{/* {moment(
+											repairItem.record.date.slice(0, 10),
+											"YYYY-MM-DD"
+										)
+											.locale("fa")
+											.format("YYYY/MM/DD")} */}
+									</p>
+									{/* <p className="text-gray-700">
+										<strong>وضعیت تایید:</strong>{" "}
+										{repairItem.record.isApproved ? "تایید شده" : "تایید نشده"}
+									</p> */}
+									{repairItem.record.violation.details || repairItem.record.violation.reason ? (
+										<div className="flex flex-col space-y-2">
+											{repairItem.record.violation.details && (
+												<p className="text-gray-700">
+													<strong>جزئیات:</strong> {repairItem.record.violation.details}
+												</p>
+											)}
+											{repairItem.record.violation.reason && (
+												<p className="text-gray-700">
+													<strong>دلیل:</strong> {repairItem.record.violation.reason}
+												</p>
+											)}
+										</div>
+									) : null}
+								</div>
+							) : (
+								<div className="flex flex-col items-center justify-center gap-4 py-2">
+									<div className="text-6xl text-gray-400 font-bold">
+										!
+									</div>
+									<p className="text-gray-500">
+										هیچ یادداشتی ثبت نشده است
+									</p>
+								</div>
+							)}
 						</div>
 
 						{/* Problem Report Form */}
@@ -302,7 +387,7 @@ const RepairDetailsDialog = ({
 						</div>
 
 						{/* Finalize Maintenance Section */}
-						<div className="w-full mt-5 border-t border-gray-300 pt-5">
+						{repairItem.status === "تمام شده" ? <div className="w-full mt-5 border-t border-gray-300 pt-5">
 							<h4 className="text-lg font-semibold text-navy-blue mb-4">
 								نهایی کردن تعمیرات
 							</h4>
@@ -322,10 +407,10 @@ const RepairDetailsDialog = ({
 									نهایی کردن تعمیرات
 								</button>
 							</div>
-						</div>
+						</div> : ""}
 
 						{/* Override Request */}
-						<div className="w-full flex flex-col sm:flex-row gap-2 justify-between items-start mt-5 border-t border-gray-300 pt-5">
+						{repairItem.status === "در انتظار تایید" ? <div className="w-full flex flex-col sm:flex-row gap-2 justify-between items-start mt-5 border-t border-gray-300 pt-5">
 							<span>
 								میتوانید از این بخش درخواست خود را حذف کنید.
 							</span>
@@ -373,7 +458,7 @@ const RepairDetailsDialog = ({
 									</>
 								)}
 							</div>
-						</div>
+						</div> : ""}
 					</div>
 				</div>
 			</DialogContent>

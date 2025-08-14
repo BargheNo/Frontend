@@ -315,11 +315,23 @@ body {
     }
 
     .yellow-status {
-        @apply bg-gradient-to-br from-yellow-400 to-yellow-500 border-1 border-gray-100/50 shadow-sm shadow-yellow-500;
+        @apply bg-gradient-to-br from-orange-400 to-orange-500 border-1 border-gray-100/50 shadow-sm shadow-orange-500;
     }
 
     .red-status {
         @apply bg-gradient-to-br from-red-400 to-red-500 border-1 border-gray-100/50 shadow-sm shadow-red-500;
+    }
+
+    .blue-status {
+        @apply bg-gradient-to-br from-blue-400 to-blue-500 border-1 border-gray-100/50 shadow-sm shadow-blue-500;
+    }
+
+    .black-status {
+        @apply bg-gradient-to-br from-gray-700 to-gray-900 border-1 border-gray-100/50 shadow-sm shadow-gray-900;
+    }
+
+    .purple-status {
+        @apply bg-gradient-to-br from-purple-400 to-purple-500 border-1 border-gray-100/50 shadow-sm shadow-purple-500;
     }
 
     .inset-neu-container {
