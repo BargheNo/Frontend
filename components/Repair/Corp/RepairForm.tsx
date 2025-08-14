@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 
 interface RepairFormProps {
 	panelId: number;
+	guaranteeAvailable?: boolean;
 	onSuccess: () => void;
 }
 
@@ -29,7 +30,7 @@ const validationSchema = Yup.object().shape({
 	}),
 });
 
-const RepairForm = ({ panelId, onSuccess }: RepairFormProps) => {
+const RepairForm = ({ panelId, guaranteeAvailable, onSuccess }: RepairFormProps) => {
 	const initialValues: RepairFormValues = {
 		title: "",
 		details: "",
@@ -78,6 +79,7 @@ const RepairForm = ({ panelId, onSuccess }: RepairFormProps) => {
 								icon={NotebookPen}
 								placeholder="جزئیات یادداشت را وارد کنید"
 							/>
+							{guaranteeAvailable ?
 							<div className="space-y-2">
 								<h5 className="text-sm font-medium text-gray-700">
 									نقض گارانتی
@@ -94,7 +96,7 @@ const RepairForm = ({ panelId, onSuccess }: RepairFormProps) => {
 									icon={NotebookPen}
 									placeholder="جزئیات نقض گارانتی را وارد کنید"
 								/>
-							</div>
+							</div> : null}
 						</div>
 						<button
 							type="submit"

@@ -295,6 +295,61 @@ const RepairDetailsDialog = ({
 							</p>
 						</div>
 
+						{/* Repair Record */}
+						<div className="inset-neu-container !w-full !p-5 !bg-[#FEFEFE]">
+							<h4 className="text-lg font-semibold text-navy-blue mb-3">
+								سابقه تعمیرات
+							</h4>
+							{repairItem.record && (repairItem.record.title || repairItem.record.details) ? (
+								<div className="flex flex-col space-y-2">
+									<p className="text-gray-700">
+										<strong>عنوان:</strong> {repairItem.record.title}
+									</p>
+									<p className="text-gray-700">
+										<strong>جزئیات:</strong> {repairItem.record.details}
+									</p>
+									<p className="text-gray-700">
+										<strong>تاریخ:</strong>{" "}
+										{repairItem.record.date}
+										
+										{/* {moment(
+											repairItem.record.date.slice(0, 10),
+											"YYYY-MM-DD"
+										)
+											.locale("fa")
+											.format("YYYY/MM/DD")} */}
+									</p>
+									{/* <p className="text-gray-700">
+										<strong>وضعیت تایید:</strong>{" "}
+										{repairItem.record.isApproved ? "تایید شده" : "تایید نشده"}
+									</p> */}
+									{repairItem.record.violation.details || repairItem.record.violation.reason ? (
+										<div className="flex flex-col space-y-2">
+											{repairItem.record.violation.details && (
+												<p className="text-gray-700">
+													<strong>جزئیات:</strong> {repairItem.record.violation.details}
+												</p>
+											)}
+											{repairItem.record.violation.reason && (
+												<p className="text-gray-700">
+													<strong>دلیل:</strong> {repairItem.record.violation.reason}
+												</p>
+											)}
+										</div>
+									) : null}
+								</div>
+							) : (
+								<div className="flex flex-col items-center justify-center gap-4 py-2">
+									<div className="text-6xl text-gray-400 font-bold">
+										!
+									</div>
+									<p className="text-gray-500">
+										هیچ یادداشتی ثبت نشده است
+									</p>
+								</div>
+							)}
+						</div>
+
 						{/* Problem Report Form */}
 						<div className="w-full mt-5 border-t border-gray-300 pt-5">
 							<h4 className="text-lg font-semibold text-navy-blue">

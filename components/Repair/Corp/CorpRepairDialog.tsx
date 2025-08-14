@@ -52,7 +52,7 @@ const CorpRepairDialog = ({
     useEffect(() => {
         if (repairItem) {
             getData({
-                endPoint: `${baseURL}/v1/corp/${corpId}/maintenance/request/${repairItem.id}`, // TODO: corpIDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+                endPoint: `${baseURL}/v1/corp/${corpId}/maintenance/request/${repairItem.id}`,
             })
                 .then((res) => {
                     setNotes(res.data.record);
@@ -71,7 +71,7 @@ const CorpRepairDialog = ({
     const handleAccept = async () => {
         setIsLoading(true);
         putData({
-            endPoint: `${baseURL}/v1/corp/${corpId}/maintenance/request/${repairItem.id}/accept`, // TODO: corpIDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+            endPoint: `${baseURL}/v1/corp/${corpId}/maintenance/request/${repairItem.id}/accept`,
         })
             .then((res) => {
                 CustomToast(res?.message, "success");
@@ -116,7 +116,7 @@ const CorpRepairDialog = ({
                     <div dir="rtl" className="flex flex-col gap-5">
                         {isLoadingNotes ? (
                             <LoadingSpinner />
-                        ) : notes ? (
+                        ) : notes && (notes.title || notes.details || notes.violation?.details || notes.violation?.reason) ? (
                             <RepairHistory note={notes} />
                         ) : (
                             <div className="flex flex-col items-center justify-center gap-4 py-8">
@@ -181,6 +181,9 @@ const CorpRepairDialog = ({
                                         onDataChange?.(); // Refresh the data
                                         onClose();
                                     }}
+                                    guaranteeAvailable={
+                                        repairItem.isGuaranteeRequested
+                                    }
                                 />
                             </div>
                         )}
