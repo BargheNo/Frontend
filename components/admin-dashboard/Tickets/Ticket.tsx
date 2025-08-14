@@ -137,19 +137,8 @@ export default function Ticket({
                 <div>
                     <div className="flex flex-row justify-between w-full gap-4 mt-4">
                         <div className="flex flex-row w-100 gap-4 mt-4">
-                            {hasRespondTicketPermission && (
-                                <div
-                                    className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
-                                    onClick={() => setActiveCommentTicketId(id)}
-                                >
-                                    <button className="cursor-pointer">
-                                        افزودن نظر
-                                    </button>
-                                    <MessageCirclePlus />
-                                </div>
-                            )}
                             <div
-                                className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
+                                className={`cta-neu-button flex ${styles.button} items-center content-center ${status === "بسته شده" && "w-1/2"} justify-center`}
                                 onClick={() => {
                                     const nextValue =
                                         showCommentBoxFor === id ? null : id;
@@ -170,6 +159,20 @@ export default function Ticket({
                                 <MessageCircleMore />
                                 {/* </div> */}
                             </div>
+                            {hasRespondTicketPermission &&
+                                status !== "بسته شده" && (
+                                    <div
+                                        className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
+                                        onClick={() =>
+                                            setActiveCommentTicketId(id)
+                                        }
+                                    >
+                                        <button className="cursor-pointer">
+                                            افزودن نظر
+                                        </button>
+                                        <MessageCirclePlus />
+                                    </div>
+                                )}
                         </div>
                         {/* <div
 								className={`cta-neu-button flex ${styles.button} items-center mt-4 content-center w-50 justify-center`}
