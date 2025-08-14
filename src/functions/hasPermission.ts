@@ -36,7 +36,9 @@ export default function useHasPermission(permission: string): PermissionState {
     // console.log(names);
     const hasPermission =
         isClient &&
-        (names?.includes("general.all") || names?.includes(permission));
+        (names?.includes("general.all") ||
+            names?.includes(permission) ||
+            permission === "");
 
     return { hasPermission, loading };
 }
