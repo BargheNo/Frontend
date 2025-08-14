@@ -214,7 +214,7 @@ const Reports = () => {
                 <div className="w-full md:w-5/6 flex flex-col gap-3 justify-between relative">
                     <div className="flex flex-col gap-3 relative">
                         <p className="text-start w-full text-lg sm:text-xl md:text-2xl font-bold">
-                            گزارش مربوط به پنل: {Panel?.panelName}
+                            گزارش مربوط به پنل: {Panel?.name}
                         </p>
                         <div className="flex flex-row flex-wrap gap-2">
                             <User className="text-orange-500" />
@@ -229,12 +229,12 @@ const Reports = () => {
                                 شرکت: {Panel?.corporation?.name}
                             </p>
                         </div>
-                        <div className="flex flex-row flex-wrap gap-2">
+                        {/* <div className="flex flex-row flex-wrap gap-2">
                             <Eclipse className="text-orange-500" />
                             <p className="text-start w-full sm:w-auto text-base sm:text-lg">
                                 نام پنل: {Panel?.name}
                             </p>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 
@@ -242,9 +242,9 @@ const Reports = () => {
                 <div className="w-full sm:w-3/4 md:w-2/5 relative flex flex-col justify-around gap-4 md:gap-2 mt-4 md:mt-0 h-full">
                     {/* Status Box */}
                     <div
-                        className={`flex flex-col items-center ${styles.status}  py-4 gap-2 relative flex-1 min-h-[60px] md:min-h-[80px]`}
+                        className={`flex flex-col ${styles.status} py-4 gap-2 relative flex-1 min-h-[60px] md:min-h-[80px] place-items-center`}
                     >
-                        <div className="flex md:flex-row flex-col items-center gap-2 h-full">
+                        <div className="flex md:flex-row flex-col items-center gap-2 h-full place-self-center m-auto">
                             <span className="font-bold text-nowrap">
                                 {Status}
                             </span>
