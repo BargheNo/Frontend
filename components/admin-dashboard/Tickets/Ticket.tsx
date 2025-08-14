@@ -10,7 +10,7 @@ export default function Ticket({
     subject,
     description,
     status,
-    created_at,
+    createdAt,
     image,
     owner,
     fetchTickets,
@@ -25,7 +25,7 @@ export default function Ticket({
     subject: string;
     description: string;
     status: string;
-    created_at: string;
+    createdAt: string;
     image: string;
     owner: {
         id?: number;
@@ -103,7 +103,7 @@ export default function Ticket({
                                 className={`flex flex-col items-center w-full align-middle h-full ${styles.status} py-8 justify-center gap-2`}
                             >
                                 <span className="text-[#636363] font-bold">
-                                    {created_at}
+                                    {createdAt}
                                 </span>
                                 <div className="flex md:flex-row flex-col items-center gap-2">
                                     <span className="font-bold">{status}</span>

@@ -25,6 +25,7 @@ interface Ticket {
     status: string;
     image: string;
     created_at: string;
+    createdAt: string;
     owner: {
         email: string;
         firstName: string;
@@ -218,8 +219,8 @@ const TicketSupportPage = () => {
                                     subject={ticket?.subject}
                                     description={ticket?.description}
                                     status={ticket?.status}
-                                    created_at={new Date(
-                                        ticket?.created_at
+                                    createdAt={new Date(
+                                        ticket.created_at ?? ticket.createdAt
                                     ).toLocaleDateString("fa-IR")}
                                     image={ticket?.image}
                                     owner={ticket?.owner}
@@ -275,7 +276,7 @@ const TicketSupportPage = () => {
                                                                             null
                                                                         )
                                                                     }
-                                                                     className={`text-gray-500 text-[18px] md:text-[20px] cta-neu-button cursor-pointer md:w-2/9 ${styles.button}`}
+                                                                    className={`text-gray-500 text-[18px] md:text-[20px] cta-neu-button cursor-pointer md:w-2/9 ${styles.button}`}
                                                                 >
                                                                     لغو
                                                                 </button>

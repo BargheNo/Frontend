@@ -30,6 +30,7 @@ interface Ticket {
     status: string;
     image: string;
     createdAt: string;
+    created_at: string;
     Owner: {
         email: string;
         firstName: string;
@@ -597,7 +598,8 @@ const TicketSupportPage = () => {
                                                 : "بررسی نشده"
                                         }
                                         createdAt={new Date(
-                                            ticket.createdAt
+                                            ticket.created_at ??
+                                                ticket.createdAt
                                         ).toLocaleDateString("fa-IR")}
                                         image={ticket.image}
                                     />
