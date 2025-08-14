@@ -247,6 +247,7 @@ export default function PlaceBidForm({
                                     setDate={(date: string) => {
                                         setFieldValue("installationTime", date);
                                     }}
+                                    onlyFuture
                                 />
                             </div>
                         </div>
