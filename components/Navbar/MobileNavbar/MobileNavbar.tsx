@@ -1,6 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { EllipsisVertical, House, User, LayoutDashboard } from "lucide-react";
+import {
+    EllipsisVertical,
+    House,
+    User,
+    LayoutDashboard,
+    LogIn,
+} from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import MobileNavbarSlider from "@/components/Navbar/MobileNavbarSlider/MobileNavbarSlider";
 import { usePathname, useRouter } from "next/navigation";
@@ -134,7 +140,7 @@ export default function MobileNavbar() {
                                 />
                             );
                         } else if (select.name === "پروفایل") {
-                            return (
+                            return accessToken ? (
                                 <Popover key={select.name}>
                                     <PopoverTrigger>
                                         <button
@@ -149,43 +155,39 @@ export default function MobileNavbar() {
                                     </PopoverTrigger>
                                     <PopoverContent className="w-full h-full bg-warm-white neo-card py-2 px-3 border-none ">
                                         <div className="w-full h-full flex flex-col items-center justify-center gap-2">
-                                            {accessToken ? (
-                                                <>
-                                                    <Link
-                                                        href="/profile"
-                                                        className="cursor-pointer neo-btn rounded-lg! bg-transparent w-full py-2 px-3 text-center"
-                                                    >
-                                                        پروفایل
-                                                    </Link>
-                                                    <Link
-                                                        href="/landing/corp-introduction"
-                                                        className="cursor-pointer neo-btn rounded-lg! bg-transparent w-full py-2 px-3 bg-fire-orange text-center"
-                                                    >
-                                                        ثبت شرکت
-                                                    </Link>
-                                                    <button
-                                                        onClick={() => {
-                                                            dispatch(
-                                                                resetUser()
-                                                            );
-                                                            router.push("/login");
-                                                        }}
-                                                        className="cursor-pointer neo-btn rounded-lg! bg-transparent w-full py-2 px-3"
-                                                    >
-                                                        خروج
-                                                    </button>
-                                                </>
-                                            ) : (
+                                            <>
                                                 <Link
-                                                    href="/login"
+                                                    href="/profile"
+                                                    className="cursor-pointer neo-btn rounded-lg! bg-transparent w-full py-2 px-3 text-center"
+                                                >
+                                                    پروفایل
+                                                </Link>
+                                                <Link
+                                                    href="/landing/corp-introduction"
+                                                    className="cursor-pointer neo-btn rounded-lg! bg-transparent w-full py-2 px-3 bg-fire-orange text-center"
+                                                >
+                                                    ثبت شرکت
+                                                </Link>
+                                                <button
+                                                    onClick={() => {
+                                                        dispatch(resetUser());
+                                                        router.push("/login");
+                                                    }}
                                                     className="cursor-pointer neo-btn rounded-lg! bg-transparent w-full py-2 px-3"
                                                 >
-                                                    ورود
-                                                </Link>
-                                            )}
+                                                    خروج
+                                                </button>
+                                            </>
                                         </div>
                                     </PopoverContent>
                                 </Popover>
+                            ) : (
+                                <Link
+                                    href="/login"
+                                    className="cursor-pointer neo-btn rounded-lg! bg-transparent py-2 px-3"
+                                >
+                                    <LogIn />
+                                </Link>
                             );
                         } else {
                             return (
