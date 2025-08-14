@@ -107,9 +107,9 @@ export default function Page() {
                                         status={item.status}
                                         UrgencyLevel={
                                             item.urgencyLevel.toLowerCase() as
-                                                | "low"
-                                                | "medium"
-                                                | "high"
+                                                | "عادی"
+                                                | "مهم"
+                                                | "فوری"
                                         }
                                         address={
                                             item.panel.address.streetAddress

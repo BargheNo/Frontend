@@ -9,7 +9,7 @@ interface CorpRepairCard {
     panelName: string,
     panelPower: number;
     status: "در انتظار تایید" | "تایید شده" | "رد شده" | "تمام شده";
-    UrgencyLevel: "low" | "medium" | "high";
+    UrgencyLevel: "عادی" | "مهم" | "فوری";
     address: string,
     date: string,
     owner: string,
@@ -49,11 +49,11 @@ const CorpRepairCard = ({
 
     const getUrgencyIcon = () => {
         switch (UrgencyLevel) {
-            case "high":
+            case "فوری":
                 return <AlertCircle size={20} className="text-red-500" />;
-            case "medium":
+            case "مهم":
                 return <AlertCircle size={20} className="text-yellow-500" />;
-            case "low":
+            case "عادی":
                 return <AlertCircle size={20} className="text-green-500" />;
             default:
                 return <AlertCircle size={20} className="text-gray-500" />;
@@ -62,12 +62,12 @@ const CorpRepairCard = ({
 
     const getUrgencyText = () => {
         switch (UrgencyLevel) {
-            case "high":
-                return "زیاد";
-            case "medium":
-                return "متوسط";
-            case "low":
-                return "کم";
+            case "فوری":
+                return "فوری";
+            case "مهم":
+                return "مهم";
+            case "عادی":
+                return "عادی";
             default:
                 return "نامشخص";
         }
