@@ -98,7 +98,7 @@ export default function Bids() {
         <>
             <div className="flex place-items-center">
                 <FilterSection
-                    fieldName="پنل"
+                    fieldName="پیشنهاد"
                     header="پیشنهادهای ارسال شده"
                     statusesListApiRoute={`/v1/corp/${corpId}/bid/status`}
                     status={status}

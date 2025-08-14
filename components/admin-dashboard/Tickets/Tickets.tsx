@@ -25,6 +25,7 @@ interface Ticket {
     status: string;
     image: string;
     created_at: string;
+    createdAt: string;
     owner: {
         email: string;
         firstName: string;
@@ -162,7 +163,7 @@ const TicketSupportPage = () => {
         body: string;
     }) => {
         return (
-            <div className="flex flex-row justify-between w-full h-full bg-white gap-10 py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 ">
+            <div className="flex flex-row justify-between w-full h-full bg-white gap-10 py-5 px-10 relative border-t-1 border-gray-300 first:border-t-0 ">
                 {/* <div className="w-full border-t-1 border-gray-300 first:border-t-0"> */}
                 {/* Right section */}
                 <div className="w-5/6 flex flex-col gap-3 justify-between">
@@ -218,8 +219,8 @@ const TicketSupportPage = () => {
                                     subject={ticket?.subject}
                                     description={ticket?.description}
                                     status={ticket?.status}
-                                    created_at={new Date(
-                                        ticket?.created_at
+                                    createdAt={new Date(
+                                        ticket.created_at ?? ticket.createdAt
                                     ).toLocaleDateString("fa-IR")}
                                     image={ticket?.image}
                                     owner={ticket?.owner}
@@ -275,7 +276,7 @@ const TicketSupportPage = () => {
                                                                             null
                                                                         )
                                                                     }
-                                                                     className={`text-gray-500 text-[18px] md:text-[20px] cta-neu-button cursor-pointer md:w-2/9 ${styles.button}`}
+                                                                    className={`text-gray-500 text-[18px] md:text-[20px] cta-neu-button cursor-pointer md:w-2/9 ${styles.button}`}
                                                                 >
                                                                     لغو
                                                                 </button>
@@ -312,7 +313,7 @@ const TicketSupportPage = () => {
                                         {isLoadingComments ? (
                                             <LoadingSpinner />
                                         ) : comments.length > 0 ? (
-                                            <div className="flex flex-col text-gray-800 rounded-md overflow-hidden">
+                                            <div className="flex flex-col text-gray-800 rounded-md overflow-y-auto no-scrollbar max-h-[60vh]">
                                                 {/* <div className="pb-1 border-t border-gray-400"> */}
                                                 {comments.map(
                                                     (comment, index) => (
