@@ -8,7 +8,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, forwardRef, useImperativeHandle } from "react";
 import { installedpanel } from "@/src/types/installedpanelType";
 import InstalledPanel from "@/components/InstalledPanels/InstalledPanels";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,7 +19,7 @@ import NoRecordFound from "../NoRecordFound/NoRecordFound";
 import FilterSection from "../FilterSection/FilterSection";
 import CustomPagination from "../Custom/CustomPagination/CustomPagination";
 
-export default function InstalledPanelPagination() {
+const InstalledPanelPagination = forwardRef<{ handelHistory: () => void }, {}>((props, ref) => {
     const dispatch = useDispatch();
     const [history, sethistory] = useState<installedpanel[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -63,6 +63,10 @@ export default function InstalledPanelPagination() {
     useEffect(() => {
         handelHistory();
     }, [handelHistory]);
+
+    useImperativeHandle(ref, () => ({
+        handelHistory
+    }));
 
     return (
         <>
@@ -112,4 +116,8 @@ export default function InstalledPanelPagination() {
             />
         </>
     );
-}
+});
+
+InstalledPanelPagination.displayName = "InstalledPanelPagination";
+
+export default InstalledPanelPagination;

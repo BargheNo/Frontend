@@ -36,6 +36,7 @@ const CorpRepairDialog = ({
     isOpen,
     onClose,
     repairItem,
+    onDataChange,
 }: CorpRepairDialogProps) => {
     const {
         hasPermission: hasAcceptMaintenanceRequestPermission,
@@ -63,7 +64,7 @@ const CorpRepairDialog = ({
                     setIsLoadingNotes(false);
                 });
         }
-    }, [repairItem]);
+    }, [repairItem, corpId]);
 
     if (!repairItem) return null;
 
@@ -74,6 +75,7 @@ const CorpRepairDialog = ({
         })
             .then((res) => {
                 CustomToast(res?.message, "success");
+                onDataChange?.(); // Refresh the data
                 onClose();
             })
             .catch((err) => console.log(err))
@@ -89,6 +91,7 @@ const CorpRepairDialog = ({
         })
             .then((res) => {
                 CustomToast(res?.message, "success");
+                onDataChange?.(); // Refresh the data
                 onClose();
             })
             .catch((err) => console.log(err))
@@ -175,6 +178,7 @@ const CorpRepairDialog = ({
                                     panelId={repairItem.id}
                                     onSuccess={() => {
                                         setIsFormOpen(false);
+                                        onDataChange?.(); // Refresh the data
                                         onClose();
                                     }}
                                 />

@@ -135,6 +135,7 @@ export default function Page() {
                     isOpen={isDialogOpen}
                     onClose={handleCloseDialog}
                     repairItem={selectedItem}
+                    onDataChange={fetchMaintenances}
                 />
             )}
         </PageContainer>
