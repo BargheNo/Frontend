@@ -44,8 +44,14 @@ export default function AnnounceCard({
     writer: string;
     date: string;
 }) {
-    const hasEditNewsPermission = useHasPermission("news.edit");
-    const hasDeleteNewsPermission = useHasPermission("news.delete");
+    const {
+        hasPermission: hasEditNewsPermission,
+        loading: permissionLoading1,
+    } = useHasPermission("news.edit");
+    const {
+        hasPermission: hasDeleteNewsPermission,
+        loading: permissionLoading2,
+    } = useHasPermission("news.delete");
     const {
         selectMode,
         setSelectMode,

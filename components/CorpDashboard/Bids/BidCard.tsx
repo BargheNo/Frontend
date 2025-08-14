@@ -257,8 +257,12 @@ export default function BidCard({
     guaranteeID,
     updateBids,
 }: BidInfo) {
-    const hasEditBidPermission = useHasPermission("bid.edit");
-    const hasCancelBidPermission = useHasPermission("bid.cancel");
+    const { hasPermission: hasEditBidPermission, loading: permissionLoading1 } =
+        useHasPermission("bid.edit");
+    const {
+        hasPermission: hasCancelBidPermission,
+        loading: permissionLoading2,
+    } = useHasPermission("bid.cancel");
     const [guarantees, setGuarantees] = React.useState<GuaranteeProps[]>([]);
     const [open, setOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
@@ -495,8 +499,7 @@ export default function BidCard({
                                                             !hasEditBidPermission
                                                         }
                                                         icon={DollarSign}
-                                                        type="number"
-                                                        autoFocus={true}
+                                                        onlyNumbers
                                                         containerClassName="w-1/2"
                                                         inputClassName={
                                                             errors.cost &&
@@ -533,8 +536,7 @@ export default function BidCard({
                                                         }
                                                         name="power"
                                                         icon={Battery}
-                                                        type="number"
-                                                        autoFocus={true}
+                                                        onlyNumbers
                                                         containerClassName="w-1/2"
                                                         inputClassName={
                                                             errors.power &&
@@ -550,7 +552,7 @@ export default function BidCard({
                                                         }
                                                         name="area"
                                                         icon={LandPlot}
-                                                        type="number"
+                                                        onlyNumbers
                                                         containerClassName="w-1/2"
                                                         inputClassName={
                                                             errors.area &&

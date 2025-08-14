@@ -82,7 +82,7 @@ type CustomTableProps = {
     loading?: boolean;
     page: number;
     setPage: React.Dispatch<React.SetStateAction<number>>;
-    resultPerPage: string;
+    // resultPerPage: string;
     deleteApiUrl: string; // API URL pattern like '/v1/admin/installation/request/:id'
     updateApiUrl: string; // API URL pattern like '/v1/admin/installation/request/:id'
     onDeleteSuccess?: (deletedId: string | number) => void; // Callback after successful deletion
@@ -132,24 +132,24 @@ function generateColumns(meta: Record<string, any>): ColumnDef<any>[] {
             // Fallback to string comparison
             return aStr.localeCompare(bStr);
         },
-        header: ({ column }) => (
-            <Button
-                variant="ghost"
-                onClick={() => {
-                    column.toggleSorting(column.getIsSorted() === "asc");
-                }}
-                className="h-auto p-2"
-            >
-                {meta[key].label}
-                {column.getIsSorted() === false ? (
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                ) : column.getIsSorted() === "asc" ? (
-                    <ArrowUp className="ml-2 h-4 w-4" />
-                ) : (
-                    <ArrowDown className="ml-2 h-4 w-4" />
-                )}
-            </Button>
-        ),
+        header: ({ column }) =>
+            meta[key].label,
+            // <Button
+            //     variant="ghost"
+            //     onClick={() => {
+            //         column.toggleSorting(column.getIsSorted() === "asc");
+            //     }}
+            //     className="h-auto p-2"
+            // >
+            //     {meta[key].label}
+            //     {column.getIsSorted() === false ? (
+            //         <ArrowUpDown className="ml-2 h-4 w-4" />
+            //     ) : column.getIsSorted() === "asc" ? (
+            //         <ArrowUp className="ml-2 h-4 w-4" />
+            //     ) : (
+            //         <ArrowDown className="ml-2 h-4 w-4" />
+            //     )}
+            // </Button>
         cell: ({ row }) => {
             const value = row.original[key];
             if (
@@ -320,7 +320,7 @@ export function CustomTable({
     loading,
     page,
     setPage,
-    resultPerPage,
+    // resultPerPage,
     deleteApiUrl,
     updateApiUrl,
     fetchData,
@@ -357,7 +357,7 @@ export function CustomTable({
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(), // This is crucial for sorting
         getFilteredRowModel: getFilteredRowModel(),
-        getPaginationRowModel: getPaginationRowModel(), // Add this back
+        // getPaginationRowModel: getPaginationRowModel(), // Add this back
         onColumnVisibilityChange: setColumnVisibility,
         onRowSelectionChange: setRowSelection,
         state: {
@@ -367,19 +367,13 @@ export function CustomTable({
             rowSelection,
         },
         // Configure pagination
-        initialState: {
-            pagination: {
-                pageSize: Number(resultPerPage),
-                pageIndex: page - 1,
-            },
-        },
+        // initialState: {
+        //     pagination: {
+        //         pageSize: Number(resultPerPage),
+        //         pageIndex: page - 1,
+        //     },
+        // },
     });
-
-    // Update pagination when props change
-    useEffect(() => {
-        table.setPageSize(Number(resultPerPage));
-        table.setPageIndex(page - 1);
-    }, [page, resultPerPage, table]);
 
     // Reset to first page when sorting changes
     useEffect(() => {
