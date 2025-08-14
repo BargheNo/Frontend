@@ -525,6 +525,7 @@ export default function BidCard({
                                                                     date
                                                                 );
                                                             }}
+                                                            onlyFuture
                                                         />
                                                     </div>
                                                 </div>
