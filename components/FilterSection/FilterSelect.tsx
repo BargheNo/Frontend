@@ -35,7 +35,7 @@ export default function FilterSelect({
     className?: string;
 }) {
     return loading === true ? (
-        <Skeleton className={`flex h-[40px] min-w-${width} w-full ${className}`} />
+        <Skeleton className={`flex h-9 min-w-${width} w-full ${className}`} />
     ) : (
         <Select
             value={String(field)}

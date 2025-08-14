@@ -84,7 +84,6 @@ const Calculator = () => {
             onSubmit={() => {}}
         >
             {({ values, setFieldValue }) => {
-                // Parse values to numbers where needed
                 const monthlyConsumption = parseFloat(values.monthlyElectricityConsumption);
                 const monthlyCost = parseFloat(values.monthlyElectricityCost);
                 const ceilingArea = parseFloat(values.ceilingArea);
@@ -277,6 +276,7 @@ const Calculator = () => {
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </Form>
                 );

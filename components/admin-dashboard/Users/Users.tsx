@@ -1,7 +1,16 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Phone, Settings, User, CircleX, Loader2, Check } from "lucide-react";
+import {
+    Phone,
+    Settings,
+    User,
+    CircleX,
+    Loader2,
+    Check,
+    Search,
+    CheckIcon,
+} from "lucide-react";
 import styles from "./Users.module.css";
 import UserRolesModal from "./UserRoleModal";
 import FilterUsers from "./FilterUsers";
@@ -16,6 +25,19 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
@@ -33,6 +55,7 @@ import {
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 import FilterSection from "@/components/FilterSection/FilterSection";
 import CustomPagination from "@/components/Custom/CustomPagination/CustomPagination";
+import { cn } from "@/lib/utils";
 
 type UserType = {
     id: number;
@@ -61,6 +84,7 @@ export default function Users() {
     const [users, setUsers] = useState<UserType[]>([]);
     const [roles, setRoles] = useState<Role[]>([]);
     const [loading, setLoading] = useState(true);
+    const [open, setOpen] = useState(false);
     const [sortBy, setSortBy] = useState<string>("");
     const [asc, setAsc] = useState<boolean>(false);
     const [resultPerPage, setResultPerPage] = useState<string>("");
@@ -219,39 +243,120 @@ export default function Users() {
                             </SelectContent>
                         </Select>
                         {filterType === "role" ? (
-                            <Select
-                                onValueChange={(value) => setFilterValue(value)}
-                                defaultValue="all"
-                                disabled={loadingRoles}
-                            >
-                                <SelectTrigger
-                                    dir="rtl"
-                                    className="flex w-full sm:w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
-                                >
-                                    <SelectValue
-                                        placeholder={
-                                            loadingRoles
-                                                ? "در حال بارگذاری..."
-                                                : "انتخاب نقش"
-                                        }
-                                    />
-                                </SelectTrigger>
-                                <SelectContent dir="rtl">
-                                    <SelectItem value="all">
-                                        همه نقش‌ها
-                                    </SelectItem>
-                                    {roles.map((role) => (
-                                        <SelectItem
-                                            key={role.id}
-                                            value={String(role.id)}
-                                            className="cursor-pointer"
-                                        >
-                                            {role.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        ) : filterType === "status" ? (
+                            <Popover open={open} onOpenChange={setOpen}>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        role="combobox"
+                                        aria-expanded={open}
+                                        className="w-full sm:min-w-32 sm:max-w-60 relative rtl bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2] justify-between gap-2"
+                                    >
+                                        {filterValue === "all" ? "همه" : ""}
+                                        {filterValue
+                                            ? roles.find(
+                                                  (perm) =>
+                                                      perm.id ===
+                                                      Number(filterValue)
+                                              )?.name
+                                            : "فیلتر بر اساس دسترسی"}
+                                        {/* <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" /> */}
+                                        <Search className="shrink-0 opacity-50" />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-full p-0">
+                                    <Command>
+                                        <CommandInput placeholder="جستجوی نقش‌ها..." />
+                                        <CommandList className="no-scrollbar">
+                                            <CommandEmpty>
+                                                هیچ نقشی پیدا نشد.
+                                            </CommandEmpty>
+                                            <CommandGroup>
+                                                <CommandItem
+                                                    value={"all"}
+                                                    onSelect={() => {
+                                                        setFilterValue(
+                                                            String("all")
+                                                        );
+                                                        setOpen(false);
+                                                    }}
+                                                >
+                                                    <CheckIcon
+                                                        className={cn(
+                                                            "mr-2 h-4 w-4",
+                                                            filterValue ===
+                                                                "all"
+                                                                ? "opacity-100"
+                                                                : "opacity-0"
+                                                        )}
+                                                    />
+                                                    {"همه"}
+                                                </CommandItem>
+                                                {roles?.map((role: Role) => (
+                                                    <CommandItem
+                                                        key={role?.id}
+                                                        value={String(
+                                                            role?.name
+                                                        )}
+                                                        onSelect={() => {
+                                                            setFilterValue(
+                                                                String(role?.id)
+                                                            );
+
+                                                            setOpen(false);
+                                                        }}
+                                                    >
+                                                        <CheckIcon
+                                                            className={cn(
+                                                                "mr-2 h-4 w-4",
+                                                                filterValue ===
+                                                                    String(
+                                                                        role?.id
+                                                                    )
+                                                                    ? "opacity-100"
+                                                                    : "opacity-0"
+                                                            )}
+                                                        />
+                                                        {role?.name}
+                                                    </CommandItem>
+                                                ))}
+                                            </CommandGroup>
+                                        </CommandList>
+                                    </Command>
+                                </PopoverContent>
+                            </Popover>
+                        ) : // <Select
+                        //     onValueChange={(value) => setFilterValue(value)}
+                        //     defaultValue="all"
+                        //     disabled={loadingRoles}
+                        // >
+                        //     <SelectTrigger
+                        //         dir="rtl"
+                        //         className="flex w-full sm:w-40 cursor-pointer relative bg-gradient-to-br from-[#EBECF0] to-[#EFF0F2]"
+                        //     >
+                        //         <SelectValue
+                        //             placeholder={
+                        //                 loadingRoles
+                        //                     ? "در حال بارگذاری..."
+                        //                     : "انتخاب نقش"
+                        //             }
+                        //         />
+                        //     </SelectTrigger>
+                        //     <SelectContent dir="rtl">
+                        //         <SelectItem value="all">
+                        //             همه نقش‌ها
+                        //         </SelectItem>
+                        //         {roles.map((role) => (
+                        //             <SelectItem
+                        //                 key={role.id}
+                        //                 value={String(role.id)}
+                        //                 className="cursor-pointer"
+                        //             >
+                        //                 {role.name}
+                        //             </SelectItem>
+                        //         ))}
+                        //     </SelectContent>
+                        // </Select>
+                        filterType === "status" ? (
                             <Select
                                 value={filterValue}
                                 onValueChange={(value) => setFilterValue(value)}
@@ -337,8 +442,14 @@ const UserItem = ({
     id,
     fetchAllUsers,
 }: UserType) => {
-    const hasBanUnbanPermission = useHasPermission("user.ban_unban");
-    const hasChangeRolePermission = useHasPermission("user.changeRole");
+    const {
+        hasPermission: hasBanUnbanPermission,
+        loading: permissionLoading1,
+    } = useHasPermission("user.banUnban");
+    const {
+        hasPermission: hasChangeRolePermission,
+        loading: permissionLoading2,
+    } = useHasPermission("user.changeRole");
 
     const [loadingRoles, setLoadingRoles] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
@@ -399,7 +510,7 @@ const UserItem = ({
             .finally(() => setIsBanning(false));
     };
     return (
-        <div className="flex flex-row justify-between w-full h-full bg-[#F4F1F3] p-5 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 items-center">
+        <div className="flex lg:flex-row flex-col justify-between w-full h-full bg-[#F4F1F3] p-5 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 lg:items-center lg:gap-10 md:text-wrap text-nowrap gap-5 items-start">
             <div className="flex items-center gap-3 w-1/4">
                 <div className={`${styles.icon} bg-white text-[#FA682D]`}>
                     <User className="m-1" />
@@ -498,7 +609,7 @@ const UserItem = ({
                                 <Button
                                     onClick={handleBanAction}
                                     // disabled={isBanning}
-                                    className={`px-4 py-2 rounded-lg cursor-pointer min-w-32 ${
+                                    className={`md:px-4 px-[105%] py-2 rounded-lg cursor-pointer  min-w-32 ${
                                         status === "فعال"
                                             ? "bg-red-500 hover:bg-red-600"
                                             : "bg-green-500 hover:bg-green-600"
@@ -516,7 +627,7 @@ const UserItem = ({
                             )}
                         </div>
 
-                        <div className="flex justify-end gap-2">
+                        <div className="flex justify-end gap-2 md:mt-0 mt-12">
                             <CancelButton />
 
                             <Button

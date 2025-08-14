@@ -81,7 +81,7 @@ export default function Ticket({
                                 {translateSubjectToPersian(subject)}
                             </p>
                             <p className="text-start content-start w-full text-lg ">
-                                از طرف {owner?.firstName} {owner?.lastName}
+                                از طرف: {owner?.firstName} {owner?.lastName}
                             </p>
 
                             <p className="break-words">{description}</p>
@@ -105,7 +105,7 @@ export default function Ticket({
                                 <span className="text-[#636363] font-bold">
                                     {created_at}
                                 </span>
-                                <div className="flex items-center gap-2">
+                                <div className="flex md:flex-row flex-col items-center gap-2">
                                     <span className="font-bold">{status}</span>
                                     <div
                                         className={`h-4 w-4 rounded-full ${
@@ -172,7 +172,7 @@ export default function Ticket({
                         {/* <div
 								className={`cta-neu-button flex ${styles.button} items-center mt-4 content-center w-50 justify-center`}
 							> */}
-                        {status === "بررسی نشده" &&
+                        {status !== "بسته شده" &&
                             hasCloseTicketPermission && (
                                 <button
                                     className={`cursor-pointer cta-neu-button flex ${styles.button} items-center mt-4 content-center w-50 justify-center`}

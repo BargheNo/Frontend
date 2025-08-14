@@ -23,8 +23,10 @@ export default function RoleItem({
 }) {
     const [editOpen, setEditOpen] = useState<boolean>(false);
     const [expanded, setExpanded] = useState<boolean>(false);
-    const editRolePermission = useHasPermission("user.manageRolePermissions");
-    const removeRolePermission = useHasPermission("user.removeRole");
+    const { hasPermission: editRolePermission, loading: permissionLoading1 } =
+        useHasPermission("user.manageRolePermissions");
+    const { hasPermission: removeRolePermission, loading: permissionLoading2 } =
+        useHasPermission("user.removeRole");
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const deleteRole = async (roleToDeleteId: string) => {
         setLoading(true);
@@ -79,7 +81,10 @@ export default function RoleItem({
                                             permission: Permission,
                                             index: number
                                         ) => (
-                                            <Badge className="bg-fire-orange h-fit" key={index}>
+                                            <Badge
+                                                className="bg-fire-orange h-fit"
+                                                key={index}
+                                            >
                                                 {permission?.description}
                                             </Badge>
                                         )
@@ -91,20 +96,20 @@ export default function RoleItem({
                                     onClick={() => setExpanded(!expanded)}
                                 >
                                     {expanded ? "<" : "..."}
-                                </Badge> 
+                                </Badge>
                             )}
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-row w-full h-full px-4 gap-4 rtl justify-end">
+                <div className="flex flex-row w-full h-full px-4 gap-2 md:gap-4 rtl md:mt-0 mt-10 justify-end">
                     <Dialog open={editOpen} onOpenChange={setEditOpen}>
                         <DialogTrigger asChild>
                             {editRolePermission && (
                                 <button
                                     // onClick={() => setCurrentRole(role)}
-                                    className={`cta-neu-button cursor-pointer w-1/8 flex flex-row ${styles.button} items-center content-center justify-center h-1/2 w-1/2`}
+                                    className={`cta-neu-button cursor-pointer md:w-1/8 w-3/8 flex flex-row ${styles.button} items-center content-center justify-center h-1/2 w-1/2`}
                                 >
-                                    <p>تغییر</p>
+                                    <p >تغییر</p>
                                     <Pencil className="text-orange-500" />
                                 </button>
                             )}
@@ -127,7 +132,7 @@ export default function RoleItem({
                     </Dialog>
                     {removeRolePermission && (
                         <button
-                            className={`cta-neu-button flex cursor-pointer w-1/8 ${styles.button} items-center content-center justify-center h-1/2 w-1/2 cursor-pointer`}
+                            className={`cta-neu-button flex cursor-pointer md:w-1/8 w-3/8  ${styles.button} items-center content-center justify-center h-1/2 w-1/2 cursor-pointer`}
                             onClick={() => deleteRole(role?.id)}
                             key={role?.id}
                         >

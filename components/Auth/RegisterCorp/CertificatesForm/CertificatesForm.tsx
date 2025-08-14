@@ -17,9 +17,6 @@ export default function CertificatesForm({
 		if (!file) return;
 		setFieldValue(`certificates.${fieldName}`, file);
 	};
-	useEffect(() => {
-		console.log(values);
-	}, []);
 	return (
 		<div>
 			<div className="text-[#003a8b] text-lg mb-1 font-black w-full">

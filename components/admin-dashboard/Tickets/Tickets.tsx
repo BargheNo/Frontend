@@ -53,9 +53,18 @@ const commentValidationSchemaForm = Yup.object({
 });
 
 const TicketSupportPage = () => {
-    const hasCloseTicketPermission = useHasPermission("ticket.close");
-    const hasRespondTicketPermission = useHasPermission("ticket.respond");
-    const hasCommentTicketPermission = useHasPermission("ticket.comment");
+    const {
+        hasPermission: hasCloseTicketPermission,
+        loading: permissionLoading1,
+    } = useHasPermission("ticket.close");
+    const {
+        hasPermission: hasRespondTicketPermission,
+        loading: permissionLoading2,
+    } = useHasPermission("ticket.respond");
+    const {
+        hasPermission: hasCommentTicketPermission,
+        loading: permissionLoading3,
+    } = useHasPermission("ticket.comment");
     const [putCommentLoading, setPutCommentLoading] = useState<boolean>(false);
 
     const [isLoadingComments, setIsLoadingComments] = useState(false);
@@ -259,19 +268,19 @@ const TicketSupportPage = () => {
                                                                 placeholder="متن نظر..."
                                                             />
 
-                                                            <div className="flex justify-between">
+                                                            <div className="flex justify-between md:gap-0 gap-4 mb-4">
                                                                 <button
                                                                     onClick={() =>
                                                                         setActiveCommentTicketId(
                                                                             null
                                                                         )
                                                                     }
-                                                                    className={`text-gray-500 cta-neu-button cursor-pointer w-1/9 ${styles.button}`}
+                                                                     className={`text-gray-500 text-[18px] md:text-[20px] cta-neu-button cursor-pointer md:w-2/9 ${styles.button}`}
                                                                 >
                                                                     لغو
                                                                 </button>
                                                                 <button
-                                                                    className={`text-left cta-neu-button flex ${styles.button} items-center content-center justify-center w-1/9`}
+                                                                    className={`text-[18px] md:text-[20px] text-left cta-neu-button flex ${styles.button} items-center content-center justify-center md:w-2/9`}
                                                                 >
                                                                     {putCommentLoading ? (
                                                                         <LoadingOnButton
@@ -280,7 +289,7 @@ const TicketSupportPage = () => {
                                                                             }
                                                                         />
                                                                     ) : (
-                                                                        <p>
+                                                                        <p className="text-nowrap">
                                                                             ثبت
                                                                             نظر
                                                                         </p>
@@ -327,7 +336,7 @@ const TicketSupportPage = () => {
                                             </div>
                                         )}
                                         <button
-                                            className={`text-left cursor-pointer cta-neu-button flex ${styles.button} self-end justify-center w-1/9`}
+                                            className={`text-left cursor-pointer cta-neu-button flex ${styles.button} self-end justify-center md:w-1/8 w-1/4`}
                                             onClick={() => {
                                                 setShowCommentBoxFor(null);
                                                 setComments([]);

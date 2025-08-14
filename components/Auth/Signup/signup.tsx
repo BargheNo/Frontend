@@ -149,14 +149,14 @@ function Signup() {
                                                 readOnly={true}
                                                 placeholder="+98"
                                                 icon={Smartphone}
-                                                type="number"
+                                                onlyNumbers
                                             />
                                         </div>
                                         <div className="w-3/4">
                                             <CustomInput
                                                 name="phonenumber"
                                                 placeholder="شماره تلفن همراه"
-                                                type="number"
+                                                onlyNumbers
                                             />
                                         </div>
                                     </div>
@@ -193,7 +193,7 @@ function Signup() {
                                         >
                                             .را می پذیرم
                                             <Link
-                                                href="#"
+                                                href="/terms-and-conditions"
                                                 className={`${styles.link} hover:underline`}
                                             >
                                                 قوانین و مقررات
