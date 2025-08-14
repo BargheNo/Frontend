@@ -332,7 +332,7 @@ const RepairDetailsDialog = ({
 						</div>
 
 						{/* Finalize Maintenance Section */}
-						<div className="w-full mt-5 border-t border-gray-300 pt-5">
+						{repairItem.status === "تمام شده" ? <div className="w-full mt-5 border-t border-gray-300 pt-5">
 							<h4 className="text-lg font-semibold text-navy-blue mb-4">
 								نهایی کردن تعمیرات
 							</h4>
@@ -352,10 +352,10 @@ const RepairDetailsDialog = ({
 									نهایی کردن تعمیرات
 								</button>
 							</div>
-						</div>
+						</div> : ""}
 
 						{/* Override Request */}
-						<div className="w-full flex flex-col sm:flex-row gap-2 justify-between items-start mt-5 border-t border-gray-300 pt-5">
+						{repairItem.status === "در انتظار تایید" ? <div className="w-full flex flex-col sm:flex-row gap-2 justify-between items-start mt-5 border-t border-gray-300 pt-5">
 							<span>
 								میتوانید از این بخش درخواست خود را حذف کنید.
 							</span>
@@ -403,7 +403,7 @@ const RepairDetailsDialog = ({
 									</>
 								)}
 							</div>
-						</div>
+						</div> : ""}
 					</div>
 				</div>
 			</DialogContent>
