@@ -542,7 +542,7 @@ const UserItem = ({
                     <div
                         className={`bg-white ${styles.button} text-[#FA682D] flex gap-2 items-center p-2 hover:cursor-pointer`}
                     >
-                        <p className="font-bold">جزئیات بیشتر و مدیریت</p>
+                        {/* <p className="font-bold">جزئیات بیشتر و مدیریت</p> */}
                         <Settings />
                     </div>
                 </DialogTrigger>

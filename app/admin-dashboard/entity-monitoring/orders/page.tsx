@@ -97,9 +97,9 @@ export default function Orders() {
                 data={orderlist}
                 meta={meta}
                 loading={loading}
-                page={page}
+                page={page ?? 1}
                 setPage={setPage}
-                // resultPerPage={resultPerPage !== "" ? resultPerPage : "10"}
+                pageSize={pageSize !== "" ? pageSize : "10"}
                 deleteApiUrl={`/v1/admin/installation/request/:id`}
                 fetchData={fetchOrders}
                 updateApiUrl={`/v1/admin/installation/request/:id`}

@@ -268,15 +268,17 @@ export default function BidCard({
     const [loading, setLoading] = useState<boolean>(false);
     const [cancelLoading, setCancelLoading] = useState<boolean>(false);
     const corpId = useSelector((state: RootState) => state.user.corpId);
-
+    // useEffect(() => {
+    //     console.log("guaranteeID", guaranteeID);
+    // }, []);
     const initialValues = {
         cost: price,
         area: area,
         power: power,
         description: description,
         installationTime: date,
-        guaranteeID: guaranteeID,
-        paymentTerms: { method: 1 },
+        guaranteeID: guaranteeID ?? "",
+        paymentTerms: { method: 0 },
     };
 
     useEffect(() => {
@@ -308,6 +310,7 @@ export default function BidCard({
     };
 
     const updateBid = (values: BidSchema) => {
+        console.log("values", values);
         setLoading(true);
         const formData = {
             cost: Number(values?.cost),
@@ -315,8 +318,8 @@ export default function BidCard({
             power: Number(values?.power),
             description: values?.description,
             installationTime: values?.installationTime,
-            guaranteeID: Number(values?.guaranteeID),
             paymentTerms: { method: Number(values?.paymentTerms) },
+            ...(guaranteeID && { guaranteeID }),
         };
         console.log("formData", formData);
         putData({
@@ -525,6 +528,7 @@ export default function BidCard({
                                                                     date
                                                                 );
                                                             }}
+                                                            onlyFuture
                                                         />
                                                     </div>
                                                 </div>
@@ -568,11 +572,9 @@ export default function BidCard({
                                                         disabled={
                                                             !hasEditBidPermission
                                                         }
-                                                        defaultValue={String(
-                                                            values?.guaranteeID
-                                                        )}
                                                         value={String(
-                                                            values?.guaranteeID
+                                                            values?.guaranteeID ??
+                                                                ""
                                                         )}
                                                         onValueChange={(
                                                             value
