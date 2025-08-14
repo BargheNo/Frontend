@@ -73,9 +73,9 @@ export default function Ticket({
             {/* <div className="flex flex-row justify-between w-full h-full py-5 px-10 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 min-h-[250px]"> */}
             <div className="flex flex-col p-5 bg-[#F0EDEF] w-full h-full relative min-h-[250px]">
                 {/* Top section */}
-                <div className="flex flex-row justify-between overflow-hidden">
+                <div className="flex flex-row w-full justify-between overflow-hidden gap-4">
                     {/* Right section */}
-                    <div className="w-5/6 flex flex-col justify-between">
+                    <div className="flex flex-col justify-between">
                         <div className="flex flex-col gap-3">
                             <p className="text-start content-start w-full text-2xl font-bold">
                                 {translateSubjectToPersian(subject)}
@@ -88,7 +88,7 @@ export default function Ticket({
                         </div>
                     </div>
                     {/* Left section */}
-                    <div className="min-w-[50px] pr-5 flex flex-row">
+                    <div className="flex flex-row gap-4">
                         {/* status */}
                         {/* {image && <Image src={image} alt="تصویر تیکت" width={500} height={500} className="object-cover h-32 w-32 rounded-xl" />} */}
                         {image && (
@@ -98,14 +98,14 @@ export default function Ticket({
                                 alt="تصویر تیکت"
                             />
                         )}
-                        <div className="w-52 pr-5 flex flex-col gap-4 justify-between">
+                        <div className="w-[15vw] min-w-[15vw] flex flex-col gap-4 justify-between">
                             <div
                                 className={`flex flex-col items-center w-full align-middle h-full ${styles.status} py-8 justify-center gap-2`}
                             >
                                 <span className="text-[#636363] font-bold">
                                     {createdAt}
                                 </span>
-                                <div className="flex md:flex-row flex-col items-center gap-2">
+                                <div className="flex md:flex-row flex-col items-center gap-2 text-center">
                                     <span className="font-bold">{status}</span>
                                     <div
                                         className={`h-4 w-4 rounded-full ${
@@ -118,18 +118,6 @@ export default function Ticket({
                                     />
                                 </div>
                             </div>
-                            {/* <div
-								className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
-							>
-								<button
-									className="cursor-pointer"
-									onClick={() => {
-										resolveTicket(id);
-									}}
-								>
-									بستن تیکت
-								</button>
-							</div> */}
                         </div>
                     </div>
                 </div>
