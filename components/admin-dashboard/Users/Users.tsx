@@ -510,7 +510,7 @@ const UserItem = ({
             .finally(() => setIsBanning(false));
     };
     return (
-        <div className="flex flex-row justify-between w-full h-full bg-[#F4F1F3] p-5 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 items-center">
+        <div className="flex lg:flex-row flex-col justify-between w-full h-full bg-[#F4F1F3] p-5 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 lg:items-center lg:gap-10 md:text-wrap text-nowrap gap-5 items-start">
             <div className="flex items-center gap-3 w-1/4">
                 <div className={`${styles.icon} bg-white text-[#FA682D]`}>
                     <User className="m-1" />
@@ -609,7 +609,7 @@ const UserItem = ({
                                 <Button
                                     onClick={handleBanAction}
                                     // disabled={isBanning}
-                                    className={`px-4 py-2 rounded-lg cursor-pointer min-w-32 ${
+                                    className={`md:px-4 px-[105%] py-2 rounded-lg cursor-pointer  min-w-32 ${
                                         status === "فعال"
                                             ? "bg-red-500 hover:bg-red-600"
                                             : "bg-green-500 hover:bg-green-600"
@@ -627,7 +627,7 @@ const UserItem = ({
                             )}
                         </div>
 
-                        <div className="flex justify-end gap-2">
+                        <div className="flex justify-end gap-2 md:mt-0 mt-12">
                             <CancelButton />
 
                             <Button

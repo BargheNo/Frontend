@@ -208,42 +208,39 @@ const Reports = () => {
         };
     }) => {
         return (
-            <div className="flex flex-row justify-between w-full h-full gap-10 py-5 px-10  overflow-hidden relative border-t border-gray-300 first:border-t-0 min-h-[150px]">
+            <div className="flex flex-col md:flex-row justify-between w-full h-full gap-6 md:gap-10 py-4 md:py-5 px-4 md:px-10 overflow-hidden relative border-t border-gray-300 first:border-t-0 min-h-[150px]">
                 {/* Right section */}
-                <div className="w-5/6 flex flex-col gap-3 justify-between relative">
+                <div className="w-full md:w-5/6 flex flex-col gap-3 justify-between relative">
                     <div className="flex flex-col gap-3 relative">
-                        <p className="text-start w-full text-2xl font-bold">
+                        <p className="text-start w-full text-lg sm:text-xl md:text-2xl font-bold">
                             گزارش مربوط به پنل: {Panel?.panelName}
                         </p>
-                        <div className="flex flex-row gap-2">
-                            <User className="text-orange-500"></User>
-                            <p className="text-start w-full text-lg">
+                        <div className="flex flex-row flex-wrap gap-2">
+                            <User className="text-orange-500" />
+                            <p className="text-start w-full sm:w-auto text-base sm:text-lg">
                                 از طرف: {Panel?.customer?.firstName}{" "}
                                 {Panel?.customer?.lastName}
                             </p>
                         </div>
-                        <div className="flex flex-row gap-2">
-                            <School className="text-orange-500"></School>
-                            <p className="text-start w-full text-lg">
+                        <div className="flex flex-row flex-wrap gap-2">
+                            <School className="text-orange-500" />
+                            <p className="text-start w-full sm:w-auto text-base sm:text-lg">
                                 شرکت: {Panel?.corporation?.name}
                             </p>
                         </div>
-                        {/* <div className="flex flex-row gap-2">
-                            <CircleAlert className="text-orange-500"></CircleAlert>
-                            <p className="max-w-[600px] break-words">
-                                شرح گزارش: {description}
-                            </p>
-                        </div> */}
                     </div>
                 </div>
 
                 {/* Left section */}
-                <div className="w-1/5 pr-5 flex flex-col justify-around relative gap-2">
+                <div className="w-full sm:w-3/4 md:w-2/5 relative flex flex-col justify-around gap-4 md:gap-2 mt-4 md:mt-0 h-full">
+                    {/* Status Box */}
                     <div
-                        className={`flex flex-col items-center ${styles.status} py-4 gap-2 relative h-full`}
+                        className={`flex flex-col items-center ${styles.status}  py-4 gap-2 relative flex-1 min-h-[60px] md:min-h-[80px]`}
                     >
-                        <div className="flex items-center gap-2 h-full">
-                            <span className="font-bold">{Status}</span>
+                        <div className="flex md:flex-row flex-col items-center gap-2 h-full">
+                            <span className="font-bold text-nowrap">
+                                {Status}
+                            </span>
                             <div
                                 className={`h-4 w-4 rounded-full ${
                                     Status === "بررسی شده" ? "green" : "red"
@@ -251,20 +248,18 @@ const Reports = () => {
                             />
                         </div>
                     </div>
+
+                    {/* Button */}
                     {hasRespondReportPermission && Status !== "بررسی شده" && (
                         <Dialog>
                             <DialogTrigger>
                                 <div
-                                    className={`cta-neu-button flex ${styles.button} items-center content-center justify-center`}
+                                    className={`cta-neu-button flex ${styles.button} items-center justify-center mt-4 md:mt-10  px-4 py-2`}
                                 >
-                                    <button
-                                        className="cursor-pointer"
-                                        // onClick={() => resolveReport(id)}
-                                    >
+                                    <button className="cursor-pointer  flex items-center gap-2">
                                         مشاهده جزئیات
+                                        <ArrowLeft />
                                     </button>
-
-                                    <ArrowLeft />
                                 </div>
                             </DialogTrigger>
                             <DialogContent className="rtl">
