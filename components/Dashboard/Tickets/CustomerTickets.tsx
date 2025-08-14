@@ -270,9 +270,11 @@ const TicketSupportPage = () => {
                                         </span>
                                         <div
                                             className={`h-4 w-4 rounded-full ${
-                                                status === "پاسخ داده شده"
-                                                    ? "green"
-                                                    : "red"
+                                                status === "در انتظار پاسخ"
+                                                    ? "red"
+                                                    : status === "پاسخ داده شده"
+                                                    ? "yellow"
+                                                    : "green"
                                             }-status shadow-md`}
                                         />
                                     </div>
@@ -592,11 +594,7 @@ const TicketSupportPage = () => {
                                         key={index}
                                         subject={ticket.subject}
                                         description={ticket.description}
-                                        status={
-                                            ticket.status === "resolved"
-                                                ? "پاسخ داده شده"
-                                                : "بررسی نشده"
-                                        }
+                                        status={ticket.status}
                                         createdAt={new Date(
                                             ticket.created_at ??
                                                 ticket.createdAt

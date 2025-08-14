@@ -109,9 +109,11 @@ export default function Ticket({
                                     <span className="font-bold">{status}</span>
                                     <div
                                         className={`h-4 w-4 rounded-full ${
-                                            status === "پاسخ داده شده"
-                                                ? "green"
-                                                : "red"
+                                            status === "در انتظار پاسخ"
+                                                ? "red"
+                                                : status === "پاسخ داده شده"
+                                                ? "yellow"
+                                                : "green"
                                         }-status shadow-md`}
                                     />
                                 </div>
@@ -172,24 +174,23 @@ export default function Ticket({
                         {/* <div
 								className={`cta-neu-button flex ${styles.button} items-center mt-4 content-center w-50 justify-center`}
 							> */}
-                        {status !== "بسته شده" &&
-                            hasCloseTicketPermission && (
-                                <button
-                                    className={`cursor-pointer cta-neu-button flex ${styles.button} items-center mt-4 content-center w-50 justify-center`}
-                                    onClick={() => {
-                                        resolveTicket(id);
-                                    }}
-                                >
-                                    {resolveTicketLoading ? (
-                                        <LoadingOnButton />
-                                    ) : (
-                                        <div className="flex gap-[2px] items-center">
-                                            بستن تیکت
-                                            <XIcon />
-                                        </div>
-                                    )}
-                                </button>
-                            )}
+                        {status !== "بسته شده" && hasCloseTicketPermission && (
+                            <button
+                                className={`cursor-pointer cta-neu-button flex ${styles.button} items-center mt-4 content-center w-50 justify-center`}
+                                onClick={() => {
+                                    resolveTicket(id);
+                                }}
+                            >
+                                {resolveTicketLoading ? (
+                                    <LoadingOnButton />
+                                ) : (
+                                    <div className="flex gap-[2px] items-center">
+                                        بستن تیکت
+                                        <XIcon />
+                                    </div>
+                                )}
+                            </button>
+                        )}
                         {/* </div> */}
                     </div>
                 </div>
