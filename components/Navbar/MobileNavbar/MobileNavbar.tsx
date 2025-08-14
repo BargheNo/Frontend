@@ -168,7 +168,7 @@ export default function MobileNavbar() {
                                                             dispatch(
                                                                 resetUser()
                                                             );
-                                                            router.push("/");
+                                                            router.push("/login");
                                                         }}
                                                         className="cursor-pointer neo-btn rounded-lg! bg-transparent w-full py-2 px-3"
                                                     >

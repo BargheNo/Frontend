@@ -27,8 +27,8 @@ export default function NewsLanding() {
     });
     return (
         <div className="w-full h-fit px-5 md:px-[10vw] pt-40 news-box">
-            <NeuFrame className="w-1/2 md:w-1/3 h-20 rounded-b-none bg-warm-white">
-                <div className="flex justify-center items-center w-full h-full text-lg font-bold">
+            <NeuFrame className="w-1/2 md:w-1/3 h-20 rounded-b-none">
+                <div className="flex justify-center items-center w-full h-full text-lg font-bold bg-blue-600 text-white">
                     اخبار و اطلاعیه‌ها
                 </div>
             </NeuFrame>
