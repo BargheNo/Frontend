@@ -6,7 +6,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { Siren, AlertCircle, Eclipse, Calendar } from "lucide-react";
+import { Siren, AlertCircle, Eclipse, Calendar, Package, PanelTopClose } from "lucide-react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
@@ -250,6 +250,36 @@ const RepairDetailsDialog = ({
 									</div>
 									<span className="text-lg font-medium">
 										{repairItem.status}
+									</span>
+								</div>
+								<div className="flex flex-col">
+									<div className="flex items-center gap-1">
+										<PanelTopClose
+											size={14}
+											strokeWidth={2.5}
+											className="text-fire-orange"
+										/>
+										<span className="text-sm text-gray-500">
+											شرکت تعمیرکننده
+										</span>
+									</div>
+									<span className="text-lg font-medium">
+										{repairItem.corporation.name}
+									</span>
+								</div>
+								<div className="flex flex-col">
+									<div className="flex items-center gap-1">
+										<Package
+											size={14}
+											strokeWidth={2.5}
+											className="text-fire-orange"
+										/>
+										<span className="text-sm text-gray-500">
+											شرکت سازنده
+										</span>
+									</div>
+									<span className="text-lg font-medium">
+										{repairItem.panel.corporation.name}
 									</span>
 								</div>
 							</div>
