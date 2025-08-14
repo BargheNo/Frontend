@@ -89,7 +89,7 @@ const validateSchema = Yup.object({
     power: Yup.string().required("ظرفیت الزامی است"),
     installationTime: Yup.string().required("زمان تخمینی نصب الزامی است"),
     description: Yup.string().max(500, "توضیحات طولانی است"),
-    guaranteeID: Yup.string().required("نوع گارانتی الزامی است"),
+    guaranteeID: Yup.string(),
     paymentTerms: Yup.object().shape({
         method: Yup.string().required("نحوه پرداخت الزامی است"),
     }),
@@ -126,8 +126,8 @@ export default function PlaceBidForm({
             power: power,
             description: description,
             installationTime: installationTime,
-            guaranteeID: guaranteeID,
             paymentTerms: paymentTerms,
+            ...(guaranteeID && { guaranteeID }),
         };
         console.log("formData", formData);
         postData({

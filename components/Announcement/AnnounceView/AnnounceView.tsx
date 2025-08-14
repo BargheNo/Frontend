@@ -71,41 +71,31 @@ export default function AnnounceView({
                     // statusesListApiRoute={`/v1/news/status`}
                 /> // admin
             )}
-            <AnnouncementBox
-                onlyView={onlyView}
-                className={cn("bg-warm-white h-[60vh] w-full", className)}
-                insideClassName="gap-5"
-            >
-                {isLoading || (error && <LoadingSpinner />)}
-                {data?.data == 0 && (
-                    <div className="text-center flex flex-col items-center justify-center gap-4">
-                        <Image
-                            className="w-1/3"
-                            src={panelNotFound}
-                            alt="orderNotFound"
+            {data?.data?.data?.length === 0 ? (
+                <div className="neu-container">
+                    <NoRecordFound text="هیچ اطلاعیه‌ای یافت نشد." />
+                </div>
+            ) : (
+                <AnnouncementBox
+                    onlyView={onlyView}
+                    className={cn("bg-warm-white h-[60vh] w-full", className)}
+                    insideClassName="gap-5"
+                >
+                    {isLoading || (error && <LoadingSpinner />)}
+
+                    {data?.data?.data?.map((item: News) => (
+                        <AnnounceCard
+                            onlyView={onlyView}
+                            key={item.id}
+                            id={item?.id}
+                            title={item?.title}
+                            status={item?.status}
+                            date={item?.createdAt}
+                            writer={`${item?.author?.firstName} ${item.author?.lastName}`}
                         />
-                        <div className="-mt-8">
-                            <p
-                                className=" mt-6 text-navy-blue font-bold rtl"
-                                style={{ fontSize: "1.1rem" }}
-                            >
-                                هیچ خبری یافت نشد.
-                            </p>
-                        </div>
-                    </div>
-                )}
-                {data?.data?.data?.map((item: News) => (
-                    <AnnounceCard
-                        onlyView={onlyView}
-                        key={item.id}
-                        id={item?.id}
-                        title={item?.title}
-                        status={item?.status}
-                        date={item?.createdAt}
-                        writer={`${item?.author?.firstName} ${item.author?.lastName}`}
-                    />
-                ))}
-            </AnnouncementBox>
+                    ))}
+                </AnnouncementBox>
+            )}
         </>
     );
 }
