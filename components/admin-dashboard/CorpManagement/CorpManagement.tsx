@@ -132,7 +132,6 @@ const CorporationItem = ({
     const handleAccept = async () => {
         postData({
             endPoint: `/v1/admin/corporation/${id}/approve`,
-            data: {},
         })
             .then((data) => {
                 CustomToast(data?.message, "success");
@@ -167,6 +166,12 @@ const CorporationItem = ({
             })
             .catch((err) => console.log(err));
     };
+    useEffect(() => {
+        fetchCorporationDetails();
+    }, []);
+    // useEffect(() => {
+    //     console.log(name, logo, contactInfo, addresses, id);
+    // }, []);
     return (
         <div className="flex lg:flex-row lg:gap-0 gap-4 flex-col justify-between w-full h-full bg-[#F4F1F3] p-5 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 lg:items-center ">
             <div className="flex items-center gap-3 w-1/4">
@@ -220,9 +225,9 @@ const CorporationItem = ({
                         className={`bg-white ${styles.detailsButton} text-[#FA682D] flex gap-2 m-auto items-center p-2   hover:cursor-pointer`}
                     >
                         <div className="flex flex-row m-auto">
-                            <p className="font-bold ">
+                            {/* <p className="font-bold ">
                                 مشاهده پروفایل و مدیریت
-                            </p>
+                            </p> */}
                             <Settings />
                         </div>
                     </div>
@@ -250,21 +255,26 @@ const CorporationItem = ({
                                     className={`flex flex-row justify-between  p-4 rounded-lg mb-4 rtl ${styles.shadow} min-h-40`}
                                 >
                                     <div className="flex flex-col justify-between items-start">
-                                        <div className="flex flex-row gap-2">
-                                            <div className="text-orange-400">
-                                                <School />
-                                            </div>
-                                            <p className="text-2xl">
-                                                {corporation?.name}
-                                            </p>
-                                            <p className="text-sm text-gray-500 py-4">
+                                        <div className="gap-6">
+                                            <div className="flex gap-2">
+                                                <div className="text-orange-400">
+                                                    <School />
+                                                </div>
                                                 <span className="font-semibold">
-                                                    شماره ثبت:
+                                                    نام شرکت:{" "}
                                                 </span>
-                                                {
-                                                    corporation?.registrationNumber
-                                                }
-                                            </p>
+                                                <p>{corporation?.name}</p>
+                                            </div>
+                                            <div className="flex flex-col gap-2">
+                                                <p className="text-sm text-gray-500 place-self-center">
+                                                    <span className="font-semibold">
+                                                        شماره ثبت:{" "}
+                                                    </span>
+                                                    {
+                                                        corporation?.registrationNumber
+                                                    }
+                                                </p>
+                                            </div>
                                         </div>
                                         <div className="flex flex-col md:flex-row md:gap-10 gap-5">
                                             <div className="flex flex-row gap-2">
@@ -273,7 +283,7 @@ const CorporationItem = ({
                                                 </div>
                                                 <p>
                                                     <span className="text-nowrap font-semibold">
-                                                        شناسه ملی:
+                                                        شناسه ملی:{" "}
                                                     </span>
                                                     {corporation?.nationalID}
                                                 </p>
@@ -284,26 +294,23 @@ const CorporationItem = ({
                                                 </div>
                                                 <p>
                                                     <span className="font-semibold text-nowrap">
-                                                        شماره شبا:
+                                                        شماره شبا:{" "}
                                                     </span>
                                                     {corporation?.iban}
                                                 </p>
                                             </div>
                                         </div>
                                     </div>
-                                    {corporation?.logo ? (
-                                        <img
-                                            src={corporation.logo}
-                                            alt={`${corporation.name} logo`}
-                                            className="w-20 h-20 rounded-full border border-orange-400"
+                                    <Avatar className="h-12 w-12 border-2 border-orange-400">
+                                        <AvatarImage
+                                            src={logo}
+                                            alt={`${name} logo`}
+                                            className="object-cover"
                                         />
-                                    ) : (
-                                        <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center border-2 border-orange-400">
-                                            <span className="text-gray-500 text-xs">
-                                                لوگو
-                                            </span>
-                                        </div>
-                                    )}
+                                        <AvatarFallback className="bg-gray-200 text-black ">
+                                            {name?.charAt(0)}
+                                        </AvatarFallback>
+                                    </Avatar>
                                 </div>
 
                                 {/* Contact Info */}
@@ -364,7 +371,7 @@ const CorporationItem = ({
                                                             </div>
                                                             <p>
                                                                 <span className="font-semibold">
-                                                                    استان:
+                                                                    استان:{" "}
                                                                 </span>
                                                                 {
                                                                     address?.province
@@ -377,7 +384,7 @@ const CorporationItem = ({
                                                             </div>
                                                             <p>
                                                                 <span className="font-semibold">
-                                                                    شهر:
+                                                                    شهر:{" "}
                                                                 </span>
                                                                 {address?.city}
                                                             </p>
@@ -388,7 +395,7 @@ const CorporationItem = ({
                                                             </div>
                                                             <p>
                                                                 <span className="font-semibold">
-                                                                    خیابان:
+                                                                    خیابان:{" "}
                                                                 </span>
                                                                 {
                                                                     address?.streetAddress
@@ -403,7 +410,7 @@ const CorporationItem = ({
                                                             </div>
                                                             <p>
                                                                 <span className="font-semibold">
-                                                                    کد پستی:
+                                                                    کد پستی:{" "}
                                                                 </span>
                                                                 {
                                                                     address?.postalCode
@@ -416,7 +423,7 @@ const CorporationItem = ({
                                                             </div>
                                                             <p>
                                                                 <span className="font-semibold">
-                                                                    پلاک:
+                                                                    پلاک:{" "}
                                                                 </span>
                                                                 {
                                                                     address?.houseNumber
@@ -429,7 +436,7 @@ const CorporationItem = ({
                                                             </div>
                                                             <p>
                                                                 <span className="font-semibold">
-                                                                    واحد:
+                                                                    واحد:{" "}
                                                                 </span>
                                                                 {address?.unit}
                                                             </p>
@@ -464,7 +471,7 @@ const CorporationItem = ({
                                                         </div>
                                                         <p>
                                                             <span className="font-semibold">
-                                                                نام:
+                                                                نام:{" "}
                                                             </span>
                                                             {signatory?.name}
                                                         </p>
@@ -475,7 +482,7 @@ const CorporationItem = ({
                                                         </div>
                                                         <p>
                                                             <span className="font-semibold">
-                                                                کد ملی:
+                                                                کد ملی:{" "}
                                                             </span>
                                                             {
                                                                 signatory?.nationalCardNumber
@@ -488,7 +495,7 @@ const CorporationItem = ({
                                                         </div>
                                                         <p>
                                                             <span className="font-semibold">
-                                                                سمت:
+                                                                سمت:{" "}
                                                             </span>
                                                             {
                                                                 signatory?.position
@@ -567,6 +574,10 @@ const CorporationItem = ({
                                             </div>
                                         )}
                                     </div>
+                                    {!corporation?.vatTaxpayerCertificate &&
+                                        !corporation?.officialNewspaperAD && (
+                                            <p>مدرکی ثبت نشده است</p>
+                                        )}
                                 </div>
                                 {hasApproveDeclinePermission && (
                                     <StickyFooter className="rtl">
@@ -692,11 +703,8 @@ const CorpManagement = () => {
                         {corporations && corporations?.length === 0 ? (
                             <NoRecordFound text="هیچ شرکتی یافت نشد." />
                         ) : (
-                            corporations?.map((corporation) => (
-                                <CorporationItem
-                                    key={corporation.id}
-                                    {...corporation}
-                                />
+                            corporations?.map((corporation, index) => (
+                                <CorporationItem key={index} {...corporation} />
                             ))
                         )}
                     </div>
