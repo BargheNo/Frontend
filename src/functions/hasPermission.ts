@@ -33,7 +33,7 @@ export default function useHasPermission(permission: string): PermissionState {
     const names = Array.isArray(permissions)
         ? permissions?.map((p: permission) => p.name)
         : [];
-    console.log(names);
+    // console.log(names);
     const hasPermission =
         isClient &&
         (names?.includes("general.all") || names?.includes(permission));
