@@ -71,7 +71,6 @@ interface BuildingTypeProps {
 }
 
 const InstalledPanelPagination = forwardRef<{ handelHistory: () => void }, {}>((props, ref) => {
-export default function InstalledPanelPagination() {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [disable, Setdisable] = useState(true);
