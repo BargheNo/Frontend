@@ -5,8 +5,8 @@ import React from "react";
 
 export default function Page() {
     return (
-        <div className="flex flex-row relative bg-white justify-center">
-            <p className="vazir text-5xl flex m-auto w-2/3 text-center items-center mr-4 leading-16">
+        <div className="flex flex-col sm:flex-row relative bg-white justify-center h-full sm:h-fit">
+            <p className="vazir text-3xl sm:text-5xl flex m-auto w-2/3 text-center items-center sm:mt-0 sm:mr-4 leading-16">
                 به سامانه مدیریت برق نو خوش آمدید!
             </p>
             <div className="py-18">
