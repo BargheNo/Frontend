@@ -20,7 +20,6 @@ import { Warranty, TermItem } from "./warrantyTypes.ts";
 import { baseURL, putData } from "@/src/services/apiHub";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter.tsx";
-import { Button } from "@/components/ui/button.tsx";
 import { useSelector } from "react-redux";
 
 const TermItemSection = ({ title, description, limitations }: TermItem) => {
@@ -53,6 +52,7 @@ const WarrantyDetails = ({
 	duration,
 	terms,
 	isArchived,
+	onWarrantyUpdate,
 }: Warranty) => {
 	const [open, setOpen] = useState(false);
 
@@ -71,6 +71,7 @@ const WarrantyDetails = ({
 			.then(() => {
 				CustomToast("گارانتی با موفقیت آرشیو شد!", "success");
 				setOpen(false);
+				onWarrantyUpdate?.();
 			})
 			.catch((err) => {
 				console.log(err);
