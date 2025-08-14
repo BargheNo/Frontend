@@ -10,6 +10,7 @@ import {
     ReceiptText,
     CircleAlert,
     School,
+    Eclipse,
 } from "lucide-react";
 import Header from "@/components/Header/Header";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
@@ -50,7 +51,7 @@ const Reports = () => {
             params: { status: panelStatus, query: panelQuery },
         })
             .then((data) => {
-                // console.log(data?.data?.data);
+                console.log(data?.data?.data);
                 setPanelReports(data?.data?.data);
             })
             .catch((err) => console.log(err))
@@ -196,7 +197,7 @@ const Reports = () => {
         description: string;
         Status: string;
         Panel: {
-            Name: string;
+            name: string;
             panelName: string;
             customer: {
                 firstName: string;
@@ -228,6 +229,12 @@ const Reports = () => {
                                 شرکت: {Panel?.corporation?.name}
                             </p>
                         </div>
+                        <div className="flex flex-row flex-wrap gap-2">
+                            <Eclipse className="text-orange-500" />
+                            <p className="text-start w-full sm:w-auto text-base sm:text-lg">
+                                نام پنل: {Panel?.name}
+                            </p>
+                        </div>
                     </div>
                 </div>
 
@@ -256,10 +263,10 @@ const Reports = () => {
                                 <div
                                     className={`cta-neu-button flex ${styles.button} items-center justify-center mt-4 md:mt-10  px-4 py-2`}
                                 >
-                                    <button className="cursor-pointer  flex items-center gap-2">
+                                    <div className="cursor-pointer flex items-center gap-2">
                                         مشاهده جزئیات
                                         <ArrowLeft />
-                                    </button>
+                                    </div>
                                 </div>
                             </DialogTrigger>
                             <DialogContent className="rtl">
