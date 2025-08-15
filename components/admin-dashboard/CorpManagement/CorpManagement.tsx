@@ -243,7 +243,7 @@ const CorporationItem = ({
                         </div>
                     ) : (
                         <>
-                            <div className="gap-8">
+                            <div className="flex flex-col gap-4">
                                 <DialogHeader>
                                     <DialogTitle className="text-right text-2xl text-blue-800">
                                         مشخصات شرکت
@@ -252,7 +252,7 @@ const CorporationItem = ({
 
                                 {/* General Information */}
                                 <div
-                                    className={`flex flex-row justify-between  p-4 rounded-lg mb-4 rtl ${styles.shadow} min-h-40`}
+                                    className={`flex flex-row justify-between p-4 rounded-lg rtl ${styles.shadow} min-h-40`}
                                 >
                                     <div className="flex flex-col justify-between items-start">
                                         <div className="gap-6">
@@ -315,7 +315,7 @@ const CorporationItem = ({
 
                                 {/* Contact Info */}
                                 <div
-                                    className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} min-h-40`}
+                                    className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} h-fit`}
                                 >
                                     <h3 className="font-bold text-xl text-blue-800">
                                         اطلاعات تماس
@@ -351,7 +351,7 @@ const CorporationItem = ({
 
                                 {/* Addresses */}
                                 <div
-                                    className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} min-h-40`}
+                                    className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow}`}
                                 >
                                     <h3 className="font-bold text-xl text-blue-800">
                                         آدرس‌ها
@@ -452,7 +452,7 @@ const CorporationItem = ({
 
                                 {/* Signatories */}
                                 <div
-                                    className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} min-h-40`}
+                                    className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow}`}
                                 >
                                     <h3 className="font-bold text-xl text-blue-800">
                                         امضا کنندگان
@@ -512,7 +512,7 @@ const CorporationItem = ({
 
                                 {/* Documents */}
                                 <div
-                                    className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} min-h-40`}
+                                    className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow}`}
                                 >
                                     <h3 className="font-bold text-xl text-blue-800">
                                         مدارک
