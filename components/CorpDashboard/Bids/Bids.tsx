@@ -41,13 +41,13 @@ interface RequestDetails {
 
 interface Bid {
     id: number;
-    cost: number;
+    cost: string;
     status: string;
     description: string;
     installationTime: string;
     request: RequestDetails;
-    power: number;
-    area: number;
+    power: string;
+    area: string;
     guarantee: GuaranteeProps;
 }
 
@@ -124,8 +124,8 @@ export default function Bids() {
                         <BidCard
                             key={index}
                             id={bid?.id}
-                            price={bid?.cost}
-                            date={bid?.installationTime}
+                            cost={bid?.cost}
+                            installationTime={bid?.installationTime}
                             power={bid?.power}
                             area={bid?.area}
                             status={bid?.status}
@@ -133,7 +133,9 @@ export default function Bids() {
                             panelName={bid?.request?.name}
                             buildingType={bid?.request?.buildingType}
                             address={bid?.request?.address}
-                            guaranteeID={bid?.guarantee?.id}
+                            guaranteeID={
+                                bid?.guarantee?.id ? bid?.guarantee?.id : ""
+                            }
                             updateBids={updateBids}
                         />
                     ))

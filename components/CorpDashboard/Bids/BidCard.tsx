@@ -48,17 +48,17 @@ import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
 import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
 interface BidInfo {
     id: number;
-    price: number;
-    date: string;
-    power: number;
+    cost: string;
+    installationTime: string;
+    power: string;
     status: string;
-    area: number;
+    area: string;
     description: string;
     panelName: string;
     buildingType: string;
     address: Address;
     updateBids: any;
-    guaranteeID: number;
+    guaranteeID: string;
 }
 
 interface BidSchema {
@@ -77,7 +77,7 @@ const validateSchema = Yup.object({
     power: Yup.string().required("ظرفیت الزامی است"),
     installationTime: Yup.string().required("زمان تخمینی نصب الزامی است"),
     description: Yup.string().max(500, "توضیحات طولانی است"),
-    guaranteeID: Yup.string().required("نوع گارانتی الزامی است"),
+    guaranteeID: Yup.string(),
     paymentTerms: Yup.object().shape({
         method: Yup.string().required("نحوه پرداخت الزامی است"),
     }),
@@ -119,7 +119,6 @@ function wordExpression(
                     res += `${Math.round(value / 1e9) % 1000} میلیارد`;
                     found = true;
                 }
-                console.log("m:", Math.round(value / 1e9) % 1000);
                 if (Math.round(value / 1e6) % 1000 !== 0) {
                     if (found) res += " و ";
                     res += `${Math.round(value / 1e6) % 1000} میلیون`;
@@ -246,8 +245,8 @@ const DialogItem = ({
 export default function BidCard({
     id,
     panelName,
-    price,
-    date,
+    cost,
+    installationTime,
     power,
     area,
     description,
@@ -266,22 +265,25 @@ export default function BidCard({
     const [guarantees, setGuarantees] = React.useState<GuaranteeProps[]>([]);
     const [open, setOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
+    const [selectedGuaranteeID, setSelectedGuaranteeID] =
+        useState<string>(guaranteeID);
     const [cancelLoading, setCancelLoading] = useState<boolean>(false);
     const corpId = useSelector((state: RootState) => state.user.corpId);
     // useEffect(() => {
     //     console.log("guaranteeID", guaranteeID);
     // }, []);
     const initialValues = {
-        cost: price,
-        area: area,
-        power: power,
-        description: description,
-        installationTime: date,
-        guaranteeID: guaranteeID ?? "",
-        paymentTerms: { method: 0 },
+        cost,
+        area,
+        power,
+        description,
+        installationTime,
+        guaranteeID,
+        paymentTerms: { method: "2" },
     };
 
     useEffect(() => {
+        console.log("initialValues", initialValues);
         // getData({ endPoint: `/v1/corp/${corpId}/bid/${id}` }).then((data) => {
         // 	console.log(`data of bid ${id}`, data);
         // });
@@ -312,14 +314,16 @@ export default function BidCard({
     const updateBid = (values: BidSchema) => {
         console.log("values", values);
         setLoading(true);
+
         const formData = {
             cost: Number(values?.cost),
             area: Number(values?.area),
             power: Number(values?.power),
             description: values?.description,
             installationTime: values?.installationTime,
-            paymentTerms: { method: Number(values?.paymentTerms) },
-            ...(guaranteeID && { guaranteeID }),
+            paymentTerms: { method: Number(values?.paymentTerms?.method) },
+            guaranteeID: values?.guaranteeID ? Number(values?.guaranteeID) : 0,
+            // ...(values?.guaranteeID && { guaranteeID }),
         };
         console.log("formData", formData);
         putData({
@@ -370,13 +374,13 @@ export default function BidCard({
                         <Item
                             icon={CalendarDays}
                             fieldName="زمان تخمینی نصب"
-                            fieldValue={DateConverter(date)}
+                            fieldValue={DateConverter(installationTime)}
                             english={true}
                         />
                         <Item
                             icon={DollarSign}
                             fieldName="قیمت پیشنهادی شما"
-                            fieldValue={price}
+                            fieldValue={cost}
                             prefix="تومان"
                         />
                     </div>
@@ -411,22 +415,7 @@ export default function BidCard({
                                     initialValues={initialValues}
                                     validationSchema={validateSchema}
                                     onSubmit={(values) => {
-                                        updateBid({
-                                            cost: String(values.cost),
-                                            area: String(values.area),
-                                            power: String(values.power),
-                                            installationTime:
-                                                values.installationTime,
-                                            description: values.description,
-                                            guaranteeID: String(
-                                                values.guaranteeID
-                                            ),
-                                            paymentTerms: {
-                                                method: String(
-                                                    values.paymentTerms.method
-                                                ),
-                                            },
-                                        });
+                                        updateBid(values);
                                     }}
                                 >
                                     {({
@@ -436,11 +425,11 @@ export default function BidCard({
                                         touched,
                                     }) => (
                                         <Form className="m-auto md:w-full w-75 flex flex-col gap-6">
-                                            <FormObserver
+                                            {/* <FormObserver
                                                 guaranteeID={Number(
                                                     values?.guaranteeID
                                                 )}
-                                            />
+                                            /> */}
                                             {/* <DialogHeader>
                                                 <DialogTitle
                                                     className={`flex vazir text-2xl`}
@@ -482,7 +471,7 @@ export default function BidCard({
                                                             icon={CalendarRange}
                                                             fieldName="زمان پیشنهاد"
                                                             fieldValue={DateConverter(
-                                                                date
+                                                                installationTime
                                                             )}
                                                         />
                                                     </div>
@@ -501,6 +490,7 @@ export default function BidCard({
                                                         disabled={
                                                             !hasEditBidPermission
                                                         }
+                                                        autoFocus
                                                         icon={DollarSign}
                                                         onlyNumbers
                                                         containerClassName="w-1/2"
@@ -521,11 +511,11 @@ export default function BidCard({
                                                                 values.installationTime
                                                             }
                                                             setDate={(
-                                                                date: string
+                                                                installationTime: string
                                                             ) => {
                                                                 setFieldValue(
                                                                     "installationTime",
-                                                                    date
+                                                                    installationTime
                                                                 );
                                                             }}
                                                             onlyFuture
@@ -573,8 +563,7 @@ export default function BidCard({
                                                             !hasEditBidPermission
                                                         }
                                                         value={String(
-                                                            values?.guaranteeID ??
-                                                                ""
+                                                            values?.guaranteeID
                                                         )}
                                                         onValueChange={(
                                                             value
@@ -683,7 +672,7 @@ const FormObserver = ({ guaranteeID }: { guaranteeID: number }) => {
 
     useEffect(() => {
         setFieldValue("guaranteeID", String(guaranteeID));
-    }, []);
+    }, [guaranteeID, setFieldValue]);
 
     return null;
 };

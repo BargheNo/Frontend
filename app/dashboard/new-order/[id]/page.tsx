@@ -10,7 +10,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
     return (
         <PageContainer>
-            <Header header="جزئیات درخواست" />
             <NewOrderDetails id={id} />
         </PageContainer>
     );
