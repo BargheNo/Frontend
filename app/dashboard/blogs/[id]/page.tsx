@@ -5,7 +5,6 @@ import BlogEditor from "@/components/blog/BlogEditor/BlogEditor";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getData } from "@/src/services/apiHub";
-import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronLeft } from "lucide-react";
 import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 import BlogTopBox from "@/components/blog/BlogTopBox/BlogTopBox";
