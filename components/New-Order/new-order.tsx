@@ -379,7 +379,7 @@ export default function Neworder({ handelHistory }: { handelHistory: any }) {
                                         onlyNumbers
                                         dir="rtl"
                                         // style={{ width: "25vw" }}
-                                        placeholder="مساحت(مترمربع)"
+                                        placeholder="مساحت (متر مربع)"
                                         icon={LandPlot}
                                         name="area"
                                         inputClassName={
@@ -388,15 +388,15 @@ export default function Neworder({ handelHistory }: { handelHistory: any }) {
                                                 : ""
                                         }
                                     />
-                                    <div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
+                                    {/* <div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
                                         <ShieldAlert />
                                         <p>مساحت محل نصب پنل (متر مربع)</p>
-                                    </div>
+                                    </div> */}
                                     <CustomInput
                                         onlyNumbers
                                         dir="rtl"
                                         // style={{ width: "25vw" }}
-                                        placeholder="میزان برق مورد نیاز"
+                                        placeholder="میزان برق مورد نیاز (وات)"
                                         icon={Gauge}
                                         name="electricity"
                                         inputClassName={
@@ -406,15 +406,15 @@ export default function Neworder({ handelHistory }: { handelHistory: any }) {
                                                 : ""
                                         }
                                     />
-                                    <div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
+                                    {/* <div className="flex flex-row gap-x-1 text-gray-500 mt-6 w-full">
                                         <ShieldAlert />
                                         <p className="">میزان برق مورد نیاز </p>
-                                    </div>
+                                    </div> */}
 
                                     <CustomInput
                                         onlyNumbers
                                         dir="rtl"
-                                        placeholder="سقف هزینه(تومان)"
+                                        placeholder="سقف هزینه (تومان)"
                                         icon={CircleDollarSign}
                                         name="cost"
                                         inputClassName={

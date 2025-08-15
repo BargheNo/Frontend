@@ -26,7 +26,7 @@ export default function wordExpression(
                 let res = "";
                 let found = false;
                 if (Math.round(value / 1e12) !== 0) {
-                    res += `${Math.round(value / 1e12)} همت`;
+                    res += `${Math.round(value / 1e12)} تیلیارد`;
                     found = true;
                 }
                 if (Math.round(value / 1e9) % 1000 !== 0) {

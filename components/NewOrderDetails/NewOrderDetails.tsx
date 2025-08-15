@@ -1,5 +1,5 @@
-import { getData } from "@/src/services/apiHub";
-import React, { useEffect, useState } from "react";
+import { getData, postData } from "@/src/services/apiHub";
+import React, { useCallback, useEffect, useState } from "react";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import styles from "./styles.module.css";
 import {
@@ -20,6 +20,8 @@ import {
     CalendarRange,
     LandPlot,
     ShieldCheck,
+    CreditCard,
+    FileText,
 } from "lucide-react";
 import {
     Dialog,
@@ -36,6 +38,10 @@ import CustomPagination from "../Custom/CustomPagination/CustomPagination";
 import IconWithBackground from "../IconWithBackground/IconWithBackground";
 import DateConverter from "@/src/functions/toJalali";
 import { Form, Formik } from "formik";
+import { Button } from "../ui/button";
+import CancelButton from "../Dialog/CancelButton/CancelButton";
+import CustomToast from "../Custom/CustomToast/CustomToast";
+import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
 
 interface Order {
     id: number;
@@ -75,6 +81,8 @@ export default function NewOrderDetails({ id }: { id: string }) {
     const [order, setOrder] = useState<Order>();
     const [bids, setBids] = useState<Bid[]>();
     const [loading, setLoading] = useState<boolean>(true);
+    const [rejectLoading, setRejectLoading] = useState<boolean>(false);
+    const [acceptLoading, setAcceptLoading] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
 
     const [resultPerPage, setResultPerPage] = useState<string>("");
@@ -93,11 +101,21 @@ export default function NewOrderDetails({ id }: { id: string }) {
         return "bg-gradient-to-br from-red-400 to-red-500 shadow-red-500";
     };
 
-    useEffect(() => {
+    const fetchBids = useCallback(() => {
+        setLoading(true);
+        getData({ endPoint: `/v1/user/installation/request/${id}/bid` })
+            .then((data) => {
+                setBids(data?.data?.data);
+                setPaginationInfo(data?.data?.pagination);
+            })
+            .catch((err) => console.log(err))
+            .finally(() => setLoading(false));
+    }, [id]);
+
+    const fetchOrderDetails = useCallback(() => {
         setLoading(true);
         getData({ endPoint: `/v1/user/installation/request/${id}` })
             .then((data) => {
-                console.log(data?.data);
                 setOrder(data?.data);
             })
             .catch((err) => console.log(err))
@@ -105,14 +123,38 @@ export default function NewOrderDetails({ id }: { id: string }) {
     }, [id]);
 
     useEffect(() => {
-        getData({ endPoint: `/v1/user/installation/request/${id}/bid` })
+        fetchOrderDetails();
+        fetchBids();
+    }, [fetchBids, fetchOrderDetails]);
+
+    const rejectBid = (bidId: number) => {
+        setRejectLoading(true);
+        postData({
+            endPoint: `/v1/user/installation/request/${id}/bid/${bidId}/reject`,
+        })
             .then((data) => {
-                console.log(data?.data?.data[0]);
-                setBids(data?.data?.data);
-                setPaginationInfo(data?.data?.pagination);
+                CustomToast(data?.message, "success");
+                fetchBids();
+                setOpen(false);
             })
-            .catch((err) => console.log(err));
-    }, [id]);
+            .catch((err) => console.log(err))
+            .finally(() => setRejectLoading(false));
+    };
+
+    const acceptBid = (bidId: number) => {
+        setAcceptLoading(true);
+        postData({
+            endPoint: `/v1/user/installation/request/${id}/bid/${bidId}/accept`,
+        })
+            .then((data) => {
+                CustomToast(data?.message, "success");
+                fetchBids();
+                setOpen(false);
+            })
+            .catch((err) => console.log(err))
+            .finally(() => setAcceptLoading(false));
+    };
+
     return loading ? (
         <LoadingSpinner />
     ) : (
@@ -306,7 +348,7 @@ export default function NewOrderDetails({ id }: { id: string }) {
                                                         جزئیات پیشنهاد
                                                     </DialogTitle>
                                                 </DialogHeader>
-                                                <div className="flex flex-col gap-1">
+                                                <div className="flex flex-col gap-2">
                                                     <span className="text-lg font-bold place-self-start">
                                                         مشخصات درخواست
                                                     </span>
@@ -321,6 +363,7 @@ export default function NewOrderDetails({ id }: { id: string }) {
                                                                     bid?.cost
                                                                 }
                                                                 english={false}
+                                                                prefix=" تومان"
                                                             />
                                                             <DialogItem
                                                                 icon={Battery}
@@ -342,22 +385,96 @@ export default function NewOrderDetails({ id }: { id: string }) {
                                                             />
                                                             <DialogItem
                                                                 icon={LandPlot}
-                                                                fieldName="مساحت (متر مربع)"
+                                                                fieldName="مساحت"
                                                                 fieldValue={
                                                                     bid?.area
                                                                 }
+                                                                prefix=" متر مربع"
                                                             />
                                                             <DialogItem
-                                                                icon={ShieldCheck}
+                                                                icon={
+                                                                    ShieldCheck
+                                                                }
                                                                 fieldName="گارانتی"
                                                                 fieldValue={
-                                                                    bid?.guarantee?.name ?? "بدون گارانتی"
+                                                                    bid
+                                                                        ?.guarantee
+                                                                        ?.name ??
+                                                                    "بدون گارانتی"
+                                                                }
+                                                            />
+                                                            <DialogItem
+                                                                icon={
+                                                                    CreditCard
+                                                                }
+                                                                fieldName="شرایط پرداخت"
+                                                                fieldValue={
+                                                                    bid
+                                                                        ?.paymentTerms
+                                                                        ?.paymentMethod
                                                                 }
                                                             />
                                                         </div>
+                                                        {/* <DialogItem
+                                                            className="border-t-2"
+                                                            icon={FileText}
+                                                            fieldName="توضیحات"
+                                                            fieldValue={
+                                                                bid?.description
+                                                            }
+                                                        /> */}
                                                     </div>
+                                                    <p>
+                                                        <span className="font-bold">
+                                                            توضیحات:{" "}
+                                                        </span>
+                                                        <span>
+                                                            {bid?.description}
+                                                        </span>
+                                                    </p>
                                                 </div>
-                                                <DialogFooter></DialogFooter>
+                                                {bid?.status ===
+                                                    "در انتظار تایید" && (
+                                                    <DialogFooter className="flex justify-between w-full">
+                                                        <CancelButton />
+                                                        <div className="flex gap-2">
+                                                            <Button
+                                                                className="gradient-red"
+                                                                onClick={() =>
+                                                                    rejectBid(
+                                                                        bid?.id
+                                                                    )
+                                                                }
+                                                            >
+                                                                {rejectLoading ? (
+                                                                    <LoadingOnButton />
+                                                                ) : (
+                                                                    <p>
+                                                                        رد
+                                                                        پیشنهاد
+                                                                    </p>
+                                                                )}
+                                                            </Button>
+                                                            <Button
+                                                                className="gradient-green"
+                                                                onClick={() =>
+                                                                    acceptBid(
+                                                                        bid?.id
+                                                                    )
+                                                                }
+                                                            >
+                                                                {acceptLoading ? (
+                                                                    <LoadingOnButton />
+                                                                ) : (
+                                                                    <p>
+                                                                        پذیرش
+                                                                        پیشنهاد
+                                                                    </p>
+                                                                )}
+                                                            </Button>
+                                                        </div>
+                                                    </DialogFooter>
+                                                )}
                                             </DialogContent>
                                         </Dialog>
                                     </div>

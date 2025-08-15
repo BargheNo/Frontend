@@ -65,7 +65,7 @@ const OrderHistory = ({ name, id, status, address, createdTime }: Orderhistory) 
                     <Link href={`new-order/${id}`} className="w-full px-4">
                         <button className="w-full flex items-center justify-evenly gradient-blue px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
                             <span className="font-medium text-nowrap">
-                                مدیریت پنل
+                                مدیریت سفارش
                             </span>
                             <MoveLeft className="mr-2 w-4 h-4" />
                         </button>
