@@ -43,7 +43,7 @@ export default function CustomTextArea({
   const hasError = meta.touched && meta.error;
 
   return (
-    <div className={cn(style.Conter, containerClassName)}>
+    <div className={cn(style.Conter, "mt-[25px]", containerClassName)}>
       <div className={style.inputWrapper}>
         {Icon && (
           <Icon

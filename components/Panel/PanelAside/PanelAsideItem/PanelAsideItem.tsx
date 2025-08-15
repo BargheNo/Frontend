@@ -59,7 +59,7 @@ export function PanelAsideIcon({
                     className={`flex gap-2 text-[#003a8b] p-2 mt-0.5 rounded-lg cursor-${
                         notAllowed ? "not-allowed" : "pointer"
                     } ${
-                        pathname === item.path
+                        item.path && pathname?.startsWith(item.path)
                             ? `shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.3),inset_1px_1px_3px_rgba(0,0,0,0.3)] bg-gradient-to-r ${
                                   mode === "customer"
                                       ? "from-[#A55FDA] to-[#F37240]"
@@ -106,7 +106,7 @@ export function PanelAsideTitle({
                     className={`flex gap-2 text-[#003a8b] p-2 mt-0.5 rounded-lg cursor-${
                         notAllowed ? "not-allowed" : "pointer"
                     } ${
-                        pathname === item.path
+                        item.path && pathname?.startsWith(item.path)
                             ? `shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.3),inset_1px_1px_3px_rgba(0,0,0,0.3)] bg-gradient-to-r ${
                                   mode === "customer"
                                       ? "from-[#A55FDA] to-[#F37240]"
