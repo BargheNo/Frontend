@@ -15,6 +15,7 @@ import {
     Gauge,
     Building,
 } from "lucide-react";
+import wordExpression from "@/src/functions/Calculations";
 
 interface Order {
     id: number;
@@ -62,11 +63,13 @@ export default function NewOrderDetails({ id }: { id: string }) {
                             <div className="flex gap-2">
                                 <div
                                     className={`h-4 w-4 flex place-self-center rounded-full ${
-                                        order?.status === "فعال"
+                                        order?.status === "سپرده شده"
                                             ? "green"
-                                            : order?.status === "پاسخ داده شده"
+                                            : order?.status === "فعال"
                                             ? "yellow"
-                                            : "green"
+                                            : order?.status === "منقضی"
+                                            ? "orange"
+                                            : "red"
                                     }-status shadow-md`}
                                 />
                                 <strong>وضعیت:</strong>
@@ -80,12 +83,27 @@ export default function NewOrderDetails({ id }: { id: string }) {
                             <div className="flex gap-2">
                                 <Gauge className="text-orange-400" />
                                 <strong>درخواست توان:</strong>
-                                <p>{order?.powerRequest}</p>
+                                <p>
+                                    {
+                                        wordExpression(
+                                            order?.powerRequest ?? "",
+                                            true
+                                        ).value
+                                    }
+                                    W
+                                </p>
                             </div>
                             <div className="flex gap-2">
                                 <CircleDollarSign className="text-orange-400" />
                                 <strong>حداکثر هزینه:</strong>
-                                <p>{order?.maxCost}</p>
+                                <p>
+                                    {
+                                        wordExpression(
+                                            order?.maxCost ?? "",
+                                            false
+                                        ).value
+                                    }
+                                </p>
                             </div>
                             <div className="flex gap-2">
                                 <CalendarDays className="text-orange-400" />
@@ -93,7 +111,7 @@ export default function NewOrderDetails({ id }: { id: string }) {
                                 <p>
                                     {new Date(
                                         String(order?.createdTime)
-                                    ).toLocaleString()}
+                                    ).toLocaleDateString("fa-IR")}
                                 </p>
                             </div>
                         </div>
