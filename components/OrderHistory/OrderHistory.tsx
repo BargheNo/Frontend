@@ -6,7 +6,7 @@ import SignupButton from "@/components/SignupButton/SignupButton";
 import { Orderhistory } from "@/src/types/OrderhistoryType";
 import moment from "jalali-moment";
 
-const OrderHistory = ({ name, status, address, createdTime }: Orderhistory) => {
+const OrderHistory = ({ name, id, status, address, createdTime }: Orderhistory) => {
     return (
         <div
             className={` w-full ${
@@ -62,7 +62,15 @@ const OrderHistory = ({ name, status, address, createdTime }: Orderhistory) => {
                 </div>
 
                 <div className="flex md:flex-col flex-row-reverse justify-center lg:-mb-0 -mb-80 gap-2 items-center z-10 min-w-48 -mr-43">
-                    <Link href="">
+                    <Link href={`new-order/${id}`} className="w-full px-4">
+                        <button className="w-full flex items-center justify-evenly gradient-blue px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
+                            <span className="font-medium text-nowrap">
+                                مدیریت پنل
+                            </span>
+                            <MoveLeft className="mr-2 w-4 h-4" />
+                        </button>
+                    </Link>
+                    {/* <Link href="">
                         <div className="flex items-center justify-between cursor-pointer rounded-full  ">
                             <SignupButton className="text-[#FA682D]">
                                 <MoveLeft className="w-9 h-9" />
@@ -71,7 +79,7 @@ const OrderHistory = ({ name, status, address, createdTime }: Orderhistory) => {
                     </Link>
                     <div className="md:mt-0 mt-8">
                         <p>مشاهده جزئیات</p>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

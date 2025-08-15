@@ -243,7 +243,7 @@ const CorporationItem = ({
                         </div>
                     ) : (
                         <>
-                            <div className="">
+                            <div className="gap-8">
                                 <DialogHeader>
                                     <DialogTitle className="text-right text-2xl text-blue-800">
                                         مشخصات شرکت
