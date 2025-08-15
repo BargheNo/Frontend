@@ -113,6 +113,19 @@ export default function DesktopNavbar() {
                                         <Link
                                             className={`vazir-bold rtl ${
                                                 pathname ===
+                                                "/messages"
+                                                    ? "text-[#FA682D]"
+                                                    : ""
+                                            }`}
+                                            href={"/messages"}
+                                        >
+                                            اعلان‌ها
+                                        </Link>
+                                    )}
+                                    {accessToken && (
+                                        <Link
+                                            className={`vazir-bold rtl ${
+                                                pathname ===
                                                 "/landing/corp-introduction"
                                                     ? "text-[#FA682D]"
                                                     : ""

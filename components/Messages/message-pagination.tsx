@@ -135,7 +135,7 @@ export default function CorpMessagesPagination() {
 
     return (
         <>
-            <Header header="تنظیمات اعلان‌ها" />
+            <Header className="mt-20" header="تنظیمات اعلان‌ها" />
             <div className="flex flex-col text-white bg-transparent w-full relative">
                 <div className="flex flex-col bg-[#F0EDEF] text-gray-800 w-full rounded-2xl overflow-auto shadow-[-6px_-6px_16px_rgba(255,255,255,0.8),6px_6px_16px_rgba(0,0,0,0.2)] mb-5">
                     <div className="flex flex-row mr-auto md:ml-30 m-auto md:gap-10 gap-6">
