@@ -76,12 +76,12 @@ const BlogTopBox = ({
     return (
         <div
             className={cn(
-                "neo-container h-fit w-full flex flex-col md:flex-row-reverse gap-1 z-20 bg-warm-white rounded-2xl p-3",
+                "neo-container h-fit min-h-fit md:min-h-[250px] items-center w-full flex flex-col md:flex-row-reverse gap-1 z-10 bg-warm-white rounded-2xl p-3",
                 className
             )}
         >
             {/* Cover Image / Skeleton */}
-            <div className="relative h-[200px] md:w-full md:min-h-full rounded-xl m-5 overflow-hidden items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
+            <div className="relative h-[200px] max-h-[200px] w-full md:w-full md:min-h-full rounded-xl m-3 overflow-hidden items-center shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
                 {componentLoading ? (
                     <Skeleton className="h-full w-full rounded-xl" />
                 ) : (
@@ -95,7 +95,7 @@ const BlogTopBox = ({
             </div>
 
             {/* Text Section / Skeleton */}
-            <div className="flex flex-col items-start justify-between md:w-full m-5 rounded-xl p-3 shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
+            <div className="flex flex-col md:min-h-[200px] md:h-full w-full items-start justify-between md:w-full m-3 rounded-xl p-3 shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)]">
                 {componentLoading ? (
                     <div className="w-full space-y-3">
                         <Skeleton className="h-6 w-3/4" />
@@ -124,34 +124,28 @@ const BlogTopBox = ({
                                     {DateConverter(createdAt)}
                                 </span>
                             </div>
-                            {accessToken &&
-                                (isLoading ? (
-                                    <Skeleton className="h-5 w-5" />
-                                ) : (
-                                    <div className="flex items-center gap-1">
-                                        <span>{likeCount}</span>
-                                        <Heart
-                                            className={
-                                                accessToken
-                                                    ? "cursor-pointer"
-                                                    : ""
+                            {isLoading ? (
+                                <Skeleton className="h-5 w-5" />
+                            ) : (
+                                <div className="flex items-center gap-1">
+                                    <span>{likeCount}</span>
+                                    <Heart
+                                        className={
+                                            accessToken ? "cursor-pointer" : ""
+                                        }
+                                        onClick={() => {
+                                            if (accessToken && !isLiked) {
+                                                likeBlog.mutate();
+                                            } else if (accessToken && isLiked) {
+                                                unLikeBlog.mutate();
                                             }
-                                            onClick={() => {
-                                                if (accessToken && !isLiked) {
-                                                    likeBlog.mutate();
-                                                } else if (
-                                                    accessToken &&
-                                                    isLiked
-                                                ) {
-                                                    unLikeBlog.mutate();
-                                                }
-                                            }}
-                                            fill={isLiked ? "#fb8500" : "none"}
-                                            color="#fb8500"
-                                            size={20}
-                                        />
-                                    </div>
-                                ))}
+                                        }}
+                                        fill={isLiked ? "#fb8500" : "none"}
+                                        color="#fb8500"
+                                        size={20}
+                                    />
+                                </div>
+                            )}
                         </div>
                     </>
                 )}
