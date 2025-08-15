@@ -119,7 +119,7 @@ export default function DesktopNavbar() {
                                             }`}
                                             href={"/messages"}
                                         >
-                                            اعلان ها
+                                            اعلان‌ها
                                         </Link>
                                     )}
                                     {accessToken && (

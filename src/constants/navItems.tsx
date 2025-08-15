@@ -35,11 +35,11 @@ export const UserNavItems: NavItem[] = [
     { name: "ثبت سفارش", path: "/dashboard/new-order", icon: <FilePlus /> },
     { name: "محاسبه‌گر", path: "/dashboard/calculator", icon: <Calculator /> },
     // { name: "گزارشات", path: "/dashboard/reports", icon: <BarChart /> },
-    {
-        name: "پیام‌های من",
-        path: "/dashboard/messages",
-        icon: <MessageSquare />,
-    },
+    // {
+    //     name: "پیام‌های من",
+    //     path: "/dashboard/messages",
+    //     icon: <MessageSquare />,
+    // },
     {
         name: "سوابق تعمیرات",
         path: "/dashboard/repair-history",
@@ -79,11 +79,11 @@ export const CorpNavItems = [
         icon: <ClipboardList />,
     },
     { name: "گزارشات", path: "/corpdashboard/reports", icon: <BarChart /> },
-    {
-        name: "پیام‌های من",
-        path: "/corpdashboard/messages",
-        icon: <MessageSquare />,
-    },
+    // {
+    //     name: "پیام‌های من",
+    //     path: "/corpdashboard/messages",
+    //     icon: <MessageSquare />,
+    // },
     {
         name: "تعمیرات پیش رو",
         path: "/corpdashboard/maintenances",
