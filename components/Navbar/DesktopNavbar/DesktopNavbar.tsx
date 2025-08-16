@@ -46,7 +46,19 @@ export default function DesktopNavbar() {
                             <div className="flex w-full justify-between">
                                 {/* left side */}
                                 <div className="flex flex-row-reverse justify-end items-center w-[50%] gap-8">
-                                    <Skeleton className="h-[20px] w-[60px] rounded-full" />
+                                    {/* <Skeleton className="h-[20px] w-[60px] rounded-full" /> */}
+                                    {accessToken && (
+                                        <Link
+                                            className={`
+										${vazirBold.className}`}
+                                            href={"/login"}
+                                            onClick={() =>
+                                                dispatch(resetUser())
+                                            }
+                                        >
+                                            خروج
+                                        </Link>
+                                    )}
                                 </div>
                                 {/* right side */}
                                 <div className="flex flex-row-reverse justify-start items-center w-[50%] gap-8">
@@ -112,8 +124,7 @@ export default function DesktopNavbar() {
                                     {accessToken && (
                                         <Link
                                             className={`vazir-bold rtl ${
-                                                pathname ===
-                                                "/messages"
+                                                pathname === "/messages"
                                                     ? "text-[#FA682D]"
                                                     : ""
                                             }`}
