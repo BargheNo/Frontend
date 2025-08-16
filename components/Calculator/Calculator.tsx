@@ -127,7 +127,7 @@ const Calculator = () => {
                                 className={`vazir w-full mx-auto min-h-full flex flex-col gap-8 text-white py-0 md:py-0 px-3 md:px-14 bg-transparent relative justify-center items-center`}
                             > */}
                             <div className="p-6 flex flex-col md:flex-row justify-between gap-8 sm:gap-8 w-full neu-container">
-                                <div className="flex flex-col w-full md:w-1/3">
+                                <div className="flex flex-col w-full md:w-1/3 justify-evenly">
                                     <CustomInput
                                         dir="rtl"
                                         placeholder="میزان مصرف برق ماهانه (وات ساعت)"
@@ -149,7 +149,7 @@ const Calculator = () => {
                                         name="ceilingArea"
                                         type="number"
                                     />
-                                    <div className="flex items-center gap-2 mt-4">
+                                    <div className="flex items-center gap-2 my-4">
                                         <Tooltip>
                                             <TooltipTrigger asChild>
                                                 <span className="flex items-center justify-center w-6 h-6 rounded-full text-white cursor-pointer">
