@@ -1,6 +1,7 @@
 interface corp {
     id: number;
     name: string;
+    status: string;
     addresses: Address[];
     isSuspended: boolean;
 }

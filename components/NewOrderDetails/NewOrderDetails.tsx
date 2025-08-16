@@ -95,20 +95,12 @@ export default function NewOrderDetails({ id }: { id: string }) {
     const [asc, setAsc] = useState<boolean>(false);
 
     const getStatusColor = (status: string) => {
-        if (status === "فعال") return "yellow-status";
-        if (status === "منقضی") return "gray-status";
-        if (status === "لغو شده") return "red-status";
-        if (status === "سپرده شده") return "green-status";
+        if (status === "تایید شده") return "green-status";
+        if (status === "در انتظار تایید") return "yellow-status";
+        if (status === "رد شده") return "red-status";
+        if (status === "منقضی شده") return "orange-status";
+        if (status === "لغو شده") return "gray-status";
         return "gray-status";
-        // if (status === "فعال")
-        //     return "bg-gradient-to-br from-green-400 to-green-500 border-1 border-gray-100/50 shadow-sm shadow-green-500";
-        // if (status === "منقضی")
-        //     return "bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-yellow-500";
-        // if (status === "لغو شده")
-        //     return "bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-yellow-500";
-        // if (status === "سپرده شده")
-        //     return "bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-yellow-500";
-        // return "bg-gradient-to-br from-red-400 to-red-500 shadow-red-500";
     };
 
     const fetchBids = useCallback(() => {
@@ -327,7 +319,7 @@ export default function NewOrderDetails({ id }: { id: string }) {
                                     <div className="flex md:flex-col flex-row justify-evenly w-1/5 items-center text-center md:-mr-0 mr-6 md:gap-0 gap-28 md:mb-0 mb-10">
                                         <div className="text-nowrap flex flex-col  md:ml-2 ml-auto items-center justify-center gap-2 md:p-3 p-5 rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)] w-30">
                                             <div
-                                                className={` h-4 w-4 rounded-full ${getStatusColor(
+                                                className={`h-4 w-4 rounded-full ${getStatusColor(
                                                     bid?.status
                                                 )} shadow-md`}
                                             />
@@ -449,7 +441,7 @@ export default function NewOrderDetails({ id }: { id: string }) {
                                                         <CancelButton />
                                                         <div className="flex gap-2">
                                                             <Button
-                                                                className="gradient-red"
+                                                                className="gradient-red w-full"
                                                                 onClick={() =>
                                                                     rejectBid(
                                                                         bid?.id
@@ -459,14 +451,14 @@ export default function NewOrderDetails({ id }: { id: string }) {
                                                                 {rejectLoading ? (
                                                                     <LoadingOnButton />
                                                                 ) : (
-                                                                    <p>
+                                                                    <p className="w-full">
                                                                         رد
                                                                         پیشنهاد
                                                                     </p>
                                                                 )}
                                                             </Button>
                                                             <Button
-                                                                className="gradient-green"
+                                                                className="gradient-green w-full"
                                                                 onClick={() =>
                                                                     acceptBid(
                                                                         bid?.id
@@ -476,7 +468,7 @@ export default function NewOrderDetails({ id }: { id: string }) {
                                                                 {acceptLoading ? (
                                                                     <LoadingOnButton />
                                                                 ) : (
-                                                                    <p>
+                                                                    <p className="w-full">
                                                                         پذیرش
                                                                         پیشنهاد
                                                                     </p>

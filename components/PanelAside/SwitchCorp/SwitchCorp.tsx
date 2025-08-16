@@ -30,9 +30,9 @@ export const SwitchCorp = () => {
     // );
     const corps = useSelector((state: RootState) => state.user.corps);
     const corpID = useSelector((state: RootState) => state.user.corpId);
-    useEffect(() => {
-        console.log(corpID);
-    }, []);
+    // useEffect(() => {
+    //     console.log(corps);
+    // }, []);
     // useEffect(() => {
     //     setLoading(true);
     //     getData({ endPoint: `/v1/user/corps` })
