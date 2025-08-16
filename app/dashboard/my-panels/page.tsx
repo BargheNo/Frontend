@@ -56,7 +56,7 @@ const Settings = () => {
             },
         })
             .then((data) => {
-                // console.log(data?.data?.pagination);
+                console.log(data?.data?.data);
                 setPanels(data?.data?.data);
                 setPaginationInfo(data?.data?.pagination);
             })
