@@ -69,9 +69,22 @@ export const SwitchCorp = () => {
                         <SelectItem
                             key={index}
                             value={String(c?.id)}
-                            className="cursor-pointer"
+                            // className="cursor-pointer"
                         >
-                            {c?.name}
+                            <div className="flex flex-row cursor-pointer gap-2">
+                                <div
+                                    className={`${
+                                        c.status === "تایید شده"
+                                            ? "green-status"
+                                            : c.status === "رد شده"
+                                            ? "red-status"
+                                            : c.status === "معلق"
+                                            ? "gray-status"
+                                            : "yellow-status"
+                                    } h-4 w-4 rounded-full shadow-md`}
+                                ></div>
+                                <p>{c?.name}</p>
+                            </div>
                         </SelectItem>
                     ))}
             </SelectContent>

@@ -73,7 +73,12 @@ const Login = () => {
                 // await Promise.resolve();
                 getData({ endPoint: `/v1/user/corps` })
                     .then((data) => {
-                        dispatch(setCorps(data?.data));
+                        const newCorps = data?.data?.filter(
+                            (corp: any) =>
+                                corp?.status !== "در انتظار تایید" &&
+                                corp?.status !== "رد شده"
+                        );
+                        dispatch(newCorps);
                         window.location.href = "/dashboard/profile";
                     })
                     .catch((err) => console.log(err));
