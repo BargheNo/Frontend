@@ -106,17 +106,6 @@ const Settings = () => {
                                 address={`استان ${panel.address.province}، شهر ${panel.address.city}، ${panel.address.streetAddress}`}
                             />
                         ))}
-                        <PanelCard
-                            id={"12"}
-                            panelName={"اسم پنل"}
-                            technicalDetails={{
-                                capacity: 1200,
-                                todayProduction: 1210,
-                                efficiency: 92,
-                            }}
-                            status={"در انتظار نصب"}
-                            address={`ادرس`}
-                        />
                     </>
                 ) : panels ? (
                     <NoRecordFound />
