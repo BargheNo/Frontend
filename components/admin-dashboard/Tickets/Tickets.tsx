@@ -155,7 +155,7 @@ const TicketSupportPage = () => {
                         <div className="flex flex-row justify-between">
                             <p></p>
                             <p className="text-start content-start text-xs text-gray-600">
-                                از طرف {auther.firstName} {auther.lastName} ({" "}
+                                {auther.firstName} {auther.lastName} ({" "}
                                 {authorType === "users" ? "کاربر" : "ادمین"} )
                             </p>
                         </div>
