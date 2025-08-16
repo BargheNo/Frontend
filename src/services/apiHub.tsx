@@ -98,35 +98,28 @@ export function useDeleteData(options = {}) {
     });
 }
 
-const RefreshToken = () => {
+const refreshToken = async () => {
     const userDataString = localStorage.getItem("user");
     if (userDataString) {
         const userData = JSON.parse(userDataString);
         const refreshToken = userData?.refreshToken;
-        const accessToken = userData?.accessToken;
         if (refreshToken) {
             try {
-                apiClient
-                    .post("/v1/auth/refresh", {
-                        refreshToken: refreshToken,
-                    })
-                    .then((response) => {
-                        const data = response.data;
-                        console.log("accessToken", accessToken);
-                        // console.log("refresh data", data);
-                        if (data) {
-                            // console.log("updating", data.data.accessToken);
-                            store.dispatch(
-                                setUser({
-                                    firstName: data?.data?.firstName,
-                                    lastName: data?.data?.lastName,
-                                    permissions: data?.data?.permissions,
-                                    accessToken: data?.data?.accessToken,
-                                    refreshToken: data?.data?.refreshToken,
-                                })
-                            );
-                        }
-                    });
+                const response = await apiClient.post("/v1/auth/refresh", {
+                    refreshToken,
+                });
+                const data = response.data;
+                if (data) {
+                    store.dispatch(
+                        setUser({
+                            firstName: data?.data?.firstName,
+                            lastName: data?.data?.lastName,
+                            permissions: data?.data?.permissions,
+                            accessToken: data?.data?.accessToken,
+                            refreshToken: data?.data?.refreshToken,
+                        })
+                    );
+                }
             } catch (error: any) {
                 generateErrorMessage(error)
                     .split("\n")
@@ -140,7 +133,7 @@ const RefreshToken = () => {
 };
 
 export const getData = async ({ endPoint, headers, params }: getParams) => {
-    RefreshToken();
+    await refreshToken();
     try {
         const response = await apiClient.get(endPoint, {
             params: params,
@@ -156,9 +149,8 @@ export const getData = async ({ endPoint, headers, params }: getParams) => {
         throw error;
     }
 };
-
 export const postData = async ({ endPoint, data, headers }: postParams) => {
-    RefreshToken();
+    await refreshToken();
     try {
         const response = await apiClient.post(endPoint, data, {
             headers: {
@@ -175,9 +167,8 @@ export const postData = async ({ endPoint, data, headers }: postParams) => {
         throw error;
     }
 };
-
 export const patchData = async ({ endPoint, data, headers }: postParams) => {
-    RefreshToken();
+    await refreshToken();
     try {
         const response = await apiClient.patch(endPoint, data, {
             ...headers,
@@ -201,7 +192,7 @@ export const putDataFile = async ({
     formData: any;
     headers?: any;
 }) => {
-    RefreshToken();
+    await refreshToken();
     try {
         const response = await apiClient.put(endPoint, formData, {
             headers: { "Content-Type": "multipart/form-data", ...headers },
@@ -217,7 +208,7 @@ export const putDataFile = async ({
     }
 };
 export const putData = async ({ endPoint, data, headers }: postParams) => {
-    RefreshToken();
+    await refreshToken();
     try {
         const response = await apiClient.put(endPoint, data, {
             ...headers,
@@ -233,7 +224,7 @@ export const putData = async ({ endPoint, data, headers }: postParams) => {
     }
 };
 export const deleteData = async ({ endPoint, data, headers }: postParams) => {
-    RefreshToken();
+    await refreshToken();
     try {
         const response = await apiClient.delete(endPoint, {
             data: data,
