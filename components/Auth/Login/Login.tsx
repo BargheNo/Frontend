@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MoveLeft, Lock, Unlock, Smartphone } from "lucide-react";
 import Link from "next/link";
 import styles from "./login.module.css";
@@ -13,6 +13,8 @@ import { setCorps, setUser } from "@/src/store/slices/userSlice";
 import { useDispatch } from "react-redux";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
+import ReCAPTCHA from "react-google-recaptcha";
+import { toast } from "sonner";
 
 const validationSchema = Yup.object({
     phoneNumber: Yup.string()
@@ -35,26 +37,38 @@ const initialValues = {
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const recaptchaRef = useRef<ReCAPTCHA>(null);
+    const SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
+
     useEffect(() => {
         console.log(localStorage.getItem("user"));
     }, []);
+
     const dispatch = useDispatch();
+
     const handleFormSubmit = async (values: {
         phoneNumber: string;
         password: string;
     }) => {
         const { phoneNumber, password } = values;
         setLoading(true);
+        const token = await recaptchaRef.current?.getValue();
+        if (!token) {
+            toast.error("لطفا CAPTCHA را تکمیل کنید");
+            setLoading(false);
+            return;
+        }
         console.log(localStorage.getItem("user"));
         postData({
             endPoint: "/v1/auth/login",
             data: {
                 phone: "+98" + phoneNumber,
                 password: password,
+                token: token, //TODO fix this api key/value
             },
         })
             .then(async (data) => {
@@ -123,6 +137,14 @@ const Login = () => {
                                     رمز عبور
                                 </CustomInput>
                             </div>
+                            {SITE_KEY && (
+                                <div className="w-full flex justify-center items-center p-2">
+                                    <ReCAPTCHA
+                                        ref={recaptchaRef}
+                                        sitekey={SITE_KEY}
+                                    />
+                                </div>
+                            )}
                             <Link
                                 href="/forgot-password"
                                 data-test="forget-password"
