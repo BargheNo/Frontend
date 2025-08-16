@@ -24,6 +24,29 @@ import IconWithBackground from "../IconWithBackground/IconWithBackground";
 import NoRecordFound from "../NoRecordFound/NoRecordFound";
 import OrderBidCard from "./OrderBidCard";
 
+interface Bid {
+    id: number;
+    description: string;
+    cost: number;
+    installationTime: string; // ISO date string
+    status: string;
+    area: number;
+    power: number;
+    paymentTerms: {
+        id: number;
+        paymentMethod: string;
+    };
+    guarantee: {
+        id: number;
+        name: string;
+        status: string;
+        guaranteeType: string;
+        durationMonths: number;
+        description: string;
+        terms: string | null;
+    };
+}
+
 interface Order {
     id: number;
     name: string;

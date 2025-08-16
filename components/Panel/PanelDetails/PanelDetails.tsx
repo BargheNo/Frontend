@@ -1,6 +1,6 @@
 "use client";
 import Header from "@/components/Header/Header";
-import { getData } from "@/src/services/apiHub";
+import { getData, serverIPAndPort } from "@/src/services/apiHub";
 import React, { useCallback, useEffect, useState } from "react";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import styles from "./styles.module.css";
@@ -44,12 +44,9 @@ import {
 } from "lucide-react";
 
 import wordExpression from "@/src/functions/Calculations";
-import FilterSection from "../FilterSection/FilterSection";
-import CustomPagination from "../Custom/CustomPagination/CustomPagination";
-import IconWithBackground from "../IconWithBackground/IconWithBackground";
-import OrderBidCard from "./OrderBidCard";
 import TruncatedText from "@/components/ui/TruncatedText";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
+import { useDispatch, useSelector } from "react-redux";
 
 interface Panel {
     id: number;
@@ -109,55 +106,12 @@ interface Guarantee {
     terms: Term[];
 }
 
-// const panelDetails = (panel: Panel) => [
-//     {
-//         icon: <Eclipse className="text-orange-400" />,
-//         label: "نام پنل",
-//         value: panel?.name,
-//     },
-//     {
-//         icon: <Eclipse className="text-green-400" />,
-//         label: "وضعیت",
-//         value: panel?.status,
-//     },
-//     {
-//         icon: <Eclipse className="text-blue-400" />,
-//         label: "نوع ساختمان",
-//         value: panel?.buildingType,
-//     },
-//     {
-//         icon: <Eclipse className="text-purple-400" />,
-//         label: "متراژ",
-//         value: panel?.area,
-//     },
-//     {
-//         icon: <Eclipse className="text-pink-400" />,
-//         label: "توان",
-//         value: panel?.power,
-//     },
-//     {
-//         icon: <Eclipse className="text-yellow-400" />,
-//         label: "شیب",
-//         value: panel?.tilt,
-//     },
-//     {
-//         icon: <Eclipse className="text-indigo-400" />,
-//         label: "آزیموت",
-//         value: panel?.azimuth,
-//     },
-//     {
-//         icon: <Eclipse className="text-red-400" />,
-//         label: "تعداد ماژول‌ها",
-//         value: panel?.totalNumberOfModules,
-//     },
-//     {
-//         icon: <Eclipse className="text-gray-400" />,
-//         label: "گارانتی",
-//         value: panel?.guaranteeStatus,
-//     },
-// ];
-
 export default function PanelDetails({ id }: { id: string }) {
+    const accessToken = useSelector(
+        (state: RootState) => state.user.accessToken
+    );
+    const dispatch = useDispatch();
+    const [liveData, setLiveData] = useState<any>(null);
     const [panel, setPanel] = useState<Panel>();
     const [loading, setLoading] = useState<boolean>(true);
     const getStatusColor = (status: string) => {
@@ -185,6 +139,35 @@ export default function PanelDetails({ id }: { id: string }) {
     useEffect(() => {
         fetchPanelDetails();
     }, [fetchPanelDetails]);
+
+    useEffect(() => {
+        if (!accessToken) return;
+
+        const websocketUrl = `ws://${serverIPAndPort}/v1/user/monitoring/panel/${id}/token/${accessToken}`;
+        const ws = new WebSocket(websocketUrl);
+
+        ws.onopen = () => {
+            console.log("WebSocket connected");
+        };
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            setLiveData(data);
+            console.log("data", data);
+        };
+
+        ws.onerror = (error) => {
+            console.error("WebSocket error:", error);
+        };
+
+        ws.onclose = () => {
+            console.log("WebSocket disconnected");
+        };
+
+        return () => {
+            ws.close();
+        };
+    }, [accessToken, id]);
 
     return (
         <>
