@@ -47,9 +47,9 @@ import wordExpression from "@/src/functions/Calculations";
 import FilterSection from "../FilterSection/FilterSection";
 import CustomPagination from "../Custom/CustomPagination/CustomPagination";
 import IconWithBackground from "../IconWithBackground/IconWithBackground";
-import NoRecordFound from "../NoRecordFound/NoRecordFound";
 import OrderBidCard from "./OrderBidCard";
 import TruncatedText from "@/components/ui/TruncatedText";
+import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 
 interface Panel {
     id: number;
@@ -315,12 +315,12 @@ export default function PanelDetails({ id }: { id: string }) {
                                 <p>{panel?.address.province}</p>
                             </div>
                             <div className="flex gap-2">
-                                <Building2 className="text-orange-400" />
+                                <Building2 className="text-orange-400 shrink-0" />
                                 <strong>شهر:</strong>
                                 <p>{panel?.address.city}</p>
                             </div>
                             <div className="flex gap-2">
-                                <Route className="text-orange-400" />
+                                <Route className="text-orange-400 shrink-0" />
                                 <strong>خیابان:</strong>
                                 <TruncatedText maxLength={70}>
                                     {panel?.address?.streetAddress ?? ""}
@@ -509,107 +509,126 @@ export default function PanelDetails({ id }: { id: string }) {
                         <div className="font-bold text-xl text-blue-800">
                             گارانتی
                         </div>
-                        <div className="space-y-4 p-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                {/* نام گارانتی */}
-                                <div className="flex gap-2">
-                                    <ShieldCheck className="text-orange-400" />
-                                    <strong>نام گارانتی:</strong>
-                                    <p>{panel?.guarantee?.name}</p>
+                        {panel?.guaranteeStatus === "فعال" ? (
+                            <div className="space-y-4 p-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                    {/* نام گارانتی */}
+                                    <div className="flex gap-2">
+                                        <ShieldCheck className="text-orange-400" />
+                                        <strong>نام گارانتی:</strong>
+                                        <p>{panel?.guarantee?.name}</p>
+                                    </div>
+                                    {/* وضعیت گارانتی */}
+                                    <div className="flex gap-2">
+                                        <div
+                                            className={`h-4 w-4 flex place-self-center rounded-full ${
+                                                panel?.guarantee?.status ===
+                                                "فعال"
+                                                    ? "green-status"
+                                                    : "red-status"
+                                            } shadow-md`}
+                                        />
+                                        <strong>وضعیت گارانتی:</strong>
+                                        <p>{panel?.guarantee?.status}</p>
+                                    </div>
+                                    {/* نوع گارانتی */}
+                                    <div className="flex gap-2">
+                                        <ScrollText className="text-orange-400" />
+                                        <strong>نوع گارانتی:</strong>
+                                        <p>{panel?.guarantee?.guaranteeType}</p>
+                                    </div>
+                                    {/* مدت گارانتی */}
+                                    <div className="flex gap-2">
+                                        <CalendarClock className="text-orange-400" />
+                                        <strong>مدت گارانتی:</strong>
+                                        <p>
+                                            {panel?.guarantee?.durationMonths}{" "}
+                                            ماه
+                                        </p>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <FileText className="text-orange-400" />
+                                        <strong>توضیحات:</strong>
+                                        <p>{panel?.guarantee?.description}</p>
+                                    </div>
                                 </div>
-                                {/* وضعیت گارانتی */}
-                                <div className="flex gap-2">
-                                    <div
-                                        className={`h-4 w-4 flex place-self-center rounded-full ${
-                                            panel?.guarantee?.status === "فعال"
-                                                ? "green-status"
-                                                : "red-status"
-                                        } shadow-md`}
-                                    />
-                                    <strong>وضعیت گارانتی:</strong>
-                                    <p>{panel?.guarantee?.status}</p>
-                                </div>
-                                {/* نوع گارانتی */}
-                                <div className="flex gap-2">
-                                    <ScrollText className="text-orange-400" />
-                                    <strong>نوع گارانتی:</strong>
-                                    <p>{panel?.guarantee?.guaranteeType}</p>
-                                </div>
-                                {/* مدت گارانتی */}
-                                <div className="flex gap-2">
-                                    <CalendarClock className="text-orange-400" />
-                                    <strong>مدت گارانتی:</strong>
-                                    <p>
-                                        {panel?.guarantee?.durationMonths} ماه
-                                    </p>
-                                </div>
-                                <div className="flex gap-2">
-                                    <FileText className="text-orange-400" />
-                                    <strong>توضیحات:</strong>
-                                    <p>{panel?.guarantee?.description}</p>
-                                </div>
-                            </div>
 
-                            <div className="font-bold text-xl text-blue-800">
-                                شرایط
-                            </div>
-                            <div className="relative neu-container flex flex-col gap-4">
-                                <div className="space-y-4 p-4 m-4">
-                                    {panel?.guarantee?.terms &&
-                                    panel?.guarantee?.terms?.length > 0 ? (
-                                        panel?.guarantee?.terms?.map(
-                                            (term, index) => (
-                                                <div
-                                                    key={index}
-                                                    className="border-gray-300 border-t-2 first:border-t-0"
-                                                >
-                                                    <div className="p-4 flex flex-col gap-4">
-                                                        <div className="flex gap-2">
-                                                            <ReceiptText className="text-orange-400" />
-                                                            <strong>
-                                                                عنوان:
-                                                            </strong>
-                                                            <TruncatedText
-                                                                maxLength={70}
-                                                            >
-                                                                {term?.title ??
-                                                                    ""}
-                                                            </TruncatedText>
-                                                        </div>
-                                                        <div className="flex gap-2">
-                                                            <ListCollapse className="text-orange-400" />
-                                                            <strong>
-                                                                توضیحات:
-                                                            </strong>
-                                                            <TruncatedText
-                                                                maxLength={70}
-                                                            >
-                                                                {term?.description ??
-                                                                    ""}
-                                                            </TruncatedText>
-                                                        </div>
-                                                        <div className="flex gap-2">
-                                                            <CircleAlert className="text-orange-400" />
-                                                            <strong>
-                                                                محدودیت‌ها:
-                                                            </strong>
-                                                            <TruncatedText
-                                                                maxLength={70}
-                                                            >
-                                                                {term?.limitations ??
-                                                                    ""}
-                                                            </TruncatedText>
+                                <div className="font-bold text-xl text-blue-800">
+                                    شرایط
+                                </div>
+                                <div className="relative neu-container flex flex-col gap-4">
+                                    <div className="space-y-4 p-4 m-4">
+                                        {panel?.guarantee?.terms &&
+                                        panel?.guarantee?.terms?.length > 0 ? (
+                                            panel?.guarantee?.terms?.map(
+                                                (term, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className="border-gray-300 border-t-2 first:border-t-0"
+                                                    >
+                                                        <div className="p-4 flex flex-col gap-4">
+                                                            <div className="flex gap-2">
+                                                                <ReceiptText className="text-orange-400" />
+                                                                <strong>
+                                                                    عنوان:
+                                                                </strong>
+                                                                <TruncatedText
+                                                                    maxLength={
+                                                                        70
+                                                                    }
+                                                                >
+                                                                    {term?.title ??
+                                                                        ""}
+                                                                </TruncatedText>
+                                                            </div>
+                                                            <div className="flex gap-2">
+                                                                <ListCollapse className="text-orange-400" />
+                                                                <strong>
+                                                                    توضیحات:
+                                                                </strong>
+                                                                <TruncatedText
+                                                                    maxLength={
+                                                                        70
+                                                                    }
+                                                                >
+                                                                    {term?.description ??
+                                                                        ""}
+                                                                </TruncatedText>
+                                                            </div>
+                                                            <div className="flex gap-2">
+                                                                <CircleAlert className="text-orange-400" />
+                                                                <strong>
+                                                                    محدودیت‌ها:
+                                                                </strong>
+                                                                <TruncatedText
+                                                                    maxLength={
+                                                                        70
+                                                                    }
+                                                                >
+                                                                    {term?.limitations ??
+                                                                        ""}
+                                                                </TruncatedText>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                )
                                             )
-                                        )
-                                    ) : (
-                                        <p>هیچ آدرسی وجود ندارد.</p>
-                                    )}
+                                        ) : (
+                                            <p>هیچ شرایطی وجود ندارد.</p>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        ) : (
+                            <div className="flex flex-col items-center justify-center gap-4 py-8">
+                                <div className="text-6xl text-gray-400 font-bold">
+                                    !
+                                </div>
+                                <p className="text-gray-500">
+                                    {panel?.guaranteeStatus}
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
