@@ -115,7 +115,7 @@ export default function NewOrderDetails({ id }: { id: string }) {
                             </div>
                             <div className="flex gap-2">
                                 <Gauge className="text-orange-400" />
-                                <strong>درخواست توان:</strong>
+                                <strong>توان درخواستی:</strong>
                                 <p>
                                     {
                                         wordExpression(
@@ -154,7 +154,7 @@ export default function NewOrderDetails({ id }: { id: string }) {
                     className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} h-fit`}
                 >
                     <h3 className="font-bold text-xl text-blue-800">آدرس</h3>
-                    <div className="space-y-4 p-4 grid grid-cols-2 gap-4">
+                    <div className="p-4 grid grid-cols-2 gap-4">
                         <div className="flex gap-2">
                             <MapPin className="text-orange-400" />
                             <strong>استان:</strong>

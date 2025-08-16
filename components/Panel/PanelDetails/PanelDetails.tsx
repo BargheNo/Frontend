@@ -16,6 +16,19 @@ import {
     DoorOpen,
     Gauge,
     Building,
+    CircleCheck,
+    Package,
+    Ruler,
+    Bolt,
+    Triangle,
+    Compass,
+    Grid3x3,
+    ShieldCheck,
+    Navigation,
+    Mailbox,
+    Hash,
+    Layers,
+    Map,
 } from "lucide-react";
 
 import wordExpression from "@/src/functions/Calculations";
@@ -72,9 +85,69 @@ interface Guarantee {
     terms: any | null; // adjust type if you know the structure
 }
 
+// const panelDetails = (panel: Panel) => [
+//     {
+//         icon: <Eclipse className="text-orange-400" />,
+//         label: "نام پنل",
+//         value: panel?.name,
+//     },
+//     {
+//         icon: <Eclipse className="text-green-400" />,
+//         label: "وضعیت",
+//         value: panel?.status,
+//     },
+//     {
+//         icon: <Eclipse className="text-blue-400" />,
+//         label: "نوع ساختمان",
+//         value: panel?.buildingType,
+//     },
+//     {
+//         icon: <Eclipse className="text-purple-400" />,
+//         label: "متراژ",
+//         value: panel?.area,
+//     },
+//     {
+//         icon: <Eclipse className="text-pink-400" />,
+//         label: "توان",
+//         value: panel?.power,
+//     },
+//     {
+//         icon: <Eclipse className="text-yellow-400" />,
+//         label: "شیب",
+//         value: panel?.tilt,
+//     },
+//     {
+//         icon: <Eclipse className="text-indigo-400" />,
+//         label: "آزیموت",
+//         value: panel?.azimuth,
+//     },
+//     {
+//         icon: <Eclipse className="text-red-400" />,
+//         label: "تعداد ماژول‌ها",
+//         value: panel?.totalNumberOfModules,
+//     },
+//     {
+//         icon: <Eclipse className="text-gray-400" />,
+//         label: "گارانتی",
+//         value: panel?.guaranteeStatus,
+//     },
+// ];
+
 export default function PanelDetails({ id }: { id: string }) {
     const [panel, setPanel] = useState<Panel>();
     const [loading, setLoading] = useState<boolean>(true);
+    const getStatusColor = (status: string) => {
+        if (status === "فعال")
+            // return "bg-gradient-to-br from-green-400 to-green-500 border-1 border-gray-100/50 shadow-sm shadow-green-500";
+            return "green-status";
+        if (status === "در انتظار نصب")
+            // return "bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-yellow-500";
+            return "yellow-status";
+        if (status === "خراب")
+            // return "bg-gradient-to-br from-red-400 to-red-500 shadow-red-500";
+            return "red-status";
+        return "gray-status";
+    };
     const fetchPanelDetails = useCallback(() => {
         setLoading(true);
         getData({ endPoint: `/v1/user/installation/panel/${id}` })
@@ -88,6 +161,7 @@ export default function PanelDetails({ id }: { id: string }) {
     useEffect(() => {
         fetchPanelDetails();
     }, [fetchPanelDetails]);
+
     return loading ? (
         <LoadingSpinner />
     ) : (
@@ -102,64 +176,98 @@ export default function PanelDetails({ id }: { id: string }) {
                     </h3>
                     <div className="space-y-4 p-4">
                         <div className="grid grid-cols-2 gap-4">
+                            {/* نام پنل */}
                             <div className="flex gap-2">
-                                <Eclipse className="text-orange-400" />
+                                <Package className="text-orange-400" />
                                 <strong>نام پنل:</strong>
                                 <p>{panel?.name}</p>
                             </div>
+
+                            {/* وضعیت */}
                             <div className="flex gap-2">
                                 <div
-                                    className={`h-4 w-4 flex place-self-center rounded-full ${
-                                        panel?.status === "سپرده شده"
-                                            ? "green"
-                                            : panel?.status === "فعال"
-                                            ? "yellow"
-                                            : panel?.status === "منقضی"
-                                            ? "orange"
-                                            : "red"
-                                    }-status shadow-md`}
+                                    className={`h-4 w-4 flex place-self-center rounded-full ${getStatusColor(
+                                        panel?.status ?? ""
+                                    )} shadow-md`}
                                 />
                                 <strong>وضعیت:</strong>
                                 <p>{panel?.status}</p>
                             </div>
+
+                            {/* نوع ساختمان */}
                             <div className="flex gap-2">
-                                <Building className="text-orange-400" />
+                                <Home className="text-blue-500" />
                                 <strong>نوع ساختمان:</strong>
                                 <p>{panel?.buildingType}</p>
                             </div>
+
+                            {/* تعداد کل ماژول‌ها */}
                             <div className="flex gap-2">
-                                <Gauge className="text-orange-400" />
-                                <strong>درخواست توان:</strong>
+                                <Grid3x3 className="text-indigo-500" />
+                                <strong>تعداد ماژول‌ها:</strong>
                                 <p>
                                     {
                                         wordExpression(
-                                            panel?.powerRequest ?? "",
-                                            true
+                                            panel?.totalNumberOfModules ?? "",
+                                            false
                                         ).value
+                                    }{" "}
+                                    عدد
+                                </p>
+                            </div>
+
+                            {/* مساحت */}
+                            <div className="flex gap-2">
+                                <Ruler className="text-purple-500" />
+                                <strong>مساحت:</strong>
+                                <p>
+                                    {
+                                        wordExpression(panel?.area ?? "", false)
+                                            .value
+                                    }{" "}
+                                    متر مربع
+                                </p>
+                            </div>
+
+                            {/* توان */}
+                            <div className="flex gap-2">
+                                <Bolt className="text-yellow-500" />
+                                <strong>توان:</strong>
+                                <p>
+                                    {
+                                        wordExpression(panel?.power ?? "", true)
+                                            .value
                                     }
                                     W
                                 </p>
                             </div>
+
+                            {/* زاویه شیب */}
                             <div className="flex gap-2">
-                                <CircleDollarSign className="text-orange-400" />
-                                <strong>حداکثر هزینه:</strong>
-                                <p>
-                                    {
-                                        wordExpression(
-                                            panel?.maxCost ?? "",
-                                            false
-                                        ).value
-                                    }
-                                </p>
+                                <Triangle className="text-pink-500" />
+                                <strong>زاویه شیب:</strong>
+                                <p>{panel?.tilt} درجه</p>
                             </div>
+
+                            {/* سمت (آزیموت) */}
                             <div className="flex gap-2">
-                                <CalendarDays className="text-orange-400" />
-                                <strong>تاریخ ایجاد:</strong>
-                                <p>
-                                    {new Date(
-                                        String(panel?.createdTime)
-                                    ).toLocaleDateString("fa-IR")}
-                                </p>
+                                <Compass className="text-cyan-500" />
+                                <strong>جهت:</strong>
+                                <p>{panel?.azimuth} درجه</p>
+                            </div>
+
+                            {/* وضعیت گارانتی */}
+                            <div className="flex gap-2">
+                                <ShieldCheck className="text-teal-500" />
+                                <strong>وضعیت گارانتی:</strong>
+                                <p>{panel?.guaranteeStatus}</p>
+                            </div>
+
+                            {/* شرکت */}
+                            <div className="flex gap-2">
+                                <Building2 className="text-gray-600" />
+                                <strong>شرکت پیمانکار:</strong>
+                                <p>{panel?.corporation?.name}</p>
                             </div>
                         </div>
                     </div>
@@ -168,7 +276,7 @@ export default function PanelDetails({ id }: { id: string }) {
                     className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} h-fit`}
                 >
                     <h3 className="font-bold text-xl text-blue-800">آدرس</h3>
-                    <div className="space-y-4 p-4 grid grid-cols-2 gap-4">
+                    <div className="p-4 grid grid-cols-2 gap-4">
                         <div className="flex gap-2">
                             <MapPin className="text-orange-400" />
                             <strong>استان:</strong>
