@@ -408,7 +408,7 @@ export default function BidCard({
                     <div className="flex md:flex-col flex-row justify-evenly w-1/5 items-center text-center md:-mr-0 mr-6 md:gap-0 gap-28 md:mb-0 mb-10">
                         <div className="text-nowrap flex flex-col  md:ml-2 ml-auto items-center justify-center gap-2 md:p-3 p-5 rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)] w-30">
                             <div
-                                className={` h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
+                                className={`h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
                             />
                             <span className="text-sm font-medium text-gray-600">
                                 {status}
