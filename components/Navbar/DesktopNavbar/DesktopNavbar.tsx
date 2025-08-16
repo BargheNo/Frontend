@@ -24,7 +24,7 @@ export default function DesktopNavbar() {
     useEffect(() => {
         const corpsList = corps ?? [];
         setIsCorp(corpsList?.length > 0);
-        // console.log(perms);
+        console.log(accessToken, corps, isAdmin, isCorp);
         const hasInitialized =
             typeof accessToken !== "undefined" &&
             typeof corps !== "undefined" &&
