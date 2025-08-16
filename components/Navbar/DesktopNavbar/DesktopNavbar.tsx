@@ -7,7 +7,8 @@ import Dashboard from "./Dashboard/Dashboard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDispatch, useSelector } from "react-redux";
 import hasAdminAnyPermission from "@/src/functions/isAdmin";
-import { resetUser } from "@/src/store/slices/userSlice";
+import { resetUser, setCorpId, setCorps } from "@/src/store/slices/userSlice";
+import { getData } from "@/src/services/apiHub";
 
 export default function DesktopNavbar() {
     const dispatch = useDispatch();
@@ -20,20 +21,42 @@ export default function DesktopNavbar() {
     const isAdmin = hasAdminAnyPermission();
     const perms = useSelector((state: RootState) => state.user.permissions);
     const corps = useSelector((state: RootState) => state.user.corps);
+    const corpId = useSelector((state: RootState) => state.user.corpId);
 
-    useEffect(() => {
-        const corpsList = corps ?? [];
-        setIsCorp(corpsList?.length > 0);
-        // console.log(perms);
-        const hasInitialized =
-            typeof accessToken !== "undefined" &&
-            typeof corps !== "undefined" &&
-            typeof isAdmin != "undefined" &&
-            typeof isCorp != "undefined";
-        if (hasInitialized) {
-            setLoading(false);
-        }
-    }, [accessToken, isAdmin, setLoading, isCorp, corps, perms]);
+    useEffect(
+        () => {
+            // const corpsList = corps ?? [];
+            // setIsCorp(corpsList?.length > 0);
+            // console.log(accessToken, isAdmin, isCorp);
+            getData({ endPoint: `/v1/user/corps` }).then((res) => {
+                setIsCorp(res?.data?.length > 0);
+                if (!corps) {
+                    console.log("setting corps", corps, res?.data);
+                    dispatch(setCorps(res?.data));
+                }
+                if (!corpId) {
+                    dispatch(setCorpId(res?.data?.[0]?.id));
+                }
+                const hasInitialized =
+                    typeof accessToken !== "undefined" &&
+                    typeof isAdmin != "undefined" &&
+                    typeof isCorp != "undefined";
+                if (hasInitialized) {
+                    setLoading(false);
+                }
+            });
+        },
+        [
+            accessToken,
+            // isAdmin,
+            // setLoading,
+            // isCorp,
+            // perms,
+            // dispatch,
+            // corps,
+            // corpId,
+        ]
+    );
     return (
         <>
             <div className="h-[70px] fixed top-0 w-full flex flex-col justify-center items-center z-20">
@@ -47,6 +70,17 @@ export default function DesktopNavbar() {
                                 {/* left side */}
                                 <div className="flex flex-row-reverse justify-end items-center w-[50%] gap-8">
                                     <Skeleton className="h-[20px] w-[60px] rounded-full" />
+                                    {/* {accessToken && (
+                                        <Link
+                                            className={`${vazirBold.className}`}
+                                            href={"/login"}
+                                            onClick={() =>
+                                                dispatch(resetUser())
+                                            }
+                                        >
+                                            خروج
+                                        </Link>
+                                    )} */}
                                 </div>
                                 {/* right side */}
                                 <div className="flex flex-row-reverse justify-start items-center w-[50%] gap-8">
@@ -109,6 +143,18 @@ export default function DesktopNavbar() {
                                     >
                                         اطلاعیه‌ها
                                     </Link>
+                                    {accessToken && (
+                                        <Link
+                                            className={`vazir-bold rtl ${
+                                                pathname === "/messages"
+                                                    ? "text-[#FA682D]"
+                                                    : ""
+                                            }`}
+                                            href={"/messages"}
+                                        >
+                                            اعلان‌ها
+                                        </Link>
+                                    )}
                                     {accessToken && (
                                         <Link
                                             className={`vazir-bold rtl ${

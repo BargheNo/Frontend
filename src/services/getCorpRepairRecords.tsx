@@ -1,9 +1,9 @@
 import { baseURL, getData } from "./apiHub";
 
 class CorpRepairRecords {
-    GetRepairRequest() {
+    GetRepairRequest(corpID: number) {
         return getData({
-            endPoint: `${baseURL}/v1/corp/2/maintenance/request?status=7`    // TODO: CorpIDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+            endPoint: `${baseURL}/v1/corp/${corpID}/maintenance/request?status=7`
         });
     }
 }

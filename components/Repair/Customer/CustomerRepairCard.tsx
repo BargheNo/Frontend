@@ -95,8 +95,11 @@ const CustomerRepairCard = ({
 
     const getStatusColor = () => {
         if (repairItem.status === "تایید شده") return "green-status";
-        if (repairItem.status === "در حال انجام") return "yellow-status";
-        return "red-status";
+        if (repairItem.status === "در حال انجام") return "purple-status";
+        if (repairItem.status === "در انتظار تایید") return "yellow-status";
+        if (repairItem.status === "تمام شده") return "blue-status";
+        if (repairItem.status === "رد شده") return "red-status";
+        return "gray-status";
     };
 
     const MAXLENGTH: number = 70;

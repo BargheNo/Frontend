@@ -67,8 +67,8 @@ interface CorporationType {
         houseNumber: string;
         unit: number;
     }>;
+    status: string;
 }
-
 interface CorporationDetailType {
     id: number;
     name: string;
@@ -101,6 +101,7 @@ interface CorporationDetailType {
         houseNumber: string;
         unit: number;
     }>;
+    status: string;
 }
 
 const CorporationItem = ({
@@ -109,6 +110,7 @@ const CorporationItem = ({
     contactInfo,
     addresses,
     id,
+    status,
 }: CorporationType) => {
     const {
         hasPermission: hasApproveDeclinePermission,
@@ -185,20 +187,6 @@ const CorporationItem = ({
                         {name?.charAt(0)}
                     </AvatarFallback>
                 </Avatar>
-                {/* <Avatar /> */}
-                {/* {logo ? (
-                    <img
-                        src={logo}
-                        alt={`${name} logo`}
-                        className="w-10 h-10 rounded-full border border-orange-400"
-                    />
-                ) : (
-                    <div
-                        className={`w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center border-2 border-orange-400`}
-                    >
-                        <span className="text-gray-500 text-xs">لوگو</span>
-                    </div>
-                )} */}
                 <p className="font-medium">{name}</p>
             </div>
 
@@ -219,6 +207,22 @@ const CorporationItem = ({
                     آدرس: {addresses.length > 0 ? "دارد" : "ندارد"}
                 </p>
             </div>
+
+            <div className="flex items-center gap-3 w-1/4">
+                <div
+                    className={`${
+                        status === "تایید شده"
+                            ? "green-status"
+                            : status === "رد شده"
+                            ? "red-status"
+                            : status === "معلق"
+                            ? "gray-status"
+                            : "yellow-status"
+                    } h-4 w-4 rounded-full shadow-md`}
+                />
+                <p className="text-nowrap">{status}</p>
+            </div>
+
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger>
                     <div
@@ -243,7 +247,7 @@ const CorporationItem = ({
                         </div>
                     ) : (
                         <>
-                            <div className="">
+                            <div className="flex flex-col gap-4">
                                 <DialogHeader>
                                     <DialogTitle className="text-right text-2xl text-blue-800">
                                         مشخصات شرکت
@@ -252,7 +256,7 @@ const CorporationItem = ({
 
                                 {/* General Information */}
                                 <div
-                                    className={`flex flex-row justify-between  p-4 rounded-lg mb-4 rtl ${styles.shadow} min-h-40`}
+                                    className={`flex flex-row justify-between p-4 rounded-lg rtl ${styles.shadow} min-h-40`}
                                 >
                                     <div className="flex flex-col justify-between items-start">
                                         <div className="gap-6">
@@ -315,7 +319,7 @@ const CorporationItem = ({
 
                                 {/* Contact Info */}
                                 <div
-                                    className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} min-h-40`}
+                                    className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} h-fit`}
                                 >
                                     <h3 className="font-bold text-xl text-blue-800">
                                         اطلاعات تماس
@@ -351,7 +355,7 @@ const CorporationItem = ({
 
                                 {/* Addresses */}
                                 <div
-                                    className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} min-h-40`}
+                                    className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow}`}
                                 >
                                     <h3 className="font-bold text-xl text-blue-800">
                                         آدرس‌ها
@@ -452,7 +456,7 @@ const CorporationItem = ({
 
                                 {/* Signatories */}
                                 <div
-                                    className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} min-h-40`}
+                                    className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow}`}
                                 >
                                     <h3 className="font-bold text-xl text-blue-800">
                                         امضا کنندگان
@@ -512,7 +516,7 @@ const CorporationItem = ({
 
                                 {/* Documents */}
                                 <div
-                                    className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} min-h-40`}
+                                    className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow}`}
                                 >
                                     <h3 className="font-bold text-xl text-blue-800">
                                         مدارک
@@ -637,7 +641,7 @@ const CorporationItem = ({
 const CorpManagement = () => {
     const [corporations, setCorporations] = useState<CorporationType[]>([]);
     const [loading, setLoading] = useState(true);
-    const [status, setStatus] = useState("5");
+    const [status, setStatus] = useState("");
     const [resultPerPage, setResultPerPage] = useState<string>("");
     const [paginationInfo, setPaginationInfo] = useState<
         paginationInfoType | undefined

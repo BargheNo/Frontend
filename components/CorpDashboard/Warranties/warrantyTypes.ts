@@ -15,6 +15,7 @@ export interface Warranty {
     isArchived: boolean;
     type: string | number;
     duration: number | string;
+    onWarrantyUpdate?: () => void;
 } 
 
 export interface WarrantyType {

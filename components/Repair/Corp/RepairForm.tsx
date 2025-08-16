@@ -7,9 +7,11 @@ import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 import { RepairFormValues } from "@/types/CorpTypes";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
+import { useSelector } from "react-redux";
 
 interface RepairFormProps {
 	panelId: number;
+	guaranteeAvailable?: boolean;
 	onSuccess: () => void;
 }
 
@@ -28,7 +30,7 @@ const validationSchema = Yup.object().shape({
 	}),
 });
 
-const RepairForm = ({ panelId, onSuccess }: RepairFormProps) => {
+const RepairForm = ({ panelId, guaranteeAvailable, onSuccess }: RepairFormProps) => {
 	const initialValues: RepairFormValues = {
 		title: "",
 		details: "",
@@ -38,9 +40,11 @@ const RepairForm = ({ panelId, onSuccess }: RepairFormProps) => {
 		},
 	};
 
+	const corpID = useSelector((state: RootState) => state.user.corpId);
+
 	const handleSubmit = async (values: RepairFormValues) => {
 		postData({
-			endPoint: `${baseURL}/v1/corp/2/maintenance/request/${panelId}/record`, // TODO: add corpIDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+			endPoint: `${baseURL}/v1/corp/${corpID}/maintenance/request/${panelId}/record`,
 			data: values,
 		})
 			.then((res) => {
@@ -75,6 +79,7 @@ const RepairForm = ({ panelId, onSuccess }: RepairFormProps) => {
 								icon={NotebookPen}
 								placeholder="جزئیات یادداشت را وارد کنید"
 							/>
+							{guaranteeAvailable ?
 							<div className="space-y-2">
 								<h5 className="text-sm font-medium text-gray-700">
 									نقض گارانتی
@@ -91,7 +96,7 @@ const RepairForm = ({ panelId, onSuccess }: RepairFormProps) => {
 									icon={NotebookPen}
 									placeholder="جزئیات نقض گارانتی را وارد کنید"
 								/>
-							</div>
+							</div> : null}
 						</div>
 						<button
 							type="submit"

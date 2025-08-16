@@ -75,6 +75,7 @@ import CustomInput from "../CustomInput/CustomInput";
 
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
+import { pages } from "next/dist/build/templates/app-page";
 
 type CustomTableProps = {
     meta: Record<string, any>; // columnName: DisplayName
@@ -82,7 +83,7 @@ type CustomTableProps = {
     loading?: boolean;
     page: number;
     setPage: React.Dispatch<React.SetStateAction<number>>;
-    // resultPerPage: string;
+    pageSize: string;
     deleteApiUrl: string; // API URL pattern like '/v1/admin/installation/request/:id'
     updateApiUrl: string; // API URL pattern like '/v1/admin/installation/request/:id'
     onDeleteSuccess?: (deletedId: string | number) => void; // Callback after successful deletion
@@ -132,24 +133,23 @@ function generateColumns(meta: Record<string, any>): ColumnDef<any>[] {
             // Fallback to string comparison
             return aStr.localeCompare(bStr);
         },
-        header: ({ column }) =>
-            meta[key].label,
-            // <Button
-            //     variant="ghost"
-            //     onClick={() => {
-            //         column.toggleSorting(column.getIsSorted() === "asc");
-            //     }}
-            //     className="h-auto p-2"
-            // >
-            //     {meta[key].label}
-            //     {column.getIsSorted() === false ? (
-            //         <ArrowUpDown className="ml-2 h-4 w-4" />
-            //     ) : column.getIsSorted() === "asc" ? (
-            //         <ArrowUp className="ml-2 h-4 w-4" />
-            //     ) : (
-            //         <ArrowDown className="ml-2 h-4 w-4" />
-            //     )}
-            // </Button>
+        header: ({ column }) => meta[key].label,
+        // <Button
+        //     variant="ghost"
+        //     onClick={() => {
+        //         column.toggleSorting(column.getIsSorted() === "asc");
+        //     }}
+        //     className="h-auto p-2"
+        // >
+        //     {meta[key].label}
+        //     {column.getIsSorted() === false ? (
+        //         <ArrowUpDown className="ml-2 h-4 w-4" />
+        //     ) : column.getIsSorted() === "asc" ? (
+        //         <ArrowUp className="ml-2 h-4 w-4" />
+        //     ) : (
+        //         <ArrowDown className="ml-2 h-4 w-4" />
+        //     )}
+        // </Button>
         cell: ({ row }) => {
             const value = row.original[key];
             if (
@@ -174,12 +174,22 @@ function generateColumns(meta: Record<string, any>): ColumnDef<any>[] {
 function getColumns(
     meta: Record<string, any>,
     data: any,
-    onDelete: (id: number, deleteApiUrl?: string) => void
+    onDelete: (id: number, deleteApiUrl?: string) => void,
+    page: number,
+    pageSize: string
 ): ColumnDef<any>[] {
     const checkClaaName =
         "absolute top-1/2 left-1/2 transform -translate-x-1/2 text-white -translate-y-2/3 opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5";
     const inputClassName =
         "peer h-5 w-5 cursor-pointer transition-all bg-white appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500";
+
+    const counterColumn: ColumnDef<any> = {
+        id: "counter",
+        header: () => <span>#</span>,
+        cell: ({ row }) => (page - 1) * Number(pageSize) + row.index + 1,
+        enableSorting: false,
+        enableHiding: false,
+    };
 
     const checkBoxColumn: ColumnDef<any> = {
         id: "select",
@@ -311,7 +321,8 @@ function getColumns(
         ),
     };
 
-    return [checkBoxColumn, ...generateColumns(meta), actionColumn];
+    return [counterColumn, ...generateColumns(meta), actionColumn];
+    // return [checkBoxColumn, ...generateColumns(meta), actionColumn];
 }
 
 export function CustomTable({
@@ -320,7 +331,7 @@ export function CustomTable({
     loading,
     page,
     setPage,
-    // resultPerPage,
+    pageSize,
     deleteApiUrl,
     updateApiUrl,
     fetchData,
@@ -345,8 +356,15 @@ export function CustomTable({
         [fetchData]
     );
     const columns = useMemo(
-        () => getColumns(meta, data, (id) => deleteRecord(id, deleteApiUrl)),
-        [meta, deleteApiUrl, deleteRecord, data]
+        () =>
+            getColumns(
+                meta,
+                data,
+                (id) => deleteRecord(id, deleteApiUrl),
+                page,
+                pageSize
+            ),
+        [meta, deleteApiUrl, deleteRecord, data, page, pageSize]
     );
 
     const table = useReactTable({

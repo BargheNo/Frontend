@@ -60,12 +60,13 @@ export default function MobileDashboard({
                     router.push("/corpdashboard/installed-panels");
                     setDashMode("corp");
                 } else if (value === "admin") {
-                    // router.push("/admin-dashboard/manage-users");
+                    router.push("/admin-dashboard");
                     setDashMode("admin");
                 }
             }}
         >
             <SelectTrigger
+                dir="rtl"
                 onClick={() => {
                     if (!accessToken) {
                         router.push("/login");

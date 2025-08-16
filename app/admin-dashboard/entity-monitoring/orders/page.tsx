@@ -93,17 +93,23 @@ export default function Orders() {
                 sortBy={sortBy}
                 setSortBy={setSortBy}
             />
-            <CustomTable
-                data={orderlist}
-                meta={meta}
-                loading={loading}
-                page={page}
-                setPage={setPage}
-                // resultPerPage={resultPerPage !== "" ? resultPerPage : "10"}
-                deleteApiUrl={`/v1/admin/installation/request/:id`}
-                fetchData={fetchOrders}
-                updateApiUrl={`/v1/admin/installation/request/:id`}
-            />
+            {loading ? (
+                <div className="neu-container">
+                    <LoadingSpinner />
+                </div>
+            ) : (
+                <CustomTable
+                    data={orderlist}
+                    meta={meta}
+                    loading={loading}
+                    page={page ?? 1}
+                    setPage={setPage}
+                    pageSize={pageSize !== "" ? pageSize : "10"}
+                    deleteApiUrl={`/v1/admin/installation/request/:id`}
+                    fetchData={fetchOrders}
+                    updateApiUrl={`/v1/admin/installation/request/:id`}
+                />
+            )}
             <CustomPagination
                 currentPage={page}
                 setCurrentPage={setPage}

@@ -53,9 +53,9 @@ export default function OrderHistoryPagination({
                 setAsc={setAsc}
                 sortBy={sortBy}
                 setSortBy={setSortBy}
-                query={query}
-                setQuery={setQuery}
-                onSearchSubmit={onSearchSubmit}
+                // query={query}
+                // setQuery={setQuery}
+                // onSearchSubmit={onSearchSubmit}
                 // resultPerPage={resultPerPage}
                 // setResultPerPage={setResultPerPage}
             />
@@ -68,7 +68,7 @@ export default function OrderHistoryPagination({
                             {history.map((order: Orderhistory, index) => (
                                 <OrderHistory
                                     key={index}
-                                    id={index}
+                                    id={order.id}
                                     name={order.name}
                                     address={order.address}
                                     status={order.status}
@@ -79,7 +79,7 @@ export default function OrderHistoryPagination({
                     </div>
                 </>
             ) : (
-                <NoRecordFound text="هیچ سفارشی یافت نشد." />
+                <NoRecordFound text="هیچ سفارشی یافت نشد." className="neu-container" />
             )}
             {/* <CustomPagination
                 currentPage={currentPage}

@@ -97,6 +97,7 @@ export interface CorpRepairDialogProps {
     isOpen: boolean;
     onClose: () => void;
     repairItem: CorpRepairItem | null;
+    onDataChange?: () => void;
 }
 
 export interface RepairFormValues {

@@ -8,32 +8,38 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { useSelector } from "react-redux";
-import React, { useState, useEffect } from "react";
-import { FormValues, WarrantyType } from "./warrantyTypes";
+import React, { useState } from "react";
+import { FormValues } from "./warrantyTypes";
 import WarrantyForm from "./WarrantyForm";
 import { RootState } from "@/src/store/store";
 import { baseURL, postData } from "@/src/services/apiHub";
 
-const AddWarranty = () => {
+interface AddWarrantyProps {
+	onWarrantyAdded?: () => void;
+}
+
+const AddWarranty = ({ onWarrantyAdded }: AddWarrantyProps) => {
 	const [open, setOpen] = useState(false);
 	const {
 		items: warrantyTypes,
 		status,
-		error,
 	} = useSelector((state: RootState) => state.warrantyTypes);
+
+	const corpID = useSelector((state: RootState) => state.user.corpId);
 
 	const handleSubmit = (values: FormValues) => {
 		console.log("Form submitted:", values);
 		postData({
-			endPoint: `${baseURL}/v1/corp/2/guarantee`, // TODO: add corpID ................................................................
+			endPoint: `${baseURL}/v1/corp/${corpID}/guarantee`,
 			data: values,
 		})
 			.then((res) => {
 				console.log(res);
 				CustomToast("با موفقیت ثبت شد!", "success");
+				setOpen(false);
+				onWarrantyAdded?.();
 			})
 			.catch((err) => console.log(err));
-		setOpen(false);
 	};
 
 	return (

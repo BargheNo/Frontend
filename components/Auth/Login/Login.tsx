@@ -9,7 +9,6 @@ import CustomInput from "../../Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import LoginButton from "./LoginButton";
 import { getData, postData } from "../../../src/services/apiHub";
-import { useWebSocket } from "@/src/hooks/useWebSocket";
 import { setCorps, setUser } from "@/src/store/slices/userSlice";
 import { useDispatch } from "react-redux";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
@@ -67,10 +66,11 @@ const Login = () => {
                         lastName: data?.data?.lastName,
                         permissions: data?.data?.permissions,
                         accessToken: data?.data?.accessToken,
-                        refreshToken: data?.data?.accessToken,
+                        refreshToken: data?.data?.refreshToken,
+                        corps: [],
                     })
                 );
-                await Promise.resolve();
+                // await Promise.resolve();
                 getData({ endPoint: `/v1/user/corps` })
                     .then((data) => {
                         dispatch(setCorps(data?.data));

@@ -11,6 +11,7 @@ import {
     LandPlot,
     MapPin,
     MessageCircle,
+    Trash,
     User,
 } from "lucide-react";
 import styles from "./BidCard.module.css";
@@ -46,19 +47,20 @@ import useHasPermission from "@/src/functions/hasPermission";
 import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
 import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
 import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
+import { Button } from "@/components/ui/button";
 interface BidInfo {
     id: number;
-    price: number;
-    date: string;
-    power: number;
+    cost: string;
+    installationTime: string;
+    power: string;
     status: string;
-    area: number;
+    area: string;
     description: string;
     panelName: string;
     buildingType: string;
     address: Address;
     updateBids: any;
-    guaranteeID: number;
+    guaranteeID: string;
 }
 
 interface BidSchema {
@@ -71,13 +73,23 @@ interface BidSchema {
     paymentTerms: { method: string };
 }
 
+interface BidForm {
+    cost: number;
+    area: number;
+    power: number;
+    installationTime: string;
+    description: string;
+    guaranteeID?: number;
+    paymentTerms: { method: number };
+}
+
 const validateSchema = Yup.object({
     cost: Yup.string().required("قیمت پیشنهادی الزامی است"),
     area: Yup.string().required("مساحت الزامی است"),
     power: Yup.string().required("ظرفیت الزامی است"),
     installationTime: Yup.string().required("زمان تخمینی نصب الزامی است"),
     description: Yup.string().max(500, "توضیحات طولانی است"),
-    guaranteeID: Yup.string().required("نوع گارانتی الزامی است"),
+    guaranteeID: Yup.string(),
     paymentTerms: Yup.object().shape({
         method: Yup.string().required("نحوه پرداخت الزامی است"),
     }),
@@ -119,7 +131,6 @@ function wordExpression(
                     res += `${Math.round(value / 1e9) % 1000} میلیارد`;
                     found = true;
                 }
-                console.log("m:", Math.round(value / 1e9) % 1000);
                 if (Math.round(value / 1e6) % 1000 !== 0) {
                     if (found) res += " و ";
                     res += `${Math.round(value / 1e6) % 1000} میلیون`;
@@ -246,8 +257,8 @@ const DialogItem = ({
 export default function BidCard({
     id,
     panelName,
-    price,
-    date,
+    cost,
+    installationTime,
     power,
     area,
     description,
@@ -266,20 +277,25 @@ export default function BidCard({
     const [guarantees, setGuarantees] = React.useState<GuaranteeProps[]>([]);
     const [open, setOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
+    const [selectedGuaranteeID, setSelectedGuaranteeID] =
+        useState<string>(guaranteeID);
     const [cancelLoading, setCancelLoading] = useState<boolean>(false);
     const corpId = useSelector((state: RootState) => state.user.corpId);
-
+    // useEffect(() => {
+    //     console.log("guaranteeID", guaranteeID);
+    // }, []);
     const initialValues = {
-        cost: price,
-        area: area,
-        power: power,
-        description: description,
-        installationTime: date,
-        guaranteeID: guaranteeID,
-        paymentTerms: { method: 1 },
+        cost,
+        area,
+        power,
+        description,
+        installationTime,
+        guaranteeID,
+        paymentTerms: { method: "2" },
     };
 
     useEffect(() => {
+        // console.log("initialValues", initialValues);
         // getData({ endPoint: `/v1/corp/${corpId}/bid/${id}` }).then((data) => {
         // 	console.log(`data of bid ${id}`, data);
         // });
@@ -308,16 +324,22 @@ export default function BidCard({
     };
 
     const updateBid = (values: BidSchema) => {
+        console.log("values", values);
         setLoading(true);
-        const formData = {
+
+        const formData: BidForm = {
             cost: Number(values?.cost),
             area: Number(values?.area),
             power: Number(values?.power),
             description: values?.description,
             installationTime: values?.installationTime,
-            guaranteeID: Number(values?.guaranteeID),
-            paymentTerms: { method: Number(values?.paymentTerms) },
+            paymentTerms: { method: Number(values?.paymentTerms?.method) },
+            // guaranteeID: values?.guaranteeID ? Number(values?.guaranteeID) : "",
+            // ...(values?.guaranteeID && { guaranteeID }),
         };
+        if (values?.guaranteeID) {
+            formData["guaranteeID"] = Number(values?.guaranteeID);
+        }
         console.log("formData", formData);
         putData({
             endPoint: `/v1/corp/${corpId}/bid/${id}`,
@@ -333,11 +355,17 @@ export default function BidCard({
     };
 
     const getStatusColor = () => {
-        if (status === "تایید")
-            return "bg-gradient-to-br from-green-400 to-green-500 border-1 border-gray-100/50 shadow-sm shadow-green-500";
-        if (status === "pending")
-            return "bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-yellow-500";
-        return "bg-gradient-to-br from-red-400 to-red-500 shadow-red-500";
+        if (status === "تایید شده")
+            return "green-status";
+        if (status === "در انتظار تایید")
+            return "yellow-status";
+        if (status === "رد شده")
+            return "red-status";
+        if (status === "منقضی شده")
+            return "orange-status";
+        if (status === "لغو شده")
+            return "gray-status";
+        return "gray-status";
     };
     return (
         <div
@@ -367,20 +395,20 @@ export default function BidCard({
                         <Item
                             icon={CalendarDays}
                             fieldName="زمان تخمینی نصب"
-                            fieldValue={DateConverter(date)}
+                            fieldValue={DateConverter(installationTime)}
                             english={true}
                         />
                         <Item
                             icon={DollarSign}
                             fieldName="قیمت پیشنهادی شما"
-                            fieldValue={price}
+                            fieldValue={cost}
                             prefix="تومان"
                         />
                     </div>
                     <div className="flex md:flex-col flex-row justify-evenly w-1/5 items-center text-center md:-mr-0 mr-6 md:gap-0 gap-28 md:mb-0 mb-10">
                         <div className="text-nowrap flex flex-col  md:ml-2 ml-auto items-center justify-center gap-2 md:p-3 p-5 rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)] w-30">
                             <div
-                                className={` h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
+                                className={`h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
                             />
                             <span className="text-sm font-medium text-gray-600">
                                 {status}
@@ -397,7 +425,9 @@ export default function BidCard({
                             </DialogTrigger>
                             <DialogContent
                                 style={{ backgroundColor: "#F1F4FC" }}
-                                className="w-full pb-0 max-h-[90vh] no-scrollbar mx-auto overflow-auto rtl dialog-width"
+                                className={`w-full ${
+                                    status === "در انتظار تایید" && "pb-0"
+                                } max-h-[90vh] no-scrollbar mx-auto overflow-auto rtl dialog-width`}
                             >
                                 <DialogHeader>
                                     <DialogTitle className="flex justify-center items-end font-bold mt-3.5">
@@ -408,22 +438,7 @@ export default function BidCard({
                                     initialValues={initialValues}
                                     validationSchema={validateSchema}
                                     onSubmit={(values) => {
-                                        updateBid({
-                                            cost: String(values.cost),
-                                            area: String(values.area),
-                                            power: String(values.power),
-                                            installationTime:
-                                                values.installationTime,
-                                            description: values.description,
-                                            guaranteeID: String(
-                                                values.guaranteeID
-                                            ),
-                                            paymentTerms: {
-                                                method: String(
-                                                    values.paymentTerms.method
-                                                ),
-                                            },
-                                        });
+                                        updateBid(values);
                                     }}
                                 >
                                     {({
@@ -433,11 +448,11 @@ export default function BidCard({
                                         touched,
                                     }) => (
                                         <Form className="m-auto md:w-full w-75 flex flex-col gap-6">
-                                            <FormObserver
+                                            {/* <FormObserver
                                                 guaranteeID={Number(
                                                     values?.guaranteeID
                                                 )}
-                                            />
+                                            /> */}
                                             {/* <DialogHeader>
                                                 <DialogTitle
                                                     className={`flex vazir text-2xl`}
@@ -479,7 +494,7 @@ export default function BidCard({
                                                             icon={CalendarRange}
                                                             fieldName="زمان پیشنهاد"
                                                             fieldValue={DateConverter(
-                                                                date
+                                                                installationTime
                                                             )}
                                                         />
                                                     </div>
@@ -496,8 +511,11 @@ export default function BidCard({
                                                         placeholder="قیمت پیشنهادی"
                                                         name="cost"
                                                         disabled={
-                                                            !hasEditBidPermission
+                                                            !hasEditBidPermission ||
+                                                            status !==
+                                                                "در انتظار تایید"
                                                         }
+                                                        autoFocus
                                                         icon={DollarSign}
                                                         onlyNumbers
                                                         containerClassName="w-1/2"
@@ -512,19 +530,22 @@ export default function BidCard({
                                                         <CustomDatePicker
                                                             placeholder="زمان تخمینی نصب"
                                                             disabled={
-                                                                !hasEditBidPermission
+                                                                !hasEditBidPermission ||
+                                                            status !==
+                                                                "در انتظار تایید"
                                                             }
                                                             date={
                                                                 values.installationTime
                                                             }
                                                             setDate={(
-                                                                date: string
+                                                                installationTime: string
                                                             ) => {
                                                                 setFieldValue(
                                                                     "installationTime",
-                                                                    date
+                                                                    installationTime
                                                                 );
                                                             }}
+                                                            onlyFuture
                                                         />
                                                     </div>
                                                 </div>
@@ -532,7 +553,9 @@ export default function BidCard({
                                                     <CustomInput
                                                         placeholder="ظرفیت"
                                                         disabled={
-                                                            !hasEditBidPermission
+                                                            !hasEditBidPermission ||
+                                                            status !==
+                                                                "در انتظار تایید"
                                                         }
                                                         name="power"
                                                         icon={Battery}
@@ -548,7 +571,9 @@ export default function BidCard({
                                                     <CustomInput
                                                         placeholder="مساحت"
                                                         disabled={
-                                                            !hasEditBidPermission
+                                                            !hasEditBidPermission ||
+                                                            status !==
+                                                                "در انتظار تایید"
                                                         }
                                                         name="area"
                                                         icon={LandPlot}
@@ -562,15 +587,14 @@ export default function BidCard({
                                                         }
                                                     />
                                                 </div>
-                                                <div className="flex flex-row justify-evenly gap-6">
+                                                <div className="flex justify-evenly gap-4 mt-5 min-h-[43px]">
                                                     <Select
                                                         name="guaranteeID"
                                                         disabled={
-                                                            !hasEditBidPermission
+                                                            !hasEditBidPermission ||
+                                                            status !==
+                                                                "در انتظار تایید"
                                                         }
-                                                        defaultValue={String(
-                                                            values?.guaranteeID
-                                                        )}
                                                         value={String(
                                                             values?.guaranteeID
                                                         )}
@@ -584,7 +608,7 @@ export default function BidCard({
                                                         }}
                                                     >
                                                         <SelectTrigger
-                                                            className={`${styles.CustomInput} mt-[27px] min-h-[43px] cursor-pointer`}
+                                                            className={`${styles.CustomInput} min-h-[43px] cursor-pointer`}
                                                         >
                                                             <SelectValue placeholder="نوع گارانتی" />
                                                         </SelectTrigger>
@@ -616,15 +640,30 @@ export default function BidCard({
                                                             </SelectGroup>
                                                         </SelectContent>
                                                     </Select>
+                                                    <Button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            setFieldValue(
+                                                                "guaranteeID",
+                                                                ""
+                                                            )
+                                                        }
+                                                        className="gradient-red min-h-[43px]"
+                                                    >
+                                                        <p>حذف گارانتی</p>
+                                                        <Trash />
+                                                    </Button>
                                                 </div>
                                                 <CustomTextArea
                                                     placeholder="جزئیات بیشتر"
                                                     disabled={
-                                                        !hasEditBidPermission
+                                                        !hasEditBidPermission ||
+                                                            status !==
+                                                                "در انتظار تایید"
                                                     }
                                                     name="description"
                                                     icon={MessageCircle}
-                                                    containerClassName="w-full"
+                                                    containerClassName="w-full mt-5"
                                                     inputClassName={
                                                         errors.description &&
                                                         touched.description
@@ -633,37 +672,41 @@ export default function BidCard({
                                                     }
                                                 />
                                             </div>
-                                            <StickyFooter>
-                                                <div className="flex gap-1 justify-between w-full">
-                                                    <div>
-                                                        {hasCancelBidPermission && (
-                                                            <button
-                                                                onClick={() => {
-                                                                    cancelBid();
-                                                                }}
-                                                                className="self-start w-32 flex place-content-center cursor-pointer bg-gradient-to-br from-[#EE4334] to-[#D73628] hover:from-[#D73628] hover:to-[#EE4334] active:from-[#EE4334] active:to-[#D73628] text-white py-2 px-4 rounded-md transition-all duration-300"
+                                            {status === "در انتظار تایید" && (
+                                                <StickyFooter>
+                                                    <div className="flex gap-1 justify-between w-full">
+                                                        <div>
+                                                            {hasCancelBidPermission && (
+                                                                <button
+                                                                    onClick={() => {
+                                                                        cancelBid();
+                                                                    }}
+                                                                    className="self-start w-32 flex place-content-center cursor-pointer bg-gradient-to-br from-[#EE4334] to-[#D73628] hover:from-[#D73628] hover:to-[#EE4334] active:from-[#EE4334] active:to-[#D73628] text-white py-2 px-4 rounded-md transition-all duration-300"
+                                                                >
+                                                                    {cancelLoading ? (
+                                                                        <LoadingOnButton />
+                                                                    ) : (
+                                                                        <p>
+                                                                            لغو
+                                                                            پیشنهاد
+                                                                        </p>
+                                                                    )}
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                        <div className="flex gap-1">
+                                                            <CancelButton />
+                                                            <SubmitButton
+                                                                loading={
+                                                                    loading
+                                                                }
                                                             >
-                                                                {cancelLoading ? (
-                                                                    <LoadingOnButton />
-                                                                ) : (
-                                                                    <p>
-                                                                        لغو
-                                                                        پیشنهاد
-                                                                    </p>
-                                                                )}
-                                                            </button>
-                                                        )}
+                                                                ذخیره تغییرات
+                                                            </SubmitButton>
+                                                        </div>
                                                     </div>
-                                                    <div className="flex gap-1">
-                                                        <CancelButton />
-                                                        <SubmitButton
-                                                            loading={loading}
-                                                        >
-                                                            ذخیره تغییرات
-                                                        </SubmitButton>
-                                                    </div>
-                                                </div>
-                                            </StickyFooter>
+                                                </StickyFooter>
+                                            )}
                                         </Form>
                                     )}
                                 </Formik>
@@ -681,7 +724,7 @@ const FormObserver = ({ guaranteeID }: { guaranteeID: number }) => {
 
     useEffect(() => {
         setFieldValue("guaranteeID", String(guaranteeID));
-    }, []);
+    }, [guaranteeID, setFieldValue]);
 
     return null;
 };
