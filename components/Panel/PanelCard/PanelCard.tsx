@@ -35,6 +35,7 @@ import wordExpression from "@/src/functions/Calculations";
 import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
 import { Button } from "@/components/ui/button";
 import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
+import TruncatedText from "@/components/ui/TruncatedText";
 
 const PanelCard = ({
     id,
@@ -163,7 +164,7 @@ const PanelCard = ({
                                     </Formik>
                                 </DialogContent>
                             </Dialog>
-                            <Link href={`my-panels/123`} className="w-full">
+                            <Link href={`my-panels/${id}`} className="w-full">
                                 <button className="w-full flex items-center justify-evenly gradient-blue px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
                                     <span className="font-medium text-nowrap">
                                         مدیریت پنل
@@ -279,11 +280,11 @@ const PanelCard = ({
                                 color="#6B7280"
                                 className="h-fit"
                             />
-                            <div className="font-medium mx-2 mt-[10px]">
+                            {/* <div className="font-medium mx-2 mt-[10px]">
                                 آدرس:
-                            </div>
+                            </div> */}
                             <span className="mr-1 mt-[10px]">
-                                {isExpanded ? address : truncateText(address)}
+                                {/* {isExpanded ? address : truncateText(address)}
                                 {address.length > MAXLENGTH && (
                                     <button
                                         onClick={() =>
@@ -293,7 +294,10 @@ const PanelCard = ({
                                     >
                                         {isExpanded ? "کمتر" : "بیشتر"}
                                     </button>
-                                )}
+                                )} */}
+                                <TruncatedText maxLength={135}>
+                                    {address}
+                                </TruncatedText>
                             </span>
                         </div>
                         {/* <div className="flex flex-row place-items-center">

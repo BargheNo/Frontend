@@ -1,4 +1,4 @@
-import { getData, postData } from "@/src/services/apiHub";
+import { getData } from "@/src/services/apiHub";
 import React, { useCallback, useEffect, useState } from "react";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import styles from "./styles.module.css";
@@ -14,48 +14,17 @@ import {
     DoorOpen,
     Gauge,
     Building,
-    Battery,
-    DollarSign,
-    ArrowLeft,
-    CalendarRange,
-    LandPlot,
-    ShieldCheck,
-    CreditCard,
-    FileText,
 } from "lucide-react";
-import {
-    Dialog,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
+
 import wordExpression from "@/src/functions/Calculations";
 import Header from "../Header/Header";
 import FilterSection from "../FilterSection/FilterSection";
 import CustomPagination from "../Custom/CustomPagination/CustomPagination";
 import IconWithBackground from "../IconWithBackground/IconWithBackground";
-import DateConverter from "@/src/functions/toJalali";
-import { Form, Formik } from "formik";
-import { Button } from "../ui/button";
-import CancelButton from "../Dialog/CancelButton/CancelButton";
-import CustomToast from "../Custom/CustomToast/CustomToast";
-import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
 import NoRecordFound from "../NoRecordFound/NoRecordFound";
+import OrderBidCard from "./OrderBidCard";
 
-interface Order {
-    id: number;
-    name: string;
-    createdTime: string;
-    status: string;
-    powerRequest: number;
-    maxCost: number;
-    buildingType: string;
-    address: Address;
-}
-
-type Bid = {
+interface Bid {
     id: number;
     description: string;
     cost: number;
@@ -76,15 +45,23 @@ type Bid = {
         description: string;
         terms: string | null;
     };
-};
+}
+
+interface Order {
+    id: number;
+    name: string;
+    createdTime: string;
+    status: string;
+    powerRequest: number;
+    maxCost: number;
+    buildingType: string;
+    address: Address;
+}
 
 export default function NewOrderDetails({ id }: { id: string }) {
     const [order, setOrder] = useState<Order>();
     const [bids, setBids] = useState<Bid[]>();
     const [loading, setLoading] = useState<boolean>(true);
-    const [rejectLoading, setRejectLoading] = useState<boolean>(false);
-    const [acceptLoading, setAcceptLoading] = useState<boolean>(false);
-    const [open, setOpen] = useState<boolean>(false);
 
     const [resultPerPage, setResultPerPage] = useState<string>("");
     const [paginationInfo, setPaginationInfo] = useState<
@@ -93,23 +70,6 @@ export default function NewOrderDetails({ id }: { id: string }) {
     const [page, setPage] = useState<number>(1);
     const [sortBy, setSortBy] = useState<string>("");
     const [asc, setAsc] = useState<boolean>(false);
-
-    const getStatusColor = (status: string) => {
-        if (status === "فعال") return "yellow-status";
-        if (status === "منقضی") return "gray-status";
-        if (status === "لغو شده") return "red-status";
-        if (status === "سپرده شده") return "green-status";
-        return "gray-status";
-        // if (status === "فعال")
-        //     return "bg-gradient-to-br from-green-400 to-green-500 border-1 border-gray-100/50 shadow-sm shadow-green-500";
-        // if (status === "منقضی")
-        //     return "bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-yellow-500";
-        // if (status === "لغو شده")
-        //     return "bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-yellow-500";
-        // if (status === "سپرده شده")
-        //     return "bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-yellow-500";
-        // return "bg-gradient-to-br from-red-400 to-red-500 shadow-red-500";
-    };
 
     const fetchBids = useCallback(() => {
         setLoading(true);
@@ -136,34 +96,6 @@ export default function NewOrderDetails({ id }: { id: string }) {
         fetchOrderDetails();
         fetchBids();
     }, [fetchBids, fetchOrderDetails]);
-
-    const rejectBid = (bidId: number) => {
-        setRejectLoading(true);
-        postData({
-            endPoint: `/v1/user/installation/request/${id}/bid/${bidId}/reject`,
-        })
-            .then((data) => {
-                CustomToast(data?.message, "success");
-                fetchBids();
-                setOpen(false);
-            })
-            .catch((err) => console.log(err))
-            .finally(() => setRejectLoading(false));
-    };
-
-    const acceptBid = (bidId: number) => {
-        setAcceptLoading(true);
-        postData({
-            endPoint: `/v1/user/installation/request/${id}/bid/${bidId}/accept`,
-        })
-            .then((data) => {
-                CustomToast(data?.message, "success");
-                fetchBids();
-                setOpen(false);
-            })
-            .catch((err) => console.log(err))
-            .finally(() => setAcceptLoading(false));
-    };
 
     return loading ? (
         <LoadingSpinner />
@@ -206,7 +138,7 @@ export default function NewOrderDetails({ id }: { id: string }) {
                             </div>
                             <div className="flex gap-2">
                                 <Gauge className="text-orange-400" />
-                                <strong>درخواست توان:</strong>
+                                <strong>توان درخواستی:</strong>
                                 <p>
                                     {
                                         wordExpression(
@@ -245,7 +177,7 @@ export default function NewOrderDetails({ id }: { id: string }) {
                     className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} h-fit`}
                 >
                     <h3 className="font-bold text-xl text-blue-800">آدرس</h3>
-                    <div className="space-y-4 p-4 grid grid-cols-2 gap-4">
+                    <div className="p-4 grid grid-cols-2 gap-4">
                         <div className="flex gap-2">
                             <MapPin className="text-orange-400" />
                             <strong>استان:</strong>
@@ -295,202 +227,208 @@ export default function NewOrderDetails({ id }: { id: string }) {
             <div className="relative neu-container flex flex-col gap-4">
                 {bids && bids.length > 0 ? (
                     bids?.map((bid, index) => (
-                        <div
+                        <OrderBidCard
+                            fetchBids={fetchBids}
                             key={index}
-                            className={`w-full min-h-64 border-t-1 border-gray-300 first:border-t-0`}
-                        >
-                            <div className="flex flex-row justify-between w-full min-h-64 bg-[#F0EDEF] overflow-hidden relative">
-                                <div className="flex md:flex-row flex-col justify-between w-full min-h-64">
-                                    <div className="w-4/5 flex flex-col justify-between p-4 h-full">
-                                        <Item
-                                            icon={Battery}
-                                            fieldName="ظرفیت پیشنهادی"
-                                            fieldValue={bid?.power}
-                                            prefix="W"
-                                            english={true}
-                                        />
-                                        <Item
-                                            icon={CalendarRange}
-                                            fieldName="زمان تخمینی نصب"
-                                            fieldValue={DateConverter(
-                                                bid?.installationTime
-                                            )}
-                                            english={true}
-                                        />
-                                        <Item
-                                            icon={DollarSign}
-                                            fieldName="قیمت پیشنهادی"
-                                            fieldValue={bid?.cost}
-                                            prefix="تومان"
-                                        />
-                                    </div>
-                                    <div className="flex md:flex-col flex-row justify-evenly w-1/5 items-center text-center md:-mr-0 mr-6 md:gap-0 gap-28 md:mb-0 mb-10">
-                                        <div className="text-nowrap flex flex-col  md:ml-2 ml-auto items-center justify-center gap-2 md:p-3 p-5 rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)] w-30">
-                                            <div
-                                                className={` h-4 w-4 rounded-full ${getStatusColor(
-                                                    bid?.status
-                                                )} shadow-md`}
-                                            />
-                                            <span className="text-sm font-medium text-gray-600">
-                                                {bid?.status}
-                                            </span>
-                                        </div>
-                                        <Dialog
-                                            open={open}
-                                            onOpenChange={setOpen}
-                                        >
-                                            <DialogTrigger asChild>
-                                                <div className="flex flex-col items-center gap-2 md:mr-0 -mr-5 text-nowrap">
-                                                    <div className="bg-gradient-to-b from-[#EE4334] to-[#D73628] rounded-full w-16 h-16 flex items-center place-content-center text-white cursor-pointer shadow-md hover:shadow-lg transition duration-300 hover:scale-105">
-                                                        <ArrowLeft />
-                                                    </div>
-                                                    <span>مشاهده جزئیات</span>
-                                                </div>
-                                            </DialogTrigger>
-                                            <DialogContent
-                                                style={{
-                                                    backgroundColor: "#F1F4FC",
-                                                }}
-                                                className="w-full max-h-[90vh] no-scrollbar mx-auto overflow-auto rtl dialog-width"
-                                            >
-                                                <DialogHeader>
-                                                    <DialogTitle className="flex justify-center items-end font-bold mt-3.5">
-                                                        جزئیات پیشنهاد
-                                                    </DialogTitle>
-                                                </DialogHeader>
-                                                <div className="flex flex-col gap-2">
-                                                    <span className="text-lg font-bold place-self-start">
-                                                        مشخصات درخواست
-                                                    </span>
-                                                    <div className={styles.Box}>
-                                                        <div className="grid grid-cols-1 sm:grid-cols-2">
-                                                            <DialogItem
-                                                                icon={
-                                                                    CircleDollarSign
-                                                                }
-                                                                fieldName="حداکثر هزینه"
-                                                                fieldValue={
-                                                                    bid?.cost
-                                                                }
-                                                                english={false}
-                                                                prefix=" تومان"
-                                                            />
-                                                            <DialogItem
-                                                                icon={Battery}
-                                                                fieldName="ظرفیت پیشنهادی"
-                                                                fieldValue={
-                                                                    bid?.power
-                                                                }
-                                                                english={true}
-                                                                prefix="W"
-                                                            />
-                                                            <DialogItem
-                                                                icon={
-                                                                    CalendarRange
-                                                                }
-                                                                fieldName="زمان تخمینی نصب"
-                                                                fieldValue={DateConverter(
-                                                                    bid?.installationTime
-                                                                )}
-                                                            />
-                                                            <DialogItem
-                                                                icon={LandPlot}
-                                                                fieldName="مساحت"
-                                                                fieldValue={
-                                                                    bid?.area
-                                                                }
-                                                                prefix=" متر مربع"
-                                                            />
-                                                            <DialogItem
-                                                                icon={
-                                                                    ShieldCheck
-                                                                }
-                                                                fieldName="گارانتی"
-                                                                fieldValue={
-                                                                    bid
-                                                                        ?.guarantee
-                                                                        ?.name ??
-                                                                    "بدون گارانتی"
-                                                                }
-                                                            />
-                                                            <DialogItem
-                                                                icon={
-                                                                    CreditCard
-                                                                }
-                                                                fieldName="شرایط پرداخت"
-                                                                fieldValue={
-                                                                    bid
-                                                                        ?.paymentTerms
-                                                                        ?.paymentMethod
-                                                                }
-                                                            />
-                                                        </div>
-                                                        {/* <DialogItem
-                                                            className="border-t-2"
-                                                            icon={FileText}
-                                                            fieldName="توضیحات"
-                                                            fieldValue={
-                                                                bid?.description
-                                                            }
-                                                        /> */}
-                                                    </div>
-                                                    <p>
-                                                        <span className="font-bold">
-                                                            توضیحات:{" "}
-                                                        </span>
-                                                        <span>
-                                                            {bid?.description}
-                                                        </span>
-                                                    </p>
-                                                </div>
-                                                {bid?.status ===
-                                                    "در انتظار تایید" && (
-                                                    <DialogFooter className="flex justify-between w-full">
-                                                        <CancelButton />
-                                                        <div className="flex gap-2">
-                                                            <Button
-                                                                className="gradient-red"
-                                                                onClick={() =>
-                                                                    rejectBid(
-                                                                        bid?.id
-                                                                    )
-                                                                }
-                                                            >
-                                                                {rejectLoading ? (
-                                                                    <LoadingOnButton />
-                                                                ) : (
-                                                                    <p>
-                                                                        رد
-                                                                        پیشنهاد
-                                                                    </p>
-                                                                )}
-                                                            </Button>
-                                                            <Button
-                                                                className="gradient-green"
-                                                                onClick={() =>
-                                                                    acceptBid(
-                                                                        bid?.id
-                                                                    )
-                                                                }
-                                                            >
-                                                                {acceptLoading ? (
-                                                                    <LoadingOnButton />
-                                                                ) : (
-                                                                    <p>
-                                                                        پذیرش
-                                                                        پیشنهاد
-                                                                    </p>
-                                                                )}
-                                                            </Button>
-                                                        </div>
-                                                    </DialogFooter>
-                                                )}
-                                            </DialogContent>
-                                        </Dialog>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                            orderId={id}
+                            bid={bid}
+                        />
+                        // <div
+                        //     key={index}
+                        //     className={`w-full min-h-64 border-t-1 border-gray-300 first:border-t-0`}
+                        // >
+                        //     <div className="flex flex-row justify-between w-full min-h-64 bg-[#F0EDEF] overflow-hidden relative">
+                        //         <div className="flex md:flex-row flex-col justify-between w-full min-h-64">
+                        //             <div className="w-4/5 flex flex-col justify-between p-4 h-full">
+                        //                 <Item
+                        //                     icon={Battery}
+                        //                     fieldName="ظرفیت پیشنهادی"
+                        //                     fieldValue={bid?.power}
+                        //                     prefix="W"
+                        //                     english={true}
+                        //                 />
+                        //                 <Item
+                        //                     icon={CalendarRange}
+                        //                     fieldName="زمان تخمینی نصب"
+                        //                     fieldValue={DateConverter(
+                        //                         bid?.installationTime
+                        //                     )}
+                        //                     english={true}
+                        //                 />
+                        //                 <Item
+                        //                     icon={DollarSign}
+                        //                     fieldName="قیمت پیشنهادی"
+                        //                     fieldValue={bid?.cost}
+                        //                     prefix="تومان"
+                        //                 />
+                        //             </div>
+                        //             <div className="flex md:flex-col flex-row justify-evenly w-1/5 items-center text-center md:-mr-0 mr-6 md:gap-0 gap-28 md:mb-0 mb-10">
+                        //                 <div className="text-nowrap flex flex-col  md:ml-2 ml-auto items-center justify-center gap-2 md:p-3 p-5 rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)] w-30">
+                        //                     <div
+                        //                         className={`h-4 w-4 rounded-full ${getStatusColor(
+                        //                             bid?.status
+                        //                         )} shadow-md`}
+                        //                     />
+                        //                     <span className="text-sm font-medium text-gray-600">
+                        //                         {bid?.status}
+                        //                     </span>
+                        //                 </div>
+                        //                 <Dialog
+                        //                     open={open}
+                        //                     onOpenChange={setOpen}
+                        //                 >
+                        //                     <DialogTrigger asChild>
+                        //                         <div className="flex flex-col items-center gap-2 md:mr-0 -mr-5 text-nowrap">
+                        //                             <div className="bg-gradient-to-b from-[#EE4334] to-[#D73628] rounded-full w-16 h-16 flex items-center place-content-center text-white cursor-pointer shadow-md hover:shadow-lg transition duration-300 hover:scale-105">
+                        //                                 <ArrowLeft />
+                        //                             </div>
+                        //                             <span>مشاهده جزئیات</span>
+                        //                         </div>
+                        //                     </DialogTrigger>
+                        //                     <DialogContent
+                        //                         style={{
+                        //                             backgroundColor: "#F1F4FC",
+                        //                         }}
+                        //                         className="w-full max-h-[90vh] no-scrollbar mx-auto overflow-auto rtl dialog-width"
+                        //                     >
+                        //                         <DialogHeader>
+                        //                             <DialogTitle className="flex justify-center items-end font-bold mt-3.5">
+                        //                                 جزئیات پیشنهاد
+                        //                             </DialogTitle>
+                        //                         </DialogHeader>
+                        //                         <div className="flex flex-col gap-2">
+                        //                             <span className="text-lg font-bold place-self-start">
+                        //                                 مشخصات درخواست
+                        //                             </span>
+                        //                             <div className={styles.Box}>
+                        //                                 <div className="grid grid-cols-1 sm:grid-cols-2">
+                        //                                     <DialogItem
+                        //                                         icon={
+                        //                                             CircleDollarSign
+                        //                                         }
+                        //                                         fieldName="حداکثر هزینه"
+                        //                                         fieldValue={
+                        //                                             bid?.cost
+                        //                                         }
+                        //                                         english={false}
+                        //                                         prefix=" تومان"
+                        //                                     />
+                        //                                     <DialogItem
+                        //                                         icon={Battery}
+                        //                                         fieldName="ظرفیت پیشنهادی"
+                        //                                         fieldValue={
+                        //                                             bid?.power
+                        //                                         }
+                        //                                         english={true}
+                        //                                         prefix="W"
+                        //                                     />
+                        //                                     <DialogItem
+                        //                                         icon={
+                        //                                             CalendarRange
+                        //                                         }
+                        //                                         fieldName="زمان تخمینی نصب"
+                        //                                         fieldValue={DateConverter(
+                        //                                             bid?.installationTime
+                        //                                         )}
+                        //                                     />
+                        //                                     <DialogItem
+                        //                                         icon={LandPlot}
+                        //                                         fieldName="مساحت"
+                        //                                         fieldValue={
+                        //                                             bid?.area
+                        //                                         }
+                        //                                         prefix=" متر مربع"
+                        //                                     />
+                        //                                     <DialogItem
+                        //                                         icon={
+                        //                                             ShieldCheck
+                        //                                         }
+                        //                                         fieldName="گارانتی"
+                        //                                         fieldValue={
+                        //                                             bid
+                        //                                                 ?.guarantee
+                        //                                                 ?.name ??
+                        //                                             "بدون گارانتی"
+                        //                                         }
+                        //                                     />
+                        //                                     <DialogItem
+                        //                                         icon={
+                        //                                             CreditCard
+                        //                                         }
+                        //                                         fieldName="شرایط پرداخت"
+                        //                                         fieldValue={
+                        //                                             bid
+                        //                                                 ?.paymentTerms
+                        //                                                 ?.paymentMethod
+                        //                                         }
+                        //                                     />
+                        //                                 </div>
+                        //                                 {/* <DialogItem
+                        //                                     className="border-t-2"
+                        //                                     icon={FileText}
+                        //                                     fieldName="توضیحات"
+                        //                                     fieldValue={
+                        //                                         bid?.description
+                        //                                     }
+                        //                                 /> */}
+                        //                             </div>
+                        //                             <p>
+                        //                                 <span className="font-bold">
+                        //                                     توضیحات:{" "}
+                        //                                 </span>
+                        //                                 <span>
+                        //                                     {bid?.description}
+                        //                                 </span>
+                        //                             </p>
+                        //                         </div>
+                        //                         {bid?.status ===
+                        //                             "در انتظار تایید" && (
+                        //                             <DialogFooter className="flex justify-between w-full">
+                        //                                 <CancelButton />
+                        //                                 <div className="flex gap-2">
+                        //                                     <Button
+                        //                                         className="gradient-red w-full"
+                        //                                         onClick={() =>
+                        //                                             rejectBid(
+                        //                                                 bid?.id
+                        //                                             )
+                        //                                         }
+                        //                                     >
+                        //                                         {rejectLoading ? (
+                        //                                             <LoadingOnButton />
+                        //                                         ) : (
+                        //                                             <p className="w-full">
+                        //                                                 رد
+                        //                                                 پیشنهاد
+                        //                                             </p>
+                        //                                         )}
+                        //                                     </Button>
+                        //                                     <Button
+                        //                                         className="gradient-green w-full"
+                        //                                         onClick={() =>
+                        //                                             acceptBid(
+                        //                                                 bid?.id
+                        //                                             )
+                        //                                         }
+                        //                                     >
+                        //                                         {acceptLoading ? (
+                        //                                             <LoadingOnButton />
+                        //                                         ) : (
+                        //                                             <p className="w-full">
+                        //                                                 پذیرش
+                        //                                                 پیشنهاد
+                        //                                             </p>
+                        //                                         )}
+                        //                                     </Button>
+                        //                                 </div>
+                        //                             </DialogFooter>
+                        //                         )}
+                        //                     </DialogContent>
+                        //                 </Dialog>
+                        //             </div>
+                        //         </div>
+                        //     </div>
+                        // </div>
                     ))
                 ) : (
                     <NoRecordFound text="هیچ پیشنهادی یافت نشد." />

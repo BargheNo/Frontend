@@ -23,40 +23,42 @@ export default function DesktopNavbar() {
     const corps = useSelector((state: RootState) => state.user.corps);
     const corpId = useSelector((state: RootState) => state.user.corpId);
 
-    useEffect(
-        () => {
-            // const corpsList = corps ?? [];
-            // setIsCorp(corpsList?.length > 0);
-            // console.log(accessToken, isAdmin, isCorp);
-            getData({ endPoint: `/v1/user/corps` }).then((res) => {
-                setIsCorp(res?.data?.length > 0);
-                if (!corps) {
-                    console.log("setting corps", corps, res?.data);
-                    dispatch(setCorps(res?.data));
-                }
-                if (!corpId) {
-                    dispatch(setCorpId(res?.data?.[0]?.id));
-                }
-                const hasInitialized =
-                    typeof accessToken !== "undefined" &&
-                    typeof isAdmin != "undefined" &&
-                    typeof isCorp != "undefined";
-                if (hasInitialized) {
-                    setLoading(false);
-                }
-            });
-        },
-        [
-            accessToken,
-            // isAdmin,
-            // setLoading,
-            // isCorp,
-            // perms,
-            // dispatch,
-            // corps,
-            // corpId,
-        ]
-    );
+    useEffect(() => {
+        // const corpsList = corps ?? [];
+        // setIsCorp(corpsList?.length > 0);
+        // console.log(accessToken, isAdmin, isCorp);
+        getData({ endPoint: `/v1/user/corps` }).then((res) => {
+            setIsCorp(res?.data?.length > 0);
+            // if (!corps) {
+            const newCorps = res?.data?.filter(
+                (corp: any) =>
+                    corp?.status !== "در انتظار تایید" &&
+                    corp?.status !== "رد شده"
+            );
+            console.log("setting corps", newCorps);
+            dispatch(setCorps(newCorps));
+            // }
+            if (!corpId) {
+                dispatch(setCorpId(res?.data?.[0]?.id));
+            }
+            const hasInitialized =
+                typeof accessToken !== "undefined" &&
+                typeof isAdmin != "undefined" &&
+                typeof isCorp != "undefined";
+            if (hasInitialized) {
+                setLoading(false);
+            }
+        });
+    }, [
+        accessToken,
+        // isAdmin,
+        // setLoading,
+        // isCorp,
+        // perms,
+        // dispatch,
+        // corps,
+        // corpId,
+    ]);
     return (
         <>
             <div className="h-[70px] fixed top-0 w-full flex flex-col justify-center items-center z-20">

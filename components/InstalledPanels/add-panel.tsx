@@ -298,7 +298,7 @@ export default function AddPanel() {
                                     onlyNumbers
                                     dir="rtl"
                                     icon={DatabaseZap}
-                                    placeholder="مجموع توان تولید شده"
+                                    placeholder="ظرفیت"
                                     name="power"
                                     inputClassName={
                                         errors.power && touched.power

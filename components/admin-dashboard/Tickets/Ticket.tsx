@@ -114,7 +114,7 @@ export default function Ticket({
                                                 : status === "پاسخ داده شده"
                                                 ? "yellow"
                                                 : "green"
-                                        }-status shadow-md`}
+                                        }-status place-self-center shadow-md`}
                                     />
                                 </div>
                             </div>

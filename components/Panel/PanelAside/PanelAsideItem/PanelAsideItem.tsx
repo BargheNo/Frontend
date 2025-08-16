@@ -90,7 +90,7 @@ export function PanelAsideTitle({
     const corps = useSelector((state: RootState) => state.user.corps);
     const corpId = useSelector((state: RootState) => state.user.corpId);
     const isSuspended =
-        corps?.find((corp) => corp?.id === corpId)?.isSuspended ?? false;
+        corps?.find((corp) => corp?.id === corpId)?.status === "معلق";
     const notAllowed =
         mode === "corp" &&
         isSuspended &&

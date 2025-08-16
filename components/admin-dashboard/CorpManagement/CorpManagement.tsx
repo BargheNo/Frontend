@@ -218,7 +218,7 @@ const CorporationItem = ({
                             : status === "معلق"
                             ? "gray-status"
                             : "yellow-status"
-                    } h-4 w-4 rounded-full shadow-md`}
+                    } h-4 w-4 place-self-center rounded-full shadow-md`}
                 />
                 <p className="text-nowrap">{status}</p>
             </div>

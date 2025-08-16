@@ -4,6 +4,7 @@ import { Eclipse, User, Battery, MoveLeft, MapPin } from "lucide-react";
 import Link from "next/link";
 import { installedpanel } from "@/src/types/installedpanelType";
 import wordExpression from "@/src/functions/Calculations";
+import TruncatedText from "../ui/TruncatedText";
 
 const InstalledPanel = ({ name, customer, address, power }: installedpanel) => {
     return (
@@ -75,9 +76,16 @@ const InstalledPanel = ({ name, customer, address, power }: installedpanel) => {
                                     color="#FA682D"
                                 />
                                 <div className="font-medium mx-2">
-                                    استان {address.province}، شهر {address.city}
-                                    ، {address.streetAddress}، پلاک{" "}
-                                    {address.houseNumber}، واحد {address.unit}
+                                    <TruncatedText maxLength={135}>
+                                    {`
+                                    استان ${address.province}، شهر ${
+                                        address.city
+                                    }، ${address.streetAddress}، پلاک
+                                    ${address.houseNumber}، واحد ${String(
+                                        address.unit
+                                    )}
+                                    `}
+                                </TruncatedText>
                                 </div>
                             </div>
                         </div>
