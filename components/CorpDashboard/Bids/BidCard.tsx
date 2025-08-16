@@ -295,7 +295,7 @@ export default function BidCard({
     };
 
     useEffect(() => {
-        console.log("initialValues", initialValues);
+        // console.log("initialValues", initialValues);
         // getData({ endPoint: `/v1/corp/${corpId}/bid/${id}` }).then((data) => {
         // 	console.log(`data of bid ${id}`, data);
         // });
