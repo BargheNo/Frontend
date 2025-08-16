@@ -71,7 +71,7 @@ export default function Page() {
     console.log(data?.data?.data);
     const blogs = data?.data?.data;
     return (
-        <PageContainer>
+        <PageContainer className="vazir">
             <AddBlog />
             {/* <Header header="مطالب" /> */}
             <FilterSection

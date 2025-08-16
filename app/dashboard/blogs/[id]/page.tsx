@@ -24,7 +24,7 @@ export default function Page() {
     });
 
     return (
-        <PageContainer>
+        <PageContainer className="vazir">
             <div className="flex flex-col justify-start items-center gap-2 p-5 pt-20 overflow-hidden rtl relative">
                 <button
                     className="absolute left-4 top-6 flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100 cursor-pointer transition"

@@ -56,7 +56,7 @@ export default function Page() {
     });
     const blogs = data?.data?.data;
     return (
-        <PageContainer>
+        <PageContainer className="vazir">
             {/* <Header header="مطالب" /> */}
             <FilterSection
                 // fieldName=""

@@ -146,9 +146,9 @@ export default function BlogEditor({
         queryFn: async () => {
             try {
                 const responce = await getData({
-                    endPoint: onlyView
-                        ? `/v1/blog/${blogID}`
-                        : `/v1/corp/${corpID}/blog/${blogID}`,
+                    endPoint: corpID
+                        ? `/v1/corp/${corpID}/blog/${blogID}`
+                        : `/v1/blog/${blogID}`,
                     // get it from blog/id if it was viewOnly
                 });
                 console.log(responce);
@@ -250,7 +250,7 @@ export default function BlogEditor({
                 )}
             >
                 {loading && (
-                    <LoadingSpinner className="absolute w-full h-full bg-warm-white z-30 m-2" />
+                    <LoadingSpinner className="absolute w-full h-full bg-transparent z-30 m-2" />
                 )}
                 {!onlyView && (
                     <div className="flex justify-between items-center w-full self-end rtl">

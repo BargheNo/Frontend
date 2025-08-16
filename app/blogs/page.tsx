@@ -56,7 +56,7 @@ export default function Page() {
     });
     const blogs = data?.data?.data;
     return (
-        <PageContainer className="mt-16 rtl">
+        <PageContainer className="mt-16 rtl vazir">
             {/* <Header header="مطالب" /> */}
             <FilterSection
                 // fieldName=""

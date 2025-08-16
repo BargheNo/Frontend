@@ -20,6 +20,8 @@ const BlogTopBox = ({
     coverImage,
     likeCount,
     createdAt,
+    corpID,
+    mode = "user",
 }: {
     componentLoading: boolean;
     blogID: number;
@@ -29,15 +31,17 @@ const BlogTopBox = ({
     coverImage: string;
     likeCount: number;
     createdAt: string;
+    corpID?: number;
+    mode?: "user" | "corp";
 }) => {
     const accessToken = useSelector(
         (state: RootState) => state.user.accessToken
     );
 
     const { data: isLiked, isLoading } = useQuery({
-        queryKey: ["like", blogID],
+        queryKey: ["like", blogID, corpID],
         queryFn: async () => {
-            if (accessToken) {
+            if (accessToken && mode != "corp") {
                 const res = await getData({
                     endPoint: `/v1/user/blog/${blogID}/like`,
                 });
@@ -131,9 +135,12 @@ const BlogTopBox = ({
                                     <span>{likeCount}</span>
                                     <Heart
                                         className={
-                                            accessToken ? "cursor-pointer" : ""
+                                            accessToken && mode != "corp"
+                                                ? "cursor-pointer"
+                                                : ""
                                         }
                                         onClick={() => {
+                                            if (mode == "corp") return;
                                             if (accessToken && !isLiked) {
                                                 likeBlog.mutate();
                                             } else if (accessToken && isLiked) {
