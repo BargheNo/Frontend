@@ -35,6 +35,7 @@ import wordExpression from "@/src/functions/Calculations";
 import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
 import { Button } from "@/components/ui/button";
 import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
+import TruncatedText from "@/components/ui/TruncatedText";
 
 const PanelCard = ({
     id,
@@ -279,11 +280,11 @@ const PanelCard = ({
                                 color="#6B7280"
                                 className="h-fit"
                             />
-                            <div className="font-medium mx-2 mt-[10px]">
+                            {/* <div className="font-medium mx-2 mt-[10px]">
                                 آدرس:
-                            </div>
+                            </div> */}
                             <span className="mr-1 mt-[10px]">
-                                {isExpanded ? address : truncateText(address)}
+                                {/* {isExpanded ? address : truncateText(address)}
                                 {address.length > MAXLENGTH && (
                                     <button
                                         onClick={() =>
@@ -293,7 +294,10 @@ const PanelCard = ({
                                     >
                                         {isExpanded ? "کمتر" : "بیشتر"}
                                     </button>
-                                )}
+                                )} */}
+                                <TruncatedText maxLength={135}>
+                                    {address}
+                                </TruncatedText>
                             </span>
                         </div>
                         {/* <div className="flex flex-row place-items-center">

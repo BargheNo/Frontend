@@ -21,7 +21,7 @@ const OrderHistory = ({
             } border-t-1  md:border-gray-300 border-gray-400 first:border-t-0 w-full`}
         >
             <div className="flex flex-row justify-between w-full h-full bg-[#F0EDEF] p-4 rtl md:pb-5 pb-28 overflow-hidden relative">
-                <div className="flex flex-col justify-between w-full z-10">
+                <div className="flex flex-col justify-between w-4/5 z-10">
                     <div className="space-y-3 w-full">
                         <h2 className="text-2xl font-bold text-gray-800">
                             {name}
@@ -75,13 +75,13 @@ const OrderHistory = ({
                     </div>
                 </div>
 
-                <div className="flex md:flex-col flex-row-reverse lg:-mb-0 -mb-80 gap-2 items-center z-10 min-w-48 -mr-43">
-                    <Link href={`new-order/${id}`} className="w-full p-8">
-                        <button className="w-full flex items-center gap-2 justify-evenly gradient-blue px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
+                <div className="flex md:flex-col flex-row-reverse justify-center lg:-mb-0 -mb-80 gap-2 items-center z-10 min-w-48 -mr-43">
+                    <Link href={`new-order/${id}`} className="w-full m-4">
+                        <button className="w-full flex gap-2 items-center justify-evenly gradient-blue px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
                             <span className="font-medium text-nowrap">
                                 مدیریت سفارش
                             </span>
-                            <MoveLeft className="min-w-4 h-4" />
+                            <MoveLeft className="w-4 h-4" />
                         </button>
                     </Link>
                     {/* <Link href="">
