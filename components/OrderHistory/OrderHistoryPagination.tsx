@@ -79,7 +79,7 @@ export default function OrderHistoryPagination({
                     </div>
                 </>
             ) : (
-                <NoRecordFound text="هیچ سفارشی یافت نشد." />
+                <NoRecordFound text="هیچ سفارشی یافت نشد." className="neu-container" />
             )}
             {/* <CustomPagination
                 currentPage={currentPage}

@@ -42,6 +42,7 @@ import { Button } from "../ui/button";
 import CancelButton from "../Dialog/CancelButton/CancelButton";
 import CustomToast from "../Custom/CustomToast/CustomToast";
 import LoadingOnButton from "../Loading/LoadinOnButton/LoadingOnButton";
+import NoRecordFound from "../NoRecordFound/NoRecordFound";
 
 interface Order {
     id: number;
@@ -283,7 +284,7 @@ export default function NewOrderDetails({ id }: { id: string }) {
             />
 
             <div className="relative neu-container flex flex-col gap-4">
-                {bids &&
+                {bids && bids.length > 0 ? (
                     bids?.map((bid, index) => (
                         <div
                             key={index}
@@ -481,7 +482,10 @@ export default function NewOrderDetails({ id }: { id: string }) {
                                 </div>
                             </div>
                         </div>
-                    ))}
+                    ))
+                ) : (
+                    <NoRecordFound text="هیچ پیشنهادی یافت نشد." />
+                )}
             </div>
             <CustomPagination
                 currentPage={page}
