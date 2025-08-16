@@ -27,36 +27,63 @@ const Header = nextDynamic(() => import("@/components/Header/Header"), {
 
 import { getData } from "@/src/services/apiHub";
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import panelNotFound from "@/public/images/panelNotFound/panelNotFound.png";
+import FilterSection, { Item } from "@/components/FilterSection/FilterSection";
+import CustomPagination from "@/components/Custom/CustomPagination/CustomPagination";
 
 export default function Page() {
     const corpID = useSelector((state: RootState) => state.user.corpId);
+    const [pageSize, setPageSize] = useState<string>("");
+    const [query, setQuery] = useState<string>("");
+    const [asc, setAsc] = useState<boolean>(false);
+    const [status, setStatus] = useState<string>("0");
+    const statusList = [
+        { id: 0, name: "همه" },
+        { id: 1, name: "پیش نویس" },
+        { id: 2, name: "منتشر شده" },
+    ];
+    const [paginationInfo, setPaginationInfo] = useState<
+        paginationInfoType | undefined
+    >(undefined);
+    const [page, setPage] = useState<number>(1);
     const { isLoading, data } = useQuery({
-        queryKey: ["blogs", corpID],
+        queryKey: ["blogs", corpID, status, page, pageSize, query, asc],
         queryFn: async () => {
-            const r1 = await getData({
-                endPoint: `/v1/corp/${corpID}/blog/list?status=1`,
+            const res = await getData({
+                endPoint: `/v1/corp/${corpID}/blog/list`,
+                params: {
+                    status: status,
+                    page,
+                    pageSize,
+                    query,
+                    asc,
+                },
             });
-            // console.log("r1: ", r1.data?.data);
-            const r2 = await getData({
-                endPoint: `/v1/corp/${corpID}/blog/list?status=2`,
-            });
-            // console.log("r2: ", r2?.data?.data);
-            r1.data?.data?.push(...r2?.data?.data);
-            return r1;
+            setPaginationInfo(res?.data?.pagination);
+            return res;
         },
         enabled: !!corpID,
     });
     console.log(data?.data?.data);
     const blogs = data?.data?.data;
     return (
-        <PageContainer>
+        <PageContainer className="vazir">
             <AddBlog />
-            <Header header="مطالب" />
+            {/* <Header header="مطالب" /> */}
+            <FilterSection
+                fieldName="status"
+                header="مطالب"
+                status={status}
+                setStatus={setStatus}
+                statusesList={statusList}
+                query={query}
+                setQuery={setQuery}
+                // initialLoadingDefault={false}
+            />
             {isLoading ? (
                 <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-[2vw] w-full mx-auto mt-4">
                     {[...Array(4)].map((_, i) => (
@@ -111,6 +138,19 @@ export default function Page() {
                         هیچ مطلبی یافت نشد
                     </span>
                 </div>
+            )}
+            {isLoading ? (
+                <div className="flex items-center gap-2">
+                    <Skeleton className="h-8 w-8 rounded" />
+                    <Skeleton className="h-8 w-8 rounded" />
+                    <Skeleton className="h-8 w-8 rounded" />
+                </div>
+            ) : (
+                <CustomPagination
+                    setCurrentPage={setPage}
+                    currentPage={page}
+                    paginationInfo={paginationInfo}
+                />
             )}
         </PageContainer>
     );

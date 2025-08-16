@@ -132,7 +132,7 @@ export default function BlogCard({
                                                                     : "منتشر شده"}
                                                             </div>
                                                         </div>
-                                                        <div className="flex gap-1">
+                                                        <div className="flex items-centern gap-1">
                                                             <Heart
                                                                 fill="#fb8500"
                                                                 className="cursor-pointer"

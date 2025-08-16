@@ -10,6 +10,7 @@ import {
     SelectItem,
 } from "@/components/ui/select";
 import Link from "next/link";
+import { LayoutDashboard } from "lucide-react";
 
 export default function MobileDashboard({
     accessToken,
@@ -43,7 +44,7 @@ export default function MobileDashboard({
                 ].join(" ")}`}
                 href={"/dashboard"}
             >
-                داشبورد
+                <LayoutDashboard />
             </Link>
         );
     }
@@ -79,7 +80,17 @@ export default function MobileDashboard({
                         : "neo-btn rounded-lg! p-1.5"
                 }
             >
-                <span className={vazirBold.className}>داشبورد</span>
+                <span className={vazirBold.className}>
+                    <LayoutDashboard
+                        color={
+                            pathname?.startsWith("/dashboard") ||
+                            pathname?.startsWith("/corpdashboard") ||
+                            pathname?.startsWith("/admin-dashboard")
+                                ? "#FA682D"
+                                : "black"
+                        }
+                    />
+                </span>
             </SelectTrigger>
 
             <SelectContent className="w-full h-full bg-warm-white neo-card p-1">
@@ -87,6 +98,10 @@ export default function MobileDashboard({
                     <SelectItem
                         value="customer"
                         className="cursor-pointer neo-btn rounded-lg! bg-transparent text-center flex items-center justify-center"
+                        onClick={() => {
+                            router.push("/dashboard/profile");
+                            setDashMode("customer");
+                        }}
                     >
                         داشبورد کاربر
                     </SelectItem>
@@ -95,6 +110,10 @@ export default function MobileDashboard({
                         <SelectItem
                             value="corp"
                             className="cursor-pointer neo-btn rounded-lg! bg-transparent text-center flex items-center justify-center"
+                            onClick={() => {
+                                router.push("/corpdashboard/installed-panels");
+                                setDashMode("corp");
+                            }}
                         >
                             داشبورد شرکت
                         </SelectItem>
@@ -104,6 +123,10 @@ export default function MobileDashboard({
                         <SelectItem
                             value="admin"
                             className="cursor-pointer neo-btn rounded-lg! bg-transparent text-center flex items-center justify-center"
+                            onClick={() => {
+                                // router.push("/admin-dashboard/manage-users");
+                                setDashMode("admin");
+                            }}
                         >
                             داشبورد ادمین
                         </SelectItem>

@@ -15,9 +15,9 @@ const PageContainer = nextDynamic(
         ssr: false,
     }
 );
-const Header = nextDynamic(() => import("@/components/Header/Header"), {
-    ssr: false,
-});
+// const Header = nextDynamic(() => import("@/components/Header/Header"), {
+//     ssr: false,
+// });
 import { getData } from "@/src/services/apiHub";
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
@@ -56,7 +56,7 @@ export default function Page() {
     });
     const blogs = data?.data?.data;
     return (
-        <PageContainer className="vazir">
+        <PageContainer className="mt-16 rtl vazir">
             {/* <Header header="مطالب" /> */}
             <FilterSection
                 // fieldName=""

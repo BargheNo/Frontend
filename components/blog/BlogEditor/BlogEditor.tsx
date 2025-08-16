@@ -19,9 +19,11 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import "./Editor.css";
 import AddBlogForm from "../AddBlog/AddBlogForm";
 export default function BlogEditor({
+    className,
     blogID,
     onlyView = false,
 }: {
+    className?: string;
     blogID: string;
     onlyView?: boolean;
 }) {
@@ -144,9 +146,9 @@ export default function BlogEditor({
         queryFn: async () => {
             try {
                 const responce = await getData({
-                    endPoint: onlyView
-                        ? `/v1/blog/${blogID}`
-                        : `/v1/corp/${corpID}/blog/${blogID}`,
+                    endPoint: corpID
+                        ? `/v1/corp/${corpID}/blog/${blogID}`
+                        : `/v1/blog/${blogID}`,
                     // get it from blog/id if it was viewOnly
                 });
                 console.log(responce);
@@ -241,10 +243,15 @@ export default function BlogEditor({
     }, [data, holderRef, loading, editorRef]);
     return (
         <>
-            {loading && (
-                <LoadingSpinner className="absolute top-0 left-0 right-0 bottom-0 bg-white z-50" />
-            )}
-            <div className="flex flex-col items-center justify-evenly gap-3 w-[70vw] mx-auto h-[80vh] z-20">
+            <div
+                className={cn(
+                    "relative flex flex-col items-center justify-evenly gap-3 w-[70vw] mx-auto h-[80vh] z-20",
+                    className
+                )}
+            >
+                {loading && (
+                    <LoadingSpinner className="absolute w-full h-full bg-transparent z-30 m-2" />
+                )}
                 {!onlyView && (
                     <div className="flex justify-between items-center w-full self-end rtl">
                         <div className="text-bold text-2xl">ویرایشگر</div>
@@ -267,7 +274,7 @@ export default function BlogEditor({
                     </div>
                 )}
                 {onlyView ? (
-                    <div className="flex flex-col justify-center items-center p-5 h-[60vh] w-[90vw] lg:w-[70vw]">
+                    <div className="flex flex-col justify-center items-center m-2 w-full h-full">
                         <div className="w-full h-full bg-warm-white neo-card rounded-md p-2 ">
                             <div className="overflow-y-auto overflow-x-hidden no-scrollbar neo-card-rev w-full h-full rounded-md p-3">
                                 <div

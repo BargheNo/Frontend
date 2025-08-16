@@ -12,7 +12,7 @@ import FilterSelect from "./FilterSelect";
 import { Skeleton } from "../ui/skeleton";
 import { sortBy } from "cypress/types/lodash";
 
-interface Item {
+export interface Item {
     id: number;
     name: string;
 }
@@ -35,6 +35,8 @@ export default function FilterSection({
     setPage,
     asc,
     setAsc,
+    statusesList,
+    initialLoadingDefault = true,
     children,
 }: {
     fieldName?: string;
@@ -54,10 +56,16 @@ export default function FilterSection({
     setPage?: React.Dispatch<React.SetStateAction<number>>;
     asc?: boolean;
     setAsc?: React.Dispatch<React.SetStateAction<boolean>>;
+    statusesList?: Item[];
+    initialLoadingDefault?: boolean;
     children?: any;
 }) {
-    const [initialLoading, setInitialLoading] = useState<boolean>(true);
-    const [statuses, setStatuses] = useState<Item[] | undefined>(undefined);
+    const [initialLoading, setInitialLoading] = useState<boolean>(
+        initialLoadingDefault
+    );
+    const [statuses, setStatuses] = useState<Item[] | undefined>(
+        statusesList ?? undefined
+    );
     const [columns, setColumns] = useState<Item[] | undefined>(undefined);
     const initalResultPerPages: Item[] = resultPerPages ?? [
         { id: 5, name: "5" },
