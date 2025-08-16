@@ -95,11 +95,20 @@ export default function NewOrderDetails({ id }: { id: string }) {
     const [asc, setAsc] = useState<boolean>(false);
 
     const getStatusColor = (status: string) => {
-        if (status === "تایید")
-            return "bg-gradient-to-br from-green-400 to-green-500 border-1 border-gray-100/50 shadow-sm shadow-green-500";
-        if (status === "pending")
-            return "bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-yellow-500";
-        return "bg-gradient-to-br from-red-400 to-red-500 shadow-red-500";
+        if (status === "فعال") return "yellow-status";
+        if (status === "منقضی") return "gray-status";
+        if (status === "لغو شده") return "red-status";
+        if (status === "سپرده شده") return "green-status";
+        return "gray-status";
+        // if (status === "فعال")
+        //     return "bg-gradient-to-br from-green-400 to-green-500 border-1 border-gray-100/50 shadow-sm shadow-green-500";
+        // if (status === "منقضی")
+        //     return "bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-yellow-500";
+        // if (status === "لغو شده")
+        //     return "bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-yellow-500";
+        // if (status === "سپرده شده")
+        //     return "bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-yellow-500";
+        // return "bg-gradient-to-br from-red-400 to-red-500 shadow-red-500";
     };
 
     const fetchBids = useCallback(() => {

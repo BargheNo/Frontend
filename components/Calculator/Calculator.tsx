@@ -31,6 +31,7 @@ import {
     TooltipTrigger,
     TooltipContent,
 } from "@/components/ui/tooltip";
+import { Float } from "@react-three/drei";
 
 // Calculation function as described
 function calculateSolarMetrics(
@@ -347,13 +348,30 @@ const Calculator = () => {
                                             <div className="flex flex-row gap-2 items-center">
                                                 <span className="text-xl sm:text-3xl font-bold">
                                                     {results
-                                                        ? wordExpression(
-                                                              results.paybackPeriod ??
-                                                                  "0",
-                                                              false
-                                                          ).value || "0"
-                                                        : placeholder}{" "}
-                                                    سال
+                                                        ? Number(
+                                                              wordExpression(
+                                                                  results.paybackPeriod ??
+                                                                      "0",
+                                                                  false
+                                                              ).value
+                                                          ) >= 1
+                                                            ? `${
+                                                                  wordExpression(
+                                                                      results.paybackPeriod ??
+                                                                          "0",
+                                                                      false
+                                                                  ).value
+                                                              } سال`
+                                                            : `${Math.ceil(
+                                                                  Number(
+                                                                      wordExpression(
+                                                                          results.paybackPeriod ??
+                                                                              "0",
+                                                                          false
+                                                                      ).value
+                                                                  ) * 12
+                                                              )} ماه`
+                                                        : placeholder}
                                                 </span>
                                                 {/* <span className="text-xl sm:text-3xl font-bold"></span> */}
                                             </div>

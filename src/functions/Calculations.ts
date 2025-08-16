@@ -1,10 +1,10 @@
 export default function wordExpression(
-    valueInput: number | string,
+    value: number | string,
     english: boolean,
     mode: "simple" | "complete" = "complete"
 ) {
-    const value = Number(valueInput);
-    console.log(valueInput);
+    // const value = Number(valueInput);
+    // console.log(valueInput);
     if (typeof value === "number") {
         if (english) {
             if (value >= 1e15)
@@ -32,7 +32,7 @@ export default function wordExpression(
                     value: `${Math.round((value / 1e3) * 1000) / 1000}k`,
                     changed: true,
                 };
-            return { value: valueInput, changed: true };
+            return { value: value, changed: true };
         } else {
             if (mode === "complete") {
                 let res = "";
@@ -93,5 +93,5 @@ export default function wordExpression(
             }
         }
     }
-    return { value: valueInput, changed: false };
+    return { value: value, changed: false };
 }

@@ -355,11 +355,17 @@ export default function BidCard({
     };
 
     const getStatusColor = () => {
-        if (status === "تایید")
-            return "bg-gradient-to-br from-green-400 to-green-500 border-1 border-gray-100/50 shadow-sm shadow-green-500";
-        if (status === "pending")
-            return "bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-yellow-500";
-        return "bg-gradient-to-br from-red-400 to-red-500 shadow-red-500";
+        if (status === "تایید شده")
+            return "green-status";
+        if (status === "در انتظار تایید")
+            return "yellow-status";
+        if (status === "رد شده")
+            return "red-status";
+        if (status === "منقضی شده")
+            return "orange-status";
+        if (status === "لغو شده")
+            return "gray-status";
+        return "gray-status";
     };
     return (
         <div

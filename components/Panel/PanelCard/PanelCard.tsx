@@ -85,7 +85,7 @@ const PanelCard = ({
         if (status === "خراب")
             // return "bg-gradient-to-br from-red-400 to-red-500 shadow-red-500";
             return "red-status";
-        return "bg-gradient-to-br from-gray-400 to-gray-500 shadow-gray-500";
+        return "gray-status";
     };
 
     // const formatNumber = (num: number): string =>
