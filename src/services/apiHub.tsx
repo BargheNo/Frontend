@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { getParams, postParams } from "@/src/types/apiHubType";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
-import { setUser } from "../store/slices/userSlice";
+import { setCorpId, setUser } from "../store/slices/userSlice";
 import { store } from "../store/store";
 
 export const serverIPAndPort = "46.249.99.69:8080";
@@ -117,8 +117,19 @@ const refreshToken = async () => {
                             permissions: data?.data?.permissions,
                             accessToken: data?.data?.accessToken,
                             refreshToken: data?.data?.refreshToken,
+                            corps: userData?.corps,
+                            corpId: userData?.corpId,
                         })
                     );
+                    // if (!userData?.corpId) {
+                    //     getData({ endPoint: `/v1/user/corps` })
+                    //         .then((res) => {
+                    //             console.log("rescorp", res?.data[0]?.id);
+                    //             // const corpId = res?.data[0]?.id;
+                    //             store.dispatch(setCorpId(res?.data[0]?.id));
+                    //         })
+                    //         .catch((err) => console.log(err));
+                    // }
                 }
             } catch (error: any) {
                 generateErrorMessage(error)

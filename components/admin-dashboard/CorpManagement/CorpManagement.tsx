@@ -67,8 +67,8 @@ interface CorporationType {
         houseNumber: string;
         unit: number;
     }>;
+    status: string;
 }
-
 interface CorporationDetailType {
     id: number;
     name: string;
@@ -101,6 +101,7 @@ interface CorporationDetailType {
         houseNumber: string;
         unit: number;
     }>;
+    status: string;
 }
 
 const CorporationItem = ({
@@ -109,6 +110,7 @@ const CorporationItem = ({
     contactInfo,
     addresses,
     id,
+    status,
 }: CorporationType) => {
     const {
         hasPermission: hasApproveDeclinePermission,
@@ -185,20 +187,6 @@ const CorporationItem = ({
                         {name?.charAt(0)}
                     </AvatarFallback>
                 </Avatar>
-                {/* <Avatar /> */}
-                {/* {logo ? (
-                    <img
-                        src={logo}
-                        alt={`${name} logo`}
-                        className="w-10 h-10 rounded-full border border-orange-400"
-                    />
-                ) : (
-                    <div
-                        className={`w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center border-2 border-orange-400`}
-                    >
-                        <span className="text-gray-500 text-xs">لوگو</span>
-                    </div>
-                )} */}
                 <p className="font-medium">{name}</p>
             </div>
 
@@ -219,6 +207,22 @@ const CorporationItem = ({
                     آدرس: {addresses.length > 0 ? "دارد" : "ندارد"}
                 </p>
             </div>
+
+            <div className="flex items-center gap-3 w-1/4">
+                <div
+                    className={`${
+                        status === "تایید شده"
+                            ? "green-status"
+                            : status === "رد شده"
+                            ? "red-status"
+                            : status === "معلق"
+                            ? "gray-status"
+                            : "yellow-status"
+                    } h-4 w-4 rounded-full shadow-md`}
+                />
+                <p className="text-nowrap">{status}</p>
+            </div>
+
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger>
                     <div
@@ -637,7 +641,7 @@ const CorporationItem = ({
 const CorpManagement = () => {
     const [corporations, setCorporations] = useState<CorporationType[]>([]);
     const [loading, setLoading] = useState(true);
-    const [status, setStatus] = useState("5");
+    const [status, setStatus] = useState("");
     const [resultPerPage, setResultPerPage] = useState<string>("");
     const [paginationInfo, setPaginationInfo] = useState<
         paginationInfoType | undefined

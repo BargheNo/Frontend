@@ -1,18 +1,18 @@
 import {
-	Dialog,
-	DialogHeader,
-	DialogTrigger,
-	DialogContent,
-	DialogTitle,
+    Dialog,
+    DialogHeader,
+    DialogTrigger,
+    DialogContent,
+    DialogTitle,
 } from "@/components/ui/dialog";
 import {
-	Archive,
-	CircleAlert,
-	CircleChevronLeft,
-	ListCollapse,
-	ReceiptText,
-	Shapes,
-	Timer,
+    Archive,
+    CircleAlert,
+    CircleChevronLeft,
+    ListCollapse,
+    ReceiptText,
+    Shapes,
+    Timer,
 } from "lucide-react";
 import React, { useState } from "react";
 import MetricBox from "@/components/IconWithBackground/MetricBox";
@@ -23,145 +23,147 @@ import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter.tsx";
 import { useSelector } from "react-redux";
 
 const TermItemSection = ({ title, description, limitations }: TermItem) => {
-	return (
-		<div
-			className="space-y-4 pb-2 mb-2 border-b-1 border-gray-400"
-			data-test="warranty-term-item"
-		>
-			<div className="flex space-x-2">
-				<ReceiptText className="text-fire-orange" />
-				<span data-test="warranty-term-title">{title}</span>
-			</div>
-			<div className="flex space-x-2">
-				<ListCollapse className="text-fire-orange" />
-				<span data-test="warranty-term-description">{description}</span>
-			</div>
-			<div className="flex space-x-2">
-				<CircleAlert className="text-fire-orange" />
-				<span data-test="warranty-term-limitations">{limitations}</span>
-			</div>
-		</div>
-	);
+    return (
+        <div
+            className="space-y-4 pb-2 mb-2 border-b-1 border-gray-400"
+            data-test="warranty-term-item"
+        >
+            <div className="flex space-x-2">
+                <ReceiptText className="text-fire-orange" />
+                <span data-test="warranty-term-title">{title}</span>
+            </div>
+            <div className="flex space-x-2">
+                <ListCollapse className="text-fire-orange" />
+                <span data-test="warranty-term-description">{description}</span>
+            </div>
+            <div className="flex space-x-2">
+                <CircleAlert className="text-fire-orange" />
+                <span data-test="warranty-term-limitations">{limitations}</span>
+            </div>
+        </div>
+    );
 };
 
 const WarrantyDetails = ({
-	id,
-	name,
-	description,
-	type,
-	duration,
-	terms,
-	isArchived,
-	onWarrantyUpdate,
+    id,
+    name,
+    description,
+    type,
+    duration,
+    terms,
+    isArchived,
+    onWarrantyUpdate,
 }: Warranty) => {
-	const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false);
 
-	const corpID = useSelector((state: RootState) => state.user.corpId);
+    const corpID = useSelector((state: RootState) => state.user.corpId);
 
-	const handleArchive = async () => {
-		if (isArchived) {
-			CustomToast("این گارانتی قبلاً آرشیو شده است!", "warning");
-			return;
-		}
+    const handleArchive = async () => {
+        // if (isArchived) {
+        // 	CustomToast("این گارانتی قبلاً آرشیو شده است!", "warning");
+        // 	return;
+        // }
 
-		putData({
-			endPoint: `${baseURL}/v1/corp/${corpID}/guarantee/${id}/status`,
-			data: { status: 2 },
-		})
-			.then(() => {
-				CustomToast("گارانتی با موفقیت آرشیو شد!", "success");
-				setOpen(false);
-				onWarrantyUpdate?.();
-			})
-			.catch((err) => {
-				console.log(err);
-				// CustomToast("مشکلی در آرشیو کردن گارانتی پیش آمد!", "error");
-				// console.log(err);
-			});
-	};
+        putData({
+            endPoint: `/v1/corp/${corpID}/guarantee/${id}/status`,
+            data: { status: isArchived ? 1 : 2 },
+        })
+            .then((data) => {
+                CustomToast(data?.message, "success");
+                setOpen(false);
+                onWarrantyUpdate?.();
+            })
+            .catch((err) => {
+                console.log(err);
+                // CustomToast("مشکلی در آرشیو کردن گارانتی پیش آمد!", "error");
+                // console.log(err);
+            });
+    };
 
-	return (
-		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>
-				<button
-					className="red-circle-button w-full !h-fit py-3 space-x-2"
-					data-test="warranty-details-trigger"
-				>
-					<span>جزئیات بیشتر</span>
-					<CircleChevronLeft />
-				</button>
-			</DialogTrigger>
-			<DialogContent
-				style={{ backgroundColor: "#F1F4FC" }}
-				className="w-full mx-auto overflow-auto space-y-3 pb-0"
-				dir="rtl"
-				data-test="warranty-details-dialog"
-			>
-				<DialogHeader>
-					<DialogTitle
-						className="flex justify-center items-end font-bold mt-3.5 mb-2"
-						data-test="warranty-details-title"
-					>
-						جزئیات گارانتی
-					</DialogTitle>
-				</DialogHeader>
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <button
+                    className="red-circle-button w-full !h-fit py-3 space-x-2"
+                    data-test="warranty-details-trigger"
+                >
+                    <span>جزئیات بیشتر</span>
+                    <CircleChevronLeft />
+                </button>
+            </DialogTrigger>
+            <DialogContent
+                style={{ backgroundColor: "#F1F4FC" }}
+                className="w-full mx-auto overflow-auto space-y-3 pb-0"
+                dir="rtl"
+                data-test="warranty-details-dialog"
+            >
+                <DialogHeader>
+                    <DialogTitle
+                        className="flex justify-center items-end font-bold mt-3.5 mb-2"
+                        data-test="warranty-details-title"
+                    >
+                        جزئیات گارانتی
+                    </DialogTitle>
+                </DialogHeader>
 
-				<h1 className="font-black text-2xl">{name}</h1>
+                <h1 className="font-black text-2xl">{name}</h1>
 
-				<div className="flex w-full space-x-8">
-					<MetricBox
-						title="نوع گارانتی"
-						icon={Shapes}
-						className="w-1/2"
-						data-test="warranty-details-type"
-					>
-						{String(type)}
-					</MetricBox>
-					<MetricBox
-						title="مدت زمان"
-						icon={Timer}
-						className="w-1/2"
-						data-test="warranty-details-duration"
-					>
-						{String(duration)}
-					</MetricBox>
-				</div>
+                <div className="flex w-full space-x-8">
+                    <MetricBox
+                        title="نوع گارانتی"
+                        icon={Shapes}
+                        className="w-1/2"
+                        data-test="warranty-details-type"
+                    >
+                        {String(type)}
+                    </MetricBox>
+                    <MetricBox
+                        title="مدت زمان"
+                        icon={Timer}
+                        className="w-1/2"
+                        data-test="warranty-details-duration"
+                    >
+                        {String(duration)}
+                    </MetricBox>
+                </div>
 
-				<div className="w-full flex flex-col">
-					<h2 className="font-black text-xl">توضیحات</h2>
-					<span className="inset-neu-container w-full p-5 max-h-40 overflow-y-auto">
-						{description}
-					</span>
-				</div>
+                <div className="w-full flex flex-col">
+                    <h2 className="font-black text-xl">توضیحات</h2>
+                    <span className="inset-neu-container w-full p-5 max-h-40 overflow-y-auto">
+                        {description}
+                    </span>
+                </div>
 
-				<div className="">
-					<h2 className="font-black text-xl mb-2">شرایط</h2>
-					<div className="inset-neu-container w-full p-5">
-						{terms.map((termItem, index) => (
-							<TermItemSection
-								key={index}
-								title={termItem.title}
-								description={termItem.description}
-								limitations={termItem.limitations}
-							/>
-						))}
-					</div>
-				</div>
-				<StickyFooter>
-					<button
-						onClick={handleArchive}
-						className={`${
-							isArchived && "grayscale-100 cursor-auto"
-						} red-circle-button px-12 w-full h-11 gap-2`}
-						data-test="warranty-archive-button"
-					>
-						{isArchived
-							? "این گارانتی آرشیو شده است!"
-							: "آرشیو کردن"}
-						{!isArchived && <Archive size={20} />}
-					</button>
-				</StickyFooter>
-				{/* <div>
+                <div className="">
+                    <h2 className="font-black text-xl mb-2">شرایط</h2>
+                    <div className="inset-neu-container w-full p-5">
+                        {terms && terms.length > 0 ? (
+                            terms.map((termItem, index) => (
+                                <TermItemSection
+                                    key={index}
+                                    title={termItem.title}
+                                    description={termItem.description}
+                                    limitations={termItem.limitations}
+                                />
+                            ))
+                        ) : (
+                            <p>هیچ شرایطی تعریف نشده است.</p>
+                        )}
+                    </div>
+                </div>
+                <StickyFooter>
+                    <button
+                        onClick={handleArchive}
+                        className={`${
+                            isArchived && "grayscale-100 cursor-auto"
+                        } red-circle-button px-12 w-full h-11 gap-2 cursor-pointer`}
+                        data-test="warranty-archive-button"
+                    >
+                        {isArchived ? "فعال کردن" : "آرشیو کردن"}
+                        {!isArchived && <Archive size={20} />}
+                    </button>
+                </StickyFooter>
+                {/* <div>
 					<button
 						onClick={handleArchive}
 						className={`${
@@ -175,9 +177,9 @@ const WarrantyDetails = ({
 						{!isArchived && <Archive size={20} />}
 					</button>
 				</div> */}
-			</DialogContent>
-		</Dialog>
-	);
+            </DialogContent>
+        </Dialog>
+    );
 };
 
 export default WarrantyDetails;

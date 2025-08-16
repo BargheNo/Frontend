@@ -342,6 +342,10 @@ body {
         @apply bg-gradient-to-br from-purple-400 to-purple-500 border-1 border-gray-100/50 shadow-sm shadow-purple-500;
     }
 
+    .gray-status {
+        @apply bg-gradient-to-br from-gray-400 to-gray-500 border border-gray-100/50 shadow-sm shadow-gray-500;
+    }
+
     .inset-neu-container {
         @apply rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)] w-24;
     }

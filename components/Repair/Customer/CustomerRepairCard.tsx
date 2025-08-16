@@ -99,7 +99,7 @@ const CustomerRepairCard = ({
         if (repairItem.status === "در انتظار تایید") return "yellow-status";
         if (repairItem.status === "تمام شده") return "blue-status";
         if (repairItem.status === "رد شده") return "red-status";
-        return "black-status";
+        return "gray-status";
     };
 
     const MAXLENGTH: number = 70;

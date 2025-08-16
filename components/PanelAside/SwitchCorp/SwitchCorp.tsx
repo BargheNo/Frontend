@@ -7,7 +7,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { getData } from "@/src/services/apiHub";
-import { setCorpId } from "@/src/store/slices/userSlice";
+import { setCorpId, setCorps } from "@/src/store/slices/userSlice";
 import React, { useEffect, useState } from "react";
 import { RootState } from "@/src/store/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,9 +18,9 @@ interface Corp {
 }
 export const SwitchCorp = () => {
     const dispatch = useDispatch();
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     // const [corp, setCorp] = useState<string>("0");
-    const [corps, setCorps] = useState<Corp[]>([]);
+    // const [corpsList, setCorpsList] = useState<Corp[]>([]);
     // const changeCorp = useCallback(
     //     (corpId: string) => {
     //         setCorp(String(corpId));
@@ -28,26 +28,25 @@ export const SwitchCorp = () => {
     //     },
     //     [dispatch]
     // );
+    const corps = useSelector((state: RootState) => state.user.corps);
     const corpID = useSelector((state: RootState) => state.user.corpId);
     useEffect(() => {
-        setLoading(true);
-        getData({ endPoint: `/v1/user/corps` })
-            .then((res) => {
-                // console.log(res?.data);
-                setCorps(res?.data);
-                setLoading(false);
-                if (!corpID) {
-                    dispatch(setCorpId(res?.data?.[0]?.id));
-                }
-                // changeCorp(res?.data?.[0]?.id);
-                // setCorp(String(res?.data?.[0]?.id));
-                // console.log("rescorp", res?.data[0]?.id);
-                // const corpId = res?.data[0]?.id;
-                // dispatch(setCorpId(res?.data[0]?.id));
-            })
-            .catch((err) => console.log(err))
-            .finally(() => setLoading(false));
-    }, [dispatch, corpID]);
+        console.log(corpID);
+    }, []);
+    // useEffect(() => {
+    //     setLoading(true);
+    //     getData({ endPoint: `/v1/user/corps` })
+    //         .then((res) => {
+    //             console.log("setting 2");
+    //             dispatch(setCorps(res?.data));
+    //             setLoading(false);
+    //             if (!corpID) {
+    //                 dispatch(setCorpId(res?.data?.[0]?.id));
+    //             }
+    //         })
+    //         .catch((err) => console.log(err))
+    //         .finally(() => setLoading(false));
+    // }, [corpID]);
 
     return loading ? (
         <Skeleton className="w-full mb-3 h-9 bg-gray-200" />

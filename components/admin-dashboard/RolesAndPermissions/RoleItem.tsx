@@ -67,7 +67,7 @@ export default function RoleItem({
                         >
                             <p>دسترسی‌ها:</p>
                             {role?.permissions?.length === 0 ? (
-                                <p>دسترسی موجود نیست</p>
+                                <p>بدون دسترسی</p>
                             ) : (
                                 role?.permissions
                                     ?.filter(

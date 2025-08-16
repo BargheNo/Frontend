@@ -67,9 +67,10 @@ const Login = () => {
                         permissions: data?.data?.permissions,
                         accessToken: data?.data?.accessToken,
                         refreshToken: data?.data?.refreshToken,
+                        corps: [],
                     })
                 );
-                await Promise.resolve();
+                // await Promise.resolve();
                 getData({ endPoint: `/v1/user/corps` })
                     .then((data) => {
                         dispatch(setCorps(data?.data));

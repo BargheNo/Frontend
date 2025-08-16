@@ -236,6 +236,7 @@ const EditRoleModal: React.FC<EditRoleModalProps> = ({
                         placeholder="نام نقش"
                         icon={UserRoundCog}
                         inputClassName="bg-white"
+                        autoFocus
                     />
                     <div className="space-y-6">
                         <FieldArray name="permissionIDs">

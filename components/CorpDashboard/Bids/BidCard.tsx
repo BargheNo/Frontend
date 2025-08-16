@@ -295,7 +295,7 @@ export default function BidCard({
     };
 
     useEffect(() => {
-        console.log("initialValues", initialValues);
+        // console.log("initialValues", initialValues);
         // getData({ endPoint: `/v1/corp/${corpId}/bid/${id}` }).then((data) => {
         // 	console.log(`data of bid ${id}`, data);
         // });
@@ -355,11 +355,17 @@ export default function BidCard({
     };
 
     const getStatusColor = () => {
-        if (status === "تایید")
-            return "bg-gradient-to-br from-green-400 to-green-500 border-1 border-gray-100/50 shadow-sm shadow-green-500";
-        if (status === "pending")
-            return "bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-yellow-500";
-        return "bg-gradient-to-br from-red-400 to-red-500 shadow-red-500";
+        if (status === "تایید شده")
+            return "green-status";
+        if (status === "در انتظار تایید")
+            return "yellow-status";
+        if (status === "رد شده")
+            return "red-status";
+        if (status === "منقضی شده")
+            return "orange-status";
+        if (status === "لغو شده")
+            return "gray-status";
+        return "gray-status";
     };
     return (
         <div
@@ -402,7 +408,7 @@ export default function BidCard({
                     <div className="flex md:flex-col flex-row justify-evenly w-1/5 items-center text-center md:-mr-0 mr-6 md:gap-0 gap-28 md:mb-0 mb-10">
                         <div className="text-nowrap flex flex-col  md:ml-2 ml-auto items-center justify-center gap-2 md:p-3 p-5 rounded-2xl bg-[#F0F0F3] shadow-[inset_-4px_-4px_10px_rgba(255,255,255,0.8),inset_4px_4px_10px_rgba(0,0,0,0.1)] w-30">
                             <div
-                                className={` h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
+                                className={`h-4 w-4 rounded-full ${getStatusColor()} shadow-md`}
                             />
                             <span className="text-sm font-medium text-gray-600">
                                 {status}
