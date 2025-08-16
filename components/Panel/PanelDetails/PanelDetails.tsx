@@ -362,19 +362,114 @@ export default function PanelDetails({ id }: { id: string }) {
                         <div className="relative neu-container p-4 flex flex-col gap-4">
                             <div className="space-y-4 p-4">
                                 <div className="grid grid-cols-2 gap-4">
-                                    {panel?.corporation?.contactInfo && panel?.corporation?.contactInfo?.length > 0 ? panel?.corporation?.contactInfo?.map(
-                                        (contact, index) => (
-                                            <div
-                                                className="flex gap-2"
-                                                key={index}
-                                            >
-                                                <Phone className="text-orange-400" />
-                                                <strong>{contact?.contactType?.name}: </strong>
-                                                <p>{contact?.value}</p>
-                                            </div>
+                                    {panel?.corporation?.contactInfo &&
+                                    panel?.corporation?.contactInfo?.length >
+                                        0 ? (
+                                        panel?.corporation?.contactInfo?.map(
+                                            (contact, index) => (
+                                                <div
+                                                    className="flex gap-2"
+                                                    key={index}
+                                                >
+                                                    <Phone className="text-orange-400" />
+                                                    <strong>
+                                                        {
+                                                            contact?.contactType
+                                                                ?.name
+                                                        }
+                                                        :{" "}
+                                                    </strong>
+                                                    <p>{contact?.value}</p>
+                                                </div>
+                                            )
                                         )
-                                    ) : <p>هیچ راه ارتباطی وجود ندارد.</p>}
+                                    ) : (
+                                        <p>هیچ راه ارتباطی وجود ندارد.</p>
+                                    )}
                                 </div>
+                            </div>
+                        </div>
+                        <div className="font-bold text-xl text-blue-800">
+                            آدرس‌های شرکت
+                        </div>
+                        <div className="relative neu-container p-4 flex flex-col gap-4">
+                            <div className="space-y-4 p-4">
+                                    {panel?.corporation?.addresses &&
+                                    panel?.corporation?.addresses?.length >
+                                        0 ? (
+                                        panel?.corporation?.addresses?.map(
+                                            (address, index) => (
+                                                <div key={index} className="border-gray-300 border-t-2 first:border-t-0">
+                                                    <div className="p-4 grid grid-cols-2 gap-4">
+                                                        <div className="flex gap-2">
+                                                            <MapPin className="text-orange-400" />
+                                                            <strong>
+                                                                استان:
+                                                            </strong>
+                                                            <p>
+                                                                {
+                                                                    address.province
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                        <div className="flex gap-2">
+                                                            <Building2 className="text-orange-400" />
+                                                            <strong>
+                                                                شهر:
+                                                            </strong>
+                                                            <p>
+                                                                {address.city}
+                                                            </p>
+                                                        </div>
+                                                        <div className="flex gap-2">
+                                                            <Route className="text-orange-400" />
+                                                            <strong>
+                                                                خیابان:
+                                                            </strong>
+                                                            <p>
+                                                                {
+                                                                    address.streetAddress
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                        <div className="flex gap-2">
+                                                            <Mail className="text-orange-400" />
+                                                            <strong>
+                                                                کد پستی:
+                                                            </strong>
+                                                            <p>
+                                                                {
+                                                                    address.postalCode
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                        <div className="flex gap-2">
+                                                            <Home className="text-orange-400" />
+                                                            <strong>
+                                                                پلاک:
+                                                            </strong>
+                                                            <p>
+                                                                {
+                                                                    address.houseNumber
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                        <div className="flex gap-2">
+                                                            <DoorOpen className="text-orange-400" />
+                                                            <strong>
+                                                                واحد:
+                                                            </strong>
+                                                            <p>
+                                                                {address.unit}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )
+                                        )
+                                    ) : (
+                                        <p>هیچ راه ارتباطی وجود ندارد.</p>
+                                    )}
                             </div>
                         </div>
                     </div>
