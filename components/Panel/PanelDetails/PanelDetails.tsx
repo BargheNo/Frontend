@@ -29,6 +29,11 @@ import {
     Hash,
     Layers,
     Map,
+    LandPlot,
+    TriangleRight,
+    DatabaseZap,
+    Phone,
+    Megaphone,
 } from "lucide-react";
 
 import wordExpression from "@/src/functions/Calculations";
@@ -59,8 +64,13 @@ interface Corporation {
     name: string;
     logo: string;
     status: string;
-    contactInfo: any[]; // adjust type if you know the structure
+    contactInfo: ContactInfo[]; // adjust type if you know the structure
     addresses: any[]; // adjust type if you know the structure
+}
+
+interface ContactInfo {
+    contactType: { id: number; name: string };
+    value: string;
 }
 
 interface Address {
@@ -171,14 +181,14 @@ export default function PanelDetails({ id }: { id: string }) {
                 <div
                     className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} h-fit`}
                 >
-                    <h3 className="font-bold text-xl text-blue-800">
+                    <div className="font-bold text-xl text-blue-800">
                         اطلاعات کلی
-                    </h3>
+                    </div>
                     <div className="space-y-4 p-4">
                         <div className="grid grid-cols-2 gap-4">
                             {/* نام پنل */}
                             <div className="flex gap-2">
-                                <Package className="text-orange-400" />
+                                <Eclipse className="text-orange-400" />
                                 <strong>نام پنل:</strong>
                                 <p>{panel?.name}</p>
                             </div>
@@ -196,14 +206,14 @@ export default function PanelDetails({ id }: { id: string }) {
 
                             {/* نوع ساختمان */}
                             <div className="flex gap-2">
-                                <Home className="text-blue-500" />
+                                <Home className="text-orange-400" />
                                 <strong>نوع ساختمان:</strong>
                                 <p>{panel?.buildingType}</p>
                             </div>
 
                             {/* تعداد کل ماژول‌ها */}
                             <div className="flex gap-2">
-                                <Grid3x3 className="text-indigo-500" />
+                                <Grid3x3 className="text-orange-400" />
                                 <strong>تعداد ماژول‌ها:</strong>
                                 <p>
                                     {
@@ -218,7 +228,7 @@ export default function PanelDetails({ id }: { id: string }) {
 
                             {/* مساحت */}
                             <div className="flex gap-2">
-                                <Ruler className="text-purple-500" />
+                                <LandPlot className="text-orange-400" />
                                 <strong>مساحت:</strong>
                                 <p>
                                     {
@@ -231,7 +241,7 @@ export default function PanelDetails({ id }: { id: string }) {
 
                             {/* توان */}
                             <div className="flex gap-2">
-                                <Bolt className="text-yellow-500" />
+                                <DatabaseZap className="text-orange-400" />
                                 <strong>توان:</strong>
                                 <p>
                                     {
@@ -244,38 +254,40 @@ export default function PanelDetails({ id }: { id: string }) {
 
                             {/* زاویه شیب */}
                             <div className="flex gap-2">
-                                <Triangle className="text-pink-500" />
-                                <strong>زاویه شیب:</strong>
+                                <TriangleRight className="text-orange-400" />
+                                <strong>زاویه نصب:</strong>
                                 <p>{panel?.tilt} درجه</p>
                             </div>
 
                             {/* سمت (آزیموت) */}
                             <div className="flex gap-2">
-                                <Compass className="text-cyan-500" />
+                                <Compass className="text-orange-400" />
                                 <strong>جهت:</strong>
                                 <p>{panel?.azimuth} درجه</p>
                             </div>
 
                             {/* وضعیت گارانتی */}
-                            <div className="flex gap-2">
+                            {/* <div className="flex gap-2">
                                 <ShieldCheck className="text-teal-500" />
                                 <strong>وضعیت گارانتی:</strong>
                                 <p>{panel?.guaranteeStatus}</p>
-                            </div>
+                            </div> */}
 
                             {/* شرکت */}
-                            <div className="flex gap-2">
+                            {/* <div className="flex gap-2">
                                 <Building2 className="text-gray-600" />
                                 <strong>شرکت پیمانکار:</strong>
                                 <p>{panel?.corporation?.name}</p>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
                 <div
                     className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} h-fit`}
                 >
-                    <h3 className="font-bold text-xl text-blue-800">آدرس</h3>
+                    <div className="font-bold text-xl text-blue-800">
+                        محل نصب پنل
+                    </div>
                     <div className="p-4 grid grid-cols-2 gap-4">
                         <div className="flex gap-2">
                             <MapPin className="text-orange-400" />
@@ -306,6 +318,64 @@ export default function PanelDetails({ id }: { id: string }) {
                             <DoorOpen className="text-orange-400" />
                             <strong>واحد:</strong>
                             <p>{panel?.address.unit}</p>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} h-fit`}
+                >
+                    <div className="font-bold text-xl text-blue-800">
+                        شرکت پیمانکار
+                    </div>
+                    <div className="space-y-4 p-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            {/* نام شرکت */}
+                            <div className="flex gap-2">
+                                <Building2 className="text-orange-400" />
+                                <strong>نام شرکت:</strong>
+                                <p>{panel?.corporation?.name}</p>
+                            </div>
+
+                            {/* وضعیت */}
+                            <div className="flex gap-2">
+                                <div
+                                    className={`${
+                                        panel?.corporation?.status ===
+                                        "تایید شده"
+                                            ? "green-status"
+                                            : panel?.corporation?.status ===
+                                              "رد شده"
+                                            ? "red-status"
+                                            : panel?.corporation?.status ===
+                                              "معلق"
+                                            ? "gray-status"
+                                            : "yellow-status"
+                                    } h-4 w-4 place-self-center rounded-full shadow-md`}
+                                />
+                                <strong>وضعیت:</strong>
+                                <p>{panel?.corporation?.status}</p>
+                            </div>
+                        </div>
+                        <div className="font-bold text-xl text-blue-800">
+                            راه‌های ارتباطی
+                        </div>
+                        <div className="relative neu-container p-4 flex flex-col gap-4">
+                            <div className="space-y-4 p-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                    {panel?.corporation?.contactInfo && panel?.corporation?.contactInfo?.length > 0 ? panel?.corporation?.contactInfo?.map(
+                                        (contact, index) => (
+                                            <div
+                                                className="flex gap-2"
+                                                key={index}
+                                            >
+                                                <Phone className="text-orange-400" />
+                                                <strong>{contact?.contactType?.name}: </strong>
+                                                <p>{contact?.value}</p>
+                                            </div>
+                                        )
+                                    ) : <p>هیچ راه ارتباطی وجود ندارد.</p>}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

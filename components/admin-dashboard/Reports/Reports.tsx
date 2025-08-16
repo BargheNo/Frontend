@@ -167,7 +167,7 @@ const Reports = () => {
                             <div className="flex items-center gap-2">
                                 <span className="font-bold">{Status}</span>
                                 <div
-                                    className={`h-4 w-4 rounded-full ${
+                                    className={`h-4 w-4 place-self-center rounded-full ${
                                         Status === "بررسی شده" ? "green" : "red"
                                     }-status shadow-md`}
                                 />
@@ -249,7 +249,7 @@ const Reports = () => {
                                 {Status}
                             </span>
                             <div
-                                className={`h-4 w-4 rounded-full ${
+                                className={`h-4 w-4 place-self-center rounded-full ${
                                     Status === "بررسی شده" ? "green" : "red"
                                 }-status shadow-md`}
                             />

@@ -36,6 +36,8 @@ import {
     BellRing,
     House,
     Mailbox,
+    Eclipse,
+    Grid3x3,
 } from "lucide-react";
 import style from "./style.module.css";
 import SignupButton from "@/components/SignupButton/SignupButton";
@@ -317,7 +319,7 @@ const InstalledPanelPagination = forwardRef<{ handelHistory: () => void }, {}>(
                                         <CustomInput
                                             dir="rtl"
                                             placeholder="نام پنل"
-                                            icon={SquareMenu}
+                                            icon={Eclipse}
                                             name="name"
                                             inputClassName={
                                                 errors.name && touched.name
@@ -333,7 +335,7 @@ const InstalledPanelPagination = forwardRef<{ handelHistory: () => void }, {}>(
                                         <CustomInput
                                             onlyNumbers
                                             dir="rtl"
-                                            icon={Tally5}
+                                            icon={Grid3x3}
                                             name="modulecount"
                                             placeholder="تعداد ماژول‌ها"
                                             inputClassName={
@@ -438,7 +440,7 @@ const InstalledPanelPagination = forwardRef<{ handelHistory: () => void }, {}>(
                                             style={{ width: "12vw" }}
                                             dir="rtl"
                                             icon={LandPlot}
-                                            placeholder="مساحت (مترمربع)"
+                                            placeholder="مساحت (متر مربع)"
                                             name="area"
                                             inputClassName={
                                                 errors.area && touched.area
