@@ -35,7 +35,7 @@ export default function DesktopNavbar() {
                     corp?.status !== "در انتظار تایید" &&
                     corp?.status !== "رد شده"
             );
-            console.log("setting corps", newCorps);
+            // console.log("setting corps", newCorps);
             dispatch(setCorps(newCorps));
             // }
             if (!corpId) {

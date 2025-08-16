@@ -1,4 +1,4 @@
-import { getData, postData } from "@/src/services/apiHub";
+import { getData } from "@/src/services/apiHub";
 import React, { useCallback, useEffect, useState } from "react";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import styles from "./styles.module.css";

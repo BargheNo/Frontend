@@ -46,7 +46,7 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
 	// --- KEY CHANGE: Show CustomToast for incoming messages ---
 	useEffect(() => {
 		if (lastMessage) {
-			console.log("New notification received:", lastMessage);
+			// console.log("New notification received:", lastMessage);
 
 			// Customize your toast message and type based on the incoming message structure
 			// For example, if your NotificationMessage has a 'type' property like 'alert' or 'info'
