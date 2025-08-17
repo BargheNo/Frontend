@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput";
 import { vazir } from "@/lib/fonts";
 import PhoneVerification from "@/components/phoneVerification/phoneVerification";
@@ -14,6 +14,8 @@ import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton
 import LoginButton from "../Login/LoginButton";
 import { postData } from "@/src/services/apiHub";
 import Link from "next/link";
+import ReCAPTCHA from "react-google-recaptcha";
+import { toast } from "sonner";
 
 function Signup() {
     const validationSchema = Yup.object({
@@ -44,12 +46,16 @@ function Signup() {
     const [otpCode, setOtpCode] = useState<string>("");
     const [phone, setPhone] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
+
+    const recaptchaRef = useRef<ReCAPTCHA>(null);
+    const SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+
     const route = useRouter();
     const handleOtpChange = (otp: string) => {
         setOtpCode(otp);
     };
 
-    const handelRegister = (
+    const handelRegister = async (
         name: string,
         Lname: string,
         phone: string,
@@ -58,6 +64,14 @@ function Signup() {
         isAcceptTerms: boolean
     ) => {
         setLoading(true);
+
+        const token = await recaptchaRef.current?.getValue();
+        if (!token) {
+            toast.error("لطفا CAPTCHA را تکمیل کنید");
+            setLoading(false);
+            return;
+        }
+
         const formData = {
             FirstName: name,
             LastName: Lname,
@@ -65,8 +79,9 @@ function Signup() {
             Password: password,
             ConfirmPassword: confirmPassword,
             acceptedTerms: isAcceptTerms,
+            recaptcha: token, // 👈 add captcha token
         };
-        console.log(formData);
+
         postData({ endPoint: `/v1/auth/register/basic`, data: formData })
             .then((data) => {
                 setOpen(true);
@@ -82,7 +97,6 @@ function Signup() {
             data: { phone, otp },
         })
             .then((data) => {
-                console.log(data);
                 route.push("/login");
                 CustomToast(data?.message, "success");
             })
@@ -95,6 +109,7 @@ function Signup() {
             handleVerification(phone, otpCode);
         }
     }, [otpCode]);
+
     return (
         <div className={`grid grid-cols-2 overflow-hidden gap-[50vw]`}>
             <div className={`${vazir.className}`}>
@@ -186,6 +201,17 @@ function Signup() {
                                             placeholder="تایید رمز عبور"
                                         />
                                     </div>
+
+                                    {/* ✅ Add ReCAPTCHA here */}
+                                    {SITE_KEY && (
+                                        <div className="w-full flex justify-center items-center p-2">
+                                            <ReCAPTCHA
+                                                ref={recaptchaRef}
+                                                sitekey={SITE_KEY}
+                                            />
+                                        </div>
+                                    )}
+
                                     <div className={styles.ruleText}>
                                         <label
                                             htmlFor="link-checkbox"
@@ -206,12 +232,12 @@ function Signup() {
                                                     Setcheck((prev) => !prev)
                                                 }
                                                 type="checkbox"
-                                                value=""
                                                 className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500 mt-0.5"
                                             />
                                             <Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-2/3 text-white opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5 " />
                                         </div>
                                     </div>
+
                                     <div
                                         style={{
                                             width: "90%",
@@ -219,11 +245,7 @@ function Signup() {
                                             fontWeight: "600",
                                         }}
                                     >
-                                        <LoginButton
-                                            // className="text-[#FA682D]"
-                                            // type="submit"
-                                            disabled={!check}
-                                        >
+                                        <LoginButton disabled={!check}>
                                             {loading ? (
                                                 <LoadingOnButton size={28} />
                                             ) : (
