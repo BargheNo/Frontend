@@ -171,10 +171,13 @@ const TicketSupportPage = () => {
                         <p className="max-w-[600px] break-words text-md">
                             {body}
                         </p>
-                        <p className="text-start content-start text-xs text-gray-600">
-                            از طرف {auther.firstName} {auther.lastName} ({" "}
-                            {authorType === "users" ? "کاربر" : "ادمین"} )
-                        </p>
+                        <div className="flex flex-row justify-between">
+                            <p></p>
+                            <p className="text-start content-start text-xs text-gray-600">
+                                {auther.firstName} {auther.lastName} ({" "}
+                                {authorType === "users" ? "کاربر" : "ادمین"} )
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
