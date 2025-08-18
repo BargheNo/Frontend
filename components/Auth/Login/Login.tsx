@@ -10,6 +10,7 @@ import { vazir } from "@/lib/fonts";
 import LoginButton from "./LoginButton";
 import { getData, postData } from "../../../src/services/apiHub";
 import { setCorps, setUser } from "@/src/store/slices/userSlice";
+import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import LoadingOnButton from "@/components/Loading/LoadinOnButton/LoadingOnButton";
@@ -39,6 +40,8 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const recaptchaRef = useRef<ReCAPTCHA>(null);
     const SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+
+    const router = useRouter();
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -86,17 +89,20 @@ const Login = () => {
                     })
                 );
                 // await Promise.resolve();
-                getData({ endPoint: `/v1/user/corps` })
-                    .then((data) => {
-                        const newCorps = data?.data?.filter(
-                            (corp: any) =>
-                                corp?.status !== "در انتظار تایید" &&
-                                corp?.status !== "رد شده"
-                        );
-                        dispatch(newCorps);
-                        window.location.href = "/dashboard/profile";
-                    })
-                    .catch((err) => console.log(err));
+                // getData({ endPoint: `/v1/user/corps` })
+                //     .then((data) => {
+                //         console.log("data", data);
+                //         const newCorps = data?.data?.filter(
+                //             (corp: any) =>
+                //                 corp?.status !== "در انتظار تایید" &&
+                //                 corp?.status !== "رد شده"
+                //         );
+                //         dispatch(setCorps(newCorps));
+                //         // window.location.href = "/dashboard/profile";
+                //     })
+                //     .catch((err) => console.log(err));
+
+                router.push("/dashboard/profile");
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
