@@ -8,10 +8,10 @@ export default function Header({
 	className?: string;
 }) {
 	return (
-		<h1
+		<div
 			className={`${className} text-[#003a8b] text-3xl my-3 font-black w-full`}
 		>
 			{header}
-		</h1>
+		</div>
 	);
 }
