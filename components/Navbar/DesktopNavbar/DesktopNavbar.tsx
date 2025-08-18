@@ -26,33 +26,45 @@ export default function DesktopNavbar() {
     useEffect(() => {
         // const corpsList = corps ?? [];
         // setIsCorp(corpsList?.length > 0);
-        // console.log(accessToken, isAdmin, isCorp);
-        if (accessToken) {
-            getData({ endPoint: `/v1/user/corps` }).then((res) => {
-                setIsCorp(res?.data?.length > 0);
-                // if (!corps) {
-                const newCorps = res?.data?.filter(
-                    (corp: any) =>
-                        corp?.status !== "در انتظار تایید" &&
-                        corp?.status !== "رد شده"
-                );
-                console.log("setting corps", newCorps);
-                dispatch(setCorps(newCorps));
-                // }
-                if (!corpId) {
-                    dispatch(setCorpId(res?.data?.[0]?.id));
-                }
-                const hasInitialized =
-                    typeof accessToken !== "undefined" &&
-                    typeof isAdmin != "undefined" &&
-                    typeof isCorp != "undefined";
-                if (hasInitialized) {
-                    setLoading(false);
-                }
-            });
+        // console.log(corps);
+        setIsCorp(corps?.length ? corps?.length > 0 : false);
+        const hasInitialized =
+            typeof accessToken !== "undefined" &&
+            typeof isAdmin != "undefined" &&
+            typeof isCorp != "undefined";
+        if (hasInitialized) {
+            setLoading(false);
         }
+        // if (accessToken) {
+        //     getData({ endPoint: `/v1/user/corps` }).then((res) => {
+        //         setIsCorp(res?.data?.length > 0);
+        //         // if (!corps) {
+        //         const newCorps = res?.data?.filter(
+        //             (corp: any) =>
+        //                 corp?.status !== "در انتظار تایید" &&
+        //                 corp?.status !== "رد شده"
+        //         );
+        //         console.log("setting corps", newCorps);
+        //         dispatch(setCorps(newCorps));
+        //         // }
+        //         if (!corpId) {
+        //             dispatch(setCorpId(res?.data?.[0]?.id));
+        //         }
+        //         const hasInitialized =
+        //             typeof accessToken !== "undefined" &&
+        //             typeof isAdmin != "undefined" &&
+        //             typeof isCorp != "undefined";
+        //         if (hasInitialized) {
+        //             setLoading(false);
+        //         }
+        //     });
+        // }
     }, [
+        corps,
         accessToken,
+        isAdmin,
+        isCorp,
+        // accessToken,
         // isAdmin,
         // setLoading,
         // isCorp,
