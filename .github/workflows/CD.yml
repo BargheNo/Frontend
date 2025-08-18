@@ -1,9 +1,10 @@
 name: CD
 
 on:
-  # push:
-  #   branches:
-  #     - develop
+  push:
+    branches:
+      # - develop
+      - feature/recaptcha
   pull_request:
     branches:
       - develop
@@ -36,6 +37,10 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.PAT }}
+  
+    - name: Make env file
+      run: |
+        echo "${{secrets.env}}" > .env
 
     - name: Build Docker image
       id: docker_build
@@ -166,6 +171,7 @@ jobs:
         host: ${{ secrets.SERVER_HOST }}
         username: ${{ secrets.SERVER_USER }}
         password: ${{ secrets.SERVER_PASSWORD }}
+        
         source: "docker-compose.yml"
         target: "/root/front"
     
@@ -182,6 +188,9 @@ jobs:
 
           docker logout ghcr.io
           docker login ghcr.io -u ${{ secrets.USERNAME }} -p ${{ secrets.PAT }}
+          
+          echo "${{ secrets.env }}" > .env
+          chmod 644 .env
 
           docker compose pull
           docker compose down --remove-orphans

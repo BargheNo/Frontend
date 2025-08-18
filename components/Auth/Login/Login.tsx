@@ -56,9 +56,10 @@ const Login = () => {
     }) => {
         const { phoneNumber, password } = values;
         setLoading(true);
-        const token = await recaptchaRef.current?.getValue();
+        const token = recaptchaRef.current?.getValue();
         if (!token) {
-            toast.error("لطفا CAPTCHA را تکمیل کنید");
+            CustomToast("لطفا CAPTCHA را تکمیل کنید", "error");
+            // toast.error("لطفا CAPTCHA را تکمیل کنید");
             setLoading(false);
             return;
         }
