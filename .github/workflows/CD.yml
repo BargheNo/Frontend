@@ -40,7 +40,7 @@ jobs:
   
     - name: Make env file
       run: |
-        echo "${{secrets.env}}" > .env
+        echo "${{secrets.env}}" > .env.local
 
     - name: Build Docker image
       id: docker_build
@@ -189,8 +189,8 @@ jobs:
           docker logout ghcr.io
           docker login ghcr.io -u ${{ secrets.USERNAME }} -p ${{ secrets.PAT }}
           
-          echo "${{ secrets.env }}" > .env
-          chmod 644 .env
+          echo "${{ secrets.env }}" > .env.local
+          chmod 644 .env.local
 
           docker compose pull
           docker compose down --remove-orphans

@@ -19,7 +19,7 @@ RUN npm uninstall tailwindcss --legacy-peer-deps && \
 # Copy the rest of the project files
 COPY . .
 
-COPY .env .env
+COPY .env.local .env.local
 
 # Build the Next.js application
 RUN npm run build
