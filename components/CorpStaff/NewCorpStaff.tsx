@@ -32,13 +32,12 @@ type Permission = {
     category: string;
 };
 
-const initialValuesForm = { phone: "", permissionIDs: [] };
+const initialValuesForm = { phone: "" };
 
 const validationSchemaForm = Yup.object({
     phone: Yup.string()
         .required("شماره تلفن الزامی است")
         .length(10, "شماره تلفن را بدون 0 وارد کنید"),
-    permissionIDs: Yup.array().of(Yup.number()),
 });
 
 interface CreateRoleModalProps {

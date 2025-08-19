@@ -11,6 +11,8 @@ import {
     Search,
     CheckIcon,
 } from "lucide-react";
+import * as Yup from "yup";
+import { Form, Formik, FieldArray } from "formik";
 import styles from "./styles.module.css";
 import { getData, putData } from "@/src/services/apiHub";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
@@ -79,6 +81,14 @@ type Role = {
         category: string;
     }[];
 };
+
+const initialValuesForm = { phone: "" };
+
+const validationSchemaForm = Yup.object({
+    phone: Yup.string()
+        .required("شماره تلفن الزامی است")
+        .length(10, "شماره تلفن را بدون 0 وارد کنید"),
+});
 
 export default function Users() {
     const [filterType, setFilterType] = useState<string>("all");
@@ -409,7 +419,9 @@ const UserItem = ({ staff, roles, status, id, fetchAllUsers }: UserType) => {
     const [isSaving, setIsSaving] = useState(false);
     const [isBanning, setIsBanning] = useState(false);
     const [allRoles, setAllRoles] = useState<Role[]>([]);
-    const [userRoles, setUserRoles] = useState<number[]>([]);
+    const [userRoles, setUserRoles] = useState<number[]>(
+        roles?.map((role) => role?.id)
+    );
     const [open, setOpen] = useState(false);
     const corpId = useSelector((state: RootState) => state.user.corpId);
     const handleRoleChange = (roleId: number) => {
@@ -420,26 +432,29 @@ const UserItem = ({ staff, roles, status, id, fetchAllUsers }: UserType) => {
         );
     };
     useEffect(() => {
+        console.log(userRoles, allRoles);
+    }, [userRoles, allRoles]);
+    useEffect(() => {
         getData({ endPoint: `/v1/corp/${corpId}/staff/roles` })
             .then((data) => {
                 setUserRoles(data?.data?.map((role: Role) => role.id));
             })
             .catch((err) => console.log(err));
         setLoadingRoles(true);
-        getData({ endPoint: `/v1/admin/roles` })
+        getData({ endPoint: `/v1/corp/${corpId}/staff/roles` })
             .then((data) => {
                 setAllRoles(data?.data?.data);
             })
             .catch((err) => console.log(err))
             .finally(() => setLoadingRoles(false));
     }, [id, corpId]);
-    const saveRoles = async () => {
+    const editStaff = async () => {
         setIsSaving(true);
         const formData = {
             roleIDs: userRoles,
         };
         putData({
-            endPoint: `/v1/admin/users/${id}/roles`,
+            endPoint: `/v1/corp/${corpId}/staff/${id}`,
             data: formData,
         })
             .then((data) => {
@@ -449,6 +464,19 @@ const UserItem = ({ staff, roles, status, id, fetchAllUsers }: UserType) => {
             })
             .catch((err) => console.log(err))
             .finally(() => setIsSaving(false));
+    };
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement>,
+        permissionId: number,
+        push: any,
+        remove: any
+    ) => {
+        // setFieldValue("");
+        if (e.target.checked) {
+            push(permissionId);
+        } else {
+            remove(permissionId);
+        }
     };
     return (
         <div className="flex lg:flex-row flex-col justify-between w-full h-full bg-[#F4F1F3] p-5 overflow-hidden relative border-t-1 border-gray-300 first:border-t-0 lg:items-center lg:gap-10 md:text-wrap text-nowrap gap-5 items-start">
@@ -491,48 +519,58 @@ const UserItem = ({ staff, roles, status, id, fetchAllUsers }: UserType) => {
                     className={`max-h-[80vh] overflow-y-auto no-scrollbar rtl vazir dialog-width flex flex-col pb-0`}
                 >
                     <div className="relative flex-1 overflow-y-auto no-scrollbar">
-                        <DialogHeader>
-                            <DialogTitle className="text-blue-800 text-right">
-                                افزودن عضو جدید
-                            </DialogTitle>
-                        </DialogHeader>
+                        <Formik
+                            initialValues={initialValuesForm}
+                            validationSchema={validationSchemaForm}
+                            onSubmit={() => editStaff()}
+                        >
+                            <Form>
+                                <DialogHeader>
+                                    <DialogTitle className="text-blue-800 text-right">
+                                        ویرایش عضو
+                                    </DialogTitle>
+                                </DialogHeader>
 
-                        {loadingRoles ? (
-                            <div className="flex justify-center items-center">
-                                <LoadingSpinner className="w-full h-full" />
-                                {/* <Loader2 className="animate-spin text-orange-500 h-8 w-8" /> */}
-                            </div>
-                        ) : (
-                            <div className="space-y-3 py-4">
-                                {allRoles?.map((role) => (
-                                    <div
-                                        key={role.id}
-                                        className="flex items-center gap-3 p-2"
-                                    >
-                                        <div className="relative">
-                                            <input
-                                                name={`role-${role.id}`}
-                                                type="checkbox"
-                                                defaultChecked={userRoles.includes(
-                                                    role.id
-                                                )}
-                                                onChange={() =>
-                                                    handleRoleChange(role.id)
-                                                }
-                                                className={`peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500 mt-0.5`}
-                                            />
-                                            <Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-2/3 text-white opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5 " />
-                                        </div>
-                                        <label
-                                            htmlFor={`role-${role.id}`}
-                                            className="text-gray-700 cursor-pointer"
-                                        >
-                                            {role.name}
-                                        </label>
+                                {loadingRoles ? (
+                                    <div className="flex justify-center items-center">
+                                        <LoadingSpinner className="w-full h-full" />
+                                        {/* <Loader2 className="animate-spin text-orange-500 h-8 w-8" /> */}
                                     </div>
-                                ))}
-                            </div>
-                        )}
+                                ) : (
+                                    <div className="space-y-3 py-4">
+                                        {allRoles?.map((role) => (
+                                            <div
+                                                key={role.id}
+                                                className="flex items-center gap-3 p-2"
+                                            >
+                                                <div className="relative">
+                                                    <input
+                                                        name={`role-${role.id}`}
+                                                        type="checkbox"
+                                                        defaultChecked={userRoles.includes(
+                                                            role.id
+                                                        )}
+                                                        onChange={() =>
+                                                            handleRoleChange(
+                                                                role.id
+                                                            )
+                                                        }
+                                                        className={`peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500 mt-0.5`}
+                                                    />
+                                                    <Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-2/3 text-white opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5 " />
+                                                </div>
+                                                <label
+                                                    htmlFor={`role-${role.id}`}
+                                                    className="text-gray-700 cursor-pointer"
+                                                >
+                                                    {role.name}
+                                                </label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </Form>
+                        </Formik>
                     </div>
 
                     {/* Sticky footer */}
@@ -540,13 +578,13 @@ const UserItem = ({ staff, roles, status, id, fetchAllUsers }: UserType) => {
                         <div className="flex justify-end gap-2 md:mt-0 mt-12">
                             <CancelButton />
                             <Button
-                                onClick={saveRoles}
+                                onClick={editStaff}
                                 className="bg-orange-500 cursor-pointer hover:bg-orange-600 min-w-28"
                             >
                                 {isSaving ? (
                                     <LoadingOnButton />
                                 ) : (
-                                    <p>افزودن عضو</p>
+                                    <p>ذخیره تغییرات</p>
                                 )}
                             </Button>
                         </div>
