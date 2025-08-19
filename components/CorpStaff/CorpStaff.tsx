@@ -394,7 +394,7 @@ export default function Users() {
                     users &&
                     users?.map((user) => (
                         <UserItem
-                            key={`user-${user.id}-${user.staff.phone}`}
+                            key={`user-${user.id}-${user?.staff?.phone}`}
                             id={user.id}
                             staff={user.staff}
                             status={user.status}
@@ -492,7 +492,7 @@ const UserItem = ({ staff, roles, status, id, fetchAllUsers }: UserType) => {
                 <div className={`${styles.icon} bg-white text-[#FA682D]`}>
                     <Phone className="m-1" />
                 </div>
-                <p>{staff.phone.slice(-10)}</p>
+                <p>{staff?.phone?.slice(-10)}</p>
             </div>
             <div className="flex items-center gap-3 w-1/4">
                 <div className="flex items-center gap-2">

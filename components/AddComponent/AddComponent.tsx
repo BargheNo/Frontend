@@ -2,7 +2,7 @@ import React from "react";
 import { Plus } from "lucide-react";
 import styles from "./AddComponent.module.css";
 
-interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface Props {
 	title: string;
 }
 
