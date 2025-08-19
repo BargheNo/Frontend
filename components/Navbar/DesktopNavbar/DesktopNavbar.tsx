@@ -26,7 +26,7 @@ export default function DesktopNavbar() {
     useEffect(() => {
         // const corpsList = corps ?? [];
         // setIsCorp(corpsList?.length > 0);
-        // console.log(corps);
+        // console.log("corps", corps);
         setIsCorp(corps?.length ? corps?.length > 0 : false);
         const hasInitialized =
             typeof accessToken !== "undefined" &&

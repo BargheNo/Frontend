@@ -111,7 +111,7 @@ const refreshToken = async () => {
                     refreshToken,
                 });
                 const data = response.data;
-                console.log("refeesh", data);
+                // console.log("refeesh", data);
                 if (data) {
                     store.dispatch(
                         setUser({
@@ -120,10 +120,11 @@ const refreshToken = async () => {
                             permissions: data?.data?.permissions,
                             accessToken: data?.data?.accessToken,
                             refreshToken: data?.data?.refreshToken,
-                            corps: userData?.corps,
+                            // corps: userData?.corps,
                             corpId: userData?.corpId,
                         })
                     );
+                    // console.log(accessToken);
                     if (accessToken) {
                         getData({
                             endPoint: `/v1/user/corps`,
@@ -134,7 +135,7 @@ const refreshToken = async () => {
                                     corp?.status !== "در انتظار تایید" &&
                                     corp?.status !== "رد شده"
                             );
-                            console.log("setting corps", newCorps);
+                            // console.log("setting corps", newCorps);
                             store.dispatch(setCorps(newCorps));
                             // }
                             if (!corpId) {
@@ -168,7 +169,7 @@ export const getData = async ({
     endPoint,
     headers,
     params,
-    refresh,
+    refresh = true,
 }: getParams) => {
     if (refresh) {
         await refreshToken();
