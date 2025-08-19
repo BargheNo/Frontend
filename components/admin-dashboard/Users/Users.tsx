@@ -148,7 +148,7 @@ export default function Users() {
         setLoading(true);
         console.log("all users", query);
         getData({
-            endPoint: `/v1/admin/users?status=1&status=2`,
+            endPoint: `/v1/admin/users`,
             params: { sortBy, asc, page, pageSize: resultPerPage, query },
         })
             .then((data) => {
