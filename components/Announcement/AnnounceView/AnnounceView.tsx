@@ -72,7 +72,7 @@ export default function AnnounceView({
                 /> // admin
             )}
             {data?.data?.data?.length === 0 ? (
-                <div className="neu-container">
+                <div className={cn("neu-container", className)}>
                     <NoRecordFound text="هیچ اطلاعیه‌ای یافت نشد." />
                 </div>
             ) : (

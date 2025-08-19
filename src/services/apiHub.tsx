@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { getParams, postParams } from "@/src/types/apiHubType";
 import generateErrorMessage from "@/src/functions/handleAPIErrors";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
-import { setCorpId, setUser } from "../store/slices/userSlice";
+import { setCorpId, setCorps, setUser } from "../store/slices/userSlice";
 import { store } from "../store/store";
 
 export const serverIPAndPort = "46.249.99.69:8080";
@@ -102,13 +102,16 @@ const refreshToken = async () => {
     const userDataString = localStorage.getItem("user");
     if (userDataString) {
         const userData = JSON.parse(userDataString);
+        const accessToken = userData?.accessToken;
         const refreshToken = userData?.refreshToken;
+        const corpId = userData?.corpId;
         if (refreshToken) {
             try {
                 const response = await apiClient.post("/v1/auth/refresh", {
                     refreshToken,
                 });
                 const data = response.data;
+                console.log("refeesh", data);
                 if (data) {
                     store.dispatch(
                         setUser({
@@ -121,6 +124,24 @@ const refreshToken = async () => {
                             corpId: userData?.corpId,
                         })
                     );
+                    if (accessToken) {
+                        getData({
+                            endPoint: `/v1/user/corps`,
+                            refresh: false,
+                        }).then((res) => {
+                            const newCorps = res?.data?.filter(
+                                (corp: any) =>
+                                    corp?.status !== "در انتظار تایید" &&
+                                    corp?.status !== "رد شده"
+                            );
+                            console.log("setting corps", newCorps);
+                            store.dispatch(setCorps(newCorps));
+                            // }
+                            if (!corpId) {
+                                store.dispatch(setCorpId(res?.data?.[0]?.id));
+                            }
+                        });
+                    }
                     // if (!userData?.corpId) {
                     //     getData({ endPoint: `/v1/user/corps` })
                     //         .then((res) => {
@@ -143,8 +164,15 @@ const refreshToken = async () => {
     }
 };
 
-export const getData = async ({ endPoint, headers, params }: getParams) => {
-    await refreshToken();
+export const getData = async ({
+    endPoint,
+    headers,
+    params,
+    refresh,
+}: getParams) => {
+    if (refresh) {
+        await refreshToken();
+    }
     try {
         const response = await apiClient.get(endPoint, {
             params: params,
@@ -160,8 +188,15 @@ export const getData = async ({ endPoint, headers, params }: getParams) => {
         throw error;
     }
 };
-export const postData = async ({ endPoint, data, headers }: postParams) => {
-    await refreshToken();
+export const postData = async ({
+    endPoint,
+    data,
+    headers,
+    refresh = true,
+}: postParams) => {
+    if (refresh) {
+        await refreshToken();
+    }
     try {
         const response = await apiClient.post(endPoint, data, {
             headers: {
@@ -178,8 +213,15 @@ export const postData = async ({ endPoint, data, headers }: postParams) => {
         throw error;
     }
 };
-export const patchData = async ({ endPoint, data, headers }: postParams) => {
-    await refreshToken();
+export const patchData = async ({
+    endPoint,
+    data,
+    headers,
+    refresh = true,
+}: postParams) => {
+    if (refresh) {
+        await refreshToken();
+    }
     try {
         const response = await apiClient.patch(endPoint, data, {
             ...headers,
@@ -198,12 +240,16 @@ export const putDataFile = async ({
     endPoint,
     formData,
     headers,
+    refresh = true,
 }: {
     endPoint: string;
     formData: any;
     headers?: any;
+    refresh?: boolean;
 }) => {
-    await refreshToken();
+    if (refresh) {
+        await refreshToken();
+    }
     try {
         const response = await apiClient.put(endPoint, formData, {
             headers: { "Content-Type": "multipart/form-data", ...headers },
@@ -218,8 +264,15 @@ export const putDataFile = async ({
         throw error;
     }
 };
-export const putData = async ({ endPoint, data, headers }: postParams) => {
-    await refreshToken();
+export const putData = async ({
+    endPoint,
+    data,
+    headers,
+    refresh = true,
+}: postParams) => {
+    if (refresh) {
+        await refreshToken();
+    }
     try {
         const response = await apiClient.put(endPoint, data, {
             ...headers,
@@ -234,8 +287,15 @@ export const putData = async ({ endPoint, data, headers }: postParams) => {
         throw error;
     }
 };
-export const deleteData = async ({ endPoint, data, headers }: postParams) => {
-    await refreshToken();
+export const deleteData = async ({
+    endPoint,
+    data,
+    headers,
+    refresh = true,
+}: postParams) => {
+    if (refresh) {
+        await refreshToken();
+    }
     try {
         const response = await apiClient.delete(endPoint, {
             data: data,

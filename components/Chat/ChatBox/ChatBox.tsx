@@ -15,6 +15,7 @@ import panelNotFound from "@/public/images/panelNotFound/panelNotFound.png";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useMediaQuery } from "@/src/hooks/useMediaQuery";
 import { toast } from "sonner";
+import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
 // import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 
 export default function ChatBox({
@@ -118,19 +119,20 @@ export default function ChatBox({
             )}
         >
             {!isLoading && !selectedChatRoom ? (
-                <div className="w-full h-full flex flex-col items-center justify-center z-40">
-                    <Image
-                        src={panelNotFound}
-                        alt="No blogs found"
-                        width={256}
-                        height={256}
-                        className="w-fit h-[50%] object-contain mb-4"
-                    />
-                    <span className="text-lg text-gray-500 rtl">
-                        هیچ مکالمه‌ای یافت نشد.
-                    </span>
-                </div>
+                <NoRecordFound text="هیچ مکالمه‌ای یافت نشد." />
             ) : (
+                // <div className="w-full h-full flex flex-col items-center justify-center z-40">
+                //     <Image
+                //         src={panelNotFound}
+                //         alt="No blogs found"
+                //         width={256}
+                //         height={256}
+                //         className="w-fit h-[50%] object-contain mb-4"
+                //     />
+                //     <span className="text-lg text-gray-500 rtl">
+                //         هیچ مکالمه‌ای یافت نشد.
+                //     </span>
+                // </div>
                 <>
                     <div className="flex flex-row-reverse justify-between gap-2 px-6 items-center absolute top-0 right-0 left-0 h-20 rounded-t-md bg-white shadow-[2px_2px_5px_rgba(0,0,0,0.3)]">
                         <div className="cursor-pointer flex items-center justify-center gap-2">

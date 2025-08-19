@@ -3,6 +3,7 @@ export interface getParams {
     headers?: any;
     accessToken?: string;
     params?: any;
+    refresh?: boolean;
 }
 
 export interface postParams {
@@ -10,6 +11,7 @@ export interface postParams {
     data?: any;
     headers?: any;
     accessToken?: string;
+    refresh?: boolean;
 }
 
 export interface refreshTokenParams {

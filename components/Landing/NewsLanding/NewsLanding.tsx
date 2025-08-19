@@ -32,7 +32,7 @@ export default function NewsLanding() {
                     اخبار و اطلاعیه‌ها
                 </div>
             </NeuFrame>
-            <AnnounceView onlyView className="rounded-tr-none " />
+            <AnnounceView onlyView className="rounded-tr-none" />
         </div>
     );
 }
