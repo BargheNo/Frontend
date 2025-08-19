@@ -78,7 +78,7 @@ export const CorpNavItems = [
         RNPName: "bid.viewInstallationRequests",
         icon: <ClipboardList />,
     },
-    { name: "گزارشات", path: "/corpdashboard/reports", icon: <BarChart /> },
+    // { name: "گزارشات", path: "/corpdashboard/reports", icon: <BarChart /> },
     // {
     //     name: "پیام‌های من",
     //     path: "/corpdashboard/messages",

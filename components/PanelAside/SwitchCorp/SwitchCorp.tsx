@@ -63,12 +63,14 @@ export const SwitchCorp = () => {
             >
                 <SelectValue placeholder="انتخاب شرکت" />
             </SelectTrigger>
-            <SelectContent dir="rtl">
+            <SelectContent dir="rtl" className="rtl">
                 {corps &&
                     corps?.map((c, index: number) => (
                         <SelectItem
                             key={index}
                             value={String(c?.id)}
+                            className="rtl"
+                            dir="rtl"
                             // className="cursor-pointer"
                         >
                             <div className="flex flex-row cursor-pointer gap-2">
@@ -82,8 +84,8 @@ export const SwitchCorp = () => {
                                             ? "gray-status"
                                             : "yellow-status"
                                     } h-4 w-4 rounded-full shadow-md`}
-                                ></div>
-                                <p>{c?.name}</p>
+                                />
+                                <p className="rtl">{c?.name}</p>
                             </div>
                         </SelectItem>
                     ))}
