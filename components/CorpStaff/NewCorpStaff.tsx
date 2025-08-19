@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Loader2, Vote, Check, UserRoundCog } from "lucide-react";
+import React, { useCallback, useEffect, useState } from "react";
+import { Loader2, Vote, Check, UserRoundCog, Phone } from "lucide-react";
 import { useSelector } from "react-redux";
 import styles from "./NewStaff.module.css";
 
@@ -23,6 +23,7 @@ import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
 import SubmitButton from "@/components/Dialog/SubmitButton/SubmitButton";
 import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
+import { Button } from "../ui/button";
 
 type Permission = {
     id: number;
@@ -46,6 +47,12 @@ interface CreateRoleModalProps {
     onSaveSuccess: () => void;
 }
 
+interface Role {
+    id: number;
+    name: string;
+    permissions: Permission[];
+}
+
 const NewCorpStaff: React.FC<CreateRoleModalProps> = ({
     // isOpen,
     // onClose,
@@ -59,7 +66,17 @@ const NewCorpStaff: React.FC<CreateRoleModalProps> = ({
     const [isLoading, setIsLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [roleName, setRoleName] = useState("");
-
+    const [loadingRoles, setLoadingRoles] = useState(false);
+    const [allRoles, setAllRoles] = useState<Role[]>([]);
+    const [userRoles, setUserRoles] = useState<number[]>([]);
+    const corpId = useSelector((state: RootState) => state.user.corpId);
+    const handleRoleChange = (roleId: number) => {
+        setUserRoles((prev) =>
+            prev.includes(roleId)
+                ? prev.filter((id) => id !== roleId)
+                : [...prev, roleId]
+        );
+    };
     const getAllPermissions = async () => {
         getData({
             endPoint: `/v1/admin/permissions`,
@@ -70,6 +87,20 @@ const NewCorpStaff: React.FC<CreateRoleModalProps> = ({
             })
             .catch((err) => console.log(err));
     };
+
+    const getAllRoles = useCallback(() => {
+        setLoadingRoles(true);
+        getData({ endPoint: `/v1/corp/${corpId}/staff/roles` })
+            .then((data) => {
+                setAllRoles(data?.data?.data);
+            })
+            .catch((err) => console.log(err))
+            .finally(() => setLoadingRoles(false));
+    }, [corpId]);
+
+    useEffect(() => {
+        getAllRoles();
+    }, [getAllRoles]);
 
     // Create new role
     const NewStaff = async (values: any) => {
@@ -83,10 +114,10 @@ const NewCorpStaff: React.FC<CreateRoleModalProps> = ({
         setIsSaving(true);
         const formData = {
             phone: "+98" + values.phone,
-            roleIDs: values.permissionIDs,
+            roleIDs: userRoles,
         };
         console.log(formData);
-        postData({ endPoint: `/v1/admin/roles`, data: formData })
+        postData({ endPoint: `/v1/corp/${corpId}/staff`, data: formData })
             .then((data) => {
                 CustomToast(data?.message, "success");
                 onSaveSuccess();
@@ -136,12 +167,16 @@ const NewCorpStaff: React.FC<CreateRoleModalProps> = ({
     return (
         <>
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger asChild>
+                <DialogTrigger>
                     <AddComponent title="افزودن عضو جدید" />
+                    {/* <div
+                        className={`bg-white ${styles.button} text-[#FA682D] flex gap-2 items-center p-2 hover:cursor-pointer`}
+                    >
+                        <AddComponent title="افزودن عضو جدید" />
+                    </div> */}
                 </DialogTrigger>
                 <DialogContent
-                    style={{ backgroundColor: "#F1F4FC" }}
-                    className="w-full sm:min-w-[750px] mx-auto no-scrollbar p-4 overflow-auto pb-0 max-h-[90vh] h-[90vh] overflow-y-auto rtl"
+                    className={`max-h-[80vh] overflow-y-auto no-scrollbar rtl vazir dialog-width flex flex-col pb-0`}
                 >
                     <Formik
                         initialValues={initialValuesForm}
@@ -149,99 +184,72 @@ const NewCorpStaff: React.FC<CreateRoleModalProps> = ({
                         onSubmit={(values) => NewStaff(values)}
                     >
                         <Form>
-                            <DialogHeader>
-                                <DialogTitle className="flex justify-center items-end font-bold my-3">
-                                    افزودن عضو جدید
-                                </DialogTitle>
-                            </DialogHeader>
-
-                            {isLoading ? (
-                                <div className="flex justify-center items-center">
-                                    <LoadingSpinner />
-                                </div>
-                            ) : (
-                                <div className="flex flex-col gap-6 relative flex-1 overflow-y-auto no-scrollbar">
-                                    <CustomInput
-                                        name="phone"
-                                        placeholder="شماره تلفن عضو جدید"
-                                        icon={UserRoundCog}
-                                        inputClassName="bg-white"
-                                    />
-                                    <div className="space-y-6">
-                                        <FieldArray name="permissionIDs">
-                                            {({ push, remove }) => (
-                                                <>
-                                                    {Object.entries(
-                                                        permissionsByCategory
-                                                    ).map(
-                                                        ([
-                                                            category,
-                                                            permissions,
-                                                        ]) => (
-                                                            <div
-                                                                key={category}
-                                                                className={`bg-white p-4 rounded-xl w-full shadow-sm items-center gap-3 rtl ${styles.shadow} min-h-[140px]`}
-                                                            >
-                                                                <h4 className="text-lg text-orange-500 font-semibold mb-3 flex items-center gap-2">
-                                                                    <Vote />
-                                                                    {category}
-                                                                </h4>
-                                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                                                    {permissions.map(
-                                                                        (
-                                                                            permission,
-                                                                            index
-                                                                        ) => (
-                                                                            <div
-                                                                                key={
-                                                                                    index
-                                                                                }
-                                                                                className="flex items-center gap-2"
-                                                                            >
-                                                                                <div className="relative">
-                                                                                    <input
-                                                                                        name={`permissionIDs.[${permission.id}]`}
-                                                                                        type="checkbox"
-                                                                                        onChange={(
-                                                                                            e
-                                                                                        ) =>
-                                                                                            handleChange(
-                                                                                                e,
-                                                                                                permission.id,
-                                                                                                push,
-                                                                                                remove
-                                                                                            )
-                                                                                        }
-                                                                                        className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500 mt-0.5"
-                                                                                    />
-                                                                                    <Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-2/3 text-white opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5 " />
-                                                                                </div>
-                                                                                <label
-                                                                                    htmlFor={`perm-${permission.id}`}
-                                                                                    className="text-gray-700"
-                                                                                >
-                                                                                    {
-                                                                                        permission.description
-                                                                                    }
-                                                                                </label>
-                                                                            </div>
-                                                                        )
-                                                                    )}
-                                                                </div>
-                                                            </div>
-                                                        )
-                                                    )}
-                                                </>
-                                            )}
-                                        </FieldArray>
+                            <div className="relative flex-1 overflow-y-auto no-scrollbar">
+                                <DialogHeader>
+                                    <DialogTitle className="text-blue-800 text-right">
+                                        افزودن عضو جدید
+                                    </DialogTitle>
+                                </DialogHeader>
+                                <CustomInput
+                                    name="phone"
+                                    placeholder="تلفن عضو جدید"
+                                    icon={Phone}
+                                    inputClassName="bg-white"
+                                />
+                                {loadingRoles ? (
+                                    <div className="flex justify-center items-center">
+                                        <LoadingSpinner className="w-full h-full" />
+                                        {/* <Loader2 className="animate-spin text-orange-500 h-8 w-8" /> */}
                                     </div>
-                                </div>
-                            )}
+                                ) : (
+                                    <div className="space-y-3 py-4">
+                                        {allRoles?.map((role) => (
+                                            <div
+                                                key={role.id}
+                                                className="flex items-center gap-3 p-2"
+                                            >
+                                                <div className="relative">
+                                                    <input
+                                                        name={`role-${role.id}`}
+                                                        type="checkbox"
+                                                        onChange={() =>
+                                                            handleRoleChange(
+                                                                role.id
+                                                            )
+                                                        }
+                                                        className={`peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-[#2979FF] checked:border-blue-500 mt-0.5`}
+                                                    />
+                                                    <Check className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-2/3 text-white opacity-0 pointer-events-none peer-checked:opacity-100 w-4.5 h-4.5 " />
+                                                </div>
+                                                <label
+                                                    htmlFor={`role-${role.id}`}
+                                                    className="text-gray-700 cursor-pointer"
+                                                >
+                                                    {role.name}
+                                                </label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Sticky footer */}
                             <StickyFooter>
-                                <CancelButton />
-                                <SubmitButton loading={isSaving}>
-                                    افزودن عضو
-                                </SubmitButton>
+                                <div className="flex justify-end gap-2 md:mt-0 mt-12">
+                                    <CancelButton />
+                                    <SubmitButton loading={isSaving}>
+                                        افزودن عضو
+                                    </SubmitButton>
+                                    {/* <Button
+                                        className="bg-orange-500 cursor-pointer hover:bg-orange-600 min-w-28"
+                                    >
+                                        {isSaving ? (
+                                            <LoadingOnButton />
+                                        ) : (
+                                            <p>افزودن عضو</p>
+                                        )}
+                                    </Button> */}
+                                </div>
                             </StickyFooter>
                         </Form>
                     </Formik>

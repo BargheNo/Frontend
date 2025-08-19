@@ -55,6 +55,7 @@ import FilterSection from "@/components/FilterSection/FilterSection";
 import CustomPagination from "@/components/Custom/CustomPagination/CustomPagination";
 import { cn } from "@/lib/utils";
 import { useSelector } from "react-redux";
+import NewCorpStaff from "./NewCorpStaff";
 
 type UserType = {
     id: number;
@@ -95,7 +96,7 @@ export default function Users() {
     >(undefined);
     const [page, setPage] = useState<number>(1);
     const [query, setQuery] = useState<string>("");
-    const corpID = useSelector((state: RootState) => state.user.corpId);
+    const corpId = useSelector((state: RootState) => state.user.corpId);
 
     const fetchRoles = useCallback(async () => {
         setLoadingRoles(true);
@@ -151,7 +152,7 @@ export default function Users() {
         setLoading(true);
         console.log("all users", query);
         getData({
-            endPoint: `/v1/corp/${corpID}/staff`,
+            endPoint: `/v1/corp/${corpId}/staff`,
             params: { sortBy, asc, page, pageSize: resultPerPage, query },
         })
             .then((data) => {
@@ -161,7 +162,7 @@ export default function Users() {
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
-    }, [sortBy, asc, page, resultPerPage, query, corpID]);
+    }, [sortBy, asc, page, resultPerPage, query, corpId]);
 
     useEffect(() => {
         fetchAllUsers();
@@ -189,6 +190,7 @@ export default function Users() {
 
     return (
         <>
+            <NewCorpStaff onSaveSuccess={fetchAllUsers} />
             <div className="flex place-items-center w-full">
                 <FilterSection
                     header="اعضای شرکت"
