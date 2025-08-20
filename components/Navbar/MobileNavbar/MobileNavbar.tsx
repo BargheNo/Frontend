@@ -184,9 +184,9 @@ export default function MobileNavbar() {
                             ) : (
                                 <Link
                                     href="/login"
-                                    className="cursor-pointer neo-btn rounded-lg! bg-transparent py-2 px-3"
+                                    className="cursor-pointer neo-btn rounded-lg! bg-transparent p-1.5"
                                 >
-                                    <LogIn />
+                                    <LogIn size={24} />
                                 </Link>
                             );
                         } else {
