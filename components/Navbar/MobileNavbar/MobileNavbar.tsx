@@ -26,6 +26,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { resetUser } from "@/src/store/slices/userSlice";
 import MobileDashboard from "../DesktopNavbar/Dashboard/MobileDashboard";
 import hasAdminAnyPermission from "@/src/functions/isAdmin";
+import { resetCorps } from "@/src/store/slices/corpSlice";
 
 const MobileNavItems = [
     { name: "خانه", path: "/", icon: <House /> },
@@ -171,6 +172,7 @@ export default function MobileNavbar() {
                                                 <button
                                                     onClick={() => {
                                                         dispatch(resetUser());
+                                                        dispatch(resetCorps());
                                                         router.push("/login");
                                                     }}
                                                     className="cursor-pointer neo-btn rounded-lg! bg-transparent w-full py-2 px-3"

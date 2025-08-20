@@ -25,9 +25,18 @@ export const corpSlice = createSlice({
         setRegisterCorpId: (state: corpData, action: PayloadAction<number>) => {
             state.id = action.payload;
         },
+        resetCorps: (state: corpData) => {
+            state.id = 0;
+            state.name = "";
+            state.registrationNumber = "";
+            state.nationalID = "";
+            state.iban = "";
+            state.signatories = [];
+            state.addresses = [];
+        }
     },
 });
 
-export const { setCorp, setRegisterCorpId } = corpSlice.actions;
+export const { setCorp, setRegisterCorpId, resetCorps } = corpSlice.actions;
 
 export default corpSlice.reducer;
