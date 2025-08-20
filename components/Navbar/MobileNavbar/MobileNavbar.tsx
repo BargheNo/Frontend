@@ -108,7 +108,7 @@ export default function MobileNavbar() {
                                                     </Link>
                                                     {/* TODO add blogs route here*/}
                                                     <Link
-                                                        href="/"
+                                                        href="/blogs"
                                                         className="cursor-pointer neo-btn rounded-lg! bg-transparent w-full py-2 px-3 text-center"
                                                     >
                                                         مطالب

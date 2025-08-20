@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import Link from "next/link";
 import { LayoutDashboard } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function MobileDashboard({
     accessToken,
@@ -38,11 +39,11 @@ export default function MobileDashboard({
     if (!isCorp && !isAdmin) {
         return (
             <Link
-                className={`${[
+                className={cn(
                     pathname?.startsWith("/dashboard") ? "text-[#FA682D]" : "",
-                    vazirBold.className,
-                ].join(" ")}`}
-                href={"/dashboard"}
+                    "neo-btn rounded-lg! p-1.5"
+                )}
+                href={"/dashboard/profile"}
             >
                 <LayoutDashboard />
             </Link>
