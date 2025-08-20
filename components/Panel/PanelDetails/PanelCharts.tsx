@@ -55,6 +55,8 @@ interface PanelChartsProps {
         export: { x: number; y: number }[];
         import: { x: number; y: number }[];
     };
+    isLiveMode?: boolean;
+    recordedData?: unknown[];
 }
 
 export default function PanelCharts({
@@ -64,6 +66,8 @@ export default function PanelCharts({
     currentData,
     temperatureData,
     gridData,
+    isLiveMode = true,
+    recordedData = [],
 }: PanelChartsProps) {
     return (
         <div className="mt-6 space-y-6">
@@ -73,7 +77,9 @@ export default function PanelCharts({
                 <div className="inset-neu-container !w-full !p-5">
                     <div className="flex items-center gap-2 mb-4">
                         <BarChart3 className="text-green-500" />
-                        <h4 className="text-lg font-semibold">تولید توان</h4>
+                        <h4 className="text-lg font-semibold">
+                            {isLiveMode ? "تولید توان - زنده" : "تولید توان - ضبط شده"}
+                        </h4>
                     </div>
                     {powerData.length > 0 ? (
                         <ReactApexChart
@@ -111,7 +117,9 @@ export default function PanelCharts({
                             height={200}
                         />
                     ) : (
-                        <div className="text-center text-gray-500 py-8">در انتظار داده...</div>
+                        <div className="text-center text-gray-500 py-8">
+                            {isLiveMode ? "در انتظار داده‌های زنده..." : "در انتظار داده‌های ضبط شده..."}
+                        </div>
                     )}
                 </div>
 
@@ -119,7 +127,9 @@ export default function PanelCharts({
                 <div className="inset-neu-container !w-full !p-5">
                     <div className="flex items-center gap-2 mb-4">
                         <Thermometer className="text-orange-500" />
-                        <h4 className="text-lg font-semibold">دما</h4>
+                        <h4 className="text-lg font-semibold">
+                            {isLiveMode ? "دما - زنده" : "دما - ضبط شده"}
+                        </h4>
                     </div>
                     {temperatureData.length > 0 ? (
                         <ReactApexChart
@@ -166,7 +176,9 @@ export default function PanelCharts({
             <div className="inset-neu-container !w-full !p-5">
                 <div className="flex items-center gap-2 mb-4">
                     <Zap className="text-purple-500" />
-                    <h4 className="text-lg font-semibold">ولتاژ</h4>
+                    <h4 className="text-lg font-semibold">
+                        {isLiveMode ? "ولتاژ - زنده" : "ولتاژ - ضبط شده"}
+                    </h4>
                 </div>
                 {(voltageData.pv1.length > 0 || voltageData.pv2.length > 0 || voltageData.ac.length > 0 || voltageData.battery.length > 0) ? (
                     <ReactApexChart
@@ -218,7 +230,9 @@ export default function PanelCharts({
             <div className="inset-neu-container !w-full !p-5">
                 <div className="flex items-center gap-2 mb-4">
                     <Activity className="text-blue-500" />
-                    <h4 className="text-lg font-semibold">جریان</h4>
+                    <h4 className="text-lg font-semibold">
+                        {isLiveMode ? "جریان - زنده" : "جریان - ضبط شده"}
+                    </h4>
                 </div>
                 {(currentData.pv1.length > 0 || currentData.pv2.length > 0 || currentData.battery.length > 0) ? (
                     <ReactApexChart
@@ -269,7 +283,9 @@ export default function PanelCharts({
             <div className="inset-neu-container !w-full !p-5">
                 <div className="flex items-center gap-2 mb-4">
                     <LineChart className="text-indigo-500" />
-                    <h4 className="text-lg font-semibold">تبادل انرژی با شبکه</h4>
+                    <h4 className="text-lg font-semibold">
+                        {isLiveMode ? "تبادل انرژی با شبکه - زنده" : "تبادل انرژی با شبکه - ضبط شده"}
+                    </h4>
                 </div>
                 {(gridData.export.length > 0 || gridData.import.length > 0) ? (
                     <ReactApexChart
@@ -319,7 +335,9 @@ export default function PanelCharts({
             <div className="inset-neu-container !w-full !p-5">
                 <div className="flex items-center gap-2 mb-4">
                     <Battery className="text-green-500" />
-                    <h4 className="text-lg font-semibold">وضعیت باتری</h4>
+                    <h4 className="text-lg font-semibold">
+                        {isLiveMode ? "وضعیت باتری - زنده" : "وضعیت باتری - ضبط شده"}
+                    </h4>
                 </div>
                 {liveData && (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">

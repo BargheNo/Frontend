@@ -156,6 +156,30 @@ interface LiveData {
     [key: string]: unknown;
 }
 
+interface RecordedDataItem {
+    datalog_serial: string;
+    pv_serial: string;
+    pv_status: number;
+    pv_power_in: number;
+    pv1_voltage: number;
+    pv1_current: number;
+    pv2_voltage: number;
+    pv2_current: number;
+    pv_power_out: number;
+    ac_freq: number;
+    ac_voltage: number;
+    ac_output_power: number;
+    temperature: number;
+    bat_voltage: number;
+    bat_current: number;
+    bat_power: number;
+    grid_export: number;
+    grid_import: number;
+    energy_today: number;
+    energy_total: number;
+    timestamp: string;
+}
+
 export default function PanelDetails({ id }: { id: string }) {
     const accessToken = useSelector(
         (state: RootState) => state.user.accessToken
@@ -163,6 +187,9 @@ export default function PanelDetails({ id }: { id: string }) {
     const [liveData, setLiveData] = useState<LiveData | null>(null);
     const [panel, setPanel] = useState<Panel>();
     const [loading, setLoading] = useState<boolean>(true);
+    const [isLiveMode, setIsLiveMode] = useState<boolean>(true);
+    const [hasReceivedLiveData, setHasReceivedLiveData] = useState<boolean>(false);
+    const [recordedData, setRecordedData] = useState<RecordedDataItem[]>([]);
     
     // Chart data states
     const [powerData, setPowerData] = useState<{ x: number; y: number }[]>([]);
@@ -204,6 +231,110 @@ export default function PanelDetails({ id }: { id: string }) {
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
     }, [id]);
+
+    const fetchRecordedData = useCallback(() => {
+        console.log("Fetching recorded data...");
+        getData({ endPoint: `/v1/user/installation/panel/${id}/status` })
+            .then((response) => {
+                const data: RecordedDataItem[] = response?.data?.data || [];
+                console.log("Recorded data fetched:", data);
+                setRecordedData(data);
+                
+                // Process recorded data for charts
+                if (data.length > 0) {
+                    // Convert timestamps to milliseconds and process data
+                    const processedPowerData = data.map((item: RecordedDataItem) => ({
+                        x: new Date(item.timestamp).getTime(),
+                        y: item.pv_power_in || 0
+                    }));
+                    
+                    const processedVoltageData = {
+                        pv1: data.map((item: RecordedDataItem) => ({
+                            x: new Date(item.timestamp).getTime(),
+                            y: item.pv1_voltage || 0
+                        })),
+                        pv2: data.map((item: RecordedDataItem) => ({
+                            x: new Date(item.timestamp).getTime(),
+                            y: item.pv2_voltage || 0
+                        })),
+                        ac: data.map((item: RecordedDataItem) => ({
+                            x: new Date(item.timestamp).getTime(),
+                            y: item.ac_voltage || 0
+                        })),
+                        battery: data.map((item: RecordedDataItem) => ({
+                            x: new Date(item.timestamp).getTime(),
+                            y: item.bat_voltage || 0
+                        }))
+                    };
+                    
+                    const processedCurrentData = {
+                        pv1: data.map((item: RecordedDataItem) => ({
+                            x: new Date(item.timestamp).getTime(),
+                            y: item.pv1_current || 0
+                        })),
+                        pv2: data.map((item: RecordedDataItem) => ({
+                            x: new Date(item.timestamp).getTime(),
+                            y: item.pv2_current || 0
+                        })),
+                        battery: data.map((item: RecordedDataItem) => ({
+                            x: new Date(item.timestamp).getTime(),
+                            y: item.bat_current || 0
+                        }))
+                    };
+                    
+                    const processedTemperatureData = data.map((item: RecordedDataItem) => ({
+                        x: new Date(item.timestamp).getTime(),
+                        y: item.temperature || 0
+                    }));
+                    
+                    const processedGridData = {
+                        export: data.map((item: RecordedDataItem) => ({
+                            x: new Date(item.timestamp).getTime(),
+                            y: item.grid_export || 0
+                        })),
+                        import: data.map((item: RecordedDataItem) => ({
+                            x: new Date(item.timestamp).getTime(),
+                            y: item.grid_import || 0
+                        }))
+                    };
+                    
+                    setPowerData(processedPowerData);
+                    setVoltageData(processedVoltageData);
+                    setCurrentData(processedCurrentData);
+                    setTemperatureData(processedTemperatureData);
+                    setGridData(processedGridData);
+                    
+                    // Set the latest data as display data
+                    if (data[data.length - 1]) {
+                        const latestItem = data[data.length - 1];
+                        setLiveData({
+                            timestamp: latestItem.timestamp,
+                            datalogserial: latestItem.datalog_serial,
+                            pvserial: latestItem.pv_serial,
+                            pvstatus: latestItem.pv_status,
+                            pvpowerin: latestItem.pv_power_in,
+                            pv1voltage: latestItem.pv1_voltage,
+                            pv1current: latestItem.pv1_current,
+                            pv2voltage: latestItem.pv2_voltage,
+                            pv2current: latestItem.pv2_current,
+                            pvpowerout: latestItem.pv_power_out,
+                            acfreq: latestItem.ac_freq,
+                            acvoltage: latestItem.ac_voltage,
+                            acoutputpower: latestItem.ac_output_power,
+                            temperature: latestItem.temperature,
+                            batvoltage: latestItem.bat_voltage,
+                            batcurrent: latestItem.bat_current,
+                            batpower: latestItem.bat_power,
+                            gridexport: latestItem.grid_export,
+                            gridimport: latestItem.grid_import
+                        });
+                    }
+                }
+            })
+            .catch((err) => {
+                console.error("Error fetching recorded data:", err);
+            });
+    }, [id]);
     useEffect(() => {
         fetchPanelDetails();
     }, [fetchPanelDetails]);
@@ -213,12 +344,30 @@ export default function PanelDetails({ id }: { id: string }) {
 
         const websocketUrl = `ws://${serverIPAndPort}/v1/user/monitoring/panel/${id}/token/${accessToken}`;
         const ws = new WebSocket(websocketUrl);
+        let hasReceivedFirstMessage = false;
+
+        // Set a 40-second timeout to fall back to recorded data
+        const fallbackTimeout = setTimeout(() => {
+            if (!hasReceivedFirstMessage) {
+                console.log("No WebSocket data received within 40 seconds, falling back to recorded data");
+                setIsLiveMode(false);
+                fetchRecordedData();
+            }
+        }, 40000);
 
         ws.onopen = () => {
             console.log("WebSocket connected");
         };
 
         ws.onmessage = (event) => {
+            if (!hasReceivedFirstMessage) {
+                hasReceivedFirstMessage = true;
+                setHasReceivedLiveData(true);
+                setIsLiveMode(true);
+                clearTimeout(fallbackTimeout);
+                console.log("First WebSocket message received, staying in live mode");
+            }
+
             const rawData = JSON.parse(event.data);
             console.log("Raw websocket data", rawData);
             
@@ -227,7 +376,7 @@ export default function PanelDetails({ id }: { id: string }) {
             setLiveData(data);
             console.log("Processed data", data);
             
-            // Update chart data
+            // Update chart data only in live mode
             const timestamp = Date.now();
             
             // Update power data
@@ -288,16 +437,23 @@ export default function PanelDetails({ id }: { id: string }) {
 
         ws.onerror = (error) => {
             console.error("WebSocket error:", error);
+            // On error, also fall back to recorded data if no data received yet
+            if (!hasReceivedFirstMessage) {
+                setIsLiveMode(false);
+                fetchRecordedData();
+            }
         };
 
         ws.onclose = () => {
             console.log("WebSocket disconnected");
+            clearTimeout(fallbackTimeout);
         };
 
         return () => {
+            clearTimeout(fallbackTimeout);
             ws.close();
         };
-    }, [accessToken, id]);
+    }, [accessToken, id, fetchRecordedData]);
 
     return (
         <>
@@ -767,20 +923,26 @@ export default function PanelDetails({ id }: { id: string }) {
                     {/* نمودار تولید */}
                     <div className={`flex flex-col gap-4 p-0 md:p-4 rounded-lg rtl h-fit`}>
                         <div className="font-bold text-xl text-blue-800">
-                            نمودار تولید
+                            {isLiveMode ? "نمودار تولید - داده‌های زنده" : "نمودار تولید - داده‌های ضبط شده"}
                         </div>
                         <div className="">
                             <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-lg font-semibold">داده‌های زنده</h3>
+                                <h3 className="text-lg font-semibold">
+                                    {isLiveMode ? "داده‌های زنده" : "آخرین داده‌های ضبط شده"}
+                                </h3>
                                 <div className="flex items-center gap-2">
                                     <div 
                                         className={`w-3 h-3 rounded-full ${
-                                            liveData ? 'bg-green-500 animate-pulse' : 'bg-red-500'
+                                            isLiveMode && liveData ? 'bg-green-500 animate-pulse' : 
+                                            !isLiveMode && liveData ? 'bg-blue-500' : 'bg-red-500'
                                         }`}
-                                        title={liveData ? 'متصل' : 'قطع'}
+                                        title={
+                                            isLiveMode ? (liveData ? 'متصل' : 'قطع') : 
+                                            'داده‌های ضبط شده'
+                                        }
                                     />
                                     <span className="text-sm text-gray-600">
-                                        {liveData ? 'زنده' : 'آفلاین'}
+                                        {isLiveMode ? (liveData ? 'زنده' : 'آفلاین') : 'ضبط شده'}
                                     </span>
                                 </div>
                             </div>
@@ -858,7 +1020,10 @@ export default function PanelDetails({ id }: { id: string }) {
                                 </div>
                             ) : (
                                 <div className="text-center text-gray-500 py-8">
-                                    در انتظار دریافت داده‌های زنده...
+                                    {isLiveMode ? 
+                                        "در انتظار دریافت داده‌های زنده..." : 
+                                        "در انتظار بارگذاری داده‌های ضبط شده..."
+                                    }
                                 </div>
                             )}
                             
@@ -881,6 +1046,8 @@ export default function PanelDetails({ id }: { id: string }) {
                             currentData={currentData}
                             temperatureData={temperatureData}
                             gridData={gridData}
+                            isLiveMode={isLiveMode}
+                            recordedData={recordedData}
                         />
                     </div>
 
