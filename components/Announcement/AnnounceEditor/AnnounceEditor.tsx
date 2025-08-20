@@ -21,9 +21,11 @@ import AddAnnounceForm from "@/components/Announcement/AddAnnounce/AddAnnounceFo
 export default function AnnounceEditor({
     newsID,
     onlyView = false,
+    mode = "user",
 }: {
     newsID: string;
     onlyView?: boolean;
+    mode?: "user" | "admin";
 }) {
     const editorRef = useRef<EditorJS | null>(null);
     const holderRef = useRef<HTMLDivElement>(null);
@@ -103,11 +105,14 @@ export default function AnnounceEditor({
     });
 
     useQuery({
-        queryKey: ["news", newsID],
+        queryKey: ["news", newsID, mode],
         queryFn: async () => {
             try {
                 const responce = await getData({
-                    endPoint: `/v1/admin/news/${newsID}`,
+                    endPoint:
+                        mode == "admin"
+                            ? `/v1/admin/news/${newsID}`
+                            : `/v1/user/news/${newsID}`,
                 });
                 if (responce.statusCode === 200) {
                     setTitle(responce.data.title);
