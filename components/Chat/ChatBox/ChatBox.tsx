@@ -115,11 +115,17 @@ export default function ChatBox({
             ref={boxRef}
             className={cn(
                 "neo-card bg-[#F0EDEF] rounded-lg relative",
+                !isLoading && !selectedChatRoom
+                    ? "flex justify-center items-center"
+                    : "",
                 className
             )}
         >
             {!isLoading && !selectedChatRoom ? (
-                <NoRecordFound text="هیچ مکالمه‌ای یافت نشد." />
+                <NoRecordFound
+                    className="w-full"
+                    text="هیچ مکالمه‌ای یافت نشد."
+                />
             ) : (
                 // <div className="w-full h-full flex flex-col items-center justify-center z-40">
                 //     <Image

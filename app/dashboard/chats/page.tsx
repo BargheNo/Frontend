@@ -76,12 +76,12 @@ export default function Page() {
                     </Sidebar>
 
                     <div className="fixed bottom-[95px] left-3 right-3 top-3">
-                        <SidebarTrigger
+                        {/* <SidebarTrigger
                             className="fixed top-8 left-20 z-50 p-2 bg-gray-100 rounded-lg text-black"
                             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                         >
                             <Menu />
-                        </SidebarTrigger>
+                        </SidebarTrigger> */}
                         <ChatBox className="w-full h-full rtl" />
                     </div>
                 </SidebarProvider>
