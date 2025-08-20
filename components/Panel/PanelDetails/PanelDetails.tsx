@@ -38,6 +38,7 @@ import wordExpression from "@/src/functions/Calculations";
 import TruncatedText from "@/components/ui/TruncatedText";
 import PanelIconWithBackground from "../PanelCard/PanelIconWithBackground";
 import PanelCharts from "./PanelCharts";
+import PanelEventHistory from "../PanelEventHistory";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
 import { LucideIcon } from "lucide-react";
@@ -420,6 +421,12 @@ export default function PanelDetails({ id }: { id: string }) {
                             gridData={gridData}
                         />
                     </div>
+                    
+                    {/* Panel Event History Section */}
+                    <div className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} h-fit`}>
+                        <PanelEventHistory panelId={id} />
+                    </div>
+                    
                     <div
                         className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} h-fit`}
                     >
