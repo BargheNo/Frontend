@@ -219,9 +219,13 @@ export default function PanelDetails({ id }: { id: string }) {
         };
 
         ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
+            const rawData = JSON.parse(event.data);
+            console.log("Raw websocket data", rawData);
+            
+            // Extract the actual data from the message structure
+            const data = rawData.message_type === "status" && rawData.message ? rawData.message : rawData;
             setLiveData(data);
-            console.log("data", data);
+            console.log("Processed data", data);
             
             // Update chart data
             const timestamp = Date.now();
