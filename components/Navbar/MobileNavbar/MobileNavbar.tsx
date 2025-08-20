@@ -6,6 +6,7 @@ import {
     User,
     LayoutDashboard,
     LogIn,
+    MessageSquare,
 } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import MobileNavbarSlider from "@/components/Navbar/MobileNavbarSlider/MobileNavbarSlider";
@@ -32,6 +33,7 @@ const MobileNavItems = [
     { name: "خانه", path: "/", icon: <House /> },
     { name: "داشبورد", path: "/dashboard/profile", icon: <LayoutDashboard /> },
     { name: "پروفایل", path: "/profile", icon: <User /> },
+    { name: "اعلان ها", path: "/messages", icon: <MessageSquare /> },
     { name: "بیشتر", path: "", icon: <EllipsisVertical /> },
 ];
 
@@ -87,7 +89,7 @@ export default function MobileNavbar() {
                             if (!accessToken) {
                                 return (
                                     <Popover key={select.name}>
-                                        <PopoverTrigger>
+                                        <PopoverTrigger asChild>
                                             <button
                                                 className={
                                                     pathname === select.path
@@ -107,7 +109,6 @@ export default function MobileNavbar() {
                                                     >
                                                         اطلاعیه‌ها
                                                     </Link>
-                                                    {/* TODO add blogs route here*/}
                                                     <Link
                                                         href="/blogs"
                                                         className="cursor-pointer neo-btn rounded-lg! bg-transparent w-full py-2 px-3 text-center"
@@ -192,6 +193,9 @@ export default function MobileNavbar() {
                                 </Link>
                             );
                         } else {
+                            if (select.name === "اعلان ها" && !accessToken) {
+                                return null;
+                            }
                             return (
                                 <Link href={select.path} key={select.name}>
                                     <button
