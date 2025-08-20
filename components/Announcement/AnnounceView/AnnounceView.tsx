@@ -28,30 +28,40 @@ interface News {
 export default function AnnounceView({
     onlyView = false,
     className,
+    mode = "user",
 }: {
     onlyView?: boolean;
     className?: string;
+    mode?: "user" | "admin";
 }) {
     const [pageSize, setPageSize] = useState<string>("");
     const [paginationInfo, setPaginationInfo] = useState<
         paginationInfoType | undefined
     >(undefined);
     const [page, setPage] = useState<number>(1);
+    const [query, setQuery] = useState<string>("");
+    const [asc, setAsc] = useState<boolean>(false);
+    const [status, setStatus] = useState<string>("0");
+    const statusList = [
+        { id: 0, name: "همه" },
+        { id: 1, name: "منتشر شده" },
+        { id: 2, name: "پیش نویس" },
+    ];
     //   const [news, setNews] = useState<News[]>([]);
     const { isLoading, data, error } = useQuery({
-        queryKey: ["news", page, pageSize],
+        queryKey: ["news", page, pageSize, query, asc, status],
         queryFn: async () => {
             if (onlyView) {
                 const res = await getData({
                     endPoint: "/v1/news",
-                    params: { page, pageSize },
+                    params: { page, pageSize, query, asc, status },
                 });
                 setPaginationInfo(res?.data?.pagination);
                 return res;
             } else {
                 const res = await getData({
-                    endPoint: "/v1/admin/news?statuses=1&statuses=2",
-                    params: { page, pageSize },
+                    endPoint: "/v1/admin/news",
+                    params: { page, pageSize, query, asc, status },
                 });
                 // console.log("r1: ", r1);
                 // const r2 = await getData({
@@ -76,21 +86,24 @@ export default function AnnounceView({
             {/* <div className="flex flex-row w-full items-center"> */}
             {!onlyView && <AddAnnounce />}
             {/* </div> */}
-
-            {!onlyView && (
-                <FilterSection
-                    header="اخبار و اطلاعیه‌ها"
-                    // status={status}
-                    // setStatus={setStatus}
-                    // statusesListApiRoute={`/v1/news/status`}
-                /> // admin
-            )}
             {data?.data?.data?.length === 0 ? (
                 <div className={cn("neu-container", className)}>
                     <NoRecordFound text="هیچ اطلاعیه‌ای یافت نشد." />
                 </div>
             ) : (
                 <>
+                    <FilterSection
+                        header="اخبار و اطلاعیه‌ها"
+                        fieldName="status"
+                        status={mode == "admin" ? status : undefined}
+                        setStatus={mode == "admin" ? setStatus : undefined}
+                        statusesList={mode == "admin" ? statusList : undefined}
+                        query={query}
+                        setQuery={setQuery}
+                        // status={status}
+                        // setStatus={setStatus}
+                        // statusesListApiRoute={`/v1/news/status`}
+                    />
                     <AnnouncementBox
                         onlyView={onlyView}
                         className={cn(
@@ -99,7 +112,7 @@ export default function AnnounceView({
                         )}
                         insideClassName="gap-5"
                     >
-                        {isLoading || (error && <LoadingSpinner />)}
+                        {isLoading && <LoadingSpinner />}
 
                         {data?.data?.data?.map((item: News) => (
                             <AnnounceCard
@@ -114,7 +127,7 @@ export default function AnnounceView({
                         ))}
                     </AnnouncementBox>
                     {isLoading ? (
-                        <div className="flex items-center gap-2">
+                        <div className="flex justify-center items-center gap-2">
                             <Skeleton className="h-8 w-8 rounded" />
                             <Skeleton className="h-8 w-8 rounded" />
                             <Skeleton className="h-8 w-8 rounded" />

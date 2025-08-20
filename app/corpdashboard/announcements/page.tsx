@@ -11,7 +11,7 @@ const AnnounceView = nextDynamic(
 export default function Page() {
     return (
         <PageContainer>
-            <Header header="اخبار و اطلاعیه‌ها" />
+            {/* <Header header="اخبار و اطلاعیه‌ها" /> */}
             <AnnounceView onlyView={true} />
         </PageContainer>
     );
