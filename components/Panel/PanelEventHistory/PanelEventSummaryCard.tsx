@@ -1,5 +1,6 @@
 import React from "react";
 import { format } from "date-fns";
+import { ArrowLeft } from "lucide-react";
 
 interface EventItem {
     datalog_serial: string;
@@ -17,17 +18,22 @@ interface PanelEventSummaryCardProps {
 
 const PanelEventSummaryCard: React.FC<PanelEventSummaryCardProps> = ({ event, onClick }) => {
     return (
-        <div
-            className={`flex flex-col gap-2 p-4 rounded-lg cursor-pointer shadow-md border ${event.severity === 'error' ? 'border-red-400' : 'border-yellow-300'} bg-white hover:bg-gray-50 transition`}
-            onClick={onClick}
-        >
-            <div className="flex items-center gap-2">
-                <span className={`h-3 w-3 rounded-full ${event.severity === 'error' ? 'bg-red-500' : 'bg-yellow-400'}`}></span>
-                <span className="font-bold">{event.description}</span>
-                <span className="text-xs text-gray-400">({event.event_code})</span>
+        <div onClick={onClick} className="flex flex-col md:flex-row justify-between inset-neu-container !p-4 !w-full cursor-pointer">
+            <div
+                className={`flex flex-col gap-2`}
+            >
+                <div className="flex items-center gap-2">
+                    <span className={`h-4 w-4 rounded-full ${event.severity === 'error' ? 'red-status' : 'yellow-status'}`}></span>
+                    <span className="font-bold text-xl">{event.description}</span>
+                    <span className="text-gray-400">({event.event_code})</span>
+                </div>
+                <div className="text-gray-500">
+                    {format(new Date(event.timestamp), 'yyyy-MM-dd HH:mm:ss')}
+                </div>
             </div>
-            <div className="text-xs text-gray-500">
-                {format(new Date(event.timestamp), 'yyyy-MM-dd HH:mm:ss')}
+            <div className="flex flex-col items-center gap-2">
+                <button className="red-circle-button !h-10 !w-full md:!w-12 md:!h-12"><span className="block md:hidden">سایر رویدادها</span><ArrowLeft /></button>
+                <span className="text-xs text-gray-500 hidden md:block">سایر رویدادها</span>
             </div>
         </div>
     );

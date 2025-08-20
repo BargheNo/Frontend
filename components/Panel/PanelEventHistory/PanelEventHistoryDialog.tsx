@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getData } from "@/src/services/apiHub";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
 import { format } from "date-fns";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 
 interface EventItem {
     datalog_serial: string;
@@ -55,7 +56,7 @@ const PanelEventHistoryDialog: React.FC<PanelEventHistoryDialogProps> = ({ open,
                     <DialogTitle>تاریخچه رویدادهای پنل</DialogTitle>
                 </DialogHeader>
                 {loading ? (
-                    <div className="text-center py-8">در حال بارگذاری...</div>
+                    <LoadingSpinner className="w-16 h-16 mx-auto my-8" />
                 ) : (
                     <div className="space-y-4">
                         {events.length === 0 ? (
@@ -65,7 +66,7 @@ const PanelEventHistoryDialog: React.FC<PanelEventHistoryDialogProps> = ({ open,
                                 {events.map((event, idx) => (
                                     <li key={idx} className="py-3 flex flex-col gap-1">
                                         <div className="flex items-center gap-2">
-                                            <span className={`h-2 w-2 rounded-full ${event.severity === 'error' ? 'bg-red-500' : 'bg-yellow-400'}`}></span>
+                                            <span className={`h-2 w-2 rounded-full ${event.severity === 'error' ? 'red-status' : 'yellow-status'}`}></span>
                                             <span className="font-bold">{event.description}</span>
                                             <span className="text-xs text-gray-400">({event.event_code})</span>
                                         </div>

@@ -3,7 +3,6 @@ import Header from "@/components/Header/Header";
 import { getData, serverIPAndPort } from "@/src/services/apiHub";
 import React, { useCallback, useEffect, useState } from "react";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
-import styles from "./styles.module.css";
 import {
     Eclipse,
     MapPin,
@@ -35,10 +34,10 @@ import {
 } from "lucide-react";
 
 import wordExpression from "@/src/functions/Calculations";
-import TruncatedText from "@/components/ui/TruncatedText";
 import PanelIconWithBackground from "../PanelCard/PanelIconWithBackground";
 import PanelCharts from "./PanelCharts";
 import PanelEventHistory from "../PanelEventHistory";
+import PanelDataHistory from "../PanelDataHistory";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
 import { LucideIcon } from "lucide-react";
@@ -303,7 +302,466 @@ export default function PanelDetails({ id }: { id: string }) {
                 <LoadingSpinner />
             ) : (
                 <div className="relative neu-container p-4 flex flex-col gap-4">
-                    <div className={`flex flex-col gap-4 p-4 rounded-lg rtl h-fit`}>
+                    {/* اطلاعات کلی */}
+                    <div
+                        className={`flex flex-col gap-4 p-0 md:p-4 rounded-lg rtl h-fit`}
+                    >
+                        <div className="font-bold text-xl text-blue-800">
+                            اطلاعات کلی
+                        </div>
+                        <div className="space-y-4 inset-neu-container !w-full !p-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {/* نام پنل */}
+                                <div className="flex gap-2 flex-wrap">
+                                    <Eclipse className="text-orange-400 shrink-0" />
+                                    <strong className="shrink-0">نام پنل:</strong>
+                                    <p className="break-words">{panel?.name}</p>
+                                </div>
+
+                                {/* وضعیت */}
+                                <div className="flex gap-2 flex-wrap">
+                                    <div
+                                        className={`h-4 w-4 flex place-self-center rounded-full shrink-0 ${getStatusColor(
+                                            panel?.status ?? ""
+                                        )} shadow-md`}
+                                    />
+                                    <strong className="shrink-0">وضعیت:</strong>
+                                    <p className="break-words">{panel?.status}</p>
+                                </div>
+
+                                {/* نوع ساختمان */}
+                                <div className="flex gap-2 flex-wrap">
+                                    <Home className="text-orange-400 shrink-0" />
+                                    <strong className="shrink-0">نوع ساختمان:</strong>
+                                    <p className="break-words">{panel?.buildingType}</p>
+                                </div>
+
+                                {/* تعداد کل ماژول‌ها */}
+                                <div className="flex gap-2 flex-wrap">
+                                    <Grid3x3 className="text-orange-400 shrink-0" />
+                                    <strong className="shrink-0">تعداد ماژول‌ها:</strong>
+                                    <p className="break-words">
+                                        {
+                                            wordExpression(
+                                                panel?.totalNumberOfModules ??
+                                                    "",
+                                                false
+                                            ).value
+                                        }{" "}
+                                        عدد
+                                    </p>
+                                </div>
+
+                                {/* مساحت */}
+                                <div className="flex gap-2 flex-wrap">
+                                    <LandPlot className="text-orange-400 shrink-0" />
+                                    <strong className="shrink-0">مساحت:</strong>
+                                    <p className="break-words">
+                                        {
+                                            wordExpression(
+                                                panel?.area ?? "",
+                                                false
+                                            ).value
+                                        }{" "}
+                                        متر مربع
+                                    </p>
+                                </div>
+
+                                {/* توان */}
+                                <div className="flex gap-2 flex-wrap">
+                                    <DatabaseZap className="text-orange-400 shrink-0" />
+                                    <strong className="shrink-0">توان:</strong>
+                                    <p className="break-words">
+                                        {
+                                            wordExpression(
+                                                panel?.power ?? "",
+                                                true
+                                            ).value
+                                        }
+                                        W
+                                    </p>
+                                </div>
+
+                                {/* زاویه شیب */}
+                                <div className="flex gap-2 flex-wrap">
+                                    <TriangleRight className="text-orange-400 shrink-0" />
+                                    <strong className="shrink-0">زاویه نصب:</strong>
+                                    <p className="break-words">{panel?.tilt} درجه</p>
+                                </div>
+
+                                {/* سمت (آزیموت) */}
+                                <div className="flex gap-2 flex-wrap">
+                                    <Compass className="text-orange-400 shrink-0" />
+                                    <strong className="shrink-0">جهت:</strong>
+                                    <p className="break-words">{panel?.azimuth} درجه</p>
+                                </div>
+
+                                {/* وضعیت گارانتی */}
+                                {/* <div className="flex gap-2">
+                                <ShieldCheck className="text-teal-500" />
+                                <strong>وضعیت گارانتی:</strong>
+                                <p>{panel?.guaranteeStatus}</p>
+                            </div> */}
+
+                                {/* شرکت */}
+                                {/* <div className="flex gap-2">
+                                <Building2 className="text-gray-600" />
+                                <strong>شرکت پیمانکار:</strong>
+                                <p>{panel?.corporation?.name}</p>
+                            </div> */}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {/* Silver divider line */}
+                    <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent"></div>
+                    
+                    {/* آخرین رویداد پنل */}
+                    <div className={`flex flex-col gap-4 p-0 md:p-4 rounded-lg rtl h-fit`}>
+                        <PanelEventHistory panelId={id} />
+                    </div>
+                    
+                    {/* Silver divider line */}
+                    <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent"></div>
+                    
+                    {/* محل نصب پنل */}
+                    <div
+                        className={`flex flex-col gap-4 p-0 md:p-4 rounded-lg rtl h-fit`}
+                    >
+                        <div className="font-bold text-xl text-blue-800">
+                            محل نصب پنل
+                        </div>
+                        <div className="space-y-4 inset-neu-container !w-full !p-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="flex gap-2 flex-wrap">
+                                    <MapPin className="text-orange-400 shrink-0" />
+                                    <strong className="shrink-0">استان:</strong>
+                                    <p className="break-words">{panel?.address.province}</p>
+                                </div>
+                                <div className="flex gap-2 flex-wrap">
+                                    <Building2 className="text-orange-400 shrink-0" />
+                                    <strong className="shrink-0">شهر:</strong>
+                                    <p className="break-words">{panel?.address.city}</p>
+                                </div>
+                                <div className="flex gap-2 flex-wrap">
+                                    <Home className="text-orange-400 shrink-0" />
+                                    <strong className="shrink-0">پلاک:</strong>
+                                    <p className="break-words">{panel?.address.houseNumber}</p>
+                                </div>
+                                <div className="flex gap-2 flex-wrap">
+                                    <DoorOpen className="text-orange-400 shrink-0" />
+                                    <strong className="shrink-0">واحد:</strong>
+                                    <p className="break-words">{panel?.address.unit}</p>
+                                </div>
+                            </div>
+                            {/* Address fields that need full width */}
+                            <div className="space-y-4">
+                                <div className="flex gap-2 flex-wrap">
+                                    <Route className="text-orange-400 shrink-0" />
+                                    <strong className="shrink-0">خیابان:</strong>
+                                    <p className="break-words flex-1 min-w-0">
+                                        {panel?.address?.streetAddress ?? ""}
+                                    </p>
+                                </div>
+                                <div className="flex gap-2 flex-wrap">
+                                    <Mail className="text-orange-400 shrink-0" />
+                                    <strong className="shrink-0">کد پستی:</strong>
+                                    <p className="break-words flex-1 min-w-0">
+                                        {panel?.address?.postalCode ?? ""}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {/* Silver divider line */}
+                    <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent"></div>
+                    
+                    {/* گارانتی */}
+                    <div
+                        className={`flex flex-col gap-4 p-0 md:p-4 rounded-lg rtl h-fit`}
+                    >
+                        <div className="font-bold text-xl text-blue-800">
+                            گارانتی
+                        </div>
+                        {panel?.guaranteeStatus === "فعال" ? (
+                            <div className="space-y-4 inset-neu-container !w-full !p-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    {/* نام گارانتی */}
+                                    <div className="flex gap-2 flex-wrap">
+                                        <ShieldCheck className="text-orange-400 shrink-0" />
+                                        <strong className="shrink-0">نام گارانتی:</strong>
+                                        <p className="break-words">{panel?.guarantee?.name}</p>
+                                    </div>
+                                    {/* وضعیت گارانتی */}
+                                    <div className="flex gap-2 flex-wrap">
+                                        <div
+                                            className={`h-4 w-4 flex place-self-center rounded-full shrink-0 ${
+                                                panel?.guarantee?.status ===
+                                                "فعال"
+                                                    ? "green-status"
+                                                    : "red-status"
+                                            } shadow-md`}
+                                        />
+                                        <strong className="shrink-0">وضعیت گارانتی:</strong>
+                                        <p className="break-words">{panel?.guarantee?.status}</p>
+                                    </div>
+                                    {/* نوع گارانتی */}
+                                    <div className="flex gap-2 flex-wrap">
+                                        <ScrollText className="text-orange-400 shrink-0" />
+                                        <strong className="shrink-0">نوع گارانتی:</strong>
+                                        <p className="break-words">{panel?.guarantee?.guaranteeType}</p>
+                                    </div>
+                                    {/* مدت گارانتی */}
+                                    <div className="flex gap-2 flex-wrap">
+                                        <CalendarClock className="text-orange-400 shrink-0" />
+                                        <strong className="shrink-0">مدت گارانتی:</strong>
+                                        <p className="break-words">
+                                            {panel?.guarantee?.durationMonths}{" "}
+                                            ماه
+                                        </p>
+                                    </div>
+                                </div>
+                                {/* Description gets full width */}
+                                <div className="flex gap-2 flex-wrap">
+                                    <FileText className="text-orange-400 shrink-0" />
+                                    <strong className="shrink-0">توضیحات:</strong>
+                                    <p className="break-words flex-1 min-w-0">{panel?.guarantee?.description}</p>
+                                </div>
+
+                                <div className="font-bold text-xl text-blue-800">
+                                    شرایط
+                                </div>
+                                <div className="relative neu-container flex flex-col gap-4">
+                                    <div className="space-y-4 p-4 m-4">
+                                        {panel?.guarantee?.terms &&
+                                        panel?.guarantee?.terms?.length > 0 ? (
+                                            panel?.guarantee?.terms?.map(
+                                                (term, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className="border-gray-300 border-t-2 first:border-t-0"
+                                                    >
+                                                        <div className="p-4 space-y-4">
+                                                            <div className="flex gap-2 flex-wrap">
+                                                                <ReceiptText className="text-orange-400 shrink-0" />
+                                                                <strong className="shrink-0">
+                                                                    عنوان:
+                                                                </strong>
+                                                                <p className="break-words flex-1 min-w-0">
+                                                                    {term?.title ?? ""}
+                                                                </p>
+                                                            </div>
+                                                            <div className="flex gap-2 flex-wrap">
+                                                                <ListCollapse className="text-orange-400 shrink-0" />
+                                                                <strong className="shrink-0">
+                                                                    توضیحات:
+                                                                </strong>
+                                                                <p className="break-words flex-1 min-w-0">
+                                                                    {term?.description ?? ""}
+                                                                </p>
+                                                            </div>
+                                                            <div className="flex gap-2 flex-wrap">
+                                                                <CircleAlert className="text-orange-400 shrink-0" />
+                                                                <strong className="shrink-0">
+                                                                    محدودیت‌ها:
+                                                                </strong>
+                                                                <p className="break-words flex-1 min-w-0">
+                                                                    {term?.limitations ?? ""}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            )
+                                        ) : (
+                                            <p>هیچ شرایطی وجود ندارد.</p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center justify-center gap-4 py-8 inset-neu-container !w-full !px-4">
+                                <div className="text-6xl text-gray-400 font-bold">
+                                    !
+                                </div>
+                                <p className="text-gray-500">
+                                    {panel?.guaranteeStatus}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Silver divider line */}
+                    <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent"></div>
+
+                    {/* شرکت پیمانکار */}
+                    <div
+                        className={`flex flex-col gap-4 p-0 md:p-4 rounded-lg rtl h-fit`}
+                    >
+                        <div className="font-bold text-xl text-blue-800">
+                            شرکت پیمانکار
+                        </div>
+                        <div className="space-y-4 !p-4 inset-neu-container !w-full">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {/* نام شرکت */}
+                                <div className="flex gap-2 flex-wrap">
+                                    <Building2 className="text-orange-400 shrink-0" />
+                                    <strong className="shrink-0">نام شرکت:</strong>
+                                    <p className="break-words">{panel?.corporation?.name}</p>
+                                </div>
+
+                                {/* وضعیت */}
+                                <div className="flex gap-2 flex-wrap">
+                                    <div
+                                        className={`${
+                                            panel?.corporation?.status ===
+                                            "تایید شده"
+                                                ? "green-status"
+                                                : panel?.corporation?.status ===
+                                                  "رد شده"
+                                                ? "red-status"
+                                                : panel?.corporation?.status ===
+                                                  "معلق"
+                                                ? "gray-status"
+                                                : "yellow-status"
+                                        } h-4 w-4 place-self-center rounded-full shadow-md shrink-0`}
+                                    />
+                                    <strong className="shrink-0">وضعیت:</strong>
+                                    <p className="break-words">{panel?.corporation?.status}</p>
+                                </div>
+                            </div>
+                            <div className="font-bold text-xl text-blue-800">
+                                راه‌های ارتباطی
+                            </div>
+                            <div className="relative flex flex-col gap-4">
+                                <div className="space-y-4 p-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {panel?.corporation?.contactInfo &&
+                                        panel?.corporation?.contactInfo
+                                            ?.length > 0 ? (
+                                            panel?.corporation?.contactInfo?.map(
+                                                (contact, index) => (
+                                                    <div
+                                                        className="flex gap-2 flex-wrap"
+                                                        key={index}
+                                                    >
+                                                        <Phone className="text-orange-400 shrink-0" />
+                                                        <strong className="shrink-0">
+                                                            {
+                                                                contact
+                                                                    ?.contactType
+                                                                    ?.name
+                                                            }
+                                                            :{" "}
+                                                        </strong>
+                                                        <p className="break-words">{contact?.value}</p>
+                                                    </div>
+                                                )
+                                            )
+                                        ) : (
+                                            <p>هیچ راه ارتباطی وجود ندارد.</p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="font-bold text-xl text-blue-800">
+                                آدرس‌های شرکت
+                            </div>
+                            <div className="relative flex flex-col gap-4">
+                                <div className="space-y-4 p-4">
+                                    {panel?.corporation?.addresses &&
+                                    panel?.corporation?.addresses?.length >
+                                        0 ? (
+                                        panel?.corporation?.addresses?.map(
+                                            (address, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="border-gray-300 border-t-2 first:border-t-0"
+                                                >
+                                                    <div className="p-4 space-y-4">
+                                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                            <div className="flex gap-2 flex-wrap">
+                                                                <MapPin className="text-orange-400 shrink-0" />
+                                                                <strong className="shrink-0">
+                                                                    استان:
+                                                                </strong>
+                                                                <p className="break-words">
+                                                                    {
+                                                                        address.province
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                            <div className="flex gap-2 flex-wrap">
+                                                                <Building2 className="text-orange-400 shrink-0" />
+                                                                <strong className="shrink-0">
+                                                                    شهر:
+                                                                </strong>
+                                                                <p className="break-words">
+                                                                    {address.city}
+                                                                </p>
+                                                            </div>
+                                                            <div className="flex gap-2 flex-wrap">
+                                                                <Home className="text-orange-400 shrink-0" />
+                                                                <strong className="shrink-0">
+                                                                    پلاک:
+                                                                </strong>
+                                                                <p className="break-words">
+                                                                    {
+                                                                        address.houseNumber
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                            <div className="flex gap-2 flex-wrap">
+                                                                <DoorOpen className="text-orange-400 shrink-0" />
+                                                                <strong className="shrink-0">
+                                                                    واحد:
+                                                                </strong>
+                                                                <p className="break-words">
+                                                                    {address.unit}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        {/* Full width fields */}
+                                                        <div className="space-y-4">
+                                                            <div className="flex gap-2 flex-wrap">
+                                                                <Route className="text-orange-400 shrink-0" />
+                                                                <strong className="shrink-0">
+                                                                    خیابان:
+                                                                </strong>
+                                                                <p className="break-words flex-1 min-w-0">
+                                                                    {address.streetAddress ?? ""}
+                                                                </p>
+                                                            </div>
+                                                            <div className="flex gap-2 flex-wrap">
+                                                                <Mail className="text-orange-400 shrink-0" />
+                                                                <strong className="shrink-0">
+                                                                    کد پستی:
+                                                                </strong>
+                                                                <p className="break-words flex-1 min-w-0">
+                                                                    {
+                                                                        address.postalCode
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )
+                                        )
+                                    ) : (
+                                        <p>هیچ آدرسی وجود ندارد.</p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Silver divider line */}
+                    <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent"></div>
+
+                    {/* نمودار تولید */}
+                    <div className={`flex flex-col gap-4 p-0 md:p-4 rounded-lg rtl h-fit`}>
                         <div className="font-bold text-xl text-blue-800">
                             نمودار تولید
                         </div>
@@ -410,7 +868,7 @@ export default function PanelDetails({ id }: { id: string }) {
                                 </div>
                             )} */}
                         </div>
-                        
+
                         {/* Charts Section */}
                         <PanelCharts
                             liveData={liveData}
@@ -421,448 +879,13 @@ export default function PanelDetails({ id }: { id: string }) {
                             gridData={gridData}
                         />
                     </div>
-                    
-                    {/* Panel Event History Section */}
-                    <div className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} h-fit`}>
-                        <PanelEventHistory panelId={id} />
-                    </div>
-                    
-                    <div
-                        className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} h-fit`}
-                    >
-                        <div className="font-bold text-xl text-blue-800">
-                            اطلاعات کلی
-                        </div>
-                        <div className="space-y-4 p-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                {/* نام پنل */}
-                                <div className="flex gap-2">
-                                    <Eclipse className="text-orange-400" />
-                                    <strong>نام پنل:</strong>
-                                    <p>{panel?.name}</p>
-                                </div>
 
-                                {/* وضعیت */}
-                                <div className="flex gap-2">
-                                    <div
-                                        className={`h-4 w-4 flex place-self-center rounded-full ${getStatusColor(
-                                            panel?.status ?? ""
-                                        )} shadow-md`}
-                                    />
-                                    <strong>وضعیت:</strong>
-                                    <p>{panel?.status}</p>
-                                </div>
+                    {/* Silver divider line */}
+                    <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent"></div>
 
-                                {/* نوع ساختمان */}
-                                <div className="flex gap-2">
-                                    <Home className="text-orange-400" />
-                                    <strong>نوع ساختمان:</strong>
-                                    <p>{panel?.buildingType}</p>
-                                </div>
-
-                                {/* تعداد کل ماژول‌ها */}
-                                <div className="flex gap-2">
-                                    <Grid3x3 className="text-orange-400" />
-                                    <strong>تعداد ماژول‌ها:</strong>
-                                    <p>
-                                        {
-                                            wordExpression(
-                                                panel?.totalNumberOfModules ??
-                                                    "",
-                                                false
-                                            ).value
-                                        }{" "}
-                                        عدد
-                                    </p>
-                                </div>
-
-                                {/* مساحت */}
-                                <div className="flex gap-2">
-                                    <LandPlot className="text-orange-400" />
-                                    <strong>مساحت:</strong>
-                                    <p>
-                                        {
-                                            wordExpression(
-                                                panel?.area ?? "",
-                                                false
-                                            ).value
-                                        }{" "}
-                                        متر مربع
-                                    </p>
-                                </div>
-
-                                {/* توان */}
-                                <div className="flex gap-2">
-                                    <DatabaseZap className="text-orange-400" />
-                                    <strong>توان:</strong>
-                                    <p>
-                                        {
-                                            wordExpression(
-                                                panel?.power ?? "",
-                                                true
-                                            ).value
-                                        }
-                                        W
-                                    </p>
-                                </div>
-
-                                {/* زاویه شیب */}
-                                <div className="flex gap-2">
-                                    <TriangleRight className="text-orange-400" />
-                                    <strong>زاویه نصب:</strong>
-                                    <p>{panel?.tilt} درجه</p>
-                                </div>
-
-                                {/* سمت (آزیموت) */}
-                                <div className="flex gap-2">
-                                    <Compass className="text-orange-400" />
-                                    <strong>جهت:</strong>
-                                    <p>{panel?.azimuth} درجه</p>
-                                </div>
-
-                                {/* وضعیت گارانتی */}
-                                {/* <div className="flex gap-2">
-                                <ShieldCheck className="text-teal-500" />
-                                <strong>وضعیت گارانتی:</strong>
-                                <p>{panel?.guaranteeStatus}</p>
-                            </div> */}
-
-                                {/* شرکت */}
-                                {/* <div className="flex gap-2">
-                                <Building2 className="text-gray-600" />
-                                <strong>شرکت پیمانکار:</strong>
-                                <p>{panel?.corporation?.name}</p>
-                            </div> */}
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} h-fit`}
-                    >
-                        <div className="font-bold text-xl text-blue-800">
-                            محل نصب پنل
-                        </div>
-                        <div className="p-4 grid grid-cols-2 gap-4">
-                            <div className="flex gap-2">
-                                <MapPin className="text-orange-400" />
-                                <strong>استان:</strong>
-                                <p>{panel?.address.province}</p>
-                            </div>
-                            <div className="flex gap-2">
-                                <Building2 className="text-orange-400 shrink-0" />
-                                <strong>شهر:</strong>
-                                <p>{panel?.address.city}</p>
-                            </div>
-                            <div className="flex gap-2">
-                                <Route className="text-orange-400 shrink-0" />
-                                <strong>خیابان:</strong>
-                                <TruncatedText maxLength={70}>
-                                    {panel?.address?.streetAddress ?? ""}
-                                </TruncatedText>
-                            </div>
-                            <div className="flex gap-2">
-                                <Mail className="text-orange-400" />
-                                <strong>کد پستی:</strong>
-                                <TruncatedText maxLength={70}>
-                                    {panel?.address?.postalCode ?? ""}
-                                </TruncatedText>
-                            </div>
-                            <div className="flex gap-2">
-                                <Home className="text-orange-400" />
-                                <strong>پلاک:</strong>
-                                <p>{panel?.address.houseNumber}</p>
-                            </div>
-                            <div className="flex gap-2">
-                                <DoorOpen className="text-orange-400" />
-                                <strong>واحد:</strong>
-                                <p>{panel?.address.unit}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} h-fit`}
-                    >
-                        <div className="font-bold text-xl text-blue-800">
-                            شرکت پیمانکار
-                        </div>
-                        <div className="space-y-4 p-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                {/* نام شرکت */}
-                                <div className="flex gap-2">
-                                    <Building2 className="text-orange-400" />
-                                    <strong>نام شرکت:</strong>
-                                    <p>{panel?.corporation?.name}</p>
-                                </div>
-
-                                {/* وضعیت */}
-                                <div className="flex gap-2">
-                                    <div
-                                        className={`${
-                                            panel?.corporation?.status ===
-                                            "تایید شده"
-                                                ? "green-status"
-                                                : panel?.corporation?.status ===
-                                                  "رد شده"
-                                                ? "red-status"
-                                                : panel?.corporation?.status ===
-                                                  "معلق"
-                                                ? "gray-status"
-                                                : "yellow-status"
-                                        } h-4 w-4 place-self-center rounded-full shadow-md`}
-                                    />
-                                    <strong>وضعیت:</strong>
-                                    <p>{panel?.corporation?.status}</p>
-                                </div>
-                            </div>
-                            <div className="font-bold text-xl text-blue-800">
-                                راه‌های ارتباطی
-                            </div>
-                            <div className="relative neu-container p-4 flex flex-col gap-4">
-                                <div className="space-y-4 p-4">
-                                    <div className="grid grid-cols-2 gap-4">
-                                        {panel?.corporation?.contactInfo &&
-                                        panel?.corporation?.contactInfo
-                                            ?.length > 0 ? (
-                                            panel?.corporation?.contactInfo?.map(
-                                                (contact, index) => (
-                                                    <div
-                                                        className="flex gap-2"
-                                                        key={index}
-                                                    >
-                                                        <Phone className="text-orange-400" />
-                                                        <strong>
-                                                            {
-                                                                contact
-                                                                    ?.contactType
-                                                                    ?.name
-                                                            }
-                                                            :{" "}
-                                                        </strong>
-                                                        <p>{contact?.value}</p>
-                                                    </div>
-                                                )
-                                            )
-                                        ) : (
-                                            <p>هیچ راه ارتباطی وجود ندارد.</p>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="font-bold text-xl text-blue-800">
-                                آدرس‌های شرکت
-                            </div>
-                            <div className="relative neu-container p-4 flex flex-col gap-4">
-                                <div className="space-y-4 p-4">
-                                    {panel?.corporation?.addresses &&
-                                    panel?.corporation?.addresses?.length >
-                                        0 ? (
-                                        panel?.corporation?.addresses?.map(
-                                            (address, index) => (
-                                                <div
-                                                    key={index}
-                                                    className="border-gray-300 border-t-2 first:border-t-0"
-                                                >
-                                                    <div className="p-4 grid grid-cols-2 gap-4">
-                                                        <div className="flex gap-2">
-                                                            <MapPin className="text-orange-400" />
-                                                            <strong>
-                                                                استان:
-                                                            </strong>
-                                                            <p>
-                                                                {
-                                                                    address.province
-                                                                }
-                                                            </p>
-                                                        </div>
-                                                        <div className="flex gap-2">
-                                                            <Building2 className="text-orange-400" />
-                                                            <strong>
-                                                                شهر:
-                                                            </strong>
-                                                            <p>
-                                                                {address.city}
-                                                            </p>
-                                                        </div>
-                                                        <div className="flex gap-2">
-                                                            <Route className="text-orange-400" />
-                                                            <strong>
-                                                                خیابان:
-                                                            </strong>
-                                                            <TruncatedText
-                                                                maxLength={70}
-                                                            >
-                                                                {address.streetAddress ??
-                                                                    ""}
-                                                            </TruncatedText>
-                                                        </div>
-                                                        <div className="flex gap-2">
-                                                            <Mail className="text-orange-400" />
-                                                            <strong>
-                                                                کد پستی:
-                                                            </strong>
-                                                            <p>
-                                                                {
-                                                                    address.postalCode
-                                                                }
-                                                            </p>
-                                                        </div>
-                                                        <div className="flex gap-2">
-                                                            <Home className="text-orange-400" />
-                                                            <strong>
-                                                                پلاک:
-                                                            </strong>
-                                                            <p>
-                                                                {
-                                                                    address.houseNumber
-                                                                }
-                                                            </p>
-                                                        </div>
-                                                        <div className="flex gap-2">
-                                                            <DoorOpen className="text-orange-400" />
-                                                            <strong>
-                                                                واحد:
-                                                            </strong>
-                                                            <p>
-                                                                {address.unit}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )
-                                        )
-                                    ) : (
-                                        <p>هیچ آدرسی وجود ندارد.</p>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        className={`flex flex-col gap-4 p-4 rounded-lg rtl ${styles.shadow} h-fit`}
-                    >
-                        <div className="font-bold text-xl text-blue-800">
-                            گارانتی
-                        </div>
-                        {panel?.guaranteeStatus === "فعال" ? (
-                            <div className="space-y-4 p-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                    {/* نام گارانتی */}
-                                    <div className="flex gap-2">
-                                        <ShieldCheck className="text-orange-400" />
-                                        <strong>نام گارانتی:</strong>
-                                        <p>{panel?.guarantee?.name}</p>
-                                    </div>
-                                    {/* وضعیت گارانتی */}
-                                    <div className="flex gap-2">
-                                        <div
-                                            className={`h-4 w-4 flex place-self-center rounded-full ${
-                                                panel?.guarantee?.status ===
-                                                "فعال"
-                                                    ? "green-status"
-                                                    : "red-status"
-                                            } shadow-md`}
-                                        />
-                                        <strong>وضعیت گارانتی:</strong>
-                                        <p>{panel?.guarantee?.status}</p>
-                                    </div>
-                                    {/* نوع گارانتی */}
-                                    <div className="flex gap-2">
-                                        <ScrollText className="text-orange-400" />
-                                        <strong>نوع گارانتی:</strong>
-                                        <p>{panel?.guarantee?.guaranteeType}</p>
-                                    </div>
-                                    {/* مدت گارانتی */}
-                                    <div className="flex gap-2">
-                                        <CalendarClock className="text-orange-400" />
-                                        <strong>مدت گارانتی:</strong>
-                                        <p>
-                                            {panel?.guarantee?.durationMonths}{" "}
-                                            ماه
-                                        </p>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <FileText className="text-orange-400" />
-                                        <strong>توضیحات:</strong>
-                                        <p>{panel?.guarantee?.description}</p>
-                                    </div>
-                                </div>
-
-                                <div className="font-bold text-xl text-blue-800">
-                                    شرایط
-                                </div>
-                                <div className="relative neu-container flex flex-col gap-4">
-                                    <div className="space-y-4 p-4 m-4">
-                                        {panel?.guarantee?.terms &&
-                                        panel?.guarantee?.terms?.length > 0 ? (
-                                            panel?.guarantee?.terms?.map(
-                                                (term, index) => (
-                                                    <div
-                                                        key={index}
-                                                        className="border-gray-300 border-t-2 first:border-t-0"
-                                                    >
-                                                        <div className="p-4 flex flex-col gap-4">
-                                                            <div className="flex gap-2">
-                                                                <ReceiptText className="text-orange-400" />
-                                                                <strong>
-                                                                    عنوان:
-                                                                </strong>
-                                                                <TruncatedText
-                                                                    maxLength={
-                                                                        70
-                                                                    }
-                                                                >
-                                                                    {term?.title ??
-                                                                        ""}
-                                                                </TruncatedText>
-                                                            </div>
-                                                            <div className="flex gap-2">
-                                                                <ListCollapse className="text-orange-400" />
-                                                                <strong>
-                                                                    توضیحات:
-                                                                </strong>
-                                                                <TruncatedText
-                                                                    maxLength={
-                                                                        70
-                                                                    }
-                                                                >
-                                                                    {term?.description ??
-                                                                        ""}
-                                                                </TruncatedText>
-                                                            </div>
-                                                            <div className="flex gap-2">
-                                                                <CircleAlert className="text-orange-400" />
-                                                                <strong>
-                                                                    محدودیت‌ها:
-                                                                </strong>
-                                                                <TruncatedText
-                                                                    maxLength={
-                                                                        70
-                                                                    }
-                                                                >
-                                                                    {term?.limitations ??
-                                                                        ""}
-                                                                </TruncatedText>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            )
-                                        ) : (
-                                            <p>هیچ شرایطی وجود ندارد.</p>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="flex flex-col items-center justify-center gap-4 py-8">
-                                <div className="text-6xl text-gray-400 font-bold">
-                                    !
-                                </div>
-                                <p className="text-gray-500">
-                                    {panel?.guaranteeStatus}
-                                </p>
-                            </div>
-                        )}
+                    {/* تاریخچه داده‌های پنل */}
+                    <div className={`flex flex-col gap-4 p-0 md:p-4 rounded-lg rtl h-fit`}>
+                        <PanelDataHistory panelId={id} />
                     </div>
                 </div>
             )}

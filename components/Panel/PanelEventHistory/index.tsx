@@ -35,7 +35,7 @@ const PanelEventHistory: React.FC<PanelEventHistoryProps> = ({ panelId }) => {
         <div className="flex flex-col gap-2">
             <div className="font-bold text-xl text-blue-800">آخرین رویداد پنل</div>
             {loading ? (
-                <div className="text-center py-8">در حال بارگذاری...</div>
+                <div dir="rtl" className="text-center py-8">در حال بارگذاری...</div>
             ) : lastEvent ? (
                 <PanelEventSummaryCard event={lastEvent} onClick={() => setDialogOpen(true)} />
             ) : (
