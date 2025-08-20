@@ -37,7 +37,7 @@ export default function Page() {
             endPoint:
                 mode === "user"
                     ? "/v1/user/chat/room"
-                    : `/v1/corp/chat/rooms/${corpID}`,
+                    : `/v1/corp/${corpID}/chat/rooms`,
         }).then((res: any) => {
             console.log(res);
             dispatch(setChatRooms(res?.data));

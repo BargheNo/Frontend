@@ -47,6 +47,7 @@ export default function ChatBox({
         socket,
         getNewPage,
         scrollToBottom,
+        connection,
     } = useChatMessages(selectedChatRoom);
 
     const { rollerRef } = useChatScroll(
@@ -55,6 +56,12 @@ export default function ChatBox({
         getNewPage,
         currentPage
     );
+
+    useEffect(() => {
+        console.log("selectedChatRoom: ", selectedChatRoom);
+        console.log("user: ", user);
+        console.log("messages: ", messages);
+    }, [selectedChatRoom, user, messages]);
 
     useEffect(() => {
         return () => {
@@ -142,6 +149,13 @@ export default function ChatBox({
                 <>
                     <div className="flex flex-row-reverse justify-between gap-2 px-6 items-center absolute top-0 right-0 left-0 h-20 rounded-t-md bg-white shadow-[2px_2px_5px_rgba(0,0,0,0.3)]">
                         <div className="cursor-pointer flex items-center justify-center gap-2">
+                            <div
+                                className={cn(
+                                    "w-[10px] h-[10px] rounded-full",
+                                    connection ? "green-status" : "red-status"
+                                )}
+                            />
+
                             <ChevronLeft
                                 className="rounded-lg hover:bg-gray-200"
                                 size={32}
@@ -170,7 +184,7 @@ export default function ChatBox({
                                     className="object-cover"
                                 />
                                 <AvatarFallback className="bg-gray-500 text-white">
-                                    {mode === "user"
+                                    {mode != "user"
                                         ? selectedChatRoom?.corporation?.name?.charAt(
                                               0
                                           ) +
@@ -237,66 +251,72 @@ export default function ChatBox({
                                             message,
                                         ])
                                     ).values(),
-                                ].map((message, index) => (
-                                    <ChatMessage
-                                        key={message.id}
-                                        message={message.content}
-                                        type={
-                                            message.sender.firstName ===
-                                                user.firstName &&
-                                            message.sender.lastName ===
-                                                user.lastName
-                                                ? "self"
-                                                : "other"
-                                        }
-                                        containerWidth={boxWidth}
-                                        messageId={message.id}
-                                        srcpic={
-                                            mode === "user"
-                                                ? selectedChatRoom?.corporation
-                                                      ?.logo
-                                                : selectedChatRoom?.customer
-                                                      ?.profilePic
-                                        }
-                                        decpic={
-                                            mode === "user"
-                                                ? selectedChatRoom?.customer
-                                                      ?.profilePic
-                                                : selectedChatRoom?.corporation
-                                                      ?.logo
-                                        }
-                                        srcName={
-                                            mode === "user"
-                                                ? selectedChatRoom?.corporation
-                                                      ?.name
-                                                : selectedChatRoom?.customer
-                                                      ?.firstName +
-                                                  " " +
-                                                  selectedChatRoom?.customer
-                                                      ?.lastName
-                                        }
-                                        decName={
-                                            mode === "user"
-                                                ? selectedChatRoom?.customer
-                                                      ?.firstName +
-                                                  " " +
-                                                  selectedChatRoom?.customer
-                                                      ?.lastName
-                                                : selectedChatRoom?.corporation
-                                                      ?.name
-                                        }
-                                        time={new Date(
-                                            message.timeStamp ??
-                                                message.timestamp ??
-                                                ""
-                                        ).toLocaleTimeString([], {
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                        })}
-                                        // log={index}
-                                        ref={index === 2 ? thirdMessage : null}
-                                    />
-                                ))}
+                                ]
+                                    .reverse()
+                                    .map((message, index) => (
+                                        <ChatMessage
+                                            key={message.id}
+                                            message={message.content}
+                                            type={
+                                                message?.sender?.firstName ===
+                                                    user?.firstName &&
+                                                message?.sender?.lastName ===
+                                                    user?.lastName
+                                                    ? "self"
+                                                    : "other"
+                                            }
+                                            containerWidth={boxWidth}
+                                            messageId={message.id}
+                                            srcpic={
+                                                mode === "user"
+                                                    ? selectedChatRoom
+                                                          ?.corporation?.logo
+                                                    : selectedChatRoom?.customer
+                                                          ?.profilePic
+                                            }
+                                            decpic={
+                                                mode === "user"
+                                                    ? selectedChatRoom?.customer
+                                                          ?.profilePic
+                                                    : selectedChatRoom
+                                                          ?.corporation?.logo
+                                            }
+                                            srcName={
+                                                mode === "user"
+                                                    ? selectedChatRoom
+                                                          ?.corporation?.name
+                                                    : selectedChatRoom?.customer
+                                                          ?.firstName +
+                                                      " " +
+                                                      selectedChatRoom?.customer
+                                                          ?.lastName
+                                            }
+                                            decName={
+                                                mode === "user"
+                                                    ? selectedChatRoom?.customer
+                                                          ?.firstName +
+                                                      " " +
+                                                      selectedChatRoom?.customer
+                                                          ?.lastName
+                                                    : selectedChatRoom
+                                                          ?.corporation?.name
+                                            }
+                                            time={new Date(
+                                                message.timeStamp ??
+                                                    message.timestamp ??
+                                                    ""
+                                            ).toLocaleTimeString([], {
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                            })}
+                                            // log={index}
+                                            ref={
+                                                index === 2
+                                                    ? thirdMessage
+                                                    : null
+                                            }
+                                        />
+                                    ))}
                             </div>
                             <div className="absolute neo-card-rev bottom-5 bg-white min-h-[48px] max-h-[200px] right-3 left-3 rtl mx-auto flex items-center rounded-lg px-3">
                                 <Webhook

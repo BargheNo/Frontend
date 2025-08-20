@@ -1,20 +1,21 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSelector } from "react-redux";
 import { getData } from "@/src/services/apiHub";
-// import { useWebSocket } from './useChatWebSocket';
 import { Message } from "@/types/chat";
 import { toast } from "sonner";
+import { set } from "cypress/types/lodash";
 
-export const useChatMessages = (selectedChatRoom:any, mode="user" ) => {
+export const useChatMessages = (selectedChatRoom: any, mode = "user") => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  //   const [hasMore, setHasMore] = useState(true);
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const token = useSelector((state: any) => state.user.accessToken);
   const [isConnected, setIsConnected] = useState(false);
-  //   const [wsUrl, setWsUrl] = useState<string | null>(null);
-  //   const { messages: wsMessages, sendMessage, isConnected, socket } = useWebSocket(wsUrl);
+
+  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const failToastShownRef = useRef(false); 
+  const [connection, setConnection] = useState<boolean>(false)
 
   const scrollToBottom = useCallback(() => {
     const chatBox = document.getElementById("chat-box");
@@ -29,20 +30,15 @@ export const useChatMessages = (selectedChatRoom:any, mode="user" ) => {
     isInitial: boolean = false
   ) => {
     if (!selectedChatRoom?.roomID) return;
-
     setCurrentPage(page);
 
     try {
       const res = await getData({
         endPoint: `/v1/user/chat/room/${selectedChatRoom.roomID}/messages`,
-        params: {
-          page: page,
-          pageSize: 10,
-        },
+        params: { page, pageSize: 10 },
       });
-      console.log("rezzz: ", res)
+
       if (!res?.data?.data?.length && !isInitial) {
-        // setHasMore(false);
         setIsLoading(false);
         return;
       }
@@ -53,7 +49,6 @@ export const useChatMessages = (selectedChatRoom:any, mode="user" ) => {
         setMessages(res?.data?.data);
       }
 
-      //   setHasMore(res?.data?.length === 10);
       setIsLoading(false);
 
       if (isInitial) {
@@ -65,87 +60,110 @@ export const useChatMessages = (selectedChatRoom:any, mode="user" ) => {
     }
   };
 
-  const connectSocket = (selectedChatRoom: any, token: string) => {
-    if (selectedChatRoom?.roomID && token) {
-        const ws: WebSocket = new WebSocket(
-          (mode == "corp"
-            ? `ws://46.249.99.69:8080/v1/corp/chat/room/${selectedChatRoom.roomID}/token/${token}`
-            : `ws://46.249.99.69:8080/v1/user/chat/room/${selectedChatRoom.roomID}/token/${token}`)
-        );
-        ws.onopen = () => {
-          console.log("WebSocket connected");
-          setIsConnected(true);
-        };
-        ws.onclose = () => {
-          console.log("WebSocket closed");
-          setIsConnected(false);
-          toast.error("در اتصال به چت مشکلی به وجود امده است");
-        };
-        ws.onerror = (error) => {
-          console.error("WebSocket error:", error);
-          toast.error("در اتصال به چت مشکلی به وجود امده است");
-        };
-        ws.onmessage = (event) => {
-          console.log("Received message:", event.data);
-          setMessages((prev) => [...prev, JSON.parse(event.data)]);
-          setTimeout(scrollToBottom, 100);
-        };
-        setSocket(ws);
+  const connectSocket = (room: any, token: string) => {
+    if (!room?.roomID || !token) return;
+
+    // close previous socket if exists
+    if (socket) {
+      socket.close();
+    }
+
+    const ws = new WebSocket(
+      mode === "corp"
+        ? `ws://46.249.99.69:8080/v1/corp/chat/room/${room.roomID}/token/${token}`
+        : `ws://46.249.99.69:8080/v1/user/chat/room/${room.roomID}/token/${token}`
+    );
+
+    ws.onopen = () => {
+      console.log("✅ WebSocket connected");
+      // toast.success("اتصال به چت با موفقیت انجام شد");
+      setConnection(true);
+      setIsConnected(true);
+
+      // reset failure toast blocker
+      failToastShownRef.current = false;
+
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+        reconnectTimeoutRef.current = null;
+      }
+    };
+
+    ws.onclose = () => {
+      console.log("❌ WebSocket closed");
+      setIsConnected(false);
+
+      if (!failToastShownRef.current) {
+        // toast.error("در اتصال به چت مشکلی به وجود امده است");
+        setConnection(false);
+        failToastShownRef.current = true;
       }
 
+      // try reconnect after 3s
+      if (!reconnectTimeoutRef.current) {
+        reconnectTimeoutRef.current = setTimeout(() => {
+          console.log("🔄 Reconnecting WebSocket...");
+          connectSocket(room, token);
+        }, 3000);
+      }
+    };
 
+    ws.onerror = (error) => {
+      console.error("⚠️ WebSocket error:", error);
+
+      if (!failToastShownRef.current) {
+        // toast.error("در اتصال به چت مشکلی به وجود امده است");
+        setConnection(false);
+        failToastShownRef.current = true;
+      }
+
+      ws.close(); // trigger onclose → reconnect
+    };
+
+    ws.onmessage = (event) => {
+      console.log("📩 Received:", event.data);
+
+      try {
+        const parsed = JSON.parse(event.data);
+        if (parsed?.id) {
+          setMessages((prev) => [parsed, ...prev]);
+        }
+      } catch (err) {
+        console.error("Invalid message data:", event.data);
+      }
+
+      setTimeout(scrollToBottom, 100);
+    };
+
+    setSocket(ws);
   };
 
-  // Handle room change
   useEffect(() => {
-    if (selectedChatRoom) {
-      // Reset states
+    if (selectedChatRoom && token) {
       setMessages([]);
       setCurrentPage(1);
       setIsLoading(true);
-      // Load initial messages
-      getNewPage(1, false, true);
 
-      // open socket
+      getNewPage(1, false, true);
       connectSocket(selectedChatRoom, token);
     }
+
+    return () => {
+      if (socket) socket.close();
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+      }
+    };
   }, [selectedChatRoom]);
-
-  // Set WebSocket URL when room changes
-  //   useEffect(() => {
-  //     console.log("closing socket...")
-  //     socket?.close()
-  //     if (selectedChatRoom?.roomID && token) {
-  //       console.log("opening socket... to:", selectedChatRoom.roomID)
-  //       setWsUrl(
-  //         `ws://46.249.99.69:8080/v1/user/chat/room/${selectedChatRoom.roomID}/token/${token}`
-  //       );
-  //     }
-  //   }, [selectedChatRoom?.roomID, token]);
-
-  // Handle incoming WebSocket messages
-  //   useEffect(() => {
-  //     if (wsMessages.length > 0) {
-  //       const lastMessage = wsMessages[wsMessages.length - 1];
-  //       try {
-  //         const parsedMessage = JSON.parse(lastMessage);
-  //         setMessages(prev => [parsedMessage, ...prev]);
-  //         setTimeout(scrollToBottom, 500);
-  //       } catch (error) {
-  //         console.error('Error parsing WebSocket message:', error);
-  //       }
-  //     }
-  //   }, [wsMessages]);
 
   return {
     messages,
     currentPage,
     isLoading,
-    // hasMore,
-    // sendMessage,
     isConnected,
     socket,
     getNewPage,
     scrollToBottom,
+    connection,
   };
 };
