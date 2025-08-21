@@ -1,5 +1,12 @@
 "use client";
-import { ChevronLeft, Menu, Send, Webhook } from "lucide-react";
+import {
+    ChevronLeft,
+    CircleX,
+    EllipsisVertical,
+    Menu,
+    Send,
+    Webhook,
+} from "lucide-react";
 import React, { useState, useRef, useEffect } from "react";
 import ChatMessage from "../ChatMessage/ChatMessage";
 import { cn } from "@/lib/utils";
@@ -16,6 +23,13 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useMediaQuery } from "@/src/hooks/useMediaQuery";
 import { toast } from "sonner";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+import { putData } from "@/src/services/apiHub";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 // import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 
 export default function ChatBox({
@@ -34,9 +48,9 @@ export default function ChatBox({
     const thirdMessage = React.useRef<any>(null);
     const messageReloaderRef = React.useRef<HTMLDivElement>(null);
     const selectedChatRoom = useSelector(
-        (state: any) => state.chat.selectedChatRoom
+        (state: RootState) => state.chat.selectedChatRoom
     );
-    const user = useSelector((state: any) => state.user);
+    const user = useSelector((state: RootState) => state.user);
 
     const {
         messages,
@@ -117,6 +131,34 @@ export default function ChatBox({
         }
     };
 
+    const queryClient = useQueryClient();
+
+    const blockChatMutation = useMutation({
+        mutationFn: () =>
+            putData({
+                endPoint: `/v1/corp/${user.corpId}/chat/room/${selectedChatRoom.roomID}/block`,
+            }),
+        onSuccess: () => {
+            toast.success("چت با موفقیت مسدود شد");
+            // invalidate chatRooms query to refetch updated data
+            queryClient.invalidateQueries({
+                queryKey: ["chatRooms"],
+            });
+        },
+    });
+    const activeChatMutation = useMutation({
+        mutationFn: () =>
+            putData({
+                endPoint: `/v1/corp/${user.corpId}/chat/room/${selectedChatRoom.roomID}/unblock`,
+            }),
+        onSuccess: () => {
+            toast.success("چت با موفقیت فعال شد");
+            queryClient.invalidateQueries({
+                queryKey: ["chatRooms"],
+            });
+        },
+    });
+
     return (
         <div
             ref={boxRef}
@@ -128,6 +170,16 @@ export default function ChatBox({
                 className
             )}
         >
+            {selectedChatRoom?.status !== "active" && (
+                <div className="absolute inset-0 flex flex-col gap-2 items-center justify-center bg-gray-200 opacity-40 pointer-events-none z-50">
+                    <CircleX className="w-44 h-44 text-gray-600 opacity-70" />
+                    <div className="text-gray-600 text-2xl">
+                        {" "}
+                        این اتاق مسدود شده است!
+                    </div>
+                </div>
+            )}
+
             {!isLoading && !selectedChatRoom ? (
                 <NoRecordFound
                     className="w-full"
@@ -151,8 +203,11 @@ export default function ChatBox({
                         <div className="cursor-pointer flex items-center justify-center gap-2">
                             <div
                                 className={cn(
-                                    "w-[10px] h-[10px] rounded-full",
-                                    connection ? "green-status" : "red-status"
+                                    "w-[10px] h-[10px] rounded-full cursor-auto",
+                                    connection &&
+                                        selectedChatRoom.status == "active"
+                                        ? "green-status cursor-auto"
+                                        : "red-status cursor-auto"
                                 )}
                             />
 
@@ -171,10 +226,38 @@ export default function ChatBox({
                             )}
                         </div>
                         <div className="flex flex-row gap-2 items-center">
+                            {mode == "corp" && (
+                                <Popover>
+                                    <PopoverTrigger className="hover:cursor-pointer hover:bg-gray-200 p-1 rounded-lg">
+                                        <EllipsisVertical />
+                                    </PopoverTrigger>
+                                    <PopoverContent className="neo-card flex justify-center items-center bg-warm-white w-fit h-fit p-2">
+                                        {selectedChatRoom.status == "active" ? (
+                                            <button
+                                                className="neo-btn py-1 px-4"
+                                                onClick={() => {
+                                                    blockChatMutation.mutate();
+                                                }}
+                                            >
+                                                مسدود کردن
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className="neo-btn py-1 px-4"
+                                                onClick={() => {
+                                                    activeChatMutation.mutate();
+                                                }}
+                                            >
+                                                فعال کردن
+                                            </button>
+                                        )}
+                                    </PopoverContent>
+                                </Popover>
+                            )}
                             <Avatar className="h-12 w-12">
                                 <AvatarImage
                                     src={
-                                        mode === "user"
+                                        mode == "user"
                                             ? selectedChatRoom?.corporation
                                                   ?.logo
                                             : selectedChatRoom?.customer
@@ -184,7 +267,7 @@ export default function ChatBox({
                                     className="object-cover"
                                 />
                                 <AvatarFallback className="bg-gray-500 text-white">
-                                    {mode != "user"
+                                    {mode == "user"
                                         ? selectedChatRoom?.corporation?.name?.charAt(
                                               0
                                           ) +
@@ -325,7 +408,15 @@ export default function ChatBox({
                                     className="self-end mb-3"
                                 />
                                 <textarea
-                                    className="w-full bg-transparent outline-none resize-none py-3 mr-[8px] max-h-[200px] overflow-y-auto no-scrollbar"
+                                    disabled={
+                                        selectedChatRoom?.status != "active"
+                                    }
+                                    className={cn(
+                                        "w-full bg-transparent outline-none resize-none py-3 mr-[8px] max-h-[200px] overflow-y-auto no-scrollbar",
+                                        selectedChatRoom?.status != "active"
+                                            ? "cursor-not-allowed"
+                                            : ""
+                                    )}
                                     placeholder={
                                         replyingTo
                                             ? "در حال پاسخ به پیام..."
