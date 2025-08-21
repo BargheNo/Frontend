@@ -418,7 +418,7 @@ const TicketSupportPage = () => {
                                 <Select
                                     name="subject"
                                     value={values.subject}
-                                    onValueChange={async (value) => {
+                                    onValueChange={async (value : string) => {
                                         console.log(value);
                                         await setFieldValue(
                                             "subject",
