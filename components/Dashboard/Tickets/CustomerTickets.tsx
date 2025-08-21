@@ -114,7 +114,7 @@ const TicketSupportPage = () => {
         { id: 4, label: "تعمیرات" },
         { id: 5, label: "سایر" },
     ];
-    
+
     const createTicket = async (
         values: {
             subject: string;
@@ -125,14 +125,19 @@ const TicketSupportPage = () => {
     ) => {
         setLoading(true);
         const formData = new FormData();
-        
-        formData.append("subject", values.subject);
+
+        formData.append("subject", String(Number(values.subject)));
         formData.append("description", values.description);
         if (values.image) {
             formData.append("image", values.image);
         }
 
-        postData({ endPoint: `/v1/user/ticket`, data: formData })
+        for (let [key, val] of formData.entries()) {
+            console.log(`${key}:`, val);
+        }
+
+        postData({ endPoint: `/v1/user/ticket`,headers: { "Content-Type": "multipart/form-data" }
+, data: formData })
             .then((data) => {
                 resetFormValues(setFieldValue);
                 CustomToast(data?.message, "success");
@@ -408,7 +413,7 @@ const TicketSupportPage = () => {
                                 <Select
                                     name="subject"
                                     value={values.subject}
-                                    onValueChange={async (value : string) => {
+                                    onValueChange={async (value: string) => {
                                         console.log(value);
                                         await setFieldValue(
                                             "subject",
