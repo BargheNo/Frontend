@@ -114,18 +114,7 @@ const TicketSupportPage = () => {
         { id: 4, label: "تعمیرات" },
         { id: 5, label: "سایر" },
     ];
-    const translateSubjectToPersian = (subject: string): string => {
-        const translations: { [key: string]: string } = {
-            installation: "نصب",
-            panel: "پنل",
-            maintenance: "تعمیرات",
-            general: "عمومی",
-            other: "سایر",
-        };
-
-        return translations[subject.toLowerCase()] || subject;
-    };
-
+    
     const createTicket = async (
         values: {
             subject: string;
@@ -136,6 +125,7 @@ const TicketSupportPage = () => {
     ) => {
         setLoading(true);
         const formData = new FormData();
+        
         formData.append("subject", values.subject);
         formData.append("description", values.description);
         if (values.image) {
@@ -240,7 +230,7 @@ const TicketSupportPage = () => {
                         <div className="w-5/6 flex flex-col justify-between">
                             <div className="flex flex-col gap-3">
                                 <p className="text-start content-start w-full text-2xl font-bold">
-                                    {translateSubjectToPersian(subject)}
+                                    {subject}
                                 </p>
 
                                 <p className="break-words">{description}</p>
