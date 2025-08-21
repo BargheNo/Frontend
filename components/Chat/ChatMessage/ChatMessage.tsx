@@ -114,11 +114,6 @@ export default function ChatMessage({
                         className="bg-gray-800 text-white rounded-b-xl rounded-tr-xl ml-4 p-4 neo-card"
                         // style={{ width: `${messageWidth}px` }}
                     >
-                        {/* {replyTo && (
-              <div className="text-sm text-gray-400 mb-2">
-                Replying to a message
-              </div>
-            )} */}
                         {message}
                         {time && (
                             <div className="text-xs text-gray-400 mt-1">
@@ -127,15 +122,7 @@ export default function ChatMessage({
                         )}
                     </div>
                 </ContextMenuTrigger>
-                <ContextMenuContent className="w-48">
-                    {/* <ContextMenuItem onClick={handleReply}>
-            <Reply className="h-4 w-4" />
-            Reply
-          </ContextMenuItem> */}
-                    {/* <ContextMenuItem className="flex items-center gap-2 hover:bg-gray-100 focus:bg-gray-100 cursor-pointer">
-            <Share2 className="h-4 w-4" />
-            Share
-          </ContextMenuItem> */}
+                {/* <ContextMenuContent className="w-48">
                     <ContextMenuItem
                         className="flex items-center gap-2 hover:bg-gray-100 focus:bg-gray-100 cursor-pointer"
                         onClick={handleCopy}
@@ -143,7 +130,7 @@ export default function ChatMessage({
                         <Copy className="h-4 w-4" />
                         Copy
                     </ContextMenuItem>
-                </ContextMenuContent>
+                </ContextMenuContent> */}
             </ContextMenu>
         </div>
     ) : (
@@ -169,11 +156,6 @@ export default function ChatMessage({
                         className="bg-white text-gray-800 rounded-b-xl rounded-tl-xl mr-4 p-4 neo-card"
                         // style={{ width: `${messageWidth}px` }}
                     >
-                        {/* {replyTo && (
-              <div className="text-sm text-gray-400 mb-2">
-                Replying to a message
-              </div>
-            )} */}
                         {isEditing ? (
                             <input
                                 type="text"
@@ -197,15 +179,8 @@ export default function ChatMessage({
                         )}
                     </div>
                 </ContextMenuTrigger>
-                <ContextMenuContent className="w-48">
-                    {/* <ContextMenuItem onClick={handleReply}>
-            <Reply className="h-4 w-4" />
-            Reply
-          </ContextMenuItem> */}
-                    {/* <ContextMenuItem className="flex items-center gap-2 hover:bg-gray-100 focus:bg-gray-100 cursor-pointer">
-            <Pencil className="h-4 w-4" />
-            Edit
-          </ContextMenuItem> */}
+                {/* <ContextMenuContent className="w-48">
+                   
                     <ContextMenuItem className="flex items-center gap-2 hover:bg-gray-100 focus:bg-gray-100 cursor-pointer">
                         <Share2 className="h-4 w-4" />
                         Share
@@ -217,7 +192,7 @@ export default function ChatMessage({
                         <Copy className="h-4 w-4" />
                         Copy
                     </ContextMenuItem>
-                </ContextMenuContent>
+                </ContextMenuContent> */}
             </ContextMenu>
         </div>
     );
