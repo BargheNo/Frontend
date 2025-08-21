@@ -48,7 +48,7 @@ export default function ChatBox({
     const thirdMessage = React.useRef<any>(null);
     const messageReloaderRef = React.useRef<HTMLDivElement>(null);
     const selectedChatRoom = useSelector(
-        (state: RootState) => state.chat.selectedChatRoom
+        (state: any) => state.chat.selectedChatRoom
     );
     const user = useSelector((state: RootState) => state.user);
 
