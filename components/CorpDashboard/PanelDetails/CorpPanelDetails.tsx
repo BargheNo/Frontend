@@ -448,7 +448,7 @@ export default function CorpPanelDetails({ id }: { id: string }) {
                     
                     {/* Panel Basic Information */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-                        <div className="neu-card p-4">
+                        <div className="inset-neu-container !w-full !p-4">
                             <h3 className="text-lg font-semibold mb-3 text-gray-800">اطلاعات کلی</h3>
                             <div className="space-y-3">
                                 <div className="flex items-center gap-3">
@@ -474,7 +474,7 @@ export default function CorpPanelDetails({ id }: { id: string }) {
                             </div>
                         </div>
 
-                        <div className="neu-card p-4">
+                        <div className="inset-neu-container !w-full !p-4">
                             <h3 className="text-lg font-semibold mb-3 text-gray-800">مشخصات فنی</h3>
                             <div className="space-y-3">
                                 <div className="flex items-center gap-3">
@@ -503,7 +503,7 @@ export default function CorpPanelDetails({ id }: { id: string }) {
 
                     {/* Customer and Operator Information */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-                        <div className="neu-card p-4">
+                        <div className="inset-neu-container !w-full !p-4">
                             <h3 className="text-lg font-semibold mb-3 text-gray-800">اطلاعات مشتری</h3>
                             <div className="space-y-3">
                                 <div className="flex items-center gap-3">
@@ -526,7 +526,7 @@ export default function CorpPanelDetails({ id }: { id: string }) {
                             </div>
                         </div>
 
-                        <div className="neu-card p-4">
+                        <div className="inset-neu-container !w-full !p-4">
                             <h3 className="text-lg font-semibold mb-3 text-gray-800">اطلاعات اپراتور</h3>
                             <div className="space-y-3">
                                 <div className="flex items-center gap-3">
@@ -551,7 +551,7 @@ export default function CorpPanelDetails({ id }: { id: string }) {
                     </div>
 
                     {/* Address Information */}
-                    <div className="neu-card p-4 mb-6">
+                    <div className="inset-neu-container !w-full !p-4 mb-6">
                         <h3 className="text-lg font-semibold mb-3 text-gray-800">آدرس نصب</h3>
                         <div className="flex items-start gap-3">
                             <MapPin className="w-5 h-5 text-red-500 mt-1" />
