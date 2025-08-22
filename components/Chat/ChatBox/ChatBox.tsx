@@ -170,16 +170,6 @@ export default function ChatBox({
                 className
             )}
         >
-            {selectedChatRoom?.status !== "active" && (
-                <div className="absolute inset-0 flex flex-col gap-2 items-center justify-center bg-gray-200 opacity-40 pointer-events-none z-50">
-                    <CircleX className="w-44 h-44 text-gray-600 opacity-70" />
-                    <div className="text-gray-600 text-2xl">
-                        {" "}
-                        این اتاق مسدود شده است!
-                    </div>
-                </div>
-            )}
-
             {!isLoading && !selectedChatRoom ? (
                 <NoRecordFound
                     className="w-full"
@@ -199,6 +189,15 @@ export default function ChatBox({
                 //     </span>
                 // </div>
                 <>
+                    {selectedChatRoom?.status !== "active" && (
+                        <div className="absolute inset-0 flex flex-col gap-2 items-center justify-center bg-gray-200 opacity-40 pointer-events-none z-50">
+                            <CircleX className="w-44 h-44 text-gray-600 opacity-70" />
+                            <div className="text-gray-600 text-2xl">
+                                {" "}
+                                این اتاق مسدود شده است!
+                            </div>
+                        </div>
+                    )}
                     <div className="flex flex-row-reverse justify-between gap-2 px-6 items-center absolute top-0 right-0 left-0 h-20 rounded-t-md bg-white shadow-[2px_2px_5px_rgba(0,0,0,0.3)]">
                         <div className="cursor-pointer flex items-center justify-center gap-2">
                             <div
