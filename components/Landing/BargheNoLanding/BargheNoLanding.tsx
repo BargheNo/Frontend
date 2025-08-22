@@ -224,7 +224,7 @@ export default function BargheNoLanding() {
                     <div className="w-full h-full flex flex-row-reverse items-center justify-between">
                         {!isMobile && <div className="w-full h-full"></div>}
                         <div
-                            className="w-full flex flex-col justify-center items-center gap-16"
+                            className="w-full flex flex-col justify-center items-center gap-[8vh]"
                             id="slide1-text"
                         >
                             {isMobile && (
@@ -240,7 +240,7 @@ export default function BargheNoLanding() {
                             <div className="flex flex-col items-center justify-center gap-2">
                                 <h1
                                     className={cn(
-                                        `text-9xl font-bold text-[#193947] ${vazir.className} flex place-self-center my-4`,
+                                        `text-7xl md:text-9xl font-bold text-[#193947] ${vazir.className} flex place-self-center my-4`,
                                         "h-text"
                                     )}
                                 >
@@ -289,14 +289,14 @@ export default function BargheNoLanding() {
                     <div className="flex flex-row justify-between w-full h-full">
                         <div className="w-full h-full p-5 justify-center">
                             <div
-                                className="neo-card w-full h-full p-6 rounded-lg bg-warm-white flex flex-col items-center justify-between"
+                                className="neo-card w-full h-[85vh] p-6 rounded-lg bg-warm-white flex flex-col items-center justify-between"
                                 id="clean-card"
                             >
                                 <div className="flex flex-col items-center justify-center gap-2">
                                     <span className="self-start text-3xl font-bold">
                                         چرا ما؟
                                     </span>
-                                    <div className="w-full mt-4 text-lg text-gray-800 text-justify">
+                                    <div className="w-full h-[40vh] my-4 text-xl text-gray-800 text-justify overflow-y-scroll no-scrollbar">
                                         <TypewriterComponent
                                             options={{ delay: 40 }}
                                             onInit={(typewriter) => {
@@ -315,8 +315,9 @@ export default function BargheNoLanding() {
                                         />
                                     </div>
                                 </div>
-                                <div className="relative w-full aspect-square md:w-auto md:h-1/2 rounded-2xl overflow-hidden">
+                                <div className="relative h-[30vh] w-full md:w-auto md:h-1/2 rounded-2xl overflow-hidden">
                                     <Image
+                                        className="object-cover"
                                         src={CleanEnergy}
                                         alt="CleanEnergy"
                                         fill

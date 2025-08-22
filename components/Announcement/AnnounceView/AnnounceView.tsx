@@ -29,10 +29,12 @@ export default function AnnounceView({
     onlyView = false,
     className,
     mode = "user",
+    haveExtra = true,
 }: {
     onlyView?: boolean;
     className?: string;
     mode?: "user" | "admin";
+    haveExtra?: boolean;
 }) {
     const [pageSize, setPageSize] = useState<string>("");
     const [paginationInfo, setPaginationInfo] = useState<
@@ -92,18 +94,22 @@ export default function AnnounceView({
                 </div>
             ) : (
                 <>
-                    <FilterSection
-                        header="اخبار و اطلاعیه‌ها"
-                        fieldName="status"
-                        status={mode == "admin" ? status : undefined}
-                        setStatus={mode == "admin" ? setStatus : undefined}
-                        statusesList={mode == "admin" ? statusList : undefined}
-                        query={query}
-                        setQuery={setQuery}
-                        // status={status}
-                        // setStatus={setStatus}
-                        // statusesListApiRoute={`/v1/news/status`}
-                    />
+                    {haveExtra && (
+                        <FilterSection
+                            header="اخبار و اطلاعیه‌ها"
+                            fieldName="status"
+                            status={mode == "admin" ? status : undefined}
+                            setStatus={mode == "admin" ? setStatus : undefined}
+                            statusesList={
+                                mode == "admin" ? statusList : undefined
+                            }
+                            query={query}
+                            setQuery={setQuery}
+                            // status={status}
+                            // setStatus={setStatus}
+                            // statusesListApiRoute={`/v1/news/status`}
+                        />
+                    )}
                     <AnnouncementBox
                         onlyView={onlyView}
                         className={cn(
