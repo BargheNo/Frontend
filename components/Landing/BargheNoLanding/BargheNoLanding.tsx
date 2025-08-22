@@ -30,6 +30,7 @@ import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { Suspense } from "react";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import CanvasErrorBoundary from "../D3Panel/CanvasErrorBoundary";
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
 
@@ -111,7 +112,7 @@ export default function BargheNoLanding() {
 
         gsap.to(".D3Panel", {
             y: "-=20vh",
-            x: "-=2vw",
+            // x: "-=vw",
             // scale: 0.8,
             duration: 0.5,
             scrollTrigger: {
@@ -182,50 +183,63 @@ export default function BargheNoLanding() {
                 {/* <div className="fixed bg-red-500 top-20! bottom-20! left-20! right-20! w-[60vw] h-[50vh] flex justify-center items-center"> */}
                 {!isMobile && (
                     <div className="D3Panel fixed z-20 w-[40vw] left-[8vw] bottom-[20vh] top-[20vh] flex items-center justify-center rounded-2xl">
-                        <Canvas
-                            style={{
-                                width: "100%",
-                                height: "100%",
-                            }}
+                        <CanvasErrorBoundary
+                            fallback={
+                                <div className="w-[70%] aspect-video relative">
+                                    <Image
+                                        src={panel}
+                                        alt="panel"
+                                        className={`${styles.panel}`}
+                                        fill
+                                    />
+                                </div>
+                            }
                         >
-                            <Suspense
-                                fallback={
-                                    <Html fullscreen>
-                                        <LoadingSpinner className="w-full h-full bg-transparent" />
-                                    </Html>
-                                }
+                            <Canvas
+                                style={{
+                                    width: "100%",
+                                    height: "100%",
+                                }}
                             >
-                                <PerspectiveCamera
-                                    makeDefault
-                                    position={[0, 1.5, 3]}
-                                />
-                                <OrbitControls
-                                    minDistance={4} // closest zoom
-                                    maxDistance={8} // farthest zoom
-                                    enableZoom={true} // make sure zoom is enabled
-                                />
-                                <OrbitControls />
-                                <ambientLight intensity={0.5} />
-                                <directionalLight
-                                    position={[10, 10, 5]}
-                                    intensity={1}
-                                    castShadow
-                                    shadow-mapSize-width={2048}
-                                    shadow-mapSize-height={2048}
-                                />
-                                <pointLight
-                                    position={[-10, -10, -10]}
-                                    intensity={0.5}
-                                />
-                                <Environment preset="city" />
-                                <D3Panel
-                                    position={position}
-                                    rotation={rotation}
-                                    scale={scale}
-                                    ref={setD3PanelRef}
-                                />
-                            </Suspense>
-                        </Canvas>
+                                <Suspense
+                                    fallback={
+                                        <Html fullscreen>
+                                            <LoadingSpinner className="w-full h-full bg-transparent" />
+                                        </Html>
+                                    }
+                                >
+                                    <PerspectiveCamera
+                                        makeDefault
+                                        position={[0, 1.5, 3]}
+                                    />
+                                    <OrbitControls
+                                        minDistance={4} // closest zoom
+                                        maxDistance={8} // farthest zoom
+                                        enableZoom={true} // make sure zoom is enabled
+                                    />
+                                    <OrbitControls />
+                                    <ambientLight intensity={0.5} />
+                                    <directionalLight
+                                        position={[10, 10, 5]}
+                                        intensity={1}
+                                        castShadow
+                                        shadow-mapSize-width={2048}
+                                        shadow-mapSize-height={2048}
+                                    />
+                                    <pointLight
+                                        position={[-10, -10, -10]}
+                                        intensity={0.5}
+                                    />
+                                    <Environment preset="city" />
+                                    <D3Panel
+                                        position={position}
+                                        rotation={rotation}
+                                        scale={scale}
+                                        ref={setD3PanelRef}
+                                    />
+                                </Suspense>
+                            </Canvas>
+                        </CanvasErrorBoundary>
                     </div>
                 )}
                 <div
@@ -235,7 +249,7 @@ export default function BargheNoLanding() {
                     <div className="w-full h-full flex flex-row-reverse items-center justify-between">
                         {!isMobile && <div className="w-full h-full"></div>}
                         <div
-                            className="w-full flex flex-col justify-center items-center gap-[8vh]"
+                            className="w-full flex flex-col justify-center items-center gap-[8vh] md:gap-20 md:transform md:-translate-y-20"
                             id="slide1-text"
                         >
                             {isMobile && (
@@ -326,9 +340,9 @@ export default function BargheNoLanding() {
                                         />
                                     </div>
                                 </div>
-                                <div className="relative h-[30vh] w-full md:w-auto md:h-1/2 rounded-2xl overflow-hidden">
+                                <div className="relative h-full! w-full! rounded-2xl overflow-hidden">
                                     <Image
-                                        className="object-cover"
+                                        className="object-top rounded-2xl overflow-hidden"
                                         src={CleanEnergy}
                                         alt="CleanEnergy"
                                         fill
@@ -344,8 +358,9 @@ export default function BargheNoLanding() {
                                 >
                                     <div className="w-full h-full neo-card-rev p-3 bg-warm-white rounded-lg flex flex-col justify-between ">
                                         <div className="w-full h-full"></div>
-                                        <div className="w-full h-full relative rounded-lg overflow-hidden">
+                                        <div className="w-full! h-full relative rounded-lg overflow-hidden">
                                             <Image
+                                                className="object-cover"
                                                 src={PanelBluePrint}
                                                 alt="panel-blue-print"
                                                 fill
