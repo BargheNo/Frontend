@@ -1,5 +1,12 @@
 "use client";
-import { ChevronLeft, Menu, Send, Webhook } from "lucide-react";
+import {
+    ChevronLeft,
+    CircleX,
+    EllipsisVertical,
+    Menu,
+    Send,
+    Webhook,
+} from "lucide-react";
 import React, { useState, useRef, useEffect } from "react";
 import ChatMessage from "../ChatMessage/ChatMessage";
 import { cn } from "@/lib/utils";
@@ -16,6 +23,13 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useMediaQuery } from "@/src/hooks/useMediaQuery";
 import { toast } from "sonner";
 import NoRecordFound from "@/components/NoRecordFound/NoRecordFound";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+import { putData } from "@/src/services/apiHub";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 // import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 
 export default function ChatBox({
@@ -36,7 +50,7 @@ export default function ChatBox({
     const selectedChatRoom = useSelector(
         (state: any) => state.chat.selectedChatRoom
     );
-    const user = useSelector((state: any) => state.user);
+    const user = useSelector((state: RootState) => state.user);
 
     const {
         messages,
@@ -47,6 +61,7 @@ export default function ChatBox({
         socket,
         getNewPage,
         scrollToBottom,
+        connection,
     } = useChatMessages(selectedChatRoom);
 
     const { rollerRef } = useChatScroll(
@@ -55,6 +70,12 @@ export default function ChatBox({
         getNewPage,
         currentPage
     );
+
+    useEffect(() => {
+        console.log("selectedChatRoom: ", selectedChatRoom);
+        console.log("user: ", user);
+        console.log("messages: ", messages);
+    }, [selectedChatRoom, user, messages]);
 
     useEffect(() => {
         return () => {
@@ -110,16 +131,60 @@ export default function ChatBox({
         }
     };
 
+    const queryClient = useQueryClient();
+
+    const blockChatMutation = useMutation({
+        mutationFn: () =>
+            putData({
+                endPoint: `/v1/corp/${user.corpId}/chat/room/${selectedChatRoom.roomID}/block`,
+            }),
+        onSuccess: () => {
+            toast.success("چت با موفقیت مسدود شد");
+            // invalidate chatRooms query to refetch updated data
+            queryClient.invalidateQueries({
+                queryKey: ["chatRooms"],
+            });
+        },
+    });
+    const activeChatMutation = useMutation({
+        mutationFn: () =>
+            putData({
+                endPoint: `/v1/corp/${user.corpId}/chat/room/${selectedChatRoom.roomID}/unblock`,
+            }),
+        onSuccess: () => {
+            toast.success("چت با موفقیت فعال شد");
+            queryClient.invalidateQueries({
+                queryKey: ["chatRooms"],
+            });
+        },
+    });
+
     return (
         <div
             ref={boxRef}
             className={cn(
                 "neo-card bg-[#F0EDEF] rounded-lg relative",
+                !isLoading && !selectedChatRoom
+                    ? "flex justify-center items-center"
+                    : "",
                 className
             )}
         >
+            {selectedChatRoom?.status !== "active" && (
+                <div className="absolute inset-0 flex flex-col gap-2 items-center justify-center bg-gray-200 opacity-40 pointer-events-none z-50">
+                    <CircleX className="w-44 h-44 text-gray-600 opacity-70" />
+                    <div className="text-gray-600 text-2xl">
+                        {" "}
+                        این اتاق مسدود شده است!
+                    </div>
+                </div>
+            )}
+
             {!isLoading && !selectedChatRoom ? (
-                <NoRecordFound text="هیچ مکالمه‌ای یافت نشد." />
+                <NoRecordFound
+                    className="w-full"
+                    text="هیچ مکالمه‌ای یافت نشد."
+                />
             ) : (
                 // <div className="w-full h-full flex flex-col items-center justify-center z-40">
                 //     <Image
@@ -136,6 +201,16 @@ export default function ChatBox({
                 <>
                     <div className="flex flex-row-reverse justify-between gap-2 px-6 items-center absolute top-0 right-0 left-0 h-20 rounded-t-md bg-white shadow-[2px_2px_5px_rgba(0,0,0,0.3)]">
                         <div className="cursor-pointer flex items-center justify-center gap-2">
+                            <div
+                                className={cn(
+                                    "w-[10px] h-[10px] rounded-full cursor-auto",
+                                    connection &&
+                                        selectedChatRoom.status == "active"
+                                        ? "green-status cursor-auto"
+                                        : "red-status cursor-auto"
+                                )}
+                            />
+
                             <ChevronLeft
                                 className="rounded-lg hover:bg-gray-200"
                                 size={32}
@@ -151,10 +226,38 @@ export default function ChatBox({
                             )}
                         </div>
                         <div className="flex flex-row gap-2 items-center">
+                            {mode == "corp" && (
+                                <Popover>
+                                    <PopoverTrigger className="hover:cursor-pointer hover:bg-gray-200 p-1 rounded-lg">
+                                        <EllipsisVertical />
+                                    </PopoverTrigger>
+                                    <PopoverContent className="neo-card flex justify-center items-center bg-warm-white w-fit h-fit p-2">
+                                        {selectedChatRoom.status == "active" ? (
+                                            <button
+                                                className="neo-btn py-1 px-4"
+                                                onClick={() => {
+                                                    blockChatMutation.mutate();
+                                                }}
+                                            >
+                                                مسدود کردن
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className="neo-btn py-1 px-4"
+                                                onClick={() => {
+                                                    activeChatMutation.mutate();
+                                                }}
+                                            >
+                                                فعال کردن
+                                            </button>
+                                        )}
+                                    </PopoverContent>
+                                </Popover>
+                            )}
                             <Avatar className="h-12 w-12">
                                 <AvatarImage
                                     src={
-                                        mode === "user"
+                                        mode == "user"
                                             ? selectedChatRoom?.corporation
                                                   ?.logo
                                             : selectedChatRoom?.customer
@@ -164,7 +267,7 @@ export default function ChatBox({
                                     className="object-cover"
                                 />
                                 <AvatarFallback className="bg-gray-500 text-white">
-                                    {mode === "user"
+                                    {mode == "user"
                                         ? selectedChatRoom?.corporation?.name?.charAt(
                                               0
                                           ) +
@@ -231,66 +334,72 @@ export default function ChatBox({
                                             message,
                                         ])
                                     ).values(),
-                                ].map((message, index) => (
-                                    <ChatMessage
-                                        key={message.id}
-                                        message={message.content}
-                                        type={
-                                            message.sender.firstName ===
-                                                user.firstName &&
-                                            message.sender.lastName ===
-                                                user.lastName
-                                                ? "self"
-                                                : "other"
-                                        }
-                                        containerWidth={boxWidth}
-                                        messageId={message.id}
-                                        srcpic={
-                                            mode === "user"
-                                                ? selectedChatRoom?.corporation
-                                                      ?.logo
-                                                : selectedChatRoom?.customer
-                                                      ?.profilePic
-                                        }
-                                        decpic={
-                                            mode === "user"
-                                                ? selectedChatRoom?.customer
-                                                      ?.profilePic
-                                                : selectedChatRoom?.corporation
-                                                      ?.logo
-                                        }
-                                        srcName={
-                                            mode === "user"
-                                                ? selectedChatRoom?.corporation
-                                                      ?.name
-                                                : selectedChatRoom?.customer
-                                                      ?.firstName +
-                                                  " " +
-                                                  selectedChatRoom?.customer
-                                                      ?.lastName
-                                        }
-                                        decName={
-                                            mode === "user"
-                                                ? selectedChatRoom?.customer
-                                                      ?.firstName +
-                                                  " " +
-                                                  selectedChatRoom?.customer
-                                                      ?.lastName
-                                                : selectedChatRoom?.corporation
-                                                      ?.name
-                                        }
-                                        time={new Date(
-                                            message.timeStamp ??
-                                                message.timestamp ??
-                                                ""
-                                        ).toLocaleTimeString([], {
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                        })}
-                                        // log={index}
-                                        ref={index === 2 ? thirdMessage : null}
-                                    />
-                                ))}
+                                ]
+                                    .reverse()
+                                    .map((message, index) => (
+                                        <ChatMessage
+                                            key={message.id}
+                                            message={message.content}
+                                            type={
+                                                message?.sender?.firstName ===
+                                                    user?.firstName &&
+                                                message?.sender?.lastName ===
+                                                    user?.lastName
+                                                    ? "self"
+                                                    : "other"
+                                            }
+                                            containerWidth={boxWidth}
+                                            messageId={message.id}
+                                            srcpic={
+                                                mode === "user"
+                                                    ? selectedChatRoom
+                                                          ?.corporation?.logo
+                                                    : selectedChatRoom?.customer
+                                                          ?.profilePic
+                                            }
+                                            decpic={
+                                                mode === "user"
+                                                    ? selectedChatRoom?.customer
+                                                          ?.profilePic
+                                                    : selectedChatRoom
+                                                          ?.corporation?.logo
+                                            }
+                                            srcName={
+                                                mode === "user"
+                                                    ? selectedChatRoom
+                                                          ?.corporation?.name
+                                                    : selectedChatRoom?.customer
+                                                          ?.firstName +
+                                                      " " +
+                                                      selectedChatRoom?.customer
+                                                          ?.lastName
+                                            }
+                                            decName={
+                                                mode === "user"
+                                                    ? selectedChatRoom?.customer
+                                                          ?.firstName +
+                                                      " " +
+                                                      selectedChatRoom?.customer
+                                                          ?.lastName
+                                                    : selectedChatRoom
+                                                          ?.corporation?.name
+                                            }
+                                            time={new Date(
+                                                message.timeStamp ??
+                                                    message.timestamp ??
+                                                    ""
+                                            ).toLocaleTimeString([], {
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                            })}
+                                            // log={index}
+                                            ref={
+                                                index === 2
+                                                    ? thirdMessage
+                                                    : null
+                                            }
+                                        />
+                                    ))}
                             </div>
                             <div className="absolute neo-card-rev bottom-5 bg-white min-h-[48px] max-h-[200px] right-3 left-3 rtl mx-auto flex items-center rounded-lg px-3">
                                 <Webhook
@@ -299,7 +408,15 @@ export default function ChatBox({
                                     className="self-end mb-3"
                                 />
                                 <textarea
-                                    className="w-full bg-transparent outline-none resize-none py-3 mr-[8px] max-h-[200px] overflow-y-auto no-scrollbar"
+                                    disabled={
+                                        selectedChatRoom?.status != "active"
+                                    }
+                                    className={cn(
+                                        "w-full bg-transparent outline-none resize-none py-3 mr-[8px] max-h-[200px] overflow-y-auto no-scrollbar",
+                                        selectedChatRoom?.status != "active"
+                                            ? "cursor-not-allowed"
+                                            : ""
+                                    )}
                                     placeholder={
                                         replyingTo
                                             ? "در حال پاسخ به پیام..."
