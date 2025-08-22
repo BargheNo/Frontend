@@ -321,7 +321,7 @@ export default function BargheNoLanding() {
                                     <span className="self-start text-3xl font-bold">
                                         چرا ما؟
                                     </span>
-                                    <div className="w-full h-[40vh] my-4 text-xl text-gray-800 text-justify overflow-y-scroll no-scrollbar">
+                                    <div className="w-full h-[30vh]! my-4 text-xl text-gray-800 text-justify overflow-y-scroll no-scrollbar">
                                         <TypewriterComponent
                                             options={{ delay: 40 }}
                                             onInit={(typewriter) => {
@@ -340,9 +340,9 @@ export default function BargheNoLanding() {
                                         />
                                     </div>
                                 </div>
-                                <div className="relative h-full! w-full! rounded-2xl overflow-hidden">
+                                <div className="relative h-full w-full! rounded-2xl overflow-hidden">
                                     <Image
-                                        className="object-top rounded-2xl overflow-hidden"
+                                        className="object-cover rounded-2xl overflow-hidden"
                                         src={CleanEnergy}
                                         alt="CleanEnergy"
                                         fill
