@@ -16,6 +16,7 @@ import { D3Panel } from "../D3Panel/D3Panel";
 import {
     Box,
     Environment,
+    Html,
     OrbitControls,
     PerspectiveCamera,
     Stars,
@@ -27,6 +28,8 @@ import { delay, is } from "cypress/types/bluebird";
 import { useMediaQuery } from "react-responsive";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
+import { Suspense } from "react";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
 
@@ -185,35 +188,43 @@ export default function BargheNoLanding() {
                                 height: "100%",
                             }}
                         >
-                            <PerspectiveCamera
-                                makeDefault
-                                position={[0, 1.5, 3]}
-                            />
-                            <OrbitControls
-                                minDistance={4} // closest zoom
-                                maxDistance={8} // farthest zoom
-                                enableZoom={true} // make sure zoom is enabled
-                            />
-                            <OrbitControls />
-                            <ambientLight intensity={0.5} />
-                            <directionalLight
-                                position={[10, 10, 5]}
-                                intensity={1}
-                                castShadow
-                                shadow-mapSize-width={2048}
-                                shadow-mapSize-height={2048}
-                            />
-                            <pointLight
-                                position={[-10, -10, -10]}
-                                intensity={0.5}
-                            />
-                            <Environment preset="city" />
-                            <D3Panel
-                                position={position}
-                                rotation={rotation}
-                                scale={scale}
-                                ref={setD3PanelRef}
-                            />
+                            <Suspense
+                                fallback={
+                                    <Html fullscreen>
+                                        <LoadingSpinner className="w-full h-full bg-transparent" />
+                                    </Html>
+                                }
+                            >
+                                <PerspectiveCamera
+                                    makeDefault
+                                    position={[0, 1.5, 3]}
+                                />
+                                <OrbitControls
+                                    minDistance={4} // closest zoom
+                                    maxDistance={8} // farthest zoom
+                                    enableZoom={true} // make sure zoom is enabled
+                                />
+                                <OrbitControls />
+                                <ambientLight intensity={0.5} />
+                                <directionalLight
+                                    position={[10, 10, 5]}
+                                    intensity={1}
+                                    castShadow
+                                    shadow-mapSize-width={2048}
+                                    shadow-mapSize-height={2048}
+                                />
+                                <pointLight
+                                    position={[-10, -10, -10]}
+                                    intensity={0.5}
+                                />
+                                <Environment preset="city" />
+                                <D3Panel
+                                    position={position}
+                                    rotation={rotation}
+                                    scale={scale}
+                                    ref={setD3PanelRef}
+                                />
+                            </Suspense>
                         </Canvas>
                     </div>
                 )}
