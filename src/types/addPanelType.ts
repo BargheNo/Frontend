@@ -4,6 +4,7 @@ export interface InitPanel {
   power: number;
   area: number;
   buildingType: number;
+  guaranteeID: number;
   tilt: number;
   azimuth: number;
   totalNumberOfModules: number;

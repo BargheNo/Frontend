@@ -6,7 +6,7 @@ import { installedpanel } from "@/src/types/installedpanelType";
 import wordExpression from "@/src/functions/Calculations";
 import TruncatedText from "../ui/TruncatedText";
 
-const InstalledPanel = ({ name, customer, address, power }: installedpanel) => {
+const InstalledPanel = ({ id, name, customer, address, power }: installedpanel) => {
     return (
         <>
             <div
@@ -92,7 +92,7 @@ const InstalledPanel = ({ name, customer, address, power }: installedpanel) => {
                     </div>
 
                     <div className="flex flex-col lg:justify-center justify-end  lg:-mb-0 -mb-17 gap-2 items-center min-w-48 ">
-                        <Link href={"#"}>
+                        <Link href={`/corpdashboard/installed-panels/${id}`}>
                             <button className="flex items-center  justify-between bg-gradient-to-r md:mt-0 mt-13 from-[#EE4334] to-[#D73628] px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
                                 <span className="font-medium">مدیریت پنل</span>
                                 <MoveLeft className="mr-2 w-4 h-4" />

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
     Tally5,
     DatabaseZap,
@@ -9,19 +9,15 @@ import {
     MapPinHouse,
     SquareMenu,
     IdCard,
-    Plus,
     BellRing,
     House,
     Mailbox,
 } from "lucide-react";
 import style from "./style.module.css";
-import SignupButton from "@/components/SignupButton/SignupButton";
 import { InitPanel } from "@/src/types/addPanelType";
 import {
     Dialog,
-    DialogClose,
     DialogContent,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
@@ -45,6 +41,7 @@ import addpanelService from "@/src/services/addpanelService";
 import CustomToast from "@/components/Custom/CustomToast/CustomToast";
 import AddComponent from "@/components/AddComponent/AddComponent";
 import { useSelector } from "react-redux";
+import { RootState } from "@/src/store/store";
 import { getData } from "@/src/services/apiHub";
 import StickyFooter from "@/components/Dialog/StickyFooter/StickyFooter";
 import CancelButton from "@/components/Dialog/CancelButton/CancelButton";
@@ -55,6 +52,15 @@ interface BuildingTypeProps {
     name: string;
 }
 
+interface GuaranteeProps {
+    id: number;
+    name: string;
+    status: string;
+    guaranteeType: string;
+    durationMonths: number;
+    description: string;
+}
+
 export default function AddPanel() {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState<boolean>(false);
@@ -63,6 +69,9 @@ export default function AddPanel() {
     const [provinces, Setprovinces] = useState<Province[]>([]);
     const [cities, Setcities] = useState<City[]>([]);
     const [buildingTypes, setBuildingTypes] = useState<BuildingTypeProps[]>();
+    const [guarantees, setGuarantees] = useState<GuaranteeProps[]>([]);
+
+    const corpId = useSelector((state: RootState) => state.user.corpId);
 
     const Getprovinces = () => {
         provinceService
@@ -74,6 +83,19 @@ export default function AddPanel() {
                 console.log(err.message);
             });
     };
+
+    const GetGuarantees = useCallback(() => {
+        if (corpId) {
+            getData({ endPoint: `/v1/corp/${corpId}/guarantee?status=1` })
+                .then((data) => {
+                    // Filter guarantees with status "فعال"
+                    const activeGuarantees = data?.data?.filter((guarantee: GuaranteeProps) => guarantee.status === "فعال");
+                    setGuarantees(activeGuarantees || []);
+                })
+                .catch((err) => console.log(err));
+        }
+    }, [corpId]);
+
     useEffect(() => {
         getData({ endPoint: `/v1/installation/request/building` })
             .then((data) => {
@@ -81,7 +103,8 @@ export default function AddPanel() {
             })
             .catch((err) => console.log(err));
         Getprovinces();
-    }, []);
+        GetGuarantees();
+    }, [GetGuarantees]);
 
     const UpdateCityList = (provinceId: number) => {
         provinceService
@@ -99,7 +122,6 @@ export default function AddPanel() {
     useEffect(() => {
         UpdateCityList(provinceid ?? 1);
     }, [provinceid]);
-    const corpId = useSelector((state: RootState) => state.user.corpId);
     const handelAddPanelrequest = (panel: InitPanel) => {
         // setOpen(false);
         console.log(panel);
@@ -143,6 +165,7 @@ export default function AddPanel() {
                         provinceID: "",
                         cityID: "",
                         buildingType: "",
+                        guaranteeID: "",
                         code: "",
                         unit: "",
                         number: "",
@@ -162,6 +185,9 @@ export default function AddPanel() {
                             ),
                         address: Yup.string().required("این فیلد الزامی است."),
                         buildingType: Yup.number().required(
+                            "این فیلد الزامی است."
+                        ),
+                        guaranteeID: Yup.number().required(
                             "این فیلد الزامی است."
                         ),
                         area: Yup.number().required("این فیلد الزامی است."),
@@ -190,6 +216,7 @@ export default function AddPanel() {
                             power: Number(values.power),
                             area: Number(values.area),
                             buildingType: Number(values.buildingType),
+                            guaranteeID: Number(values.guaranteeID),
                             tilt: Number(values.angel),
                             azimuth: Number(values.direction),
                             totalNumberOfModules: Number(values.modulecount),
@@ -283,6 +310,50 @@ export default function AddPanel() {
                                                         className="cursor-pointer"
                                                     >
                                                         {buildingType?.name}
+                                                    </SelectItem>
+                                                )
+                                            )}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div
+                                className="flex justify-end w-full -mt-4"
+                                style={{ gap: "1vw" }}
+                            >
+                                <Select
+                                    name="guarantee"
+                                    onValueChange={(value) => {
+                                        setFieldValue(
+                                            "guaranteeID",
+                                            Number(value)
+                                        );
+                                    }}
+                                >
+                                    <SelectTrigger
+                                        className={`${style.CustomInput} mt-[27px] min-h-[43px] cursor-pointer ${
+                                            errors.guaranteeID && touched.guaranteeID
+                                                ? "!border-red-500 !ring-1 !ring-red-700"
+                                                : ""
+                                        }`}
+                                    >
+                                        <SelectValue placeholder="گارانتی" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectLabel>
+                                                گارانتی
+                                            </SelectLabel>
+                                            {guarantees?.map(
+                                                (guarantee, index) => (
+                                                    <SelectItem
+                                                        key={index}
+                                                        value={String(
+                                                            guarantee?.id
+                                                        )}
+                                                        className="cursor-pointer"
+                                                    >
+                                                        {guarantee?.name}
                                                     </SelectItem>
                                                 )
                                             )}

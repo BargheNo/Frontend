@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import styles from "./PanelCard.module.css";
 import {
     MoveLeft,
     Sun,
@@ -8,9 +7,6 @@ import {
     TrendingUp,
     MapPin,
     AlertCircle,
-    X,
-    Plus,
-    ChevronDown,
 } from "lucide-react";
 import { PanelCardProps } from "@/src/types/PanelCardTypes";
 import Link from "next/link";
@@ -22,7 +18,6 @@ import CustomTextArea from "@/components/Custom/CustomTextArea/CustomTextArea";
 
 import {
     Dialog,
-    DialogClose,
     DialogContent,
     DialogHeader,
     DialogTitle,
@@ -44,16 +39,11 @@ const PanelCard = ({
     address,
     className,
     status,
+    redirectPath,
+    showReportProblem = true,
 }: PanelCardProps) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [open, setOpen] = useState(false);
-    const [isExpanded, setIsExpanded] = useState(false);
-
-    const MAXLENGTH: number = 135;
-    const truncateText = (text: string, maxLength: number = MAXLENGTH) => {
-        if (text.length <= maxLength) return text;
-        return text.slice(0, maxLength) + "...";
-    };
 
     const handleSubmit = async (values: { problem: string }) => {
         setLoading(true);
@@ -110,61 +100,63 @@ const PanelCard = ({
                     <div className="flex flex-col-reverse md:flex-col-reverse lg:flex-row-reverse sm:flex-row-reverse justify-between w-full mb-6 gap-4">
                         {/* LEFT SIDE - BUTTONS */}
                         <div className="flex flex-row md:flex-row lg:flex-col sm:flex-col gap-5 md:px-20">
-                            <Dialog open={open} onOpenChange={setOpen}>
-                                <DialogTrigger asChild>
-                                    <button className="w-full flex items-center justify-evenly gradient-red px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
-                                        <span className="font-medium text-nowrap">
-                                            گزارش مشکل
-                                        </span>
-                                        <AlertCircle className="mr-2 w-4 h-4" />
-                                    </button>
-                                </DialogTrigger>
-                                <DialogContent
-                                    style={{ backgroundColor: "#F1F4FC" }}
-                                    className="max-h-[80vh] overflow-y-auto no-scrollbar rtl vazir pb-0 dialog-width flex flex-col"
-                                    // className="w-full dialog-width max-h-[80vh] overflow-y-auto rtl"
-                                >
-                                    <Formik
-                                        initialValues={{ problem: "" }}
-                                        validationSchema={validationSchema}
-                                        onSubmit={handleSubmit}
+                            {showReportProblem && (
+                                <Dialog open={open} onOpenChange={setOpen}>
+                                    <DialogTrigger asChild>
+                                        <button className="w-full flex items-center justify-evenly gradient-red px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
+                                            <span className="font-medium text-nowrap">
+                                                گزارش مشکل
+                                            </span>
+                                            <AlertCircle className="mr-2 w-4 h-4" />
+                                        </button>
+                                    </DialogTrigger>
+                                    <DialogContent
+                                        style={{ backgroundColor: "#F1F4FC" }}
+                                        className="max-h-[80vh] overflow-y-auto no-scrollbar rtl vazir pb-0 dialog-width flex flex-col"
+                                        // className="w-full dialog-width max-h-[80vh] overflow-y-auto rtl"
                                     >
-                                        {({ isSubmitting }) => (
-                                            <Form>
-                                                <div className="overflow-y-auto relative flex-1 no-scrollbar pb-4">
-                                                    <DialogHeader>
-                                                        <DialogTitle className="flex justify-center items-end font-bold mt-3.5">
-                                                            گزارش مشکل
-                                                        </DialogTitle>
-                                                    </DialogHeader>
-                                                    <CustomTextArea
-                                                        name="problem"
-                                                        icon={AlertCircle}
-                                                        textareaClassName="!bg-[#FEFEFE] h-32"
-                                                    >
-                                                        توضیحات مشکل
-                                                    </CustomTextArea>
-                                                </div>
-                                                <StickyFooter>
-                                                    <CancelButton />
-                                                    <Button
-                                                        type="submit"
-                                                        disabled={isSubmitting}
-                                                        className="min-w-28 flex place-content-center cursor-pointer gradient-green text-white px-4 rounded-md transition-all duration-300"
-                                                    >
-                                                        {loading ? (
-                                                            <LoadingOnButton />
-                                                        ) : (
-                                                            <p>ارسال گزارش</p>
-                                                        )}
-                                                    </Button>
-                                                </StickyFooter>
-                                            </Form>
-                                        )}
-                                    </Formik>
-                                </DialogContent>
-                            </Dialog>
-                            <Link href={`my-panels/${id}`} className="w-full">
+                                        <Formik
+                                            initialValues={{ problem: "" }}
+                                            validationSchema={validationSchema}
+                                            onSubmit={handleSubmit}
+                                        >
+                                            {({ isSubmitting }) => (
+                                                <Form>
+                                                    <div className="overflow-y-auto relative flex-1 no-scrollbar pb-4">
+                                                        <DialogHeader>
+                                                            <DialogTitle className="flex justify-center items-end font-bold mt-3.5">
+                                                                گزارش مشکل
+                                                            </DialogTitle>
+                                                        </DialogHeader>
+                                                        <CustomTextArea
+                                                            name="problem"
+                                                            icon={AlertCircle}
+                                                            textareaClassName="!bg-[#FEFEFE] h-32"
+                                                        >
+                                                            توضیحات مشکل
+                                                        </CustomTextArea>
+                                                    </div>
+                                                    <StickyFooter>
+                                                        <CancelButton />
+                                                        <Button
+                                                            type="submit"
+                                                            disabled={isSubmitting}
+                                                            className="min-w-28 flex place-content-center cursor-pointer gradient-green text-white px-4 rounded-md transition-all duration-300"
+                                                        >
+                                                            {loading ? (
+                                                                <LoadingOnButton />
+                                                            ) : (
+                                                                <p>ارسال گزارش</p>
+                                                            )}
+                                                        </Button>
+                                                    </StickyFooter>
+                                                </Form>
+                                            )}
+                                        </Formik>
+                                    </DialogContent>
+                                </Dialog>
+                            )}
+                            <Link href={redirectPath || `my-panels/${id}`} className="w-full">
                                 <button className="w-full flex items-center justify-evenly gradient-blue px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
                                     <span className="font-medium text-nowrap">
                                         مدیریت پنل
