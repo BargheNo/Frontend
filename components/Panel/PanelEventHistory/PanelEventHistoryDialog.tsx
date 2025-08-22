@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getData } from "@/src/services/apiHub";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { format } from "date-fns";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
 
