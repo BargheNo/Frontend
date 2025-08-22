@@ -12,4 +12,5 @@ export interface PanelCardProps {
 	className?: string;
 	status: string;
 	redirectPath?: string;
+	showReportProblem?: boolean;
 }

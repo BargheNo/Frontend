@@ -130,6 +130,7 @@ const CorpInstalledPanels = () => {
                                 status={panel.status}
                                 address={`استان ${panel.address.province}، شهر ${panel.address.city}، ${panel.address.streetAddress}`}
                                 redirectPath={`/corpdashboard/installed-panels/${panel.id}`}
+                                showReportProblem={false}
                             />
                         ))}
                     </>
