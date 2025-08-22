@@ -9,6 +9,7 @@ import FilterSection from "@/components/FilterSection/FilterSection";
 import CustomPagination from "@/components/Custom/CustomPagination/CustomPagination";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
+import AddPanel from "@/components/InstalledPanels/add-panel";
 
 interface CorpPanelProps {
     id: number;
@@ -92,6 +93,7 @@ const CorpInstalledPanels = () => {
     
     return (
         <PageContainer>
+            <AddPanel />
             <FilterSection
                 header="پنل‌های نصب شده"
                 fieldName="پنل"
