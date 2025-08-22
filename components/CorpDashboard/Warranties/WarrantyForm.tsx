@@ -27,11 +27,21 @@ const WarrantyForm = ({
     isLoading,
     onSubmit,
 }: WarrantyFormProps) => {
+    const handleSubmit = (values: FormValues) => {
+        // Ensure duration is always a number before submitting
+        const formattedValues = {
+            ...values,
+            duration: typeof values.duration === 'string' ? Number(values.duration) : values.duration,
+            type: typeof values.type === 'string' ? Number(values.type) : values.type,
+        };
+        onSubmit(formattedValues);
+    };
+
     return (
         <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
-            onSubmit={onSubmit}
+            onSubmit={handleSubmit}
             enableReinitialize
         >
             {({ values, errors, touched, isSubmitting, setFieldValue }) => (
@@ -56,7 +66,7 @@ const WarrantyForm = ({
                         <Select
                             name="type"
                             disabled={isLoading}
-                            value={values.type}
+                            value={values.type.toString()}
                             onValueChange={(value) =>
                                 setFieldValue("type", Number(value))
                             }
@@ -68,14 +78,14 @@ const WarrantyForm = ({
                                 <SelectValue placeholder="انتخاب نوع گارانتی">
                                     {
                                         warrantyTypes.find(
-                                            (type) => type.id == values.type
+                                            (type) => Number(type.id) === values.type
                                         )?.name
                                     }
                                 </SelectValue>
                             </SelectTrigger>
                             <SelectContent>
                                 {warrantyTypes.map((type) => (
-                                    <SelectItem key={type.id} value={type.id}>
+                                    <SelectItem key={type.id} value={type.id.toString()}>
                                         {type.name}
                                     </SelectItem>
                                 ))}
@@ -106,6 +116,12 @@ const WarrantyForm = ({
                                     : "border"
                             }`}
                             maxLength={3}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                // Convert to number if not empty, otherwise set to empty string for validation
+                                const numericValue = value === '' ? '' : Number(value);
+                                setFieldValue("duration", numericValue);
+                            }}
                         >
                             مدت گارانتی (ماه)*
                         </CustomInput>
