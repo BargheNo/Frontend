@@ -662,6 +662,7 @@ const InstalledPanelPagination = forwardRef<{ handelHistory: () => void }, {}>(
                             {history.map((order: installedpanel, index) => (
                                 <InstalledPanel
                                     key={index}
+                                    id={order?.id}
                                     customer={order?.customer}
                                     name={order?.name}
                                     power={order?.power}

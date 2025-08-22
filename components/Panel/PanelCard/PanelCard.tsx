@@ -44,6 +44,7 @@ const PanelCard = ({
     address,
     className,
     status,
+    redirectPath,
 }: PanelCardProps) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [open, setOpen] = useState(false);
@@ -164,7 +165,7 @@ const PanelCard = ({
                                     </Formik>
                                 </DialogContent>
                             </Dialog>
-                            <Link href={`my-panels/${id}`} className="w-full">
+                            <Link href={redirectPath || `my-panels/${id}`} className="w-full">
                                 <button className="w-full flex items-center justify-evenly gradient-blue px-4 py-2 text-white cursor-pointer shadow-md rounded-full hover:shadow-lg transition duration-300 hover:scale-105">
                                     <span className="font-medium text-nowrap">
                                         مدیریت پنل

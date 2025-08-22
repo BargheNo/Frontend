@@ -46,7 +46,7 @@ interface CorpPanelProps {
     };
 }
 
-const CorpInstalledPanels = () => {
+const CorpMyPanels = () => {
     const corpId = useSelector((state: RootState) => state.user.corpId);
     const [loading, setLoading] = useState<boolean>(true);
     const [paginationInfo, setPaginationInfo] = useState<
@@ -93,7 +93,7 @@ const CorpInstalledPanels = () => {
     return (
         <PageContainer>
             <FilterSection
-                header="پنل‌های نصب شده"
+                header="پنل‌های من"
                 fieldName="پنل"
                 statusesListApiRoute={`/v1/installation/panel/status`}
                 status={status}
@@ -127,7 +127,7 @@ const CorpInstalledPanels = () => {
                                 }}
                                 status={panel.status}
                                 address={`استان ${panel.address.province}، شهر ${panel.address.city}، ${panel.address.streetAddress}`}
-                                redirectPath={`/corpdashboard/installed-panels/${panel.id}`}
+                                redirectPath={`/corpdashboard/my-panels/${panel.id}`}
                             />
                         ))}
                     </>
@@ -146,4 +146,4 @@ const CorpInstalledPanels = () => {
     );
 };
 
-export default CorpInstalledPanels;
+export default CorpMyPanels;

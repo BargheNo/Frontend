@@ -62,6 +62,11 @@ export const CorpNavItems = [
         icon: <SquarePen />,
     },
     {
+        name: "پنل‌های من",
+        path: "/corpdashboard/my-panels",
+        icon: <Layers />,
+    },
+    {
         name: "پنل‌های نصب شده",
         path: "/corpdashboard/installed-panels",
         icon: <Server />,
