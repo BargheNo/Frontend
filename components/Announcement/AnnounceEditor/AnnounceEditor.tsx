@@ -2,6 +2,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import EditorJS, { OutputData } from "@editorjs/editorjs";
 import Header from "@editorjs/header";
+import TitleHeader from "@/components/Header/Header";
 import List from "@editorjs/list";
 import Paragraph from "@editorjs/paragraph";
 import ImageTool from "ert-image";
@@ -21,9 +22,11 @@ import AddAnnounceForm from "@/components/Announcement/AddAnnounce/AddAnnounceFo
 export default function AnnounceEditor({
     newsID,
     onlyView = false,
+    mode = "user",
 }: {
     newsID: string;
     onlyView?: boolean;
+    mode?: "user" | "admin";
 }) {
     const editorRef = useRef<EditorJS | null>(null);
     const holderRef = useRef<HTMLDivElement>(null);
@@ -103,11 +106,14 @@ export default function AnnounceEditor({
     });
 
     useQuery({
-        queryKey: ["news", newsID],
+        queryKey: ["news", newsID, mode],
         queryFn: async () => {
             try {
                 const responce = await getData({
-                    endPoint: `/v1/admin/news/${newsID}`,
+                    endPoint:
+                        mode == "admin"
+                            ? `/v1/admin/news/${newsID}`
+                            : `/v1/news/${newsID}`,
                 });
                 if (responce.statusCode === 200) {
                     setTitle(responce.data.title);
@@ -204,17 +210,23 @@ export default function AnnounceEditor({
                     </div>
                 )}
                 {onlyView ? (
-                    <div className="flex flex-col justify-center items-center p-5 h-[70vh] w-[85vw] z-30">
-                        <div className="w-full h-full bg-warm-white neo-card rounded-md p-2 ">
-                            <div className="overflow-y-auto overflow-x-hidden no-scrollbar neo-card-rev w-full h-full rounded-md p-3">
-                                <div
-                                    ref={holderRef}
-                                    id="editorjs"
-                                    className={cn("rtl h-full w-full")}
-                                ></div>
+                    <>
+                        <TitleHeader
+                            className="text-center"
+                            header={title || "بدون عنوان"}
+                        />
+                        <div className="flex flex-col justify-center items-center p-5 h-[70vh] w-[85vw] z-30">
+                            <div className="w-full h-full bg-warm-white neo-card rounded-md p-2 ">
+                                <div className="overflow-y-auto overflow-x-hidden no-scrollbar neo-card-rev w-full h-full rounded-md p-3">
+                                    <div
+                                        ref={holderRef}
+                                        id="editorjs"
+                                        className={cn("rtl h-full w-full")}
+                                    ></div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </>
                 ) : (
                     <div className="flex flex-col items-center gap-3">
                         <div className="w-[70vw]! h-[60vh]! bg-warm-white neo-card rounded-md p-2 ">

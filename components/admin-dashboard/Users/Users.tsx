@@ -148,7 +148,7 @@ export default function Users() {
         setLoading(true);
         console.log("all users", query);
         getData({
-            endPoint: `/v1/admin/users?status=1&status=2`,
+            endPoint: `/v1/admin/users`,
             params: { sortBy, asc, page, pageSize: resultPerPage, query },
         })
             .then((data) => {
@@ -473,6 +473,7 @@ const UserItem = ({
         setLoadingRoles(true);
         getData({ endPoint: `/v1/admin/roles` })
             .then((data) => {
+                console.log("role", data);
                 setAllRoles(data?.data?.data);
             })
             .catch((err) => console.log(err))
@@ -609,7 +610,7 @@ const UserItem = ({
                                 <Button
                                     onClick={handleBanAction}
                                     // disabled={isBanning}
-                                    className={`md:px-4 px-[105%] py-2 rounded-lg cursor-pointer  min-w-32 ${
+                                    className={`md:px-4 px-[105%] py-2 rounded-lg cursor-pointer min-w-32 ${
                                         status === "فعال"
                                             ? "bg-red-500 hover:bg-red-600"
                                             : "bg-green-500 hover:bg-green-600"
@@ -629,17 +630,18 @@ const UserItem = ({
 
                         <div className="flex justify-end gap-2 md:mt-0 mt-12">
                             <CancelButton />
-
-                            <Button
-                                onClick={saveRoles}
-                                className="bg-orange-500 cursor-pointer hover:bg-orange-600 min-w-28"
-                            >
-                                {isSaving ? (
-                                    <LoadingOnButton />
-                                ) : (
-                                    <p>ذخیره تغییرات</p>
-                                )}
-                            </Button>
+                            {hasChangeRolePermission && (
+                                <Button
+                                    onClick={saveRoles}
+                                    className="bg-orange-500 cursor-pointer hover:bg-orange-600 min-w-28"
+                                >
+                                    {isSaving ? (
+                                        <LoadingOnButton />
+                                    ) : (
+                                        <p>ذخیره تغییرات</p>
+                                    )}
+                                </Button>
+                            )}
                         </div>
                     </StickyFooter>
                 </DialogContent>

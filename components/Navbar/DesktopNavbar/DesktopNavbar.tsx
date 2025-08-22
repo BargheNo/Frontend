@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import hasAdminAnyPermission from "@/src/functions/isAdmin";
 import { resetUser, setCorpId, setCorps } from "@/src/store/slices/userSlice";
 import { getData } from "@/src/services/apiHub";
+import { resetCorps } from "@/src/store/slices/corpSlice";
 
 export default function DesktopNavbar() {
     const dispatch = useDispatch();
@@ -114,9 +115,10 @@ export default function DesktopNavbar() {
                                             className={`
 										${vazirBold.className}`}
                                             href={"/login"}
-                                            onClick={() =>
-                                                dispatch(resetUser())
-                                            }
+                                            onClick={() => {
+                                                dispatch(resetUser());
+                                                dispatch(resetCorps());
+                                            }}
                                         >
                                             خروج
                                         </Link>

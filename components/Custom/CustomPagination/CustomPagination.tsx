@@ -8,15 +8,18 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
+import { cn } from "@/lib/utils";
 
 export default function CustomPagination({
     currentPage,
     setCurrentPage,
     paginationInfo,
+    className = "",
 }: {
     currentPage: number;
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
     paginationInfo?: paginationInfoType;
+    className?: string;
 }) {
     const totalPages = paginationInfo?.totalPages ?? 1;
     const range = Array.from(
@@ -25,7 +28,7 @@ export default function CustomPagination({
     ).filter((page) => page > 1 && page < totalPages);
     return totalPages > 1 ? (
         <div className="p-5 rtl">
-            <Pagination className="lg:mb-0 mb-20 relative">
+            <Pagination className={cn("lg:mb-0 mb-20 relative", className)}>
                 <PaginationContent>
                     {/* previous */}
                     {currentPage !== 1 && (

@@ -13,7 +13,7 @@ import PageContainer from "@/components/Dashboard/PageContainer/PageContainer";
 export default function page() {
     return (
         <PageContainer>
-            <AnnounceView />
+            <AnnounceView mode="admin" />
         </PageContainer>
     );
 }

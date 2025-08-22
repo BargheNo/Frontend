@@ -25,6 +25,7 @@ import {
     setChatRooms,
     setSelectedChatRoom,
 } from "@/src/store/slices/chatSlice";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Page() {
     const [panelWidth, setPanelWidth] = useState(5);
@@ -32,31 +33,52 @@ export default function Page() {
     const isMobile = useMediaQuery("(max-width: 768px)");
     const corpID = useSelector((state: RootState) => state.user.corpId);
     const [mode, setMode] = useState("corp");
-    const [loading, setLoading] = useState(true);
     // const selectedChatRoom = useSelector(
     //     (state: any) => state.chat.selectedChatRoom
     // );
     const dispatch = useDispatch();
     // const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
-    useEffect(() => {
-        getData({
-            endPoint:
-                mode === "user"
-                    ? "/v1/user/chat/room"
-                    : `/v1/corp/chat/rooms/${corpID}`,
-        }).then((res: any) => {
-            console.log(res);
-            dispatch(setChatRooms(res?.data));
-            if (res?.data?.length > 0) {
-                dispatch(setSelectedChatRoom(res?.data[0]));
-            } else {
-                dispatch(setSelectedChatRoom(null));
-            }
-            setLoading(false);
-        });
-    }, [corpID]);
+    // useEffect(() => {
+    //     getData({
+    //         endPoint:
+    //             mode === "user"
+    //                 ? "/v1/user/chat/room"
+    //                 : `/v1/corp/${corpID}/chat/rooms`,
+    //     }).then((res: any) => {
+    //         console.log(res);
+    //         dispatch(setChatRooms(res?.data));
+    //         if (res?.data?.length > 0) {
+    //             dispatch(setSelectedChatRoom(res?.data[0]));
+    //         } else {
+    //             dispatch(setSelectedChatRoom(null));
+    //         }
+    //         setLoading(false);
+    //     });
+    // }, [corpID]);
+
+    const { isLoading } = useQuery({
+        queryKey: ["chatRooms", mode, corpID], // depends on mode & corpID
+        queryFn: () => {
+            getData({
+                endPoint:
+                    mode === "user"
+                        ? "/v1/user/chat/room"
+                        : `/v1/corp/${corpID}/chat/rooms`,
+            }).then((res: any) => {
+                console.log(res);
+                dispatch(setChatRooms(res?.data));
+                if (res?.data?.length > 0) {
+                    dispatch(setSelectedChatRoom(res?.data[0]));
+                } else {
+                    dispatch(setSelectedChatRoom(null));
+                }
+            });
+        },
+        enabled: !!mode && (mode === "user" || !!corpID), // avoid fetching with missing params
+    });
+
     const isClient = useClientCheck();
-    if (!isClient || loading)
+    if (!isClient || isLoading)
         return (
             <div className="h-full w-full bg-gray-100 p-4">
                 <LoadingSpinner className="bg-white w-full h-[88vh] z-20" />
