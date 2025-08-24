@@ -16,6 +16,7 @@ import { D3Panel } from "../D3Panel/D3Panel";
 import {
     Box,
     Environment,
+    Html,
     OrbitControls,
     PerspectiveCamera,
     Stars,
@@ -27,6 +28,9 @@ import { delay, is } from "cypress/types/bluebird";
 import { useMediaQuery } from "react-responsive";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
+import { Suspense } from "react";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner/LoadingSpinner";
+import CanvasErrorBoundary from "../D3Panel/CanvasErrorBoundary";
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
 
@@ -108,7 +112,7 @@ export default function BargheNoLanding() {
 
         gsap.to(".D3Panel", {
             y: "-=20vh",
-            x: "-=2vw",
+            // x: "-=vw",
             // scale: 0.8,
             duration: 0.5,
             scrollTrigger: {
@@ -179,42 +183,62 @@ export default function BargheNoLanding() {
                 {/* <div className="fixed bg-red-500 top-20! bottom-20! left-20! right-20! w-[60vw] h-[50vh] flex justify-center items-center"> */}
                 {!isMobile && (
                     <div className="D3Panel fixed z-20 w-[40vw] left-[8vw] bottom-[20vh] top-[20vh] flex items-center justify-center rounded-2xl">
-                        <Canvas
-                            style={{
-                                width: "100%",
-                                height: "100%",
-                            }}
+                        <CanvasErrorBoundary
+                            fallback={
+                                <div className="w-[70%] aspect-video relative">
+                                    <Image
+                                        src={panel}
+                                        alt="panel"
+                                        className={`${styles.panel}`}
+                                        fill
+                                    />
+                                </div>
+                            }
                         >
-                            <PerspectiveCamera
-                                makeDefault
-                                position={[0, 1.5, 3]}
-                            />
-                            <OrbitControls
-                                minDistance={4} // closest zoom
-                                maxDistance={8} // farthest zoom
-                                enableZoom={true} // make sure zoom is enabled
-                            />
-                            <OrbitControls />
-                            <ambientLight intensity={0.5} />
-                            <directionalLight
-                                position={[10, 10, 5]}
-                                intensity={1}
-                                castShadow
-                                shadow-mapSize-width={2048}
-                                shadow-mapSize-height={2048}
-                            />
-                            <pointLight
-                                position={[-10, -10, -10]}
-                                intensity={0.5}
-                            />
-                            <Environment preset="city" />
-                            <D3Panel
-                                position={position}
-                                rotation={rotation}
-                                scale={scale}
-                                ref={setD3PanelRef}
-                            />
-                        </Canvas>
+                            <Canvas
+                                style={{
+                                    width: "100%",
+                                    height: "100%",
+                                }}
+                            >
+                                <Suspense
+                                    fallback={
+                                        <Html fullscreen>
+                                            <LoadingSpinner className="w-full h-full bg-transparent" />
+                                        </Html>
+                                    }
+                                >
+                                    <PerspectiveCamera
+                                        makeDefault
+                                        position={[0, 1.5, 3]}
+                                    />
+                                    <OrbitControls
+                                        minDistance={4.5} // closest zoom
+                                        maxDistance={8} // farthest zoom
+                                        enableZoom={true} // make sure zoom is enabled
+                                    />
+                                    <ambientLight intensity={0.5} />
+                                    <directionalLight
+                                        position={[10, 10, 5]}
+                                        intensity={1}
+                                        castShadow
+                                        shadow-mapSize-width={2048}
+                                        shadow-mapSize-height={2048}
+                                    />
+                                    <pointLight
+                                        position={[-10, -10, -10]}
+                                        intensity={0.5}
+                                    />
+                                    <Environment preset="city" />
+                                    <D3Panel
+                                        position={position}
+                                        rotation={rotation}
+                                        scale={scale}
+                                        ref={setD3PanelRef}
+                                    />
+                                </Suspense>
+                            </Canvas>
+                        </CanvasErrorBoundary>
                     </div>
                 )}
                 <div
@@ -224,7 +248,7 @@ export default function BargheNoLanding() {
                     <div className="w-full h-full flex flex-row-reverse items-center justify-between">
                         {!isMobile && <div className="w-full h-full"></div>}
                         <div
-                            className="w-full flex flex-col justify-center items-center gap-16"
+                            className="w-full flex flex-col justify-center items-center gap-[8vh] md:gap-20 md:transform md:-translate-y-20"
                             id="slide1-text"
                         >
                             {isMobile && (
@@ -240,7 +264,7 @@ export default function BargheNoLanding() {
                             <div className="flex flex-col items-center justify-center gap-2">
                                 <h1
                                     className={cn(
-                                        `text-9xl font-bold text-[#193947] ${vazir.className} flex place-self-center my-4`,
+                                        `text-7xl md:text-9xl font-bold text-[#193947] ${vazir.className} flex place-self-center my-4`,
                                         "h-text"
                                     )}
                                 >
@@ -289,14 +313,14 @@ export default function BargheNoLanding() {
                     <div className="flex flex-row justify-between w-full h-full">
                         <div className="w-full h-full p-5 justify-center">
                             <div
-                                className="neo-card w-full h-full p-6 rounded-lg bg-warm-white flex flex-col items-center justify-between"
+                                className="neo-card w-full h-[85vh] p-6 rounded-lg bg-warm-white flex flex-col items-center justify-between"
                                 id="clean-card"
                             >
                                 <div className="flex flex-col items-center justify-center gap-2">
                                     <span className="self-start text-3xl font-bold">
                                         چرا ما؟
                                     </span>
-                                    <div className="w-full mt-4 text-lg text-gray-800 text-justify">
+                                    <div className="w-full h-[30vh]! my-4 text-xl text-gray-800 text-justify overflow-y-scroll no-scrollbar">
                                         <TypewriterComponent
                                             options={{ delay: 40 }}
                                             onInit={(typewriter) => {
@@ -315,8 +339,9 @@ export default function BargheNoLanding() {
                                         />
                                     </div>
                                 </div>
-                                <div className="relative w-full aspect-square md:w-auto md:h-1/2 rounded-2xl overflow-hidden">
+                                <div className="relative h-full w-full! rounded-2xl overflow-hidden">
                                     <Image
+                                        className="object-cover rounded-2xl overflow-hidden"
                                         src={CleanEnergy}
                                         alt="CleanEnergy"
                                         fill
@@ -332,8 +357,9 @@ export default function BargheNoLanding() {
                                 >
                                     <div className="w-full h-full neo-card-rev p-3 bg-warm-white rounded-lg flex flex-col justify-between ">
                                         <div className="w-full h-full"></div>
-                                        <div className="w-full h-full relative rounded-lg overflow-hidden">
+                                        <div className="w-full! h-full relative rounded-lg overflow-hidden">
                                             <Image
+                                                className="object-cover"
                                                 src={PanelBluePrint}
                                                 alt="panel-blue-print"
                                                 fill
