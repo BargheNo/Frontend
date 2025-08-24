@@ -18,6 +18,7 @@ import {
 import { installedpanel } from "@/src/types/installedpanelType";
 import InstalledPanel from "@/components/InstalledPanels/InstalledPanels";
 import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/src/store/store";
 import LoadingSpinner from "../Loading/LoadingSpinner/LoadingSpinner";
 import { getData } from "@/src/services/apiHub";
 import NoRecordFound from "../NoRecordFound/NoRecordFound";
@@ -78,6 +79,15 @@ interface BuildingTypeProps {
     name: string;
 }
 
+interface GuaranteeProps {
+    id: number;
+    name: string;
+    status: string;
+    guaranteeType: string;
+    durationMonths: number;
+    description: string;
+}
+
 const InstalledPanelPagination = forwardRef<{ handelHistory: () => void }, {}>(
     (props, ref) => {
         const [open, setOpen] = useState(false);
@@ -88,6 +98,7 @@ const InstalledPanelPagination = forwardRef<{ handelHistory: () => void }, {}>(
         const [cities, Setcities] = useState<City[]>([]);
         const [buildingTypes, setBuildingTypes] =
             useState<BuildingTypeProps[]>();
+        const [guarantees, setGuarantees] = useState<GuaranteeProps[]>([]);
 
         const dispatch = useDispatch();
         const [history, sethistory] = useState<installedpanel[]>([]);
@@ -114,6 +125,19 @@ const InstalledPanelPagination = forwardRef<{ handelHistory: () => void }, {}>(
                     console.log(err.message);
                 });
         };
+
+        const GetGuarantees = useCallback(() => {
+            if (corpId) {
+                getData({ endPoint: `/v1/corp/${corpId}/guarantee?status=1` })
+                    .then((data) => {
+                        // Filter guarantees with status "فعال"
+                        const activeGuarantees = data?.data?.filter((guarantee: GuaranteeProps) => guarantee.status === "فعال");
+                        setGuarantees(activeGuarantees || []);
+                    })
+                    .catch((err) => console.log(err));
+            }
+        }, [corpId]);
+
         useEffect(() => {
             getData({ endPoint: `/v1/installation/request/building` })
                 .then((data) => {
@@ -121,7 +145,8 @@ const InstalledPanelPagination = forwardRef<{ handelHistory: () => void }, {}>(
                 })
                 .catch((err) => console.log(err));
             Getprovinces();
-        }, []);
+            GetGuarantees();
+        }, [GetGuarantees]);
 
         const UpdateCityList = (provinceId: number) => {
             provinceService
@@ -216,6 +241,7 @@ const InstalledPanelPagination = forwardRef<{ handelHistory: () => void }, {}>(
                                 provinceID: "",
                                 cityID: "",
                                 buildingType: "",
+                                guaranteeID: "",
                                 code: "",
                                 unit: "",
                                 number: "",
@@ -237,6 +263,9 @@ const InstalledPanelPagination = forwardRef<{ handelHistory: () => void }, {}>(
                                     "این فیلد الزامی است."
                                 ),
                                 buildingType: Yup.number().required(
+                                    "این فیلد الزامی است."
+                                ),
+                                guaranteeID: Yup.number().required(
                                     "این فیلد الزامی است."
                                 ),
                                 area: Yup.number().required(
@@ -281,6 +310,7 @@ const InstalledPanelPagination = forwardRef<{ handelHistory: () => void }, {}>(
                                     power: Number(values.power),
                                     area: Number(values.area),
                                     buildingType: Number(values.buildingType),
+                                    guaranteeID: Number(values.guaranteeID),
                                     tilt: Number(values.angel),
                                     azimuth: Number(values.direction),
                                     totalNumberOfModules: Number(
@@ -381,6 +411,50 @@ const InstalledPanelPagination = forwardRef<{ handelHistory: () => void }, {}>(
                                                                 {
                                                                     buildingType?.name
                                                                 }
+                                                            </SelectItem>
+                                                        )
+                                                    )}
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div
+                                        className="flex justify-end w-full -mt-4"
+                                        style={{ gap: "1vw" }}
+                                    >
+                                        <Select
+                                            name="guarantee"
+                                            onValueChange={(value) => {
+                                                setFieldValue(
+                                                    "guaranteeID",
+                                                    Number(value)
+                                                );
+                                            }}
+                                        >
+                                            <SelectTrigger
+                                                className={`${style.CustomInput} mt-[27px] min-h-[43px] cursor-pointer ${
+                                                    errors.guaranteeID && touched.guaranteeID
+                                                        ? "!border-red-500 !ring-1 !ring-red-700"
+                                                        : ""
+                                                }`}
+                                            >
+                                                <SelectValue placeholder="گارانتی" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>
+                                                        گارانتی
+                                                    </SelectLabel>
+                                                    {guarantees?.map(
+                                                        (guarantee, index) => (
+                                                            <SelectItem
+                                                                key={index}
+                                                                value={String(
+                                                                    guarantee?.id
+                                                                )}
+                                                                className="cursor-pointer"
+                                                            >
+                                                                {guarantee?.name}
                                                             </SelectItem>
                                                         )
                                                     )}
@@ -662,6 +736,7 @@ const InstalledPanelPagination = forwardRef<{ handelHistory: () => void }, {}>(
                             {history.map((order: installedpanel, index) => (
                                 <InstalledPanel
                                     key={index}
+                                    id={order?.id}
                                     customer={order?.customer}
                                     name={order?.name}
                                     power={order?.power}

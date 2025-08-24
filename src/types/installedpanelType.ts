@@ -1,4 +1,5 @@
 export interface installedpanel {
+    id?: number;
     name: string;
     customer: { id: number; firstName: string; lastName: string };
     power: number;
