@@ -68,6 +68,7 @@ interface CorporationType {
         unit: number;
     }>;
     status: string;
+    fetchAllCorporations: any;
 }
 interface CorporationDetailType {
     id: number;
@@ -111,6 +112,7 @@ const CorporationItem = ({
     addresses,
     id,
     status,
+    fetchAllCorporations,
 }: CorporationType) => {
     const {
         hasPermission: hasApproveDeclinePermission,
@@ -138,6 +140,7 @@ const CorporationItem = ({
             .then((data) => {
                 CustomToast(data?.message, "success");
                 setOpen(false);
+                fetchAllCorporations();
                 fetchCorporationDetails();
             })
             .catch((err) => console.log(err));
@@ -708,7 +711,11 @@ const CorpManagement = () => {
                             <NoRecordFound text="هیچ شرکتی یافت نشد." />
                         ) : (
                             corporations?.map((corporation, index) => (
-                                <CorporationItem key={index} {...corporation} />
+                                <CorporationItem
+                                    key={index}
+                                    {...corporation}
+                                    fetchAllCorporations={fetchAllCorporations}
+                                />
                             ))
                         )}
                     </div>
