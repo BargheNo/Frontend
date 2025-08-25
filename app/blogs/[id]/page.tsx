@@ -57,6 +57,7 @@ export default function Page() {
                         className="max-w-full w-full"
                         blogID={id as string}
                         onlyView={true}
+                        general={true}
                     />
                 </div>
             </div>
