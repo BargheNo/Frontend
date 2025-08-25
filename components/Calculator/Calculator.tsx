@@ -73,7 +73,7 @@ function calculateSolarMetrics(
 
     const annualConsumption = monthlyConsumption * 12;
     const costPerKwh = monthlyCost / monthlyConsumption;
-    const suggestedCapacity = annualConsumption / annualSunlightHours;
+    const suggestedCapacity = annualConsumption / annualSunlightHours * 1000;
     const numberOfPanels = (suggestedCapacity * 1000) / singlePanelWattage;
     const annualProduction = suggestedCapacity * annualSunlightHours;
     const annualSavings = annualProduction * costPerKwh;
@@ -131,7 +131,7 @@ const Calculator = () => {
                                 <div className="flex flex-col w-full md:w-1/3 justify-evenly">
                                     <CustomInput
                                         dir="rtl"
-                                        placeholder="میزان مصرف برق ماهانه (وات ساعت)"
+                                        placeholder="میزان مصرف برق ماهانه (وات ساعتکیلو)"
                                         icon={LampCeiling}
                                         name="monthlyElectricityConsumption"
                                         type="number"
@@ -243,7 +243,9 @@ const Calculator = () => {
                                                 <span className="text-xl sm:text-3xl font-bold">
                                                     {results
                                                         ? wordExpression(
-                                                              results.suggestedCapacity,
+                                                              Number(
+                                                                  results.suggestedCapacity
+                                                              ),
                                                               true
                                                           ).value
                                                         : placeholder}
@@ -298,7 +300,9 @@ const Calculator = () => {
                                                 <span className="text-xl sm:text-3xl font-bold">
                                                     {results
                                                         ? wordExpression(
-                                                              results.annualProduction,
+                                                              Number(
+                                                                  results.annualProduction
+                                                              ),
                                                               true
                                                           ).value
                                                         : placeholder}
@@ -350,15 +354,17 @@ const Calculator = () => {
                                                     {results
                                                         ? Number(
                                                               wordExpression(
-                                                                  results.paybackPeriod ??
-                                                                      "0",
+                                                                  Number(
+                                                                      results.paybackPeriod
+                                                                  ) ?? "0",
                                                                   false
                                                               ).value
                                                           ) >= 1
                                                             ? `${
                                                                   wordExpression(
-                                                                      results.paybackPeriod ??
-                                                                          "0",
+                                                                      Number(
+                                                                          results.paybackPeriod
+                                                                      ) ?? "0",
                                                                       false
                                                                   ).value
                                                               } سال`
