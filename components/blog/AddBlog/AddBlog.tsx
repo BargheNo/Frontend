@@ -30,8 +30,8 @@ export default function AddBlog() {
                 <DialogContent
                     className={cn(
                         step === 0
-                            ? "w-[90vw]! h-fit! p-8 overflow-scroll"
-                            : "w-[90vw]! max-w-none! p-10 overflow-scroll"
+                            ? "w-[90vw]! h-fit! p-8 overflow-y-scroll overflow-x-hidden"
+                            : "w-[90vw]! max-w-none! p-10 overflow-y-scroll overflow-x-hidden"
                     )}
                 >
                     <DialogTitle></DialogTitle>

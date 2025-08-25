@@ -182,13 +182,17 @@ export default function AnnounceCard({
                             )}
                         </ContextMenuContent>
                     </ContextMenu>
-                    <DialogContent className="w-[80vw]! max-w-none! h-[80vh]! rtl p-8 overflow-y-scroll overflow-x-hidden flex items-center justify-center">
+                    <DialogContent className="w-[90vw]! max-w-none! p-10 overflow-y-scroll overflow-x-hidden">
                         <DialogHeader>
                             <DialogTitle></DialogTitle>
                         </DialogHeader>
-                        <div className="mt-20 lg:mt-0 flex items-center justify-center">
-                            <AnnounceEditor newsID={id} onlyView={false} />
-                        </div>
+                        {/* <div className="w-[90vw]! max-w-none! p-10 overflow-y-scroll overflow-x-hidden"> */}
+                        <AnnounceEditor
+                            newsID={id}
+                            onlyView={false}
+                            mode="admin"
+                        />
+                        {/* </div> */}
                         <DialogDescription className="hidden" />
                     </DialogContent>
                 </Dialog>

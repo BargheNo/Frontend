@@ -18,12 +18,15 @@ import CustomToast from "@/components/Custom/CustomToast/CustomToast.tsx";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import CustomInput from "@/components/Custom/CustomInput/CustomInput.tsx";
 import AddAnnounceForm from "@/components/Announcement/AddAnnounce/AddAnnounceForm.tsx";
+import { Skeleton } from "@/components/ui/skeleton.tsx";
 
 export default function AnnounceEditor({
+    className,
     newsID,
     onlyView = false,
     mode = "user",
 }: {
+    className?: string;
     newsID: string;
     onlyView?: boolean;
     mode?: "user" | "admin";
@@ -105,7 +108,7 @@ export default function AnnounceEditor({
         },
     });
 
-    useQuery({
+    const { isLoading } = useQuery({
         queryKey: ["news", newsID, mode],
         queryFn: async () => {
             try {
@@ -184,10 +187,16 @@ export default function AnnounceEditor({
 
     return (
         <>
-            {loading && (
-                <LoadingSpinner className="absolute top-0 left-0 right-0 bottom-0 bg-white z-50" />
-            )}
-            <div className="flex flex-col items-center justify-evenly gap-3 w-[70vw] mx-auto">
+            <div
+                className={cn(
+                    "relative flex flex-col items-center justify-evenly gap-3 w-[70vw] mx-auto h-[80vh] z-20",
+                    className
+                )}
+            >
+                {loading && (
+                    <LoadingSpinner className="absolute w-full h-full bg-transparent z-30 m-2" />
+                )}
+                {/* <div className="flex flex-col items-center justify-evenly gap-3 w-[70vw] mx-auto"> */}
                 {!onlyView && (
                     <div className="flex justify-between items-center w-full self-end rtl">
                         <div className="text-bold text-2xl">ویرایشگر</div>
@@ -211,11 +220,15 @@ export default function AnnounceEditor({
                 )}
                 {onlyView ? (
                     <>
-                        <TitleHeader
-                            className="text-center"
-                            header={title || "بدون عنوان"}
-                        />
-                        <div className="flex flex-col justify-center items-center p-5 h-[70vh] w-[85vw] z-30">
+                        {!isLoading ? (
+                            <TitleHeader
+                                className="text-center"
+                                header={title || "بدون عنوان"}
+                            />
+                        ) : (
+                            <Skeleton className="w-32 h-10" />
+                        )}
+                        <div className="flex flex-col justify-center items-center m-2 w-full h-full z-20">
                             <div className="w-full h-full bg-warm-white neo-card rounded-md p-2 ">
                                 <div className="overflow-y-auto overflow-x-hidden no-scrollbar neo-card-rev w-full h-full rounded-md p-3">
                                     <div

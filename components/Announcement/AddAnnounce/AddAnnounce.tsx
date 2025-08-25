@@ -32,7 +32,7 @@ export default function AddAnnounce() {
                 className={cn(
                     step === 0
                         ? "w-[80vw]! md:w-[60vw]! lg:w-[40vw]! h-fit! p-8"
-                        : "w-[80vw]! max-w-none! h-[80vh]! p-8 overflow-scroll"
+                        : "w-[90vw]! max-w-none! p-10 overflow-y-scroll overflow-x-hidden"
                 )}
             >
                 <DialogTitle></DialogTitle>
@@ -45,7 +45,11 @@ export default function AddAnnounce() {
                     />
                 ) : (
                     // <div className="mt-20 lg:mt-0 flex items-center justify-center">
-                    <AnnounceEditor newsID={announceID} onlyView={false} />
+                    <AnnounceEditor
+                        newsID={announceID}
+                        onlyView={false}
+                        mode="admin"
+                    />
                     // </div>
                 )}
             </DialogContent>

@@ -73,7 +73,7 @@ export default function BlogCard({
                     <>
                         <div>
                             <Dialog>
-                                <DialogContent className="w-[90vw]! max-w-none! p-10 overflow-scroll">
+                                <DialogContent className="w-[90vw]! max-w-none! p-10 overflow-y-scroll overflow-x-hidden">
                                     <BlogEditor blogID={blogID} />
                                 </DialogContent>
                                 <ContextMenu>

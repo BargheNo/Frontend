@@ -22,10 +22,12 @@ export default function BlogEditor({
     className,
     blogID,
     onlyView = false,
+    general = false,
 }: {
     className?: string;
     blogID: string;
     onlyView?: boolean;
+    general?: boolean;
 }) {
     const editorRef = useRef<EditorJS | null>(null);
     const holderRef = useRef<HTMLDivElement>(null);
@@ -146,9 +148,10 @@ export default function BlogEditor({
         queryFn: async () => {
             try {
                 const responce = await getData({
-                    endPoint: corpID
-                        ? `/v1/corp/${corpID}/blog/${blogID}`
-                        : `/v1/blog/${blogID}`,
+                    endPoint:
+                        corpID && !general
+                            ? `/v1/corp/${corpID}/blog/${blogID}`
+                            : `/v1/blog/${blogID}`,
                     // get it from blog/id if it was viewOnly
                 });
                 console.log(responce);
@@ -274,7 +277,7 @@ export default function BlogEditor({
                     </div>
                 )}
                 {onlyView ? (
-                    <div className="flex flex-col justify-center items-center m-2 w-full h-full">
+                    <div className="flex flex-col justify-center items-center m-2 w-full h-full z-20">
                         <div className="w-full h-full bg-warm-white neo-card rounded-md p-2 ">
                             <div className="overflow-y-auto overflow-x-hidden no-scrollbar neo-card-rev w-full h-full rounded-md p-3">
                                 <div
