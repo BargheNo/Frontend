@@ -141,7 +141,6 @@ const TicketSupportPage = () => {
         if (values.image) {
             formData.append("image", values.image);
         }
-
         postData({ endPoint: `/v1/user/ticket`, data: formData })
             .then((data) => {
                 resetFormValues(setFieldValue);
