@@ -69,13 +69,13 @@ export const CorpNavItems = [
     {
         name: "پیشنهادهای ارسال شده",
         path: "/corpdashboard/bids",
-        RNPName: "bid.viewAll",
+        // RNPName: "bid.viewAll",
         icon: <Send />,
     },
     {
         name: "درخواست‌ها",
         path: "/corpdashboard/requests",
-        RNPName: "bid.viewInstallationRequests",
+        // RNPName: "bid.viewInstallationRequests",
         icon: <ClipboardList />,
     },
     // { name: "گزارشات", path: "/corpdashboard/reports", icon: <BarChart /> },
@@ -87,7 +87,7 @@ export const CorpNavItems = [
     {
         name: "تعمیرات پیش رو",
         path: "/corpdashboard/maintenances",
-        RNPName: "maintenance.viewAll",
+        // RNPName: "maintenance.viewAll",
         icon: <Wrench />,
     },
     {
@@ -104,7 +104,7 @@ export const CorpNavItems = [
     {
         name: "گارانتی",
         path: "/corpdashboard/warranties",
-        RNPName: "guarantee.viewAll",
+        // RNPName: "guarantee.viewAll",
         icon: <ShieldCheck />,
     },
     {
@@ -118,7 +118,7 @@ export const AdminNavItems = [
     {
         name: "مدیریت کاربران",
         path: "/admin-dashboard/manage-users",
-        RNPName: "user.viewAll",
+        // RNPName: "user.viewAll",
         icon: <Users />,
     },
 
