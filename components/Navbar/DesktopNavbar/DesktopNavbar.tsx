@@ -164,7 +164,7 @@ export default function DesktopNavbar() {
                                     <Link
                                         className={`vazir-bold rtl ${
                                             pathname?.startsWith(
-                                                "/announcements"
+                                                "/blogs"
                                             )
                                                 ? "text-[#FA682D]"
                                                 : ""

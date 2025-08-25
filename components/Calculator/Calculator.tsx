@@ -73,13 +73,13 @@ function calculateSolarMetrics(
 
     const annualConsumption = monthlyConsumption * 12;
     const costPerKwh = monthlyCost / monthlyConsumption;
-    const suggestedCapacity = annualConsumption / annualSunlightHours * 1000;
-    const numberOfPanels = (suggestedCapacity * 1000) / singlePanelWattage;
+    const suggestedCapacity = (annualConsumption / annualSunlightHours) * 1000;
+    const numberOfPanels = (suggestedCapacity * 10) / singlePanelWattage;
     const annualProduction = suggestedCapacity * annualSunlightHours;
-    const annualSavings = annualProduction * costPerKwh;
+    const annualSavings = (annualProduction * costPerKwh) / 1000;
     const initialInstallationCost = suggestedCapacity * costPerKwp;
     const paybackPeriod =
-        annualSavings > 0 ? initialInstallationCost / annualSavings : null;
+        annualSavings > 0 ? initialInstallationCost / annualSavings / 1000 : null;
     const carbonReduction = annualProduction * carbonEmissionFactor;
 
     return {
@@ -131,7 +131,7 @@ const Calculator = () => {
                                 <div className="flex flex-col w-full md:w-1/3 justify-evenly">
                                     <CustomInput
                                         dir="rtl"
-                                        placeholder="میزان مصرف برق ماهانه (وات ساعتکیلو)"
+                                        placeholder="میزان مصرف برق ماهانه (کیلووات ساعت)"
                                         icon={LampCeiling}
                                         name="monthlyElectricityConsumption"
                                         type="number"
@@ -352,32 +352,14 @@ const Calculator = () => {
                                             <div className="flex flex-row gap-2 items-center">
                                                 <span className="text-xl sm:text-3xl font-bold">
                                                     {results
-                                                        ? Number(
-                                                              wordExpression(
-                                                                  Number(
-                                                                      results.paybackPeriod
-                                                                  ) ?? "0",
-                                                                  false
-                                                              ).value
-                                                          ) >= 1
-                                                            ? `${
-                                                                  wordExpression(
-                                                                      Number(
-                                                                          results.paybackPeriod
-                                                                      ) ?? "0",
-                                                                      false
-                                                                  ).value
-                                                              } سال`
-                                                            : `${Math.ceil(
-                                                                  Number(
-                                                                      wordExpression(
-                                                                          results.paybackPeriod ??
-                                                                              "0",
-                                                                          false
-                                                                      ).value
-                                                                  ) * 12
-                                                              )} ماه`
-                                                        : placeholder}
+                                                        ? wordExpression(
+                                                              Number(
+                                                                  results.paybackPeriod
+                                                              ) ?? "0",
+                                                              false
+                                                          ).value
+                                                        : placeholder}{" "}
+                                                    سال
                                                 </span>
                                                 {/* <span className="text-xl sm:text-3xl font-bold"></span> */}
                                             </div>

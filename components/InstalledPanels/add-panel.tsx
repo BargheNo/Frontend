@@ -331,7 +331,7 @@ export default function AddPanel() {
                                     }}
                                 >
                                     <SelectTrigger
-                                        className={`${style.CustomInput} mt-[27px] min-h-[43px] cursor-pointer ${
+                                        className={`${style.CustomInput} mt-[27px] w-full min-h-[43px] cursor-pointer ${
                                             errors.guaranteeID && touched.guaranteeID
                                                 ? "!border-red-500 !ring-1 !ring-red-700"
                                                 : ""
