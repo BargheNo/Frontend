@@ -17,6 +17,7 @@ export default function Page() {
     const { data, isLoading } = useQuery({
         queryKey: ["blog-title", id],
         queryFn: async () => {
+            console.log(id);
             const res = await getData({ endPoint: `/v1/blog/${id}` });
             return res?.data;
         },
