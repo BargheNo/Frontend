@@ -31,13 +31,18 @@ export default function useHasPermission(permission: string): PermissionState {
     );
     // if (!permission) return { hasPermission: true, loading: false };
     const names = Array.isArray(permissions)
-        ? permissions?.map((p: permission) => p.name)
-        : [];
+        ? [
+              ...new Set([
+                  ...permissions?.map((p: permission) => p.name),
+                  "corporation.all",
+              ]),
+          ]
+        : ["corporation.all"];
     console.log(names);
     const hasPermission =
         isClient &&
         (names?.includes("general.all") ||
-        names?.includes("corporation.all") ||
+            names?.includes("corporation.all") ||
             names?.includes(permission) ||
             permission === "");
 
