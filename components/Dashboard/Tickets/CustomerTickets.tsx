@@ -132,12 +132,11 @@ const TicketSupportPage = () => {
             formData.append("image", values.image);
         }
 
-        for (let [key, val] of formData.entries()) {
-            console.log(`${key}:`, val);
-        }
-
-        postData({ endPoint: `/v1/user/ticket`,headers: { "Content-Type": "multipart/form-data" }
-, data: formData })
+        postData({
+            endPoint: `/v1/user/ticket`,
+            headers: { "Content-Type": "multipart/form-data" },
+            data: formData,
+        })
             .then((data) => {
                 resetFormValues(setFieldValue);
                 CustomToast(data?.message, "success");
