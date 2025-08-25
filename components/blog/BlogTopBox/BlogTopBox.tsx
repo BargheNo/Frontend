@@ -60,6 +60,10 @@ const BlogTopBox = ({
             }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["like", blogID] });
+            queryClient.invalidateQueries({
+                queryKey: ["blog-title", String(blogID)],
+            });
+            console.log(blogID);
             toast.success("مطلب با موفقیت لایک شد");
         },
         onError: () => toast.error("خطایی رخ داده است"),
@@ -72,6 +76,10 @@ const BlogTopBox = ({
             }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["like", blogID] });
+            queryClient.invalidateQueries({
+                queryKey: ["blog-title", String(blogID)],
+            });
+            console.log(blogID);
             toast.success("مطلب با موفقیت آنلایک شد");
         },
         onError: () => toast.error("خطایی رخ داده است"),

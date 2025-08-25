@@ -139,12 +139,14 @@ export default function AnnounceView({
                             <Skeleton className="h-8 w-8 rounded" />
                         </div>
                     ) : (
-                        <CustomPagination
-                            className="mb-0!"
-                            setCurrentPage={setPage}
-                            currentPage={page}
-                            paginationInfo={paginationInfo}
-                        />
+                        haveExtra && (
+                            <CustomPagination
+                                className="mb-0!"
+                                setCurrentPage={setPage}
+                                currentPage={page}
+                                paginationInfo={paginationInfo}
+                            />
+                        )
                     )}
                 </>
             )}
