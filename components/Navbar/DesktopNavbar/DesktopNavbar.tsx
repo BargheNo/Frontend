@@ -76,7 +76,7 @@ export default function DesktopNavbar() {
     ]);
     return (
         <>
-            <div className="h-[70px] fixed top-0 w-full flex flex-col justify-center items-center z-20">
+            <div className="h-[70px] fixed top-0 w-full flex flex-col justify-center items-center z-30">
                 <div className="flex justify-between items-center h-[70%] w-[94%] rounded-full mx-auto bg-white py-3 px-5 border-2 border-gray-300">
                     <div>{/* <Sun size={28} /> */}</div>
                     <>
