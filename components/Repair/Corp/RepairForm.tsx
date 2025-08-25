@@ -34,10 +34,10 @@ const RepairForm = ({ panelId, guaranteeAvailable, onSuccess }: RepairFormProps)
 	const initialValues: RepairFormValues = {
 		title: "",
 		details: "",
-		guaranteeViolation: {
-			reason: "",
-			details: "",
-		},
+		// guaranteeViolation: {
+		// 	reason: "",
+		// 	details: "",
+		// },
 	};
 
 	const corpID = useSelector((state: RootState) => state.user.corpId);
