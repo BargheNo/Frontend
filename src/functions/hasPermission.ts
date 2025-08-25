@@ -37,7 +37,7 @@ export default function useHasPermission(permission: string): PermissionState {
     const hasPermission =
         isClient &&
         (names?.includes("general.all") ||
-        names?.includes("corportion.all") ||
+        names?.includes("corporation.all") ||
             names?.includes(permission) ||
             permission === "");
 
